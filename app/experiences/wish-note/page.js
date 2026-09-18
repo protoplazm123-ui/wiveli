@@ -193,10 +193,12 @@ export default function WishNote() {
           THEIR WISH NOTE?
         </h2>
 
-        <button className="primary">
-          Personalize Wish Note →
-        </button>
-      </section>
+        <a
+  className="primary"
+  href="/experiences/wish-note/personalize"
+>
+  Personalize Wish Note →
+</a>      </section>
 
       <footer>
         <a className="logo" href="/">
