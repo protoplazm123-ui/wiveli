@@ -37,36 +37,42 @@ const experiences = [
     tag: "365 DAYS · 365 WISHES",
     text: "A year of little wishes, one day at a time.",
     symbol: "♡",
+    href: "/experiences/wish-note",
   },
   {
     title: "Our Story",
     tag: "YOUR STORY · YOUR MOMENTS",
     text: "Turn your favorite memories into an interactive story.",
     symbol: "♥",
+    href: null,
   },
   {
     title: "Open When...",
     tag: "LETTERS FOR EVERY MOMENT",
     text: "Personal messages they can open exactly when they need them.",
     symbol: "✉",
+    href: null,
   },
   {
     title: "Love Coupons",
     tag: "LITTLE PROMISES · BIG MEMORIES",
     text: "Create personal coupons for dates, surprises and special moments.",
     symbol: "✦",
+    href: null,
   },
   {
     title: "Memory Box",
     tag: "KEEP THE GOOD STUFF",
     text: "Collect photos, messages and favorite moments in one little place.",
     symbol: "□",
+    href: null,
   },
   {
     title: "How Well Do You Know Me?",
     tag: "PLAY · LAUGH · DISCOVER",
     text: "A personalized quiz made for couples, friends and favorite people.",
     symbol: "?",
+    href: null,
   },
 ];
 
@@ -204,7 +210,18 @@ export default function Home() {
 
                 <span>{experience.text}</span>
 
-                <button>Explore →</button>
+                {experience.href ? (
+                  <a
+                    className="experienceExplore"
+                    href={experience.href}
+                  >
+                    Explore →
+                  </a>
+                ) : (
+                  <span className="experienceComingSoon">
+                    Coming soon
+                  </span>
+                )}
               </div>
             </article>
           ))}
