@@ -4070,3 +4070,745 @@ export default function WishNoteGift() {
     </main>
   );
 }
+       /* =========================================================
+   WIVELI — WISH NOTE / PERSONALIZE
+   ========================================================= */
+
+.personalizePage {
+  --p-bg: #f6f0e7;
+  --p-paper: #fffaf6;
+  --p-ink: #151313;
+  --p-pink: #ff5f91;
+  --p-soft: #ffd9e4;
+  --p-line: rgba(21, 19, 19, 0.14);
+
+  min-height: 100vh;
+  background: var(--p-bg);
+  color: var(--p-ink);
+}
+
+.personalizePage button,
+.personalizePage input,
+.personalizePage textarea {
+  font: inherit;
+}
+
+/* HEADER */
+
+.personalizeHeader {
+  min-height: 76px;
+  padding: 0 32px;
+
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+
+  border-bottom: 1px solid rgba(21, 19, 19, 0.14);
+  background: rgba(255, 250, 246, 0.92);
+}
+
+.personalizeHeader .logo {
+  justify-self: start;
+}
+
+.personalizeHeaderCenter {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+.personalizeExit {
+  justify-self: end;
+
+  color: var(--p-ink);
+  text-decoration: none;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+/* MAIN LAYOUT */
+
+.personalizeLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(380px, 0.85fr);
+  min-height: calc(100vh - 76px);
+}
+
+.personalizeEditor {
+  padding:
+    80px
+    max(40px, calc((100vw - 1240px) / 2))
+    110px;
+
+  border-right: 1px solid var(--p-line);
+}
+
+.editorIntro {
+  max-width: 700px;
+  margin-bottom: 80px;
+}
+
+.editorIntro .eyebrow {
+  margin-bottom: 18px;
+}
+
+.editorIntro h1 {
+  margin: 0;
+
+  font-size: clamp(58px, 7vw, 104px);
+  line-height: 0.84;
+  letter-spacing: -0.065em;
+  font-weight: 950;
+}
+
+.editorIntro h1 span {
+  color: var(--p-pink);
+}
+
+.editorIntro > p:last-child {
+  max-width: 580px;
+  margin: 30px 0 0;
+
+  font-size: 17px;
+  line-height: 1.6;
+  color: rgba(21, 19, 19, 0.68);
+}
+
+/* SECTIONS */
+
+.editorSection {
+  max-width: 720px;
+  padding: 52px 0;
+
+  border-top: 1px solid var(--p-line);
+}
+
+.editorSectionTitle {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 18px;
+
+  margin-bottom: 35px;
+}
+
+.editorSectionTitle > span {
+  width: 36px;
+  height: 36px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid var(--p-ink);
+  border-radius: 50%;
+
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.editorSectionTitle h2 {
+  margin: 0 0 7px;
+
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.editorSectionTitle p {
+  margin: 0;
+
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(21, 19, 19, 0.55);
+}
+
+/* INPUTS */
+
+.editorField {
+  display: block;
+  margin-top: 25px;
+}
+
+.editorField > span {
+  display: block;
+  margin-bottom: 9px;
+
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+}
+
+.editorField input,
+.editorField textarea {
+  width: 100%;
+
+  padding: 16px 17px;
+
+  border: 1px solid rgba(21, 19, 19, 0.18);
+  border-radius: 12px;
+
+  outline: none;
+
+  background: var(--p-paper);
+  color: var(--p-ink);
+
+  font-size: 15px;
+
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.editorField textarea {
+  resize: vertical;
+  line-height: 1.55;
+}
+
+.editorField input:focus,
+.editorField textarea:focus {
+  border-color: var(--p-pink);
+  box-shadow: 0 0 0 3px rgba(255, 95, 145, 0.1);
+}
+
+.editorField small {
+  display: block;
+
+  margin-top: 6px;
+
+  text-align: right;
+
+  font-size: 9px;
+  color: rgba(21, 19, 19, 0.4);
+}
+
+/* WISH COUNT */
+
+.wishCountGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.wishCountOption {
+  min-height: 105px;
+
+  padding: 18px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  border: 1px solid rgba(21, 19, 19, 0.18);
+  border-radius: 14px;
+
+  background: var(--p-paper);
+  color: var(--p-ink);
+
+  cursor: pointer;
+
+  transition:
+    transform 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.wishCountOption:hover {
+  transform: translateY(-3px);
+  border-color: var(--p-pink);
+}
+
+.wishCountOption strong {
+  font-size: 31px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.wishCountOption span {
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+}
+
+.wishCountOption.active {
+  border-color: var(--p-ink);
+  background: var(--p-pink);
+
+  box-shadow: 5px 5px 0 var(--p-ink);
+}
+
+.customWishField {
+  margin-top: 16px;
+}
+
+/* CATEGORIES EDITOR */
+
+.categoryEditor {
+  display: grid;
+  gap: 9px;
+}
+
+.categoryEditorRow {
+  min-height: 62px;
+
+  display: grid;
+  grid-template-columns: 55px 1fr;
+  align-items: center;
+
+  border: 1px solid rgba(21, 19, 19, 0.16);
+  border-radius: 12px;
+
+  background: var(--p-paper);
+
+  overflow: hidden;
+}
+
+.categoryEditorRow > span {
+  height: 100%;
+
+  display: grid;
+  place-items: center;
+
+  border-right: 1px solid rgba(21, 19, 19, 0.12);
+
+  color: var(--p-pink);
+
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.categoryEditorRow input {
+  width: 100%;
+  height: 100%;
+
+  padding: 0 16px;
+
+  border: 0;
+  outline: 0;
+
+  background: transparent;
+  color: var(--p-ink);
+
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.resetCategories {
+  margin-top: 14px;
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+  color: rgba(21, 19, 19, 0.55);
+
+  text-decoration: underline;
+  text-underline-offset: 4px;
+
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+/* CONTINUE */
+
+.editorContinue {
+  max-width: 720px;
+
+  margin-top: 35px;
+  padding: 27px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+
+  border: 1px solid var(--p-ink);
+
+  background: var(--p-paper);
+
+  box-shadow: 7px 7px 0 var(--p-soft);
+}
+
+.editorContinue p {
+  margin: 0 0 6px;
+
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.editorContinue span {
+  display: block;
+  max-width: 390px;
+
+  font-size: 12px;
+  line-height: 1.45;
+
+  color: rgba(21, 19, 19, 0.55);
+}
+
+.editorContinue .primary {
+  flex-shrink: 0;
+}
+
+/* RIGHT PREVIEW */
+
+.personalizePreview {
+  position: relative;
+
+  background:
+    radial-gradient(
+      circle at 50% 22%,
+      rgba(255, 95, 145, 0.18),
+      transparent 270px
+    ),
+    #efe4dd;
+}
+
+.previewSticky {
+  position: sticky;
+  top: 0;
+
+  min-height: 100vh;
+
+  padding: 50px 30px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.previewLabel {
+  width: min(350px, 100%);
+
+  margin-bottom: 14px;
+
+  display: flex;
+  justify-content: space-between;
+
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+}
+
+.previewLabel span:last-child {
+  color: var(--p-pink);
+}
+
+/* PHONE */
+
+.giftPhone {
+  width: min(350px, 100%);
+
+  padding: 8px;
+
+  border: 2px solid var(--p-ink);
+  border-radius: 38px;
+
+  background: var(--p-ink);
+
+  box-shadow: 0 30px 70px rgba(40, 20, 25, 0.2);
+}
+
+.giftPhoneTop {
+  width: 92px;
+  height: 20px;
+
+  margin: 2px auto -2px;
+
+  border-radius: 0 0 15px 15px;
+
+  background: var(--p-ink);
+
+  position: relative;
+  z-index: 3;
+}
+
+.giftScreen {
+  min-height: 650px;
+
+  padding: 44px 25px 28px;
+
+  border-radius: 31px;
+
+  background:
+    radial-gradient(
+      circle at 90% 4%,
+      rgba(255, 95, 145, 0.2),
+      transparent 180px
+    ),
+    #fff8f4;
+
+  text-align: center;
+}
+
+.giftBrand {
+  margin: 0;
+
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+.giftHeart {
+  width: 65px;
+  height: 65px;
+
+  margin: 28px auto 22px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  background: var(--p-pink);
+  color: white;
+
+  font-size: 27px;
+
+  transform: rotate(-5deg);
+}
+
+.giftFor {
+  margin: 0 0 7px;
+
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+
+  color: rgba(21, 19, 19, 0.48);
+}
+
+.giftScreen h2 {
+  margin: 0;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 34px;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+.giftMessage {
+  margin: 20px auto 0;
+
+  max-width: 250px;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.55;
+
+  color: rgba(21, 19, 19, 0.65);
+}
+
+.giftDivider {
+  width: 40px;
+  height: 1px;
+
+  margin: 25px auto;
+
+  background: rgba(21, 19, 19, 0.2);
+}
+
+.giftYear {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.giftYear > strong {
+  font-size: 50px;
+  line-height: 1;
+  letter-spacing: -0.06em;
+}
+
+.giftYear > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.giftYear > div span:last-child {
+  color: var(--p-pink);
+}
+
+.giftWishCount {
+  margin: 13px 0 22px;
+
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.giftCategoryPreview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  border-top: 1px solid rgba(21, 19, 19, 0.12);
+  border-left: 1px solid rgba(21, 19, 19, 0.12);
+}
+
+.giftCategoryPreview > div {
+  min-height: 65px;
+
+  padding: 9px;
+
+  border-right: 1px solid rgba(21, 19, 19, 0.12);
+  border-bottom: 1px solid rgba(21, 19, 19, 0.12);
+
+  text-align: left;
+}
+
+.giftCategoryPreview span {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: var(--p-pink);
+
+  font-size: 7px;
+  font-weight: 900;
+}
+
+.giftCategoryPreview p {
+  margin: 0;
+
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.giftFrom {
+  margin: 22px 0 0;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 10px;
+  font-style: italic;
+}
+
+.previewHint {
+  width: min(350px, 100%);
+
+  margin: 16px 0 0;
+
+  text-align: center;
+
+  font-size: 9px;
+  line-height: 1.45;
+
+  color: rgba(21, 19, 19, 0.45);
+}
+
+/* TABLET */
+
+@media (max-width: 1000px) {
+  .personalizeLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .personalizeEditor {
+    padding: 60px 32px 80px;
+
+    border-right: 0;
+  }
+
+  .personalizePreview {
+    border-top: 1px solid var(--p-line);
+  }
+
+  .previewSticky {
+    position: relative;
+    min-height: auto;
+
+    padding: 70px 30px;
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+  .personalizeHeader {
+    min-height: 65px;
+
+    padding: 0 16px;
+
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .personalizeHeaderCenter {
+    display: none;
+  }
+
+  .personalizeEditor {
+    padding: 45px 16px 70px;
+  }
+
+  .editorIntro {
+    margin-bottom: 55px;
+  }
+
+  .editorIntro h1 {
+    font-size: 54px;
+  }
+
+  .editorIntro > p:last-child {
+    font-size: 14px;
+  }
+
+  .editorSection {
+    padding: 40px 0;
+  }
+
+  .editorSectionTitle {
+    grid-template-columns: 38px 1fr;
+    gap: 12px;
+  }
+
+  .editorSectionTitle > span {
+    width: 31px;
+    height: 31px;
+  }
+
+  .editorSectionTitle h2 {
+    font-size: 25px;
+  }
+
+  .wishCountGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .wishCountOption {
+    min-height: 90px;
+  }
+
+  .categoryEditorRow {
+    grid-template-columns: 45px 1fr;
+  }
+
+  .editorContinue {
+    padding: 20px;
+
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .editorContinue .primary {
+    width: 100%;
+    text-align: center;
+  }
+
+  .previewSticky {
+    padding: 50px 16px;
+  }
+
+  .giftPhone {
+    max-width: 340px;
+  }
+}       
