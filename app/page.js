@@ -44,35 +44,35 @@ const experiences = [
     tag: "YOUR STORY · YOUR MOMENTS",
     text: "Turn your favorite memories into an interactive story.",
     symbol: "♥",
-    href: null,
+    href: "/experiences/our-story",
   },
   {
     title: "Open When...",
     tag: "LETTERS FOR EVERY MOMENT",
     text: "Personal messages they can open exactly when they need them.",
     symbol: "✉",
-    href: null,
+    href: "/experiences/open-when",
   },
   {
     title: "Love Coupons",
     tag: "LITTLE PROMISES · BIG MEMORIES",
     text: "Create personal coupons for dates, surprises and special moments.",
     symbol: "✦",
-    href: null,
+    href: "/experiences/love-coupons",
   },
   {
     title: "Memory Box",
     tag: "KEEP THE GOOD STUFF",
     text: "Collect photos, messages and favorite moments in one little place.",
     symbol: "□",
-    href: null,
+    href: "/experiences/memory-box",
   },
   {
     title: "How Well Do You Know Me?",
     tag: "PLAY · LAUGH · DISCOVER",
     text: "A personalized quiz made for couples, friends and favorite people.",
     symbol: "?",
-    href: null,
+    href: "/experiences/how-well-do-you-know-me",
   },
 ];
 
@@ -80,7 +80,7 @@ export default function Home() {
   return (
     <main>
       <header className="header">
-        <a className="logo" href="#">
+        <a className="logo" href="/">
           WI<span>♥</span>ELI
         </a>
 
@@ -112,8 +112,13 @@ export default function Home() {
           </p>
 
           <div className="buttons">
-            <button className="primary">Create a Gift →</button>
-            <button className="secondary">Explore Ideas</button>
+            <a className="primary" href="#ideas">
+              Create a Gift →
+            </a>
+
+            <a className="secondary" href="#ideas">
+              Explore Ideas
+            </a>
           </div>
 
           <div className="benefits">
@@ -126,6 +131,7 @@ export default function Home() {
         <div className="heroArt">
           <div className="note noteOne">
             <small>A LITTLE SOMETHING</small>
+
             <strong>
               made just
               <br />
@@ -141,6 +147,7 @@ export default function Home() {
               <br />
               MEMORY
             </div>
+
             <p>the good stuff.</p>
           </div>
 
@@ -161,7 +168,9 @@ export default function Home() {
         <div className="categoryGrid">
           {categories.map((category) => (
             <article className="categoryCard" key={category.title}>
-              <span className="categorySymbol">{category.symbol}</span>
+              <span className="categorySymbol">
+                {category.symbol}
+              </span>
 
               <div>
                 <h3>{category.title}</h3>
@@ -192,7 +201,10 @@ export default function Home() {
 
         <div className="experienceGrid">
           {experiences.map((experience, index) => (
-            <article className="experienceCard" key={experience.title}>
+            <article
+              className="experienceCard"
+              key={experience.title}
+            >
               <div className="experienceVisual">
                 <span className="experienceNumber">
                   {String(index + 1).padStart(2, "0")}
@@ -210,18 +222,12 @@ export default function Home() {
 
                 <span>{experience.text}</span>
 
-                {experience.href ? (
-                  <a
-                    className="experienceExplore"
-                    href={experience.href}
-                  >
-                    Explore →
-                  </a>
-                ) : (
-                  <span className="experienceComingSoon">
-                    Coming soon
-                  </span>
-                )}
+                <a
+                  className="experienceExplore"
+                  href={experience.href}
+                >
+                  Explore →
+                </a>
               </div>
             </article>
           ))}
@@ -241,18 +247,22 @@ export default function Home() {
           </h2>
 
           <p>
-            WIVELI helps you turn your thoughts, memories and emotions into
-            interactive digital experiences — made for the people who matter
-            most.
+            WIVELI helps you turn your thoughts, memories and emotions
+            into interactive digital experiences — made for the people
+            who matter most.
           </p>
 
-          <button className="primary">Create Your Gift →</button>
+          <a className="primary" href="#ideas">
+            Create Your Gift →
+          </a>
         </div>
 
         <div className="phone">
           <div className="phoneTop"></div>
 
-          <p className="phoneMini">FOR SOMEONE SPECIAL</p>
+          <p className="phoneMini">
+            FOR SOMEONE SPECIAL
+          </p>
 
           <div className="phoneHeart">♥</div>
 
@@ -276,7 +286,8 @@ export default function Home() {
             <span>02</span>
             <h3>Quick & Easy</h3>
             <p>
-              Create something meaningful without designing from scratch.
+              Create something meaningful without designing from
+              scratch.
             </p>
           </div>
 
@@ -291,7 +302,7 @@ export default function Home() {
       </section>
 
       <footer>
-        <a className="logo" href="#">
+        <a className="logo" href="/">
           WI<span>♥</span>ELI
         </a>
 
