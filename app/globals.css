@@ -26,10 +26,10 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
-  pointer-events: none;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='.7'/%3E%3C/svg%3E");
   z-index: 100;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='.7'/%3E%3C/svg%3E");
 }
 
 a {
@@ -109,6 +109,8 @@ button {
   background: transparent;
 }
 
+/* HERO */
+
 .hero {
   width: min(1400px, calc(100% - 64px));
   min-height: 700px;
@@ -170,8 +172,8 @@ button {
 
 .note {
   position: absolute;
-  background: var(--white);
   padding: 28px;
+  background: var(--white);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.09);
 }
 
@@ -199,9 +201,9 @@ button {
   position: absolute;
   left: 13%;
   top: 15%;
+  color: var(--pink);
   font-size: 230px;
   line-height: 1;
-  color: var(--pink);
   transform: rotate(-8deg);
   filter: drop-shadow(0 20px 15px rgba(0, 0, 0, 0.12));
 }
@@ -239,15 +241,17 @@ button {
   left: 2%;
   bottom: 15%;
   font-family: Georgia, serif;
-  font-style: italic;
   font-size: 22px;
+  font-style: italic;
   transform: rotate(-8deg);
 }
 
+/* CATEGORIES */
+
 .categories {
   padding: 100px max(32px, calc((100% - 1400px) / 2));
-  background: var(--black);
   color: white;
+  background: var(--black);
 }
 
 .sectionTop {
@@ -307,8 +311,8 @@ button {
 .categoryCard p {
   max-width: 260px;
   color: #aaa;
-  line-height: 1.5;
   font-size: 14px;
+  line-height: 1.5;
 }
 
 .categoryCard:hover p {
@@ -322,6 +326,154 @@ button {
   font-size: 24px;
 }
 
+/* WIVELI EXPERIENCES */
+
+.experiences {
+  width: min(1400px, calc(100% - 64px));
+  margin: auto;
+  padding: 130px 0;
+}
+
+.experienceHeading {
+  display: grid;
+  grid-template-columns: 1.5fr 0.5fr;
+  align-items: end;
+  gap: 60px;
+  margin-bottom: 70px;
+}
+
+.experienceHeading .eyebrow {
+  grid-column: 1 / -1;
+  margin-bottom: -25px;
+}
+
+.experienceHeading h2 {
+  font-family: Impact, "Arial Narrow", sans-serif;
+  font-size: clamp(70px, 8vw, 125px);
+  line-height: 0.82;
+  letter-spacing: -4px;
+}
+
+.experienceIntro {
+  max-width: 390px;
+  padding-bottom: 8px;
+  color: #555;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.experienceGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.experienceCard {
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--line);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.experienceCard:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.1);
+}
+
+.experienceVisual {
+  height: 300px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #f5b7cb;
+  border-bottom: 1px solid var(--line);
+}
+
+.experienceCard:nth-child(2) .experienceVisual {
+  background: #e6ddd0;
+}
+
+.experienceCard:nth-child(3) .experienceVisual {
+  background: #f7d7df;
+}
+
+.experienceCard:nth-child(4) .experienceVisual {
+  background: #f2c2cf;
+}
+
+.experienceCard:nth-child(5) .experienceVisual {
+  background: #ddd4c7;
+}
+
+.experienceCard:nth-child(6) .experienceVisual {
+  background: #ff5b8e;
+}
+
+.experienceNumber {
+  position: absolute;
+  top: 20px;
+  left: 22px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.experienceIcon {
+  font-family: Georgia, serif;
+  font-size: 130px;
+  line-height: 1;
+  transition: transform 0.3s ease;
+}
+
+.experienceCard:hover .experienceIcon {
+  transform: rotate(-7deg) scale(1.08);
+}
+
+.experienceContent {
+  min-height: 250px;
+  padding: 27px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.experienceContent > p {
+  margin-bottom: 14px;
+  color: var(--pink);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.4px;
+}
+
+.experienceContent h3 {
+  margin-bottom: 12px;
+  font-family: Georgia, serif;
+  font-size: 31px;
+  line-height: 1.05;
+}
+
+.experienceContent > span {
+  max-width: 320px;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.experienceContent button {
+  margin-top: auto;
+  padding: 0 0 6px;
+  border: 0;
+  border-bottom: 1px solid var(--black);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+/* MORE THAN A GIFT */
+
 .meaning {
   width: min(1400px, calc(100% - 64px));
   margin: auto;
@@ -330,6 +482,7 @@ button {
   grid-template-columns: 1.1fr 0.7fr 0.7fr;
   gap: 70px;
   align-items: center;
+  border-top: 1px solid var(--line);
 }
 
 .meaning h2 {
@@ -416,10 +569,12 @@ button {
 }
 
 .features p {
+  color: #666;
   font-size: 14px;
   line-height: 1.5;
-  color: #666;
 }
+
+/* FOOTER */
 
 footer {
   padding: 55px max(32px, calc((100% - 1400px) / 2));
@@ -433,6 +588,8 @@ footer {
 footer p {
   font-size: 12px;
 }
+
+/* TABLET */
 
 @media (max-width: 950px) {
   .header {
@@ -465,6 +622,25 @@ footer p {
     grid-template-columns: 1fr 1fr;
   }
 
+  .experiences {
+    width: calc(100% - 36px);
+    padding: 90px 0;
+  }
+
+  .experienceHeading {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  .experienceHeading .eyebrow {
+    grid-column: auto;
+    margin-bottom: 0;
+  }
+
+  .experienceGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
   .meaning {
     width: calc(100% - 36px);
     grid-template-columns: 1fr;
@@ -476,6 +652,8 @@ footer p {
     margin: 20px auto 50px;
   }
 }
+
+/* MOBILE */
 
 @media (max-width: 600px) {
   .primary.small {
@@ -541,6 +719,23 @@ footer p {
 
   .categoryCard {
     min-height: 210px;
+  }
+
+  .experienceHeading h2 {
+    font-size: 19vw;
+    letter-spacing: -2px;
+  }
+
+  .experienceGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .experienceVisual {
+    height: 250px;
+  }
+
+  .experienceContent {
+    min-height: 220px;
   }
 
   .meaning h2 {
