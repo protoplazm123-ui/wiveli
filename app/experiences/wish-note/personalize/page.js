@@ -25,7 +25,9 @@ export default function WishNotePersonalize() {
   const [customWishCount, setCustomWishCount] = useState("");
   const [isCustom, setIsCustom] = useState(false);
 
-  const [categories, setCategories] = useState(defaultCategories);
+  const [categories, setCategories] = useState(
+    defaultCategories
+  );
 
   const finalWishCount =
     isCustom && customWishCount
@@ -65,9 +67,10 @@ export default function WishNotePersonalize() {
 
       <section className="personalizeLayout">
         <div className="personalizeEditor">
-
           <div className="editorIntro">
-            <p className="eyebrow">MAKE IT THEIRS</p>
+            <p className="eyebrow">
+              MAKE IT THEIRS
+            </p>
 
             <h1>
               PERSONALIZE
@@ -76,8 +79,9 @@ export default function WishNotePersonalize() {
             </h1>
 
             <p>
-              Create a little world for their wishes, dreams and
-              all the moments you still have ahead of you.
+              Create a little world for their
+              wishes, dreams and all the moments
+              you still have ahead of you.
             </p>
           </div>
 
@@ -89,8 +93,10 @@ export default function WishNotePersonalize() {
 
               <div>
                 <h2>Who is it for?</h2>
+
                 <p>
-                  Add the names that will appear inside the gift.
+                  Add the names that will appear
+                  inside the gift.
                 </p>
               </div>
             </div>
@@ -132,9 +138,10 @@ export default function WishNotePersonalize() {
 
               <div>
                 <h2>Your message</h2>
+
                 <p>
-                  Write the first thing they will read when they
-                  open their gift.
+                  Write the first thing they will
+                  read when they open their gift.
                 </p>
               </div>
             </div>
@@ -152,7 +159,9 @@ export default function WishNotePersonalize() {
                 placeholder="Write something personal..."
               />
 
-              <small>{message.length}/280</small>
+              <small>
+                {message.length}/280
+              </small>
             </label>
           </div>
 
@@ -164,9 +173,10 @@ export default function WishNotePersonalize() {
 
               <div>
                 <h2>How many wishes?</h2>
+
                 <p>
-                  Choose how many wishes they can make inside
-                  their Wish Note.
+                  Choose how many wishes they can
+                  make inside their Wish Note.
                 </p>
               </div>
             </div>
@@ -177,11 +187,14 @@ export default function WishNotePersonalize() {
                   type="button"
                   key={count}
                   className={
-                    !isCustom && wishCount === count
+                    !isCustom &&
+                    wishCount === count
                       ? "wishCountOption active"
                       : "wishCountOption"
                   }
-                  onClick={() => selectWishCount(count)}
+                  onClick={() =>
+                    selectWishCount(count)
+                  }
                 >
                   <strong>{count}</strong>
                   <span>WISHES</span>
@@ -195,7 +208,9 @@ export default function WishNotePersonalize() {
                     ? "wishCountOption active"
                     : "wishCountOption"
                 }
-                onClick={() => setIsCustom(true)}
+                onClick={() =>
+                  setIsCustom(true)
+                }
               >
                 <strong>+</strong>
                 <span>CUSTOM</span>
@@ -212,7 +227,9 @@ export default function WishNotePersonalize() {
                   max="999"
                   value={customWishCount}
                   onChange={(event) =>
-                    setCustomWishCount(event.target.value)
+                    setCustomWishCount(
+                      event.target.value
+                    )
                   }
                   placeholder="Enter a number"
                 />
@@ -230,60 +247,76 @@ export default function WishNotePersonalize() {
                 <h2>Wish categories</h2>
 
                 <p>
-                  We've prepared six categories. Keep them as they
-                  are or make the names more personal.
+                  We've prepared six categories.
+                  Keep them as they are or make
+                  the names more personal.
                 </p>
               </div>
             </div>
 
             <div className="categoryEditor">
-              {categories.map((category, index) => (
-                <label
-                  className="categoryEditorRow"
-                  key={index}
-                >
-                  <span>
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
+              {categories.map(
+                (category, index) => (
+                  <label
+                    className="categoryEditorRow"
+                    key={index}
+                  >
+                    <span>
+                      {String(
+                        index + 1
+                      ).padStart(2, "0")}
+                    </span>
 
-                  <input
-                    type="text"
-                    value={category}
-                    maxLength={35}
-                    onChange={(event) =>
-                      updateCategory(index, event.target.value)
-                    }
-                  />
-                </label>
-              ))}
+                    <input
+                      type="text"
+                      value={category}
+                      maxLength={35}
+                      onChange={(event) =>
+                        updateCategory(
+                          index,
+                          event.target.value
+                        )
+                      }
+                    />
+                  </label>
+                )
+              )}
             </div>
 
             <button
               type="button"
               className="resetCategories"
               onClick={() =>
-                setCategories([...defaultCategories])
+                setCategories([
+                  ...defaultCategories,
+                ])
               }
             >
               Reset to WIVELI categories
             </button>
           </div>
 
-          {/* NEXT */}
+          {/* CONTINUE */}
 
           <div className="editorContinue">
             <div>
-              <p>THE BASICS ARE READY ♡</p>
+              <p>
+                THE BASICS ARE READY ♡
+              </p>
 
               <span>
-                Next we'll choose how the gift looks and prepare
-                the surprise for delivery.
+                Next we'll choose how the gift
+                looks and prepare the surprise
+                for delivery.
               </span>
             </div>
 
-            <button className="primary">
+            <a
+              className="primary"
+              href="/experiences/wish-note/design"
+            >
               Continue →
-            </button>
+            </a>
           </div>
         </div>
 
@@ -291,7 +324,6 @@ export default function WishNotePersonalize() {
 
         <aside className="personalizePreview">
           <div className="previewSticky">
-
             <div className="previewLabel">
               <span>LIVE PREVIEW</span>
               <span>●</span>
@@ -314,7 +346,8 @@ export default function WishNotePersonalize() {
                 </p>
 
                 <h2>
-                  {recipient || "Someone Special"}
+                  {recipient ||
+                    "Someone Special"}
                 </h2>
 
                 <p className="giftMessage">
@@ -334,33 +367,41 @@ export default function WishNotePersonalize() {
                 </div>
 
                 <p className="giftWishCount">
-                  {finalWishCount || "—"} wishes waiting for you
+                  {finalWishCount || "—"} wishes
+                  waiting for you
                 </p>
 
                 <div className="giftCategoryPreview">
-                  {categories.map((category, index) => (
-                    <div key={index}>
-                      <span>
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
+                  {categories.map(
+                    (category, index) => (
+                      <div key={index}>
+                        <span>
+                          {String(
+                            index + 1
+                          ).padStart(2, "0")}
+                        </span>
 
-                      <p>
-                        {category ||
-                          `Category ${index + 1}`}
-                      </p>
-                    </div>
-                  ))}
+                        <p>
+                          {category ||
+                            `Category ${
+                              index + 1
+                            }`}
+                        </p>
+                      </div>
+                    )
+                  )}
                 </div>
 
                 <p className="giftFrom">
-                  made with ♡ by {sender || "you"}
+                  made with ♡ by{" "}
+                  {sender || "you"}
                 </p>
               </div>
             </div>
 
             <p className="previewHint">
-              This is what they'll see when they open
-              their gift.
+              This is what they'll see when they
+              open their gift.
             </p>
           </div>
         </aside>
