@@ -1722,3 +1722,997 @@ footer p {
     font-size: 28px;
   }
 }
+/* =========================================================
+   WIVELI — OPEN WHEN / LOVE COUPONS / MEMORY BOX / QUIZ
+   ========================================================= */
+
+/* ---------- SHARED PRODUCT DETAILS ---------- */
+
+.openWhenPreview,
+.couponPreview,
+.memoryPreview,
+.quizPreview {
+  position: relative;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.openWhenLetters,
+.couponCollection,
+.memoryCollection,
+.quizExperience {
+  padding: 110px 6%;
+  border-top: 1px solid var(--line);
+}
+
+.openWhenHeading,
+.couponHeading,
+.memoryHeading,
+.quizExperienceHeading {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: end;
+  margin-bottom: 60px;
+}
+
+.openWhenHeading h2,
+.couponHeading h2,
+.memoryHeading h2,
+.quizExperienceHeading h2 {
+  margin: 8px 0 0;
+  font-size: clamp(48px, 6vw, 88px);
+  line-height: 0.88;
+  letter-spacing: -0.055em;
+}
+
+.openWhenHeading > p,
+.couponHeading > p,
+.memoryHeading > p,
+.quizExperienceHeading > p {
+  max-width: 500px;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   OPEN WHEN
+   ========================================================= */
+
+.openWhenPreview {
+  perspective: 1000px;
+}
+
+.openLetter {
+  position: absolute;
+  width: min(390px, 80%);
+  min-height: 245px;
+  padding: 32px;
+  background: var(--white);
+  border: 2px solid var(--black);
+  box-shadow: 10px 10px 0 var(--black);
+  display: flex;
+  flex-direction: column;
+}
+
+.openLetter span {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.openLetter strong {
+  margin-top: 22px;
+  font-size: 32px;
+  line-height: 1;
+}
+
+.openLetter i {
+  margin-top: auto;
+  align-self: flex-end;
+  font-size: 30px;
+  color: var(--pink);
+  font-style: normal;
+}
+
+.openLetterBack {
+  transform: translate(-65px, -90px) rotate(-8deg);
+}
+
+.openLetterMiddle {
+  transform: translate(70px, -25px) rotate(7deg);
+  background: #ffd6e3;
+}
+
+.openLetterFront {
+  transform: translate(-10px, 75px) rotate(-2deg);
+  background: var(--black);
+  color: var(--white);
+  z-index: 3;
+}
+
+.openLetterFront strong {
+  font-size: 42px;
+}
+
+.openLetterFront p {
+  margin-top: auto;
+  font-size: 13px;
+}
+
+.letterGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--black);
+  border-left: 1px solid var(--black);
+}
+
+.letterCard {
+  min-height: 370px;
+  padding: 30px;
+  border-right: 1px solid var(--black);
+  border-bottom: 1px solid var(--black);
+  display: flex;
+  flex-direction: column;
+}
+
+.letterTop {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 800;
+}
+
+.letterTop i {
+  color: var(--pink);
+  font-size: 24px;
+  font-style: normal;
+}
+
+.letterCard > p {
+  margin: 60px 0 8px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.letterCard h3 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.05;
+}
+
+.letterLine {
+  width: 100%;
+  height: 1px;
+  margin: 24px 0;
+  background: var(--line);
+}
+
+.letterText {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.letterCard button {
+  margin-top: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.openWhenMoment {
+  padding: 110px 6%;
+  background: var(--pink);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10%;
+  align-items: center;
+}
+
+.momentCard {
+  max-width: 500px;
+  padding: 55px;
+  background: var(--white);
+  border: 2px solid var(--black);
+  box-shadow: 14px 14px 0 var(--black);
+}
+
+.momentCard > p:first-child {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.momentHeart {
+  margin: 35px 0;
+  font-size: 52px;
+  color: var(--pink);
+}
+
+.momentCard h2 {
+  margin: 0 0 20px;
+  font-size: 46px;
+}
+
+.momentMessage {
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+.momentCard > span {
+  display: block;
+  margin-top: 40px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.momentCopy h2 {
+  margin: 10px 0 25px;
+  font-size: clamp(52px, 7vw, 100px);
+  line-height: 0.88;
+}
+
+.momentCopy > p:last-child {
+  max-width: 500px;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   LOVE COUPONS
+   ========================================================= */
+
+.previewCoupon {
+  position: absolute;
+  width: min(420px, 82%);
+  min-height: 245px;
+  padding: 30px;
+  border: 2px solid var(--black);
+  box-shadow: 10px 10px 0 var(--black);
+  background: var(--white);
+}
+
+.previewCoupon > p {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.previewCoupon > span {
+  position: absolute;
+  right: 28px;
+  top: 25px;
+  font-weight: 900;
+}
+
+.previewCoupon h3 {
+  margin-top: 55px;
+  font-size: 34px;
+}
+
+.previewCoupon small {
+  display: block;
+  margin-top: 35px;
+  font-weight: 800;
+}
+
+.couponBack {
+  transform: translate(-60px, -85px) rotate(-7deg);
+}
+
+.couponMiddle {
+  transform: translate(65px, -15px) rotate(6deg);
+  background: #ffd6e3;
+}
+
+.couponFront {
+  z-index: 3;
+  transform: translate(-10px, 75px) rotate(-2deg);
+  background: var(--black);
+  color: var(--white);
+}
+
+.couponFront h2 {
+  margin: 18px 0;
+  font-size: 46px;
+  line-height: 0.9;
+}
+
+.couponHeart {
+  position: absolute;
+  right: 28px;
+  top: 25px;
+  font-size: 32px;
+  color: var(--pink);
+}
+
+.couponGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.couponCard {
+  min-height: 350px;
+  padding: 30px;
+  border: 2px solid var(--black);
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+}
+
+.couponCardTop {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 900;
+}
+
+.couponCardTop i {
+  color: var(--pink);
+  font-size: 24px;
+  font-style: normal;
+}
+
+.couponCard > p {
+  margin: 55px 0 8px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.couponCard h3 {
+  margin: 0;
+  font-size: 30px;
+}
+
+.couponDescription {
+  margin-top: 18px;
+  line-height: 1.5;
+}
+
+.couponDashedLine {
+  margin: auto 0 20px;
+  border-top: 2px dashed var(--black);
+}
+
+.couponCard button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.couponRedeem {
+  padding: 110px 6%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10%;
+  align-items: center;
+  background: var(--black);
+  color: var(--white);
+}
+
+.redeemTicket {
+  max-width: 500px;
+  padding: 50px;
+  background: var(--cream);
+  color: var(--black);
+  border: 2px solid var(--white);
+  transform: rotate(-2deg);
+}
+
+.redeemTicket > p {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.redeemHeart {
+  margin: 30px 0;
+  font-size: 48px;
+  color: var(--pink);
+}
+
+.redeemTicket h2 {
+  margin: 0 0 20px;
+  font-size: 48px;
+}
+
+.redeemTicket > span {
+  line-height: 1.6;
+}
+
+.redeemTicket button {
+  width: 100%;
+  margin-top: 40px;
+  padding: 18px;
+  border: 2px solid var(--black);
+  background: var(--pink);
+  font-weight: 900;
+}
+
+.redeemCopy h2 {
+  margin: 10px 0 25px;
+  font-size: clamp(52px, 7vw, 100px);
+  line-height: 0.88;
+}
+
+.redeemCopy > p:last-child {
+  max-width: 480px;
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   MEMORY BOX
+   ========================================================= */
+
+.memoryBoxShape {
+  width: min(370px, 72%);
+  aspect-ratio: 1 / 0.72;
+  padding: 24px;
+  background: var(--pink);
+  border: 2px solid var(--black);
+  box-shadow: 14px 14px 0 var(--black);
+  transform: rotate(-4deg);
+}
+
+.memoryBoxLabel {
+  width: 100%;
+  height: 100%;
+  padding: 28px;
+  border: 2px solid var(--black);
+  background: var(--cream);
+}
+
+.memoryBoxLabel p {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+.memoryBoxLabel h2 {
+  margin: 30px 0 0;
+  font-size: 48px;
+  line-height: 0.9;
+}
+
+.memoryBoxLabel span {
+  display: block;
+  margin-top: 25px;
+  font-size: 30px;
+  color: var(--pink);
+}
+
+.memoryPolaroid {
+  position: absolute;
+  width: 175px;
+  padding: 10px 10px 20px;
+  background: var(--white);
+  border: 1px solid var(--black);
+  box-shadow: 5px 5px 0 var(--black);
+}
+
+.memoryPolaroid > div {
+  height: 135px;
+  display: grid;
+  place-items: center;
+  background: #d9d4ca;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.memoryPolaroid p {
+  margin: 12px 0 0;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.memoryPolaroidOne {
+  transform: translate(-155px, 150px) rotate(8deg);
+}
+
+.memoryPolaroidTwo {
+  transform: translate(155px, -135px) rotate(9deg);
+}
+
+.memoryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.memoryCard {
+  padding: 26px;
+  border: 1px solid var(--black);
+  min-height: 390px;
+}
+
+.memoryCardTop {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 900;
+}
+
+.memoryCardTop i {
+  color: var(--pink);
+  font-size: 23px;
+  font-style: normal;
+}
+
+.memoryVisual {
+  height: 155px;
+  margin: 28px 0 22px;
+  display: grid;
+  place-items: center;
+  background: var(--black);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.memoryType {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.memoryCard h3 {
+  margin: 8px 0 12px;
+  font-size: 27px;
+}
+
+.memoryText {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.memoryFeature {
+  padding: 110px 6%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10%;
+  align-items: center;
+  background: var(--pink);
+}
+
+.memoryPhone {
+  width: min(360px, 100%);
+  margin: auto;
+  padding: 18px 24px 30px;
+  border: 3px solid var(--black);
+  border-radius: 38px;
+  background: var(--cream);
+  box-shadow: 12px 12px 0 var(--black);
+}
+
+.memoryPhoneTop {
+  width: 90px;
+  height: 18px;
+  margin: 0 auto 25px;
+  border-radius: 20px;
+  background: var(--black);
+}
+
+.memoryPhone > p {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.memoryPhonePhoto {
+  height: 260px;
+  margin: 20px 0;
+  display: grid;
+  place-items: center;
+  background: #d9d4ca;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.memoryPhone > span {
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.memoryPhone h3 {
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.memoryPhone button {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid var(--black);
+  background: var(--black);
+  color: var(--white);
+  font-weight: 900;
+}
+
+.memoryFeatureCopy h2 {
+  margin: 10px 0 25px;
+  font-size: clamp(52px, 7vw, 100px);
+  line-height: 0.88;
+}
+
+.memoryFeatureCopy > p:last-child {
+  max-width: 480px;
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   HOW WELL DO YOU KNOW ME?
+   ========================================================= */
+
+.quizPreviewCard {
+  width: min(440px, 86%);
+  padding: 34px;
+  background: var(--white);
+  border: 2px solid var(--black);
+  box-shadow: 12px 12px 0 var(--black);
+  transform: rotate(-2deg);
+}
+
+.quizPreviewTop {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.quizPreviewCard > p {
+  margin: 45px 0 8px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.quizPreviewCard h2 {
+  margin: 0 0 30px;
+  font-size: 42px;
+  line-height: 0.95;
+}
+
+.quizPreviewAnswers {
+  display: grid;
+  gap: 8px;
+}
+
+.quizPreviewAnswers button {
+  padding: 13px 15px;
+  border: 1px solid var(--black);
+  background: transparent;
+  text-align: left;
+  font-weight: 700;
+}
+
+.quizScoreBubble {
+  position: absolute;
+  right: 3%;
+  bottom: 2%;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: var(--pink);
+  border: 2px solid var(--black);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(8deg);
+}
+
+.quizScoreBubble strong {
+  font-size: 38px;
+}
+
+.quizScoreBubble span {
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.quizQuestions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.quizQuestionCard {
+  min-height: 420px;
+  padding: 32px;
+  border: 2px solid var(--black);
+  background: var(--white);
+}
+
+.quizQuestionTop {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.quizQuestionTop span:last-child {
+  font-size: 25px;
+  color: var(--pink);
+}
+
+.quizQuestionCard h3 {
+  max-width: 450px;
+  margin: 60px 0 30px;
+  font-size: 32px;
+  line-height: 1.05;
+}
+
+.quizAnswers {
+  display: grid;
+  gap: 8px;
+}
+
+.quizAnswers > div {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px;
+  border-top: 1px solid var(--line);
+}
+
+.quizAnswers > div > span {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  border: 1px solid var(--black);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.quizAnswers p {
+  margin: 0;
+}
+
+.quizResult {
+  padding: 110px 6%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10%;
+  align-items: center;
+  background: var(--black);
+  color: var(--white);
+}
+
+.quizResultCard {
+  max-width: 450px;
+  padding: 50px;
+  background: var(--pink);
+  color: var(--black);
+  border: 2px solid var(--white);
+  box-shadow: 12px 12px 0 var(--white);
+  transform: rotate(-2deg);
+}
+
+.quizResultCard > p {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.quizResultCard > strong {
+  display: block;
+  margin: 30px 0 20px;
+  font-size: 90px;
+  line-height: 0.8;
+}
+
+.quizResultCard h3 {
+  font-size: 31px;
+  line-height: 1;
+}
+
+.quizResultCard > span {
+  font-weight: 700;
+}
+
+.quizResultCard button {
+  width: 100%;
+  margin-top: 40px;
+  padding: 16px;
+  background: var(--black);
+  color: var(--white);
+  border: 2px solid var(--black);
+  font-weight: 900;
+}
+
+.quizResultCopy h2 {
+  margin: 10px 0 25px;
+  font-size: clamp(52px, 7vw, 100px);
+  line-height: 0.88;
+}
+
+.quizResultCopy > p:last-child {
+  max-width: 480px;
+  line-height: 1.6;
+}
+
+
+/* ---------- CTA VARIATIONS ---------- */
+
+.openWhenCTA,
+.couponsCTA,
+.memoryCTA,
+.quizCTA {
+  text-align: center;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .openWhenHeading,
+  .couponHeading,
+  .memoryHeading,
+  .quizExperienceHeading,
+  .openWhenMoment,
+  .couponRedeem,
+  .memoryFeature,
+  .quizResult {
+    grid-template-columns: 1fr;
+    gap: 55px;
+  }
+
+  .letterGrid,
+  .couponGrid,
+  .memoryGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .quizQuestions {
+    grid-template-columns: 1fr;
+  }
+
+  .openWhenPreview,
+  .couponPreview,
+  .memoryPreview,
+  .quizPreview {
+    min-height: 470px;
+  }
+}
+
+@media (max-width: 600px) {
+  .openWhenLetters,
+  .couponCollection,
+  .memoryCollection,
+  .quizExperience,
+  .openWhenMoment,
+  .couponRedeem,
+  .memoryFeature,
+  .quizResult {
+    padding: 75px 20px;
+  }
+
+  .openWhenHeading,
+  .couponHeading,
+  .memoryHeading,
+  .quizExperienceHeading {
+    gap: 25px;
+    margin-bottom: 40px;
+  }
+
+  .openWhenHeading h2,
+  .couponHeading h2,
+  .memoryHeading h2,
+  .quizExperienceHeading h2 {
+    font-size: 48px;
+  }
+
+  .letterGrid,
+  .couponGrid,
+  .memoryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .openWhenPreview,
+  .couponPreview,
+  .memoryPreview,
+  .quizPreview {
+    min-height: 410px;
+    margin-top: 25px;
+  }
+
+  .openLetter,
+  .previewCoupon {
+    width: 82%;
+  }
+
+  .openLetterBack {
+    transform: translate(-30px, -65px) rotate(-7deg);
+  }
+
+  .openLetterMiddle {
+    transform: translate(30px, -5px) rotate(6deg);
+  }
+
+  .openLetterFront {
+    transform: translate(0, 60px) rotate(-2deg);
+  }
+
+  .couponBack {
+    transform: translate(-28px, -65px) rotate(-7deg);
+  }
+
+  .couponMiddle {
+    transform: translate(30px, -5px) rotate(6deg);
+  }
+
+  .couponFront {
+    transform: translate(0, 60px) rotate(-2deg);
+  }
+
+  .memoryBoxShape {
+    width: 72%;
+  }
+
+  .memoryPolaroid {
+    width: 125px;
+  }
+
+  .memoryPolaroid > div {
+    height: 95px;
+  }
+
+  .memoryPolaroidOne {
+    transform: translate(-100px, 125px) rotate(8deg);
+  }
+
+  .memoryPolaroidTwo {
+    transform: translate(100px, -115px) rotate(9deg);
+  }
+
+  .quizPreviewCard {
+    width: 92%;
+    padding: 24px;
+  }
+
+  .quizPreviewCard h2 {
+    font-size: 34px;
+  }
+
+  .quizScoreBubble {
+    width: 110px;
+    height: 110px;
+    right: 0;
+    bottom: -5px;
+  }
+
+  .quizScoreBubble strong {
+    font-size: 28px;
+  }
+
+  .momentCard,
+  .redeemTicket,
+  .quizResultCard {
+    padding: 32px;
+  }
+
+  .memoryPhone {
+    width: 100%;
+  }
+}
