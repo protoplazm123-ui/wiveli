@@ -31,6 +31,45 @@ const categories = [
   },
 ];
 
+const experiences = [
+  {
+    title: "Wish Note",
+    tag: "365 DAYS · 365 WISHES",
+    text: "A year of little wishes, one day at a time.",
+    symbol: "♡",
+  },
+  {
+    title: "Our Story",
+    tag: "YOUR STORY · YOUR MOMENTS",
+    text: "Turn your favorite memories into an interactive story.",
+    symbol: "♥",
+  },
+  {
+    title: "Open When...",
+    tag: "LETTERS FOR EVERY MOMENT",
+    text: "Personal messages they can open exactly when they need them.",
+    symbol: "✉",
+  },
+  {
+    title: "Love Coupons",
+    tag: "LITTLE PROMISES · BIG MEMORIES",
+    text: "Create personal coupons for dates, surprises and special moments.",
+    symbol: "✦",
+  },
+  {
+    title: "Memory Box",
+    tag: "KEEP THE GOOD STUFF",
+    text: "Collect photos, messages and favorite moments in one little place.",
+    symbol: "□",
+  },
+  {
+    title: "How Well Do You Know Me?",
+    tag: "PLAY · LAUGH · DISCOVER",
+    text: "A personalized quiz made for couples, friends and favorite people.",
+    symbol: "?",
+  },
+];
+
 export default function Home() {
   return (
     <main>
@@ -81,13 +120,21 @@ export default function Home() {
         <div className="heroArt">
           <div className="note noteOne">
             <small>A LITTLE SOMETHING</small>
-            <strong>made just<br />for you ♡</strong>
+            <strong>
+              made just
+              <br />
+              for you ♡
+            </strong>
           </div>
 
           <div className="heart">♥</div>
 
           <div className="photoCard">
-            <div className="photoPlaceholder">YOUR<br />MEMORY</div>
+            <div className="photoPlaceholder">
+              YOUR
+              <br />
+              MEMORY
+            </div>
             <p>the good stuff.</p>
           </div>
 
@@ -102,18 +149,63 @@ export default function Home() {
             <h2>What will you create?</h2>
           </div>
 
-          <a href="#">See all categories →</a>
+          <a href="#ideas">See all experiences →</a>
         </div>
 
         <div className="categoryGrid">
           {categories.map((category) => (
             <article className="categoryCard" key={category.title}>
               <span className="categorySymbol">{category.symbol}</span>
+
               <div>
                 <h3>{category.title}</h3>
                 <p>{category.text}</p>
               </div>
+
               <span className="arrow">↗</span>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="experiences" id="ideas">
+        <div className="experienceHeading">
+          <p className="eyebrow">WIVELI EXPERIENCES</p>
+
+          <h2>
+            PICK A FEELING.
+            <br />
+            MAKE IT YOURS.
+          </h2>
+
+          <p className="experienceIntro">
+            Start with an experience, personalize it with your story,
+            and turn it into a gift made for one person only.
+          </p>
+        </div>
+
+        <div className="experienceGrid">
+          {experiences.map((experience, index) => (
+            <article className="experienceCard" key={experience.title}>
+              <div className="experienceVisual">
+                <span className="experienceNumber">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+
+                <span className="experienceIcon">
+                  {experience.symbol}
+                </span>
+              </div>
+
+              <div className="experienceContent">
+                <p>{experience.tag}</p>
+
+                <h3>{experience.title}</h3>
+
+                <span>{experience.text}</span>
+
+                <button>Explore →</button>
+              </div>
             </article>
           ))}
         </div>
@@ -142,9 +234,17 @@ export default function Home() {
 
         <div className="phone">
           <div className="phoneTop"></div>
+
           <p className="phoneMini">FOR SOMEONE SPECIAL</p>
+
           <div className="phoneHeart">♥</div>
-          <h3>A little world<br />made for you.</h3>
+
+          <h3>
+            A little world
+            <br />
+            made for you.
+          </h3>
+
           <button>OPEN YOUR GIFT</button>
         </div>
 
@@ -158,13 +258,17 @@ export default function Home() {
           <div>
             <span>02</span>
             <h3>Quick & Easy</h3>
-            <p>Create something meaningful without designing from scratch.</p>
+            <p>
+              Create something meaningful without designing from scratch.
+            </p>
           </div>
 
           <div>
             <span>03</span>
             <h3>Perfect for Any Occasion</h3>
-            <p>Birthdays, anniversaries, friendship or no reason at all.</p>
+            <p>
+              Birthdays, anniversaries, friendship or no reason at all.
+            </p>
           </div>
         </div>
       </section>
@@ -173,6 +277,7 @@ export default function Home() {
         <a className="logo" href="#">
           WI<span>♥</span>ELI
         </a>
+
         <p>Wish + loVE + LIfe</p>
         <p>© 2026 WIVELI</p>
       </footer>
