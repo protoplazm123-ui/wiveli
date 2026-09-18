@@ -2,20 +2,41 @@
 
 import { useState } from "react";
 
+const defaultCategories = [
+  "Dream Together",
+  "Food & Places",
+  "Our Time",
+  "Little Things",
+  "Adventures",
+  "Something Special",
+];
+
+const wishOptions = [12, 24, 52, 100, 365];
+
 export default function WishNotePersonalize() {
   const [recipient, setRecipient] = useState("Sophie");
   const [sender, setSender] = useState("Alex");
-  const [message, setMessage] = useState(
-    "I made this little place for all the things we still have to do together."
-  );
-  const [startDate, setStartDate] = useState("2026-09-26");
 
-  const [categories, setCategories] = useState([
-    "Dream Together",
-    "Food Dreams",
-    "Our Time",
-    "Honest Talk",
-  ]);
+  const [message, setMessage] = useState(
+    "I made this little place for your wishes, dreams and all the things we still have to do together."
+  );
+
+  const [wishCount, setWishCount] = useState(24);
+  const [customWishCount, setCustomWishCount] = useState("");
+  const [isCustom, setIsCustom] = useState(false);
+
+  const [categories, setCategories] = useState(defaultCategories);
+
+  const finalWishCount =
+    isCustom && customWishCount
+      ? Math.max(1, Number(customWishCount))
+      : wishCount;
+
+  const selectWishCount = (count) => {
+    setWishCount(count);
+    setIsCustom(false);
+    setCustomWishCount("");
+  };
 
   const updateCategory = (index, value) => {
     const updated = [...categories];
@@ -44,6 +65,7 @@ export default function WishNotePersonalize() {
 
       <section className="personalizeLayout">
         <div className="personalizeEditor">
+
           <div className="editorIntro">
             <p className="eyebrow">MAKE IT THEIRS</p>
 
@@ -54,10 +76,12 @@ export default function WishNotePersonalize() {
             </h1>
 
             <p>
-              Start with the little details. You can change everything
-              later before creating the final gift.
+              Create a little world for their wishes, dreams and
+              all the moments you still have ahead of you.
             </p>
           </div>
+
+          {/* 01 — NAMES */}
 
           <div className="editorSection">
             <div className="editorSectionTitle">
@@ -65,7 +89,9 @@ export default function WishNotePersonalize() {
 
               <div>
                 <h2>Who is it for?</h2>
-                <p>Add the names that will appear inside the gift.</p>
+                <p>
+                  Add the names that will appear inside the gift.
+                </p>
               </div>
             </div>
 
@@ -75,6 +101,7 @@ export default function WishNotePersonalize() {
               <input
                 type="text"
                 value={recipient}
+                maxLength={30}
                 onChange={(event) =>
                   setRecipient(event.target.value)
                 }
@@ -88,6 +115,7 @@ export default function WishNotePersonalize() {
               <input
                 type="text"
                 value={sender}
+                maxLength={30}
                 onChange={(event) =>
                   setSender(event.target.value)
                 }
@@ -96,6 +124,8 @@ export default function WishNotePersonalize() {
             </label>
           </div>
 
+          {/* 02 — MESSAGE */}
+
           <div className="editorSection">
             <div className="editorSectionTitle">
               <span>02</span>
@@ -103,8 +133,8 @@ export default function WishNotePersonalize() {
               <div>
                 <h2>Your message</h2>
                 <p>
-                  Write the first thing they will read when they open
-                  their gift.
+                  Write the first thing they will read when they
+                  open their gift.
                 </p>
               </div>
             </div>
@@ -117,39 +147,80 @@ export default function WishNotePersonalize() {
                 onChange={(event) =>
                   setMessage(event.target.value)
                 }
-                maxLength={240}
+                maxLength={280}
                 rows={6}
                 placeholder="Write something personal..."
               />
 
-              <small>{message.length}/240</small>
+              <small>{message.length}/280</small>
             </label>
           </div>
+
+          {/* 03 — WISH COUNT */}
 
           <div className="editorSection">
             <div className="editorSectionTitle">
               <span>03</span>
 
               <div>
-                <h2>When does it begin?</h2>
+                <h2>How many wishes?</h2>
                 <p>
-                  Wish Note will run for one year from this date.
+                  Choose how many wishes they can make inside
+                  their Wish Note.
                 </p>
               </div>
             </div>
 
-            <label className="editorField">
-              <span>START DATE</span>
+            <div className="wishCountGrid">
+              {wishOptions.map((count) => (
+                <button
+                  type="button"
+                  key={count}
+                  className={
+                    !isCustom && wishCount === count
+                      ? "wishCountOption active"
+                      : "wishCountOption"
+                  }
+                  onClick={() => selectWishCount(count)}
+                >
+                  <strong>{count}</strong>
+                  <span>WISHES</span>
+                </button>
+              ))}
 
-              <input
-                type="date"
-                value={startDate}
-                onChange={(event) =>
-                  setStartDate(event.target.value)
+              <button
+                type="button"
+                className={
+                  isCustom
+                    ? "wishCountOption active"
+                    : "wishCountOption"
                 }
-              />
-            </label>
+                onClick={() => setIsCustom(true)}
+              >
+                <strong>+</strong>
+                <span>CUSTOM</span>
+              </button>
+            </div>
+
+            {isCustom && (
+              <label className="editorField customWishField">
+                <span>NUMBER OF WISHES</span>
+
+                <input
+                  type="number"
+                  min="1"
+                  max="999"
+                  value={customWishCount}
+                  onChange={(event) =>
+                    setCustomWishCount(event.target.value)
+                  }
+                  placeholder="Enter a number"
+                />
+              </label>
+            )}
           </div>
+
+          {/* 04 — CATEGORIES */}
 
           <div className="editorSection">
             <div className="editorSectionTitle">
@@ -157,9 +228,10 @@ export default function WishNotePersonalize() {
 
               <div>
                 <h2>Wish categories</h2>
+
                 <p>
-                  Give each type of wish a name that feels natural to
-                  the two of you.
+                  We've prepared six categories. Keep them as they
+                  are or make the names more personal.
                 </p>
               </div>
             </div>
@@ -185,13 +257,27 @@ export default function WishNotePersonalize() {
                 </label>
               ))}
             </div>
+
+            <button
+              type="button"
+              className="resetCategories"
+              onClick={() =>
+                setCategories([...defaultCategories])
+              }
+            >
+              Reset to WIVELI categories
+            </button>
           </div>
+
+          {/* NEXT */}
 
           <div className="editorContinue">
             <div>
-              <p>LOOKING GOOD?</p>
+              <p>THE BASICS ARE READY ♡</p>
+
               <span>
-                Next we'll add photos, colors and the final details.
+                Next we'll choose how the gift looks and prepare
+                the surprise for delivery.
               </span>
             </div>
 
@@ -201,8 +287,11 @@ export default function WishNotePersonalize() {
           </div>
         </div>
 
+        {/* LIVE PREVIEW */}
+
         <aside className="personalizePreview">
           <div className="previewSticky">
+
             <div className="previewLabel">
               <span>LIVE PREVIEW</span>
               <span>●</span>
@@ -212,12 +301,16 @@ export default function WishNotePersonalize() {
               <div className="giftPhoneTop"></div>
 
               <div className="giftScreen">
-                <p className="giftBrand">WISH NOTE ♡</p>
+                <p className="giftBrand">
+                  WISH NOTE ♡
+                </p>
 
-                <div className="giftHeart">♥</div>
+                <div className="giftHeart">
+                  ♥
+                </div>
 
                 <p className="giftFor">
-                  A LITTLE SOMETHING FOR
+                  A LITTLE WORLD MADE FOR
                 </p>
 
                 <h2>
@@ -231,8 +324,17 @@ export default function WishNotePersonalize() {
 
                 <div className="giftDivider"></div>
 
-                <p className="giftDays">
-                  365 DAYS · 365 WISHES
+                <div className="giftYear">
+                  <strong>365</strong>
+
+                  <div>
+                    <span>DAYS OF</span>
+                    <span>HAPPINESS ♡</span>
+                  </div>
+                </div>
+
+                <p className="giftWishCount">
+                  {finalWishCount || "—"} wishes waiting for you
                 </p>
 
                 <div className="giftCategoryPreview">
@@ -243,7 +345,8 @@ export default function WishNotePersonalize() {
                       </span>
 
                       <p>
-                        {category || `Category ${index + 1}`}
+                        {category ||
+                          `Category ${index + 1}`}
                       </p>
                     </div>
                   ))}
@@ -256,7 +359,8 @@ export default function WishNotePersonalize() {
             </div>
 
             <p className="previewHint">
-              Changes appear here instantly.
+              This is what they'll see when they open
+              their gift.
             </p>
           </div>
         </aside>
