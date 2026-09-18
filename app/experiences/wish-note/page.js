@@ -1,4 +1,43 @@
 export default function WishNote() {
+  const categories = [
+    {
+      number: "01",
+      name: "Dream Together",
+      text: "Dreams, plans and things you want to experience together.",
+      symbol: "♡",
+    },
+    {
+      number: "02",
+      name: "Food & Places",
+      text: "Restaurants, trips and places you would love to discover.",
+      symbol: "✦",
+    },
+    {
+      number: "03",
+      name: "Our Time",
+      text: "Dates, activities and little ways to spend time together.",
+      symbol: "♥",
+    },
+    {
+      number: "04",
+      name: "Little Things",
+      text: "Simple wishes that can turn an ordinary day into something special.",
+      symbol: "☺",
+    },
+    {
+      number: "05",
+      name: "Adventures",
+      text: "Big ideas, spontaneous plans and things you have never tried.",
+      symbol: "∞",
+    },
+    {
+      number: "06",
+      name: "Something Special",
+      text: "A little space for wishes that don't fit anywhere else.",
+      symbol: "✉",
+    },
+  ];
+
   return (
     <main className="productPage">
       <header className="productHeader">
@@ -13,7 +52,9 @@ export default function WishNote() {
 
       <section className="productHero">
         <div className="productHeroCopy">
-          <p className="eyebrow">365 DAYS · 365 WISHES</p>
+          <p className="eyebrow">
+            365 DAYS OF HAPPINESS ♡
+          </p>
 
           <h1>
             WISH
@@ -22,12 +63,18 @@ export default function WishNote() {
           </h1>
 
           <p className="productLead">
-            Give them a whole year of little wishes, plans and moments
-            waiting to happen.
+            Give them a private little world where wishes,
+            plans and dreams can turn into moments you share
+            together.
           </p>
 
           <div className="productActions">
-            <button className="primary">Personalize This Gift →</button>
+            <a
+              className="primary"
+              href="/experiences/wish-note/personalize"
+            >
+              Personalize This Gift →
+            </a>
 
             <a
               href="#how-it-works"
@@ -38,7 +85,9 @@ export default function WishNote() {
           </div>
 
           <p className="productHint">
-            ♡ Personalized by you &nbsp; · &nbsp; Opened one day at a time
+            ♡ Personalized by you &nbsp; · &nbsp;
+            Wishes made by them &nbsp; · &nbsp;
+            Memories made together
           </p>
         </div>
 
@@ -46,36 +95,48 @@ export default function WishNote() {
           <div className="wishEnvelope">
             <div className="wishEnvelopeTop"></div>
 
-            <div className="wishSeal">♥</div>
+            <div className="wishSeal">
+              ♥
+            </div>
 
             <div className="wishCard">
               <p>WISH NOTE ♡</p>
 
               <h2>
-                365 days.
+                365 days
                 <br />
-                365 wishes.
+                of happiness.
               </h2>
 
-              <span>made especially for you</span>
+              <span>
+                a little world made for you
+              </span>
             </div>
           </div>
         </div>
       </section>
 
       <section className="productStory">
-        <p className="eyebrow">NOT JUST ONE MESSAGE</p>
+        <p className="eyebrow">
+          MORE THAN A MESSAGE
+        </p>
 
         <h2>
-          A LITTLE SOMETHING
+          A LITTLE WORLD
           <br />
-          TO LOOK FORWARD TO.
+          FOR THEIR WISHES.
         </h2>
 
         <p>
-          Wish Note is an interactive digital gift that lasts an entire year.
-          Each day gives the recipient a chance to choose a wish, idea or
-          little moment they would love to share with you.
+          Wish Note is an interactive digital gift where
+          someone special can collect the things they would
+          love to do, try and experience with you.
+        </p>
+
+        <p>
+          You choose how many wishes their Gift Space holds.
+          They choose what to wish for and when they would
+          love for it to happen.
         </p>
       </section>
 
@@ -83,71 +144,108 @@ export default function WishNote() {
         <div className="demoPhone">
           <div className="demoPhoneTop"></div>
 
-          <p className="demoTiny">WISH NOTE ♡</p>
+          <p className="demoTiny">
+            WISH NOTE ♡
+          </p>
 
-          <h3>Choose a day</h3>
+          <h3>
+            What are you
+            <br />
+            wishing for?
+          </h3>
 
-          <div className="demoCalendar">
-            {Array.from({ length: 28 }, (_, index) => (
-              <span key={index}>{index + 1}</span>
-            ))}
+          <div className="wishNewPreview">
+            <div>
+              <span>♡</span>
+              <strong>Dream Together</strong>
+              <small>5 wishes</small>
+            </div>
+
+            <div>
+              <span>✦</span>
+              <strong>Food & Places</strong>
+              <small>3 wishes</small>
+            </div>
+
+            <div>
+              <span>♥</span>
+              <strong>Our Time</strong>
+              <small>4 wishes</small>
+            </div>
+
+            <div>
+              <span>☺</span>
+              <strong>Little Things</strong>
+              <small>2 wishes</small>
+            </div>
           </div>
 
-          <p className="demoBottom">365 DAYS · 365 WISHES</p>
+          <p className="demoBottom">
+            24 WISHES WAITING FOR YOU
+          </p>
         </div>
 
         <div className="demoCopy">
-          <p className="eyebrow">THE EXPERIENCE</p>
+          <p className="eyebrow">
+            THE EXPERIENCE
+          </p>
 
           <h2>
-            ONE DAY.
+            WISH IT.
             <br />
-            ONE WISH.
+            PLAN IT.
+            <br />
+            LIVE IT.
           </h2>
 
           <p>
-            They choose today's date, pick a category and write a wish.
-            Once it is sealed, that day becomes part of your shared story.
+            They choose a category, write their wish and
+            pick the day they would love for it to happen.
+            Every wish becomes part of your shared story.
           </p>
 
           <div className="wishCategories">
-            <div>
-              <span>01</span>
-              <strong>Dream Together</strong>
-              <p>
-                Little plans and things you want to experience together.
-              </p>
-            </div>
+            {categories.map((category) => (
+              <div key={category.number}>
+                <span>{category.number}</span>
 
-            <div>
-              <span>02</span>
-              <strong>Food Dreams</strong>
-              <p>
-                Restaurants, dishes and spontaneous food adventures.
-              </p>
-            </div>
+                <strong>
+                  {category.symbol} {category.name}
+                </strong>
 
-            <div>
-              <span>03</span>
-              <strong>Our Time</strong>
-              <p>
-                Dates, activities and ways to spend your time together.
-              </p>
-            </div>
-
-            <div>
-              <span>04</span>
-              <strong>Honest Talk</strong>
-              <p>
-                A safe little space for things that need to be said.
-              </p>
-            </div>
+                <p>{category.text}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="howWorks" id="how-it-works">
-        <p className="eyebrow">HOW IT WORKS</p>
+      <section className="productStory">
+        <p className="eyebrow">
+          FROM WISH TO MEMORY
+        </p>
+
+        <h2>
+          THE BEST PART
+          <br />
+          HAPPENS AFTER.
+        </h2>
+
+        <p>
+          A wish does not disappear when it comes true.
+          Completed wishes can become memories — with a
+          photo, date and little note about what actually
+          happened.
+        </p>
+      </section>
+
+      <section
+        className="howWorks"
+        id="how-it-works"
+      >
+        <p className="eyebrow">
+          HOW IT WORKS
+        </p>
 
         <h2>
           FROM YOU.
@@ -158,34 +256,44 @@ export default function WishNote() {
         <div className="steps">
           <article>
             <span>01</span>
+
             <h3>Make it personal</h3>
+
             <p>
-              Add their name, your message, photos, dates and the details
-              that make the gift yours.
+              Add their name, your message, choose how many
+              wishes they can make and personalize their
+              categories.
             </p>
           </article>
 
           <article>
             <span>02</span>
+
             <h3>Send the surprise</h3>
+
             <p>
-              Share their private WIVELI link when the moment feels right.
+              They receive a private invitation that opens
+              directly into their own Wish Note Gift Space.
             </p>
           </article>
 
           <article>
             <span>03</span>
+
             <h3>Let the story grow</h3>
+
             <p>
-              They return throughout the year and fill the gift with new
-              wishes and moments.
+              They add wishes and choose dates. When those
+              wishes come true, they can become memories.
             </p>
           </article>
         </div>
       </section>
 
       <section className="productCTA">
-        <p>MAKE SOMETHING ONLY THEY CAN OPEN.</p>
+        <p>
+          MAKE SOMETHING ONLY THEY CAN OPEN.
+        </p>
 
         <h2>
           READY TO MAKE
@@ -194,11 +302,12 @@ export default function WishNote() {
         </h2>
 
         <a
-  className="primary"
-  href="/experiences/wish-note/personalize"
->
-  Personalize Wish Note →
-</a>      </section>
+          className="primary"
+          href="/experiences/wish-note/personalize"
+        >
+          Personalize Wish Note →
+        </a>
+      </section>
 
       <footer>
         <a className="logo" href="/">
