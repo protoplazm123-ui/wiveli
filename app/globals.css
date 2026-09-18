@@ -2716,3 +2716,750 @@ footer p {
     width: 100%;
   }
 }
+/* =========================================================
+   WIVELI — WISH NOTE / PRIVATE GIFT SPACE
+   ========================================================= */
+
+.giftSpace {
+  --gift-bg: #f7eee8;
+  --gift-paper: #fffaf6;
+  --gift-ink: #171313;
+  --gift-pink: #ff5f91;
+  --gift-soft-pink: #ffd9e4;
+  --gift-line: rgba(23, 19, 19, 0.14);
+
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 90% 4%, rgba(255, 95, 145, 0.14), transparent 26rem),
+    radial-gradient(circle at 0% 40%, rgba(255, 255, 255, 0.7), transparent 28rem),
+    var(--gift-bg);
+  color: var(--gift-ink);
+  overflow: hidden;
+}
+
+.giftSpace button,
+.giftSpace input,
+.giftSpace textarea {
+  font: inherit;
+}
+
+.giftSpaceHeader {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  min-height: 82px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--gift-line);
+}
+
+.giftSpaceLogo {
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.giftSpaceLogo span {
+  color: var(--gift-pink);
+}
+
+.giftSpaceMade {
+  border: 0;
+  background: transparent;
+  color: rgba(23, 19, 19, 0.55);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+}
+
+/* WELCOME */
+
+.giftWelcome {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 100px 0 80px;
+  position: relative;
+}
+
+.giftWelcome::after {
+  content: "♥";
+  position: absolute;
+  right: 4%;
+  top: 80px;
+  font-size: clamp(140px, 22vw, 330px);
+  line-height: 1;
+  color: var(--gift-pink);
+  transform: rotate(8deg);
+  opacity: 0.96;
+  pointer-events: none;
+}
+
+.giftEyebrow {
+  margin: 0 0 20px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+}
+
+.giftWelcome h1,
+.makeWishCard h1,
+.ourWishesHeading h1,
+.memoriesEmpty h1 {
+  margin: 0;
+  max-width: 760px;
+  font-size: clamp(60px, 9vw, 128px);
+  line-height: 0.82;
+  letter-spacing: -0.065em;
+  font-weight: 950;
+}
+
+.giftWelcome h1 span,
+.makeWishCard h1 span,
+.ourWishesHeading h1 span,
+.memoriesEmpty h1 span {
+  color: var(--gift-pink);
+}
+
+.giftWelcomeText {
+  width: min(520px, 100%);
+  margin: 40px 0 0;
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+.giftCounter {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 48px;
+}
+
+.giftCounter strong {
+  font-size: 72px;
+  line-height: 0.8;
+  letter-spacing: -0.06em;
+}
+
+.giftCounter div {
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  line-height: 1.45;
+}
+
+.giftFrom {
+  margin-top: 32px;
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* CATEGORIES */
+
+.giftCategories {
+  background: var(--gift-ink);
+  color: var(--gift-paper);
+  padding: 90px max(24px, calc((100vw - 1180px) / 2));
+}
+
+.giftSectionHeading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 54px;
+}
+
+.giftSectionHeading > div > p {
+  margin: 0 0 14px;
+  color: var(--gift-pink);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+}
+
+.giftSectionHeading h2 {
+  margin: 0;
+  font-size: clamp(44px, 6vw, 80px);
+  line-height: 0.9;
+  letter-spacing: -0.055em;
+}
+
+.giftSectionHeading > span {
+  width: 260px;
+  color: rgba(255, 250, 246, 0.6);
+  line-height: 1.5;
+}
+
+.giftCategoryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  border-left: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.giftCategoryCard {
+  min-height: 250px;
+  padding: 26px;
+  border: 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.18);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  background: transparent;
+  color: var(--gift-paper);
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+  transition: 180ms ease;
+}
+
+.giftCategoryCard:hover {
+  background: var(--gift-pink);
+  color: var(--gift-ink);
+}
+
+.giftCategoryTop {
+  display: flex;
+  justify-content: space-between;
+}
+
+.giftCategoryTop > span {
+  font-size: 11px;
+  opacity: 0.55;
+}
+
+.giftCategoryTop i {
+  font-style: normal;
+  font-size: 30px;
+}
+
+.giftCategoryCard > div:nth-child(2) {
+  position: absolute;
+  left: 26px;
+  bottom: 28px;
+}
+
+.giftCategoryCard h3 {
+  margin: 0 0 7px;
+  font-size: 25px;
+  letter-spacing: -0.04em;
+}
+
+.giftCategoryCard p {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.55;
+}
+
+.giftCategoryArrow {
+  position: absolute;
+  right: 26px;
+  bottom: 28px;
+  font-size: 22px;
+}
+
+/* QUICK ACTIONS */
+
+.giftQuickActions {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 70px 0 110px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.giftQuickActions button {
+  min-height: 170px;
+  padding: 28px;
+  border: 1px solid var(--gift-ink);
+  background: var(--gift-paper);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: 180ms ease;
+}
+
+.giftQuickActions button:hover {
+  transform: translateY(-4px);
+  box-shadow: 8px 8px 0 var(--gift-ink);
+}
+
+.giftQuickActions span {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  color: var(--gift-pink);
+}
+
+.giftQuickActions strong {
+  max-width: 380px;
+  font-size: 25px;
+  line-height: 1.15;
+}
+
+/* CREATE WISH */
+
+.makeWishView,
+.ourWishesView,
+.giftMemoriesView {
+  width: min(900px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 60px 0 120px;
+}
+
+.giftBack {
+  border: 0;
+  padding: 0;
+  margin-bottom: 55px;
+  background: transparent;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.makeWishCard {
+  width: min(700px, 100%);
+  margin: 0 auto;
+  padding: clamp(28px, 6vw, 68px);
+  background: var(--gift-paper);
+  border: 1px solid var(--gift-ink);
+  box-shadow: 14px 14px 0 var(--gift-soft-pink);
+}
+
+.makeWishCategory {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 55px;
+  padding: 9px 13px;
+  border: 1px solid var(--gift-ink);
+  border-radius: 999px;
+}
+
+.makeWishCategory p {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.makeWishCard h1 {
+  font-size: clamp(60px, 10vw, 100px);
+  margin-bottom: 55px;
+}
+
+.giftField {
+  display: block;
+  margin-top: 24px;
+}
+
+.giftField > span {
+  display: block;
+  margin-bottom: 9px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+}
+
+.giftField input,
+.giftField textarea {
+  width: 100%;
+  padding: 17px 0;
+  border: 0;
+  border-bottom: 1px solid var(--gift-ink);
+  outline: none;
+  background: transparent;
+  color: var(--gift-ink);
+  font-size: 17px;
+  border-radius: 0;
+  resize: vertical;
+}
+
+.giftField textarea:focus,
+.giftField input:focus {
+  border-bottom-color: var(--gift-pink);
+}
+
+.giftField small {
+  display: block;
+  margin-top: 7px;
+  text-align: right;
+  font-size: 10px;
+  opacity: 0.45;
+}
+
+.sealWishButton {
+  width: 100%;
+  min-height: 64px;
+  margin-top: 42px;
+  border: 1px solid var(--gift-ink);
+  background: var(--gift-pink);
+  color: var(--gift-ink);
+  font-weight: 900;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.sealWishButton span {
+  margin-right: 8px;
+}
+
+.sealWishButton:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.sealHint {
+  margin: 12px 0 0;
+  text-align: center;
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+/* OUR WISHES */
+
+.ourWishesHeading {
+  padding-bottom: 70px;
+}
+
+.ourWishesHeading > p:last-child {
+  max-width: 460px;
+  margin: 30px 0 0;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.wishTimeline {
+  display: grid;
+  gap: 18px;
+}
+
+.wishTimelineCard {
+  padding: 32px;
+  border: 1px solid var(--gift-ink);
+  background: var(--gift-paper);
+  position: relative;
+}
+
+.wishTimelineDate {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wishTimelineDate span,
+.wishTimelineCategory {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.wishTimelineDate i {
+  font-style: normal;
+  color: var(--gift-pink);
+  font-size: 28px;
+}
+
+.wishTimelineCategory {
+  margin: 32px 0 10px;
+  color: var(--gift-pink);
+}
+
+.wishTimelineCard h2 {
+  margin: 0;
+  font-size: clamp(30px, 5vw, 48px);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.wishPlace {
+  margin: 22px 0 0;
+  font-size: 13px;
+}
+
+.wishPersonalNote {
+  margin: 22px 0 0;
+  max-width: 550px;
+  font-style: italic;
+  line-height: 1.6;
+  opacity: 0.7;
+}
+
+.wishStatus {
+  margin-top: 34px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+}
+
+.wishStatus span {
+  width: 8px;
+  height: 8px;
+  background: var(--gift-pink);
+  border-radius: 50%;
+}
+
+.emptyWishes {
+  padding: 80px 30px;
+  border: 1px solid var(--gift-ink);
+  background: var(--gift-paper);
+  text-align: center;
+}
+
+.emptyWishes > span {
+  display: block;
+  color: var(--gift-pink);
+  font-size: 60px;
+}
+
+.emptyWishes h2 {
+  margin: 20px 0 8px;
+  font-size: 38px;
+}
+
+.emptyWishes p {
+  opacity: 0.6;
+}
+
+.emptyWishes button {
+  margin-top: 25px;
+  border: 0;
+  background: transparent;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+/* MEMORIES */
+
+.memoriesEmpty {
+  text-align: center;
+  padding: 40px 0;
+}
+
+.memoriesEmpty > span:first-child {
+  display: block;
+  margin-bottom: 20px;
+  color: var(--gift-pink);
+  font-size: 64px;
+}
+
+.memoriesEmpty h1 {
+  margin: 0 auto;
+}
+
+.memoriesEmpty > p:not(.giftEyebrow) {
+  margin: 30px auto;
+  max-width: 460px;
+  line-height: 1.6;
+}
+
+.memoryEmptyPhoto {
+  width: min(420px, 90%);
+  aspect-ratio: 4 / 5;
+  margin: 50px auto 20px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--gift-ink);
+  background:
+    linear-gradient(rgba(255, 95, 145, 0.12), rgba(255, 95, 145, 0.12)),
+    var(--gift-paper);
+  transform: rotate(-2deg);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+.memoriesEmpty small {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+/* FOOTER */
+
+.giftSpaceFooter {
+  min-height: 100px;
+  padding: 25px max(24px, calc((100vw - 1180px) / 2));
+  border-top: 1px solid var(--gift-line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+}
+
+.giftSpaceFooter p {
+  margin: 0;
+}
+
+/* TABLET */
+
+@media (max-width: 900px) {
+  .giftWelcome::after {
+    right: -70px;
+    top: 120px;
+    opacity: 0.18;
+  }
+
+  .giftCategoryGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .giftSectionHeading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .giftSectionHeading > span {
+    width: auto;
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+  .giftSpaceHeader {
+    width: calc(100% - 32px);
+    min-height: 66px;
+  }
+
+  .giftSpaceMade {
+    font-size: 8px;
+  }
+
+  .giftWelcome {
+    width: calc(100% - 32px);
+    padding: 70px 0 60px;
+  }
+
+  .giftWelcome::after {
+    font-size: 180px;
+    right: -70px;
+    top: 70px;
+  }
+
+  .giftWelcome h1,
+  .ourWishesHeading h1,
+  .memoriesEmpty h1 {
+    font-size: clamp(52px, 17vw, 82px);
+  }
+
+  .giftWelcomeText {
+    font-size: 15px;
+    margin-top: 30px;
+  }
+
+  .giftCounter {
+    margin-top: 38px;
+  }
+
+  .giftCounter strong {
+    font-size: 58px;
+  }
+
+  .giftCategories {
+    padding: 65px 16px;
+  }
+
+  .giftSectionHeading {
+    margin-bottom: 38px;
+  }
+
+  .giftSectionHeading h2 {
+    font-size: 44px;
+  }
+
+  .giftCategoryGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .giftCategoryCard {
+    min-height: 190px;
+    padding: 18px;
+  }
+
+  .giftCategoryCard > div:nth-child(2) {
+    left: 18px;
+    bottom: 18px;
+    right: 12px;
+  }
+
+  .giftCategoryCard h3 {
+    font-size: 18px;
+  }
+
+  .giftCategoryArrow {
+    display: none;
+  }
+
+  .giftCategoryTop i {
+    font-size: 22px;
+  }
+
+  .giftQuickActions {
+    width: calc(100% - 32px);
+    grid-template-columns: 1fr;
+    padding: 45px 0 80px;
+  }
+
+  .giftQuickActions button {
+    min-height: 145px;
+  }
+
+  .makeWishView,
+  .ourWishesView,
+  .giftMemoriesView {
+    width: calc(100% - 32px);
+    padding: 35px 0 80px;
+  }
+
+  .giftBack {
+    margin-bottom: 35px;
+  }
+
+  .makeWishCard {
+    padding: 26px 20px;
+    box-shadow: 7px 7px 0 var(--gift-soft-pink);
+  }
+
+  .makeWishCategory {
+    margin-bottom: 38px;
+  }
+
+  .makeWishCard h1 {
+    font-size: 58px;
+    margin-bottom: 42px;
+  }
+
+  .wishTimelineCard {
+    padding: 24px 20px;
+  }
+
+  .wishTimelineCard h2 {
+    font-size: 32px;
+  }
+
+  .giftSpaceFooter {
+    min-height: 80px;
+    padding: 20px 16px;
+  }
+
+  .giftSpaceFooter span {
+    display: none;
+  }
+
+  .giftSpaceFooter p {
+    width: 100%;
+    text-align: center;
+  }
+}
