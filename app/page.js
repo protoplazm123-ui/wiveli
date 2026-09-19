@@ -96,85 +96,112 @@ export default function Home() {
           <button className="primary small">Create a Gift →</button>
         </div>
       </header>
-<section className="homeDreamHero">
-  <div className="homeDreamAura homeDreamAuraPink" />
-  <div className="homeDreamAura homeDreamAuraSage" />
+<section className="wiveliMotionHero">
+  <div className="motionAura motionAuraPink" />
+  <div className="motionAura motionAuraSage" />
 
-  <div className="homeDreamCopy">
-    <p className="homeDreamEyebrow">
-      DIGITAL GIFTS · REAL FEELINGS
-    </p>
+  <div className="motionTop">
+    <span>DIGITAL GIFTS · REAL FEELINGS</span>
+    <span>WISH + LOVE + LIFE</span>
+  </div>
 
-    <h1 className="homeDreamTitle">
-      MAKE IT
-      <br />
-      <span>PERSONAL.</span>
-    </h1>
+  <div className="motionScene">
+    <div className="motionCenter">
+      <p className="motionMini">
+        SOMETHING MADE JUST FOR THEM
+      </p>
 
-    <p className="homeDreamText">
-      Turn a feeling into something
-      <br />
-      they can keep, open and experience.
-    </p>
+      <h1>
+        MAKE IT
+        <br />
+        <em>PERSONAL.</em>
+      </h1>
 
-    <div className="homeDreamButtons">
-      <a className="homeDreamPrimary" href="#ideas">
+      <p className="motionDescription">
+        Turn a feeling into something
+        they can actually experience.
+      </p>
+
+      <a href="#ideas" className="motionButton">
         CREATE A GIFT
         <span>↗</span>
       </a>
-
-      <a className="homeDreamLink" href="#gifts">
-        EXPLORE WIVELI ↓
-      </a>
     </div>
-  </div>
 
-  <div className="homeDreamWorld">
-    <div className="homeDreamCircle" />
+    <div
+      className="motionObject motionObjectHeart"
+      data-depth="1"
+      aria-hidden="true"
+    >
+      ♡
+    </div>
 
-    <img
-      className="homeDreamAssets"
-      src="/assets/home/21EA03BA-6EFC-40E2-8F98-708E97670EE2.png"
-      alt=""
+    <div
+      className="motionObject motionObjectGlass"
+      data-depth="2"
+      aria-hidden="true"
+    >
+      ♥
+    </div>
+
+    <div
+      className="motionObject motionObjectOrb"
+      data-depth="3"
+      aria-hidden="true"
     />
 
-    <div className="homeDreamGlass">
-      <span>♡</span>
+    <div
+      className="motionObject motionObjectRibbon"
+      data-depth="2"
+      aria-hidden="true"
+    >
+      ∿
     </div>
 
-    <div className="homeDreamNote">
-      <small>A LITTLE SOMETHING</small>
+    <div
+      className="motionObject motionObjectFlower"
+      data-depth="1"
+      aria-hidden="true"
+    >
+      ✿
+    </div>
+
+    <div
+      className="motionObject motionObjectPolaroid"
+      data-depth="3"
+      aria-hidden="true"
+    >
+      <div />
+      <span>little moments ♡</span>
+    </div>
+
+    <div
+      className="motionObject motionObjectNote"
+      data-depth="2"
+      aria-hidden="true"
+    >
+      <small>FOR SOMEONE SPECIAL</small>
       <strong>
-        made just
+        made with
         <br />
-        for you ♡
+        feeling ♡
       </strong>
     </div>
 
-    <div className="homeDreamLabel">
-      <span>01</span>
-      <p>
-        LOVE · MEMORIES
-        <br />
-        LITTLE MOMENTS
-      </p>
-    </div>
+    <img
+      className="motionAssetSheet"
+      src="/assets/home/547AE97E-FC4B-40ED-9C1C-183411186401.png"
+      alt=""
+      aria-hidden="true"
+    />
   </div>
 
-  <div className="homeDreamBottom">
-    <p>
-      WISH + LOVE + LIFE
-    </p>
-
-    <span>SCROLL TO FEEL ↓</span>
-
-    <p>
-      MADE WITH ♡
-    </p>
+  <div className="motionBottom">
+    <span>PERSONALIZED DIGITAL EXPERIENCES</span>
+    <a href="#gifts">EXPLORE ↓</a>
+    <span>MADE WITH ♡</span>
   </div>
-</section>     
-
-      <section className="categories" id="gifts">
+</section>      <section className="categories" id="gifts">
         <div className="sectionTop">
           <div>
             <p className="eyebrow">FIND THE PERFECT WAY</p>
