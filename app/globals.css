@@ -7303,3 +7303,19 @@ footer p {
     animation: none !important;
   }
 }
+/* WIVELI — CURSOR PARALLAX */
+
+.motionObject {
+  translate:
+    var(--mouse-x, 0px)
+    var(--mouse-y, 0px);
+
+  transition: translate .18s ease-out;
+}
+
+@media (hover: none) {
+  .motionObject {
+    --mouse-x: 0px !important;
+    --mouse-y: 0px !important;
+  }
+}
