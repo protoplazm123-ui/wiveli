@@ -6283,3 +6283,557 @@ footer p {
     animation: none;
   }
 }
+/* =========================================================
+   WIVELI — DREAM HOME HERO
+   ========================================================= */
+
+.homeDreamHero {
+  --milk: #f5f0e6;
+  --ivory: #fbf7ef;
+  --pink: #d9aeb3;
+  --pink-soft: #ead1d4;
+  --sage: #9aa78d;
+  --ink: #26231f;
+
+  position: relative;
+  min-height: calc(100vh - 110px);
+  margin: 0 18px 24px;
+  padding: 44px 42px 28px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(420px, 1.08fr);
+  grid-template-rows: 1fr auto;
+  align-items: center;
+  border-radius: 34px;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 74% 38%, rgba(255,255,255,.82), transparent 24%),
+    radial-gradient(circle at 88% 78%, rgba(217,174,179,.30), transparent 27%),
+    linear-gradient(125deg, #f4eee3 0%, #f7f1e8 47%, #eee5dc 100%);
+  isolation: isolate;
+}
+
+.homeDreamHero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: .25;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(74,64,54,.025) 0,
+      rgba(74,64,54,.025) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+}
+
+.homeDreamAura {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(75px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.homeDreamAuraPink {
+  width: 430px;
+  height: 430px;
+  right: 8%;
+  top: 12%;
+  background: rgba(218, 170, 180, .42);
+  animation: homeAuraPink 10s ease-in-out infinite alternate;
+}
+
+.homeDreamAuraSage {
+  width: 380px;
+  height: 380px;
+  right: 32%;
+  bottom: -12%;
+  background: rgba(147, 164, 132, .30);
+  animation: homeAuraSage 12s ease-in-out infinite alternate;
+}
+
+/* LEFT COPY */
+
+.homeDreamCopy {
+  position: relative;
+  z-index: 8;
+  max-width: 680px;
+  align-self: center;
+}
+
+.homeDreamEyebrow {
+  margin: 0 0 24px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .19em;
+}
+
+.homeDreamTitle {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(78px, 8.4vw, 154px);
+  font-weight: 900;
+  line-height: .76;
+  letter-spacing: -.075em;
+}
+
+.homeDreamTitle span {
+  color: var(--pink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -.065em;
+}
+
+.homeDreamText {
+  margin: 36px 0 30px;
+  max-width: 500px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(18px, 1.55vw, 25px);
+  line-height: 1.35;
+  font-style: italic;
+}
+
+.homeDreamButtons {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.homeDreamPrimary {
+  min-width: 205px;
+  padding: 16px 19px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  color: var(--ink);
+  background: rgba(255,255,255,.34);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  transition:
+    transform .3s ease,
+    background .3s ease,
+    box-shadow .3s ease;
+}
+
+.homeDreamPrimary span {
+  font-size: 18px;
+}
+
+.homeDreamLink {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(38,35,31,.55);
+  padding-bottom: 5px;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .13em;
+}
+
+/* RIGHT WORLD */
+
+.homeDreamWorld {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  height: min(72vh, 720px);
+  min-height: 540px;
+}
+
+.homeDreamCircle {
+  position: absolute;
+  width: min(38vw, 560px);
+  aspect-ratio: 1;
+  left: 50%;
+  top: 50%;
+  transform: translate(-48%, -50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255,255,255,.90), transparent 28%),
+    linear-gradient(
+      145deg,
+      rgba(231,199,203,.90),
+      rgba(215,174,180,.68) 55%,
+      rgba(151,166,138,.38)
+    );
+  box-shadow:
+    inset 0 0 80px rgba(255,255,255,.50),
+    0 45px 100px rgba(92,70,66,.12);
+  animation: homeCircleFloat 8s ease-in-out infinite;
+}
+
+/*
+  Moodboard layer.
+  Later we replace this sheet with separate transparent assets,
+  so every object can move independently.
+*/
+
+.homeDreamAssets {
+  position: absolute;
+  z-index: 3;
+  width: min(38vw, 570px);
+  max-height: 78%;
+  object-fit: contain;
+  left: 50%;
+  top: 50%;
+  transform: translate(-47%, -50%) rotate(-2deg);
+  filter: drop-shadow(0 28px 34px rgba(71,55,50,.16));
+  animation: homeAssetsFloat 7s ease-in-out infinite;
+}
+
+.homeDreamGlass {
+  position: absolute;
+  z-index: 5;
+  width: 145px;
+  height: 145px;
+  right: 4%;
+  top: 16%;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 22%, rgba(255,255,255,.75), transparent 23%),
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.32),
+      rgba(218,174,179,.22)
+    );
+  box-shadow:
+    inset 0 0 25px rgba(255,255,255,.40),
+    0 20px 45px rgba(78,59,63,.13);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: homeGlassFloat 6s ease-in-out infinite;
+}
+
+.homeDreamGlass span {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 72px;
+  color: rgba(117, 94, 96, .72);
+}
+
+.homeDreamNote {
+  position: absolute;
+  z-index: 6;
+  left: 3%;
+  bottom: 12%;
+  width: 225px;
+  min-height: 140px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: rgba(251,247,239,.88);
+  border: 1px solid rgba(83,72,62,.12);
+  box-shadow: 0 24px 55px rgba(67,55,46,.12);
+  transform: rotate(-7deg);
+  animation: homeNoteFloat 8s ease-in-out infinite;
+}
+
+.homeDreamNote small {
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .18em;
+}
+
+.homeDreamNote strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 29px;
+  line-height: .92;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.homeDreamLabel {
+  position: absolute;
+  z-index: 7;
+  right: 1%;
+  bottom: 8%;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.homeDreamLabel > span {
+  width: 31px;
+  height: 31px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(38,35,31,.50);
+  border-radius: 50%;
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.homeDreamLabel p {
+  margin: 3px 0 0;
+  font-size: 8px;
+  line-height: 1.45;
+  font-weight: 900;
+  letter-spacing: .12em;
+}
+
+/* BOTTOM */
+
+.homeDreamBottom {
+  position: relative;
+  z-index: 10;
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding-top: 22px;
+  border-top: 1px solid rgba(38,35,31,.20);
+}
+
+.homeDreamBottom p,
+.homeDreamBottom > span {
+  margin: 0;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .15em;
+}
+
+.homeDreamBottom > span {
+  opacity: .65;
+}
+
+.homeDreamBottom p:last-child {
+  text-align: right;
+}
+
+/* INTERACTION */
+
+@media (hover: hover) and (pointer: fine) {
+  .homeDreamPrimary:hover {
+    transform: translateY(-4px);
+    background: rgba(255,255,255,.68);
+    box-shadow: 0 14px 35px rgba(76,60,54,.12);
+  }
+
+  .homeDreamAssets {
+    transition: filter .4s ease;
+  }
+
+  .homeDreamWorld:hover .homeDreamAssets {
+    filter:
+      drop-shadow(0 35px 42px rgba(71,55,50,.20))
+      saturate(1.04);
+  }
+}
+
+/* ANIMATION */
+
+@keyframes homeAssetsFloat {
+  0%, 100% {
+    transform:
+      translate(-47%, -50%)
+      rotate(-2deg)
+      translateY(0);
+  }
+
+  50% {
+    transform:
+      translate(-47%, -50%)
+      rotate(1deg)
+      translateY(-16px);
+  }
+}
+
+@keyframes homeCircleFloat {
+  0%, 100% {
+    transform:
+      translate(-48%, -50%)
+      scale(1);
+  }
+
+  50% {
+    transform:
+      translate(-48%, -53%)
+      scale(1.025);
+  }
+}
+
+@keyframes homeGlassFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(7deg);
+  }
+
+  50% {
+    transform: translateY(-22px) rotate(-2deg);
+  }
+}
+
+@keyframes homeNoteFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(-7deg);
+  }
+
+  50% {
+    transform: translateY(-13px) rotate(-3deg);
+  }
+}
+
+@keyframes homeAuraPink {
+  from {
+    transform: translate3d(0,0,0) scale(1);
+  }
+
+  to {
+    transform: translate3d(-60px,40px,0) scale(1.15);
+  }
+}
+
+@keyframes homeAuraSage {
+  from {
+    transform: translate3d(0,0,0) scale(1);
+  }
+
+  to {
+    transform: translate3d(70px,-35px,0) scale(1.12);
+  }
+}
+
+/* TABLET + MOBILE */
+
+@media (max-width: 900px) {
+  .homeDreamHero {
+    min-height: auto;
+    margin: 10px;
+    padding: 30px 22px 22px;
+    grid-template-columns: 1fr;
+    border-radius: 27px;
+  }
+
+  .homeDreamCopy {
+    padding-top: 25px;
+  }
+
+  .homeDreamTitle {
+    font-size: clamp(72px, 15vw, 118px);
+  }
+
+  .homeDreamWorld {
+    height: 580px;
+    min-height: 580px;
+    margin-top: 10px;
+  }
+
+  .homeDreamCircle {
+    width: min(68vw, 500px);
+  }
+
+  .homeDreamAssets {
+    width: min(70vw, 520px);
+  }
+
+  .homeDreamGlass {
+    right: 7%;
+  }
+
+  .homeDreamNote {
+    left: 5%;
+  }
+}
+
+@media (max-width: 600px) {
+  .homeDreamHero {
+    padding: 24px 16px 20px;
+  }
+
+  .homeDreamEyebrow {
+    margin-bottom: 18px;
+    font-size: 8px;
+  }
+
+  .homeDreamTitle {
+    font-size: clamp(64px, 21vw, 94px);
+    line-height: .79;
+  }
+
+  .homeDreamText {
+    margin: 25px 0 23px;
+    font-size: 17px;
+  }
+
+  .homeDreamButtons {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .homeDreamPrimary {
+    width: 100%;
+  }
+
+  .homeDreamWorld {
+    height: 470px;
+    min-height: 470px;
+  }
+
+  .homeDreamCircle {
+    width: 85vw;
+  }
+
+  .homeDreamAssets {
+    width: 88vw;
+  }
+
+  .homeDreamGlass {
+    width: 92px;
+    height: 92px;
+    right: 0;
+    top: 15%;
+  }
+
+  .homeDreamGlass span {
+    font-size: 45px;
+  }
+
+  .homeDreamNote {
+    width: 155px;
+    min-height: 105px;
+    left: 0;
+    bottom: 9%;
+    padding: 16px;
+  }
+
+  .homeDreamNote strong {
+    font-size: 21px;
+  }
+
+  .homeDreamLabel {
+    display: none;
+  }
+
+  .homeDreamBottom {
+    gap: 12px;
+  }
+
+  .homeDreamBottom p,
+  .homeDreamBottom > span {
+    font-size: 6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .homeDreamAura,
+  .homeDreamCircle,
+  .homeDreamAssets,
+  .homeDreamGlass,
+  .homeDreamNote {
+    animation: none;
+  }
+}
