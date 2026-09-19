@@ -5624,3 +5624,311 @@ footer p {
     max-width: 340px;
   }
 }
+/* =========================================================
+   WIVELI — CUTE CALENDAR
+   ========================================================= */
+
+.cuteDateTrigger {
+  width: 100%;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border: 1px solid rgba(17, 17, 17, 0.18);
+  border-radius: 18px;
+  background: #fffaf6;
+  color: #151313;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cuteDateTrigger div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.cuteDateTrigger small {
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  opacity: 0.5;
+}
+
+.cuteDateTrigger strong {
+  font-size: 16px;
+}
+
+.cuteDateTrigger > span {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #ffd9e4;
+  color: #ff4f87;
+  font-size: 23px;
+}
+
+.cuteDateTrigger.selected {
+  border-color: #ff5f91;
+  box-shadow: 0 0 0 3px rgba(255, 95, 145, 0.08);
+}
+
+.cuteCalendarWrap {
+  width: 100%;
+  margin-top: 12px;
+  position: relative;
+  z-index: 20;
+}
+
+.cuteCalendar {
+  width: min(100%, 520px);
+  padding: 22px;
+  border: 1px solid #171313;
+  border-radius: 26px;
+  background: #fff7f3;
+  color: #171313;
+  box-shadow: 8px 9px 0 #ffd6e2,
+    0 22px 55px rgba(35, 20, 24, 0.12);
+  animation: cuteCalendarIn 0.18s ease-out;
+}
+
+@keyframes cuteCalendarIn {
+  from {
+    opacity: 0;
+    transform: translateY(-7px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.cuteCalendar button {
+  font: inherit;
+  color: inherit;
+}
+
+.cuteCalendarTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(23, 19, 19, 0.12);
+}
+
+.cuteCalendarTop p {
+  margin: 0 0 5px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+.cuteCalendarTop span {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 14px;
+  font-style: italic;
+  opacity: 0.6;
+}
+
+.cuteCalendarClose {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(23, 19, 19, 0.18);
+  border-radius: 50%;
+  background: transparent;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.cuteCalendarMonth {
+  padding: 19px 0 14px;
+  display: grid;
+  grid-template-columns: 38px 1fr 38px;
+  align-items: center;
+  gap: 8px;
+}
+
+.cuteCalendarMonth h3 {
+  margin: 0;
+  text-align: center;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 23px;
+  font-weight: 500;
+}
+
+.cuteCalendarMonth button {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(23, 19, 19, 0.18);
+  border-radius: 50%;
+  background: #fffdf9;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.cuteCalendarWeek,
+.cuteCalendarDays {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.cuteCalendarWeek {
+  margin-bottom: 7px;
+}
+
+.cuteCalendarWeek span {
+  text-align: center;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  opacity: 0.45;
+}
+
+.cuteCalendarDay {
+  aspect-ratio: 1;
+  min-width: 0;
+  position: relative;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+
+.cuteCalendarDay.outside {
+  opacity: 0.25;
+}
+
+.cuteCalendarDay.today:not(.selected) {
+  box-shadow: inset 0 0 0 1px #ff7ca4;
+}
+
+.cuteCalendarDay.selected {
+  background: #ff5f91;
+  color: #fff;
+  transform: scale(0.92);
+}
+
+.calendarTinyHeart {
+  position: absolute;
+  right: 1px;
+  bottom: 0;
+  color: #ff5f91;
+  font-size: 9px;
+  font-style: normal;
+}
+
+.cuteCalendarDay.selected .calendarTinyHeart {
+  color: #171313;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cuteCalendarDay:hover:not(.selected) {
+    background: #ffdce6;
+    transform: scale(0.92);
+  }
+}
+
+.cuteCalendarBottom {
+  margin-top: 17px;
+  padding-top: 15px;
+  display: flex;
+  gap: 9px;
+  border-top: 1px solid rgba(23, 19, 19, 0.12);
+}
+
+.cuteCalendarBottom button {
+  flex: 1;
+  padding: 11px 13px;
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid rgba(23, 19, 19, 0.18);
+  border-radius: 999px;
+  background: #fffdf9;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.cuteCalendarBottom button:first-child {
+  background: #ffdce6;
+  border-color: #ffb7cc;
+}
+
+.cuteCalendarSelected {
+  margin-top: 12px;
+  padding: 14px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border-radius: 15px;
+  background: #171313;
+  color: #fffaf6;
+}
+
+.cuteCalendarSelected div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cuteCalendarSelected span {
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  color: #ff91b2;
+}
+
+.cuteCalendarSelected strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.cuteCalendarSelected button {
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .cuteCalendar {
+    padding: 16px 13px;
+    border-radius: 21px;
+    box-shadow: 5px 6px 0 #ffd6e2;
+  }
+
+  .cuteCalendarMonth h3 {
+    font-size: 19px;
+  }
+
+  .cuteCalendarDay {
+    font-size: 12px;
+  }
+
+  .cuteCalendarTop span {
+    font-size: 12px;
+  }
+
+  .cuteCalendarBottom {
+    gap: 6px;
+  }
+}
