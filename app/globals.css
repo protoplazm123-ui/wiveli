@@ -7312,10 +7312,23 @@ footer p {
 
   transition: translate .18s ease-out;
 }
+/* iPad / desktop pointer parallax */
 
-@media (hover: none) {
-  .motionObject {
-    --mouse-x: 0px !important;
-    --mouse-y: 0px !important;
-  }
+.wiveliMotionHero {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.wiveliMotionHero a,
+.wiveliMotionHero button {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.motionObject {
+  translate:
+    var(--mouse-x, 0px)
+    var(--mouse-y, 0px);
+
+  transition: translate .12s ease-out;
 }
