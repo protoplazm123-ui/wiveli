@@ -96,64 +96,83 @@ export default function Home() {
           <button className="primary small">Create a Gift →</button>
         </div>
       </header>
+<section className="homeDreamHero">
+  <div className="homeDreamAura homeDreamAuraPink" />
+  <div className="homeDreamAura homeDreamAuraSage" />
 
-      <section className="hero">
-        <div className="heroCopy">
-          <p className="eyebrow">DIGITAL GIFTS / REAL EMOTIONS</p>
+  <div className="homeDreamCopy">
+    <p className="homeDreamEyebrow">
+      DIGITAL GIFTS · REAL FEELINGS
+    </p>
 
-          <h1>
-            MAKE IT
-            <br />
-            <span>PERSONAL.</span>
-          </h1>
+    <h1 className="homeDreamTitle">
+      MAKE IT
+      <br />
+      <span>PERSONAL.</span>
+    </h1>
 
-          <p className="heroText">
-            Turn your feelings into something they can actually experience.
-          </p>
+    <p className="homeDreamText">
+      Turn a feeling into something
+      <br />
+      they can keep, open and experience.
+    </p>
 
-          <div className="buttons">
-            <a className="primary" href="#ideas">
-              Create a Gift →
-            </a>
+    <div className="homeDreamButtons">
+      <a className="homeDreamPrimary" href="#ideas">
+        CREATE A GIFT
+        <span>↗</span>
+      </a>
 
-            <a className="secondary" href="#ideas">
-              Explore Ideas
-            </a>
-          </div>
+      <a className="homeDreamLink" href="#gifts">
+        EXPLORE WIVELI ↓
+      </a>
+    </div>
+  </div>
 
-          <div className="benefits">
-            <span>♡ Easy to create</span>
-            <span>♡ Meaningful for any occasion</span>
-            <span>♡ Made to feel personal</span>
-          </div>
-        </div>
+  <div className="homeDreamWorld">
+    <div className="homeDreamCircle" />
 
-        <div className="heroArt">
-          <div className="note noteOne">
-            <small>A LITTLE SOMETHING</small>
+    <img
+      className="homeDreamAssets"
+      src="/assets/home/21EA03BA-6EFC-40E2-8F98-708E97670EE2.png"
+      alt=""
+    />
 
-            <strong>
-              made just
-              <br />
-              for you ♡
-            </strong>
-          </div>
+    <div className="homeDreamGlass">
+      <span>♡</span>
+    </div>
 
-          <div className="heart">♥</div>
+    <div className="homeDreamNote">
+      <small>A LITTLE SOMETHING</small>
+      <strong>
+        made just
+        <br />
+        for you ♡
+      </strong>
+    </div>
 
-          <div className="photoCard">
-            <div className="photoPlaceholder">
-              YOUR
-              <br />
-              MEMORY
-            </div>
+    <div className="homeDreamLabel">
+      <span>01</span>
+      <p>
+        LOVE · MEMORIES
+        <br />
+        LITTLE MOMENTS
+      </p>
+    </div>
+  </div>
 
-            <p>the good stuff.</p>
-          </div>
+  <div className="homeDreamBottom">
+    <p>
+      WISH + LOVE + LIFE
+    </p>
 
-          <p className="scribble">more than a gift ♡</p>
-        </div>
-      </section>
+    <span>SCROLL TO FEEL ↓</span>
+
+    <p>
+      MADE WITH ♡
+    </p>
+  </div>
+</section>     
 
       <section className="categories" id="gifts">
         <div className="sectionTop">
