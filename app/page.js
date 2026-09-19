@@ -1,4 +1,6 @@
-const categories = [
+"use client";
+
+import { useRef } from "react";const categories = [
   {
     title: "For Someone Special",
     text: "Love notes, stories, memories and more",
@@ -77,8 +79,53 @@ const experiences = [
 ];
 
 export default function Home() {
-  return (
-    <main>
+  const heroRef = useRef(null);
+
+  const handleHeroMove = (event) => {
+    const hero = heroRef.current;
+    if (!hero) return;
+
+    const rect = hero.getBoundingClientRect();
+
+    const x =
+      (event.clientX - rect.left) / rect.width - 0.5;
+
+    const y =
+      (event.clientY - rect.top) / rect.height - 0.5;
+
+    hero
+      .querySelectorAll("[data-depth]")
+      .forEach((object) => {
+        const depth = Number(object.dataset.depth) || 1;
+
+        const moveX = x * depth * 22;
+        const moveY = y * depth * 18;
+
+        object.style.setProperty(
+          "--mouse-x",
+          `${moveX}px`
+        );
+
+        object.style.setProperty(
+          "--mouse-y",
+          `${moveY}px`
+        );
+      });
+  };
+
+  const resetHero = () => {
+    const hero = heroRef.current;
+    if (!hero) return;
+
+    hero
+      .querySelectorAll("[data-depth]")
+      .forEach((object) => {
+        object.style.setProperty("--mouse-x", "0px");
+        object.style.setProperty("--mouse-y", "0px");
+      });
+  };
+
+  return (    <main>
       <header className="header">
         <a className="logo" href="/">
           WI<span>♥</span>ELI
@@ -96,8 +143,13 @@ export default function Home() {
           <button className="primary small">Create a Gift →</button>
         </div>
       </header>
-<section className="wiveliMotionHero">
-  <div className="motionAura motionAuraPink" />
+<section
+  ref={heroRef}
+  className="wiveliMotionHero"
+  onPointerMove={handleHeroMove}
+  onPointerLeave={resetHero}
+>
+    <div className="motionAura motionAuraPink" />
   <div className="motionAura motionAuraSage" />
 
   <div className="motionTop">
