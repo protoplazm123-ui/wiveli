@@ -143,44 +143,75 @@ export default function WishNoteGift() {
 
       {activeView === "home" && (
         <>
-          <section className="giftWelcome">
-            <p className="giftEyebrow">
-              365 DAYS OF HAPPINESS ♡
-            </p>
+          <section className="wishHero">
+  <div className="wishHeroGlow wishHeroGlowOne" />
+  <div className="wishHeroGlow wishHeroGlowTwo" />
 
-            <h1>
-              YOUR LITTLE
-              <br />
-              WORLD OF
-              <br />
-              <span>WISHES.</span>
-            </h1>
+  <div className="wishHeroTop">
+    <span>365 DAYS OF HAPPINESS</span>
+    <span>MADE FOR SOPHIE ♡</span>
+  </div>
 
-            <p className="giftWelcomeText">
-              Sophie, this little place was made
-              for your wishes, dreams and all the
-              things still waiting for us.
-            </p>
+  <div className="wishHeroStage">
+    <p className="wishHeroMini">
+      A LITTLE WORLD MADE JUST FOR YOU
+    </p>
 
-            <div className="giftCounter">
-              <strong>
-                {remainingWishes}
-              </strong>
+    <h1 className="wishHeroTitle">
+      WISH
+      <br />
+      NOTE
+    </h1>
 
-              <div>
-                <span>WISHES</span>
-                <span>
-                  WAITING FOR YOU
-                </span>
-              </div>
-            </div>
+    <div className="wishHeroHeart" aria-hidden="true">
+      <span className="wishHeroHeartShape">
+        ♥
+      </span>
+      <span className="wishHeroHeartShine" />
+    </div>
 
-            <p className="giftFrom">
-              made with ♡ by Alex
-            </p>
-          </section>
+    <p className="wishHeroMessage">
+      Your wishes, our plans
+      <br />
+      and the memories still waiting
+      <br />
+      to happen.
+    </p>
+  </div>
 
-          <section className="giftCategories">
+  <div className="wishHeroBottom">
+    <div className="wishHeroCounter">
+      <strong>{remainingWishes}</strong>
+
+      <span>
+        wishes
+        <br />
+        waiting for you
+      </span>
+    </div>
+
+    <button
+      type="button"
+      className="wishHeroButton"
+      onClick={() => {
+        document
+          .querySelector(".giftCategories")
+          ?.scrollIntoView({
+            behavior: "smooth",
+          });
+      }}
+    >
+      MAKE A WISH
+      <span>↘</span>
+    </button>
+
+    <p>
+      made with ♡
+      <br />
+      by Alex
+    </p>
+  </div>
+</section>          <section className="giftCategories">
             <div className="giftSectionHeading">
               <div>
                 <p>MAKE A WISH</p>
