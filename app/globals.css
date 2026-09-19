@@ -6837,3 +6837,469 @@ footer p {
     animation: none;
   }
 }
+/* =========================================================
+   WIVELI — CENTER MOTION HERO
+   ========================================================= */
+
+.wiveliMotionHero {
+  --cream: #f5f0e6;
+  --beige: #ddd0b8;
+  --pink: #d9b4b7;
+  --sage: #9daa8d;
+  --ink: #25221f;
+
+  position: relative;
+  min-height: calc(100vh - 105px);
+  margin: 0 18px 24px;
+  padding: 28px 34px;
+  overflow: hidden;
+  border-radius: 34px;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 20% 25%, rgba(217,180,183,.28), transparent 25%),
+    radial-gradient(circle at 80% 75%, rgba(157,170,141,.24), transparent 25%),
+    linear-gradient(135deg, #f7f2e9 0%, #f2ebdf 100%);
+  isolation: isolate;
+}
+
+.motionTop,
+.motionBottom {
+  position: relative;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .16em;
+}
+
+.motionScene {
+  position: relative;
+  min-height: 650px;
+  display: grid;
+  place-items: center;
+}
+
+/* ---------- CENTER ---------- */
+
+.motionCenter {
+  position: relative;
+  z-index: 20;
+  width: min(820px, 72%);
+  text-align: center;
+}
+
+.motionMini {
+  margin: 0 0 19px;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .2em;
+}
+
+.motionCenter h1 {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(84px, 10vw, 168px);
+  line-height: .73;
+  letter-spacing: -.075em;
+  font-weight: 900;
+}
+
+.motionCenter h1 em {
+  display: inline-block;
+  color: var(--pink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -.07em;
+}
+
+.motionDescription {
+  width: min(390px, 80%);
+  margin: 30px auto 22px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  line-height: 1.35;
+  font-style: italic;
+}
+
+.motionButton {
+  width: 195px;
+  min-height: 48px;
+  margin: auto;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  color: var(--ink);
+  background: rgba(255,255,255,.38);
+  backdrop-filter: blur(13px);
+  -webkit-backdrop-filter: blur(13px);
+  text-decoration: none;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .13em;
+  transition: transform .25s ease, background .25s ease;
+}
+
+.motionButton span {
+  font-size: 17px;
+}
+
+/* ---------- DECORATIVE OBJECTS ---------- */
+
+.motionObject {
+  position: absolute;
+  z-index: 10;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.motionObjectHeart {
+  left: 7%;
+  top: 10%;
+  font-family: Georgia, serif;
+  font-size: clamp(100px, 11vw, 180px);
+  line-height: 1;
+  color: rgba(217,180,183,.82);
+  transform: rotate(-18deg);
+  filter: drop-shadow(0 22px 25px rgba(87,60,66,.12));
+  animation: wiveliFloatOne 7s ease-in-out infinite;
+}
+
+.motionObjectGlass {
+  right: 8%;
+  top: 9%;
+  width: 145px;
+  height: 145px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.75);
+  color: rgba(138,94,104,.62);
+  font-size: 75px;
+  background:
+    radial-gradient(circle at 28% 20%, rgba(255,255,255,.9), transparent 25%),
+    linear-gradient(145deg, rgba(255,255,255,.32), rgba(217,180,183,.32));
+  box-shadow:
+    inset 0 0 30px rgba(255,255,255,.45),
+    0 25px 45px rgba(73,57,54,.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: wiveliFloatTwo 8s ease-in-out infinite;
+}
+
+.motionObjectOrb {
+  left: 17%;
+  bottom: 13%;
+  width: 105px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255,255,255,.85), transparent 20%),
+    linear-gradient(145deg, #b5c0a8, #8e9d80);
+  box-shadow: 0 25px 40px rgba(76,86,66,.18);
+  animation: wiveliFloatThree 9s ease-in-out infinite;
+}
+
+.motionObjectRibbon {
+  right: 16%;
+  bottom: 13%;
+  color: var(--pink);
+  font-family: Georgia, serif;
+  font-size: 160px;
+  font-style: italic;
+  line-height: .5;
+  transform: rotate(-18deg);
+  opacity: .82;
+  animation: wiveliFloatOne 10s ease-in-out infinite reverse;
+}
+
+.motionObjectFlower {
+  left: 7%;
+  top: 52%;
+  color: #fffaf3;
+  font-size: 100px;
+  line-height: 1;
+  text-shadow: 0 16px 28px rgba(80,65,58,.15);
+  transform: rotate(-14deg);
+  animation: wiveliFloatTwo 9s ease-in-out infinite reverse;
+}
+
+.motionObjectPolaroid {
+  right: 5%;
+  top: 43%;
+  width: 150px;
+  padding: 10px 10px 20px;
+  background: #fffaf2;
+  box-shadow: 0 24px 45px rgba(62,52,44,.13);
+  transform: rotate(8deg);
+  animation: wiveliFloatThree 8s ease-in-out infinite;
+}
+
+.motionObjectPolaroid div {
+  width: 100%;
+  aspect-ratio: 1;
+  background:
+    linear-gradient(145deg, rgba(217,180,183,.72), rgba(245,240,230,.9));
+}
+
+.motionObjectPolaroid span {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+  font-family: Georgia, serif;
+  font-size: 11px;
+  font-style: italic;
+}
+
+.motionObjectNote {
+  left: 4%;
+  bottom: 3%;
+  width: 190px;
+  min-height: 115px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: rgba(251,247,239,.90);
+  box-shadow: 0 20px 45px rgba(64,54,46,.11);
+  transform: rotate(-6deg);
+  animation: wiveliFloatOne 9s ease-in-out infinite;
+}
+
+.motionObjectNote small {
+  font-size: 6px;
+  font-weight: 900;
+  letter-spacing: .15em;
+}
+
+.motionObjectNote strong {
+  font-family: Georgia, serif;
+  font-size: 22px;
+  line-height: .95;
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* ---------- ASSET SHEET ---------- */
+
+.motionAssetSheet {
+  position: absolute;
+  z-index: 2;
+  width: min(540px, 42vw);
+  left: 50%;
+  top: 50%;
+  opacity: .16;
+  transform: translate(-50%, -50%) scale(1.15);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  filter: saturate(.85);
+}
+
+/* ---------- BACKGROUND AURAS ---------- */
+
+.motionAura {
+  position: absolute;
+  z-index: -1;
+  width: 430px;
+  height: 430px;
+  border-radius: 50%;
+  filter: blur(85px);
+  pointer-events: none;
+}
+
+.motionAuraPink {
+  left: -7%;
+  top: 10%;
+  background: rgba(217,180,183,.38);
+}
+
+.motionAuraSage {
+  right: -5%;
+  bottom: 4%;
+  background: rgba(157,170,141,.30);
+}
+
+/* ---------- BOTTOM ---------- */
+
+.motionBottom {
+  padding-top: 20px;
+  border-top: 1px solid rgba(37,34,31,.17);
+}
+
+.motionBottom a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+/* ---------- HOVER ---------- */
+
+@media (hover: hover) and (pointer: fine) {
+  .motionButton:hover {
+    transform: translateY(-3px);
+    background: rgba(255,255,255,.72);
+  }
+}
+
+/* ---------- IDLE MOTION ---------- */
+
+@keyframes wiveliFloatOne {
+  0%, 100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -16px;
+  }
+}
+
+@keyframes wiveliFloatTwo {
+  0%, 100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 12px -20px;
+  }
+}
+
+@keyframes wiveliFloatThree {
+  0%, 100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: -10px -14px;
+  }
+}
+
+/* ---------- TABLET ---------- */
+
+@media (max-width: 900px) {
+  .wiveliMotionHero {
+    margin: 10px;
+    padding: 24px 20px;
+    min-height: 820px;
+    border-radius: 28px;
+  }
+
+  .motionScene {
+    min-height: 730px;
+  }
+
+  .motionCenter {
+    width: 88%;
+  }
+
+  .motionCenter h1 {
+    font-size: clamp(80px, 15vw, 130px);
+  }
+
+  .motionObjectHeart {
+    left: 1%;
+  }
+
+  .motionObjectGlass {
+    right: 2%;
+  }
+
+  .motionObjectPolaroid {
+    right: 1%;
+  }
+
+  .motionAssetSheet {
+    width: 65vw;
+  }
+}
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width: 600px) {
+  .wiveliMotionHero {
+    min-height: 720px;
+    padding: 20px 14px;
+  }
+
+  .motionTop span:last-child {
+    display: none;
+  }
+
+  .motionScene {
+    min-height: 630px;
+  }
+
+  .motionCenter {
+    width: 100%;
+  }
+
+  .motionMini {
+    font-size: 7px;
+  }
+
+  .motionCenter h1 {
+    font-size: clamp(61px, 20vw, 90px);
+  }
+
+  .motionDescription {
+    width: 75%;
+    font-size: 15px;
+  }
+
+  .motionObjectHeart {
+    font-size: 90px;
+    top: 10%;
+  }
+
+  .motionObjectGlass {
+    width: 85px;
+    height: 85px;
+    font-size: 43px;
+  }
+
+  .motionObjectOrb {
+    width: 65px;
+    left: 5%;
+  }
+
+  .motionObjectRibbon {
+    font-size: 100px;
+    right: 2%;
+  }
+
+  .motionObjectFlower {
+    font-size: 62px;
+    left: 0;
+  }
+
+  .motionObjectPolaroid {
+    width: 92px;
+  }
+
+  .motionObjectNote {
+    width: 120px;
+    min-height: 85px;
+    padding: 12px;
+  }
+
+  .motionObjectNote strong {
+    font-size: 15px;
+  }
+
+  .motionAssetSheet {
+    width: 92vw;
+    opacity: .11;
+  }
+
+  .motionBottom span:last-child {
+    display: none;
+  }
+}
+
+/* ---------- ACCESSIBILITY ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .motionObject {
+    animation: none !important;
+  }
+}
