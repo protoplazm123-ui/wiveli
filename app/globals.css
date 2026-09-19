@@ -5932,3 +5932,354 @@ footer p {
     gap: 6px;
   }
 }
+/* =========================================================
+   WIVELI — WISH NOTE / GLASS HERO
+   ========================================================= */
+
+.wishHero {
+  position: relative;
+  min-height: 760px;
+  margin: 18px;
+  padding: 24px 30px 30px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 34px;
+  color: #171317;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255,255,255,.95) 0 9%, transparent 35%),
+    linear-gradient(135deg, #eadcff 0%, #f5e8ff 34%, #fff0f5 68%, #ffe0e8 100%);
+  isolation: isolate;
+}
+
+.wishHero::before {
+  content: "";
+  position: absolute;
+  inset: -25%;
+  z-index: -3;
+  background:
+    radial-gradient(circle at 22% 25%, rgba(255,255,255,.85), transparent 24%),
+    radial-gradient(circle at 78% 72%, rgba(255,142,181,.30), transparent 27%),
+    radial-gradient(circle at 70% 20%, rgba(178,135,255,.28), transparent 28%);
+  animation: wishHeroAtmosphere 10s ease-in-out infinite alternate;
+}
+
+.wishHeroGlow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+  z-index: -2;
+}
+
+.wishHeroGlowOne {
+  width: 360px;
+  height: 360px;
+  left: -90px;
+  top: 20%;
+  background: rgba(186, 147, 255, .28);
+  animation: wishGlowOne 8s ease-in-out infinite alternate;
+}
+
+.wishHeroGlowTwo {
+  width: 420px;
+  height: 420px;
+  right: -130px;
+  bottom: 0;
+  background: rgba(255, 117, 164, .25);
+  animation: wishGlowTwo 9s ease-in-out infinite alternate;
+}
+
+.wishHeroTop {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .15em;
+}
+
+.wishHeroStage {
+  position: relative;
+  width: 100%;
+  min-height: 540px;
+  display: grid;
+  place-items: center;
+}
+
+.wishHeroMini {
+  position: absolute;
+  top: 9%;
+  margin: 0;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .18em;
+  z-index: 5;
+}
+
+.wishHeroTitle {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(105px, 18vw, 260px);
+  font-weight: 900;
+  line-height: .70;
+  letter-spacing: -.085em;
+  text-align: center;
+  color: rgba(18, 14, 19, .94);
+  transform: scaleX(.82);
+}
+
+.wishHeroHeart {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  top: 50%;
+  width: clamp(190px, 29vw, 390px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -48%) rotate(-8deg);
+  display: grid;
+  place-items: center;
+  animation: wishHeartFloat 5s ease-in-out infinite;
+  filter:
+    drop-shadow(0 30px 35px rgba(112, 57, 98, .22))
+    drop-shadow(0 4px 9px rgba(255,255,255,.65));
+}
+
+.wishHeroHeartShape {
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(210px, 32vw, 430px);
+  line-height: 1;
+  color: rgba(255, 113, 159, .64);
+  -webkit-text-stroke: 1px rgba(255,255,255,.45);
+  text-shadow:
+    inset 0 0 30px rgba(255,255,255,.8),
+    0 0 35px rgba(255, 124, 173, .28),
+    0 25px 50px rgba(85, 45, 77, .22);
+  backdrop-filter: blur(4px);
+}
+
+.wishHeroHeart::before {
+  content: "";
+  position: absolute;
+  width: 65%;
+  height: 35%;
+  left: 16%;
+  top: 20%;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,.80),
+    rgba(255,255,255,0)
+  );
+  filter: blur(12px);
+  transform: rotate(-28deg);
+  opacity: .7;
+}
+
+.wishHeroHeartShine {
+  position: absolute;
+  width: 24%;
+  height: 13%;
+  left: 28%;
+  top: 25%;
+  border-radius: 50%;
+  background: rgba(255,255,255,.82);
+  filter: blur(10px);
+  transform: rotate(-30deg);
+  animation: wishHeartShine 4s ease-in-out infinite;
+}
+
+.wishHeroMessage {
+  position: absolute;
+  z-index: 5;
+  right: 4%;
+  bottom: 12%;
+  margin: 0;
+  max-width: 190px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 14px;
+  line-height: 1.45;
+  font-style: italic;
+}
+
+.wishHeroBottom {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: 20px;
+}
+
+.wishHeroCounter {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+}
+
+.wishHeroCounter strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 50px;
+  line-height: .8;
+  font-weight: 400;
+}
+
+.wishHeroCounter span,
+.wishHeroBottom > p {
+  margin: 0;
+  font-size: 9px;
+  line-height: 1.4;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.wishHeroBottom > p {
+  justify-self: end;
+  text-align: right;
+}
+
+.wishHeroButton {
+  min-width: 190px;
+  padding: 15px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border: 1px solid rgba(18,14,19,.75);
+  border-radius: 999px;
+  background: rgba(255,255,255,.30);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  color: #171317;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .11em;
+  cursor: pointer;
+  transition:
+    transform .25s ease,
+    background .25s ease,
+    box-shadow .25s ease;
+}
+
+.wishHeroButton span {
+  font-size: 18px;
+}
+
+@media (hover:hover) and (pointer:fine) {
+  .wishHeroButton:hover {
+    transform: translateY(-3px);
+    background: rgba(255,255,255,.58);
+    box-shadow: 0 12px 30px rgba(68,39,61,.12);
+  }
+}
+
+@keyframes wishHeartFloat {
+  0%, 100% {
+    transform: translate(-50%, -48%) rotate(-8deg) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -53%) rotate(-3deg) scale(1.025);
+  }
+}
+
+@keyframes wishHeartShine {
+  0%, 100% {
+    opacity: .45;
+    transform: translate(0,0) rotate(-30deg);
+  }
+  50% {
+    opacity: .95;
+    transform: translate(12px,7px) rotate(-24deg);
+  }
+}
+
+@keyframes wishGlowOne {
+  from { transform: translate(0,0) scale(1); }
+  to { transform: translate(70px,35px) scale(1.15); }
+}
+
+@keyframes wishGlowTwo {
+  from { transform: translate(0,0) scale(1); }
+  to { transform: translate(-65px,-30px) scale(1.12); }
+}
+
+@keyframes wishHeroAtmosphere {
+  from { transform: translate3d(-2%, -1%, 0) scale(1); }
+  to { transform: translate3d(3%, 2%, 0) scale(1.08); }
+}
+
+@media (max-width: 700px) {
+  .wishHero {
+    min-height: 690px;
+    margin: 10px;
+    padding: 20px 17px 22px;
+    border-radius: 26px;
+  }
+
+  .wishHeroTop {
+    font-size: 7px;
+  }
+
+  .wishHeroStage {
+    min-height: 500px;
+  }
+
+  .wishHeroMini {
+    top: 12%;
+    font-size: 7px;
+  }
+
+  .wishHeroTitle {
+    font-size: clamp(90px, 31vw, 155px);
+    line-height: .73;
+  }
+
+  .wishHeroHeart {
+    width: clamp(180px, 56vw, 280px);
+  }
+
+  .wishHeroHeartShape {
+    font-size: clamp(205px, 65vw, 320px);
+  }
+
+  .wishHeroMessage {
+    right: 1%;
+    bottom: 8%;
+    max-width: 135px;
+    font-size: 11px;
+  }
+
+  .wishHeroBottom {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .wishHeroCounter strong {
+    font-size: 38px;
+  }
+
+  .wishHeroButton {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    width: 100%;
+  }
+
+  .wishHeroBottom > p {
+    font-size: 7px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wishHero::before,
+  .wishHeroGlow,
+  .wishHeroHeart,
+  .wishHeroHeartShine {
+    animation: none;
+  }
+}
