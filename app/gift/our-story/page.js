@@ -1,20 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function OurStoryGift() {
   const [opened, setOpened] = useState(false);
   const [journeyStarted, setJourneyStarted] = useState(false);
+  const [flightStage, setFlightStage] = useState("idle");
+
+  const beginJourney = () => {
+    setJourneyStarted(true);
+    setFlightStage("launch");
+  };
+
+  useEffect(() => {
+    if (flightStage !== "launch") return;
+
+    const flyingTimer = setTimeout(() => {
+      setFlightStage("flying");
+    }, 1400);
+
+    const arrivalTimer = setTimeout(() => {
+      setFlightStage("arrival");
+    }, 6500);
+
+    const landedTimer = setTimeout(() => {
+      setFlightStage("landed");
+    }, 9000);
+
+    return () => {
+      clearTimeout(flyingTimer);
+      clearTimeout(arrivalTimer);
+      clearTimeout(landedTimer);
+    };
+  }, [flightStage]);
 
   return (
     <main
-      className={`ourStoryGift ${opened ? "isOpened" : ""} ${
-        journeyStarted ? "journeyStarted" : ""
-      }`}
+      className={[
+        "ourStoryGift",
+        opened ? "isOpened" : "",
+        journeyStarted ? "journeyStarted" : "",
+        `flight-${flightStage}`,
+      ].join(" ")}
     >
-      {/* =========================================
-          OPENING SPACE
-          ========================================= */}
+      {/* OPENING SPACE */}
 
       <div className="ourStorySpace" aria-hidden="true">
         <div className="ourStoryStars starsOne" />
@@ -29,9 +58,7 @@ export default function OurStoryGift() {
         <span className="ourStoryStar starC">✦</span>
       </div>
 
-      {/* =========================================
-          ENVELOPE + LETTER
-          ========================================= */}
+      {/* ENVELOPE + LETTER */}
 
       <section className="ourStoryIntro">
         <p className="ourStoryLabel">
@@ -68,7 +95,7 @@ export default function OurStoryGift() {
             <button
               type="button"
               className="beginJourney"
-              onClick={() => setJourneyStarted(true)}
+              onClick={beginJourney}
             >
               BEGIN OUR JOURNEY
               <span>→</span>
@@ -118,15 +145,14 @@ export default function OurStoryGift() {
         </p>
       </section>
 
-      {/* =========================================
-          JOURNEY UNIVERSE
-          ========================================= */}
+      {/* JOURNEY */}
 
       <section className="journeyUniverse">
-        {/* REAL VIDEO BACKGROUND */}
+
+        {/* CALM GALAXY */}
 
         <video
-          className="journeyVideo"
+          className="journeyVideo journeyCalmVideo"
           autoPlay
           muted
           loop
@@ -140,45 +166,77 @@ export default function OurStoryGift() {
           />
         </video>
 
-        {/* CINEMATIC DARK OVERLAY */}
+        {/* BRIGHT TRAVEL FOOTAGE */}
+
+        <video
+          className="journeyVideo journeyFlightVideo"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+        >
+          <source
+            src="/assets/our-story/15340202_1920_1080_24fps.mp4"
+            type="video/mp4"
+          />
+        </video>
 
         <div className="journeyVideoOverlay" />
 
-        {/* LIGHT TRANSITION */}
+        {/* TRANSITION FLASH */}
 
         <div className="journeyLight" />
 
-        {/* EXTRA DEPTH STARS */}
+        {/* FLYING STAR PARTICLES */}
 
         <div className="journeyDepthStars journeyDepthOne" />
         <div className="journeyDepthStars journeyDepthTwo" />
         <div className="journeyDepthStars journeyDepthThree" />
 
-        {/* SOFT GALAXY GLOW */}
+        {/* TRAVEL TUNNEL */}
 
-        <div className="journeyGalaxy">
-          <div className="journeyGalaxyCore" />
+        <div className="starTunnel" aria-hidden="true">
+          <span className="starStreak streak1" />
+          <span className="starStreak streak2" />
+          <span className="starStreak streak3" />
+          <span className="starStreak streak4" />
+          <span className="starStreak streak5" />
+          <span className="starStreak streak6" />
+          <span className="starStreak streak7" />
+          <span className="starStreak streak8" />
+          <span className="starStreak streak9" />
+          <span className="starStreak streak10" />
+          <span className="starStreak streak11" />
+          <span className="starStreak streak12" />
         </div>
 
-        {/* JOURNEY PATH */}
+        {/* DISTANT DESTINATION */}
 
-        <div className="journeyPath">
-          <span className="journeyPathLine" />
-
-          <span className="journeyPlanet planetOne">
-            <i />
-          </span>
-
-          <span className="journeyPlanet planetTwo">
-            <i />
-          </span>
-
-          <span className="journeyPlanet planetThree">
-            <i />
-          </span>
+        <div className="destinationStar" aria-hidden="true">
+          <div className="destinationHalo haloOuter" />
+          <div className="destinationHalo haloMiddle" />
+          <div className="destinationHalo haloInner" />
+          <div className="destinationStarCore">✦</div>
         </div>
 
-        {/* FIRST DESTINATION */}
+        {/* ROUTE */}
+
+        <div className="journeyRoute" aria-hidden="true">
+          <span className="routeOrigin">✦</span>
+          <span className="routeLine" />
+          <span className="routeDestination">✦</span>
+        </div>
+
+        {/* FLIGHT COPY */}
+
+        <div className="flightMessage">
+          <p>OUR JOURNEY BEGINS</p>
+          <span>FOLLOW THE LIGHT</span>
+        </div>
+
+        {/* FIRST MEMORY */}
 
         <div className="journeyBeginning">
           <p>OUR STORY</p>
@@ -189,9 +247,7 @@ export default function OurStoryGift() {
             HAS A BEGINNING.
           </h2>
 
-          <span>
-            Let&apos;s go back to ours.
-          </span>
+          <span>Let&apos;s go back to ours.</span>
 
           <button
             type="button"
@@ -201,17 +257,12 @@ export default function OurStoryGift() {
             ✦
           </button>
 
-          <small>
-            01 · THE BEGINNING
-          </small>
+          <small>01 · THE BEGINNING</small>
         </div>
 
-        {/* THE UNKNOWN FUTURE */}
+        {/* FUTURE UNIVERSE */}
 
-        <div
-          className="journeyFuture"
-          aria-hidden="true"
-        >
+        <div className="journeyFuture" aria-hidden="true">
           <span>✦</span>
           <span>·</span>
           <span>✦</span>
