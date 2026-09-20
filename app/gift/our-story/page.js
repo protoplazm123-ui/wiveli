@@ -504,75 +504,112 @@ const openMemory = () => {
   {memory.number} · {memory.label}
 </small>         
         </div>
-{/* ===================================================
-    INTERACTIVE MEMORY STAR
-    Separate layer so nothing can block the click
-    =================================================== */}
+<section
+  className="storyMemory storyMemoryPolaroid"
+  key={`memory-${currentMemory}`}
+>
+  <div className="polaroidMemoryGlow" aria-hidden="true" />
 
-     {/* ===================================================
-            CURRENT MEMORY
-            =================================================== */}
+  <div className="polaroidMemoryHeader">
+    <p>
+      MEMORY {memory.number} /{" "}
+      {String(memories.length).padStart(2, "0")}
+    </p>
 
-        <section
-          className="storyMemory"
-          key={`memory-${currentMemory}`}
-        >
-          <div
-            className="storyMemoryGlow"
-            aria-hidden="true"
-          />
+    <h2>{memory.title}</h2>
 
-          <div className="storyMemoryCard">
-            <div className="storyMemoryNumber">
-              <span>MEMORY</span>
-              <strong>{memory.number}</strong>
-            </div>
+    <span>{memory.date}</span>
+  </div>
 
-            <div className="storyMemoryPhoto">
-              <div className="storyMemoryPhotoPlaceholder">
-                <span>♡</span>
-                <small>YOUR PHOTO</small>
-              </div>
+  <div className="polaroidMemoryStage">
 
-              <div className="storyMemoryPhotoShine" />
-            </div>
+    {/* LEFT / PREVIOUS MEMORY */}
 
-            <div className="storyMemoryContent">
-              <p className="storyMemoryDate">
-                {memory.date}
-              </p>
+    {currentMemory > 0 && (
+      <div className="memoryPolaroid memoryPolaroidLeft">
+        <div className="memoryPolaroidNumber">
+          {memories[currentMemory - 1].number}
+        </div>
 
-              <h2>{memory.title}</h2>
+        <div className="memoryPolaroidPhoto">
+          <span>♡</span>
+        </div>
 
-              <p className="storyMemoryText">
-                {memory.text}
-              </p>
+        <p>
+          {memories[currentMemory - 1].label}
+        </p>
+      </div>
+    )}
 
-              <p className="storyMemoryHandwriting">
-                {memory.note}
-              </p>
+    {/* CURRENT MEMORY */}
 
-              <button
-                type="button"
-                className="storyMemoryContinue"
-                onClick={continueJourney}
-              >
-                {currentMemory < memories.length - 1
-                  ? "CONTINUE THE JOURNEY"
-                  : "SEE WHAT'S AHEAD"}
+    <article className="memoryPolaroid memoryPolaroidMain">
+      <div className="memoryPolaroidTop">
+        <span>{memory.number}</span>
+        <span>{memory.date}</span>
+      </div>
 
-                <span>→</span>
-              </button>
-            </div>
-          </div>
+      <div className="memoryPolaroidPhoto memoryPolaroidMainPhoto">
+        <div className="memoryPhotoPlaceholder">
+          <span>♡</span>
+          <small>YOUR PHOTO</small>
+        </div>
+      </div>
 
-          <p className="storyMemoryOrbitText">
-            {currentMemory === 0
-              ? "ONE LITTLE MOMENT · ONE WHOLE UNIVERSE"
-              : "ANOTHER MEMORY · ANOTHER STAR"}
-          </p>
-        </section>
+      <p className="memoryPolaroidNote">
+        {memory.note}
+      </p>
+    </article>
 
+    {/* RIGHT / NEXT MEMORY */}
+
+    {currentMemory < memories.length - 1 && (
+      <div className="memoryPolaroid memoryPolaroidRight">
+        <div className="memoryPolaroidNumber">
+          {memories[currentMemory + 1].number}
+        </div>
+
+        <div className="memoryPolaroidPhoto">
+          <span>♡</span>
+        </div>
+
+        <p>
+          {memories[currentMemory + 1].label}
+        </p>
+      </div>
+    )}
+  </div>
+
+  <div className="polaroidMemoryStory">
+    <p>{memory.text}</p>
+
+    <div className="polaroidStoryLine" />
+
+    <button
+      type="button"
+      className="storyMemoryContinue polaroidContinue"
+      onClick={continueJourney}
+    >
+      {currentMemory < memories.length - 1
+        ? "CONTINUE THE JOURNEY"
+        : "SEE WHAT'S AHEAD"}
+
+      <span>→</span>
+    </button>
+  </div>
+
+  <p className="polaroidMemorySideNote polaroidNoteLeft">
+    ONE LITTLE MOMENT
+    <br />
+    ONE WHOLE UNIVERSE
+  </p>
+
+  <p className="polaroidMemorySideNote polaroidNoteRight">
+    LET&apos;S KEEP
+    <br />
+    EXPLORING TOGETHER ∞
+  </p>
+</section>
         {/* ===================================================
             SMALL FUTURE INDICATOR
             =================================================== */}
