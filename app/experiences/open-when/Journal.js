@@ -2,11 +2,66 @@
 
 import { useMemo, useRef, useState } from 'react';
 import { activeContent, safeLink } from './scenarios';
-import s from './OpenWhen.module.css';
+import s from './Journal.module.css';
 
 const ASSET = '/assets/open-when/diary-kit';
 
-function SurpriseContent({ entry, gift }) {
+function PhotoMemory({ entry, gift }) {
+  const photo = entry.photo || gift.coverPhoto;
+
+  return (
+    <div className={s.memory}>
+      <div className={s.polaroid}>
+        {photo?.data && (
+          <img
+            className={s.photo}
+            src={photo.data}
+            alt="Our memory"
+          />
+        )}
+
+        <img
+          className={s.polaroidFrame}
+          src={`${ASSET}/download-2.png`}
+          alt=""
+          draggable="false"
+        />
+      </div>
+
+      <p className={s.caption}>
+        {entry.caption || 'A tiny way to be a little closer. ♡'}
+      </p>
+
+      <div className={s.note}>
+        <p>
+          {entry.note ||
+            `For the moments when you need a little reminder that I'm always here.`}
+        </p>
+
+        <small>
+          with love,
+          <br />
+          {gift.from || 'me'} ♡
+        </small>
+      </div>
+
+      <img
+        className={s.flowers}
+        src={`${ASSET}/download-4.png`}
+        alt=""
+        draggable="false"
+      />
+
+      <span className={s.tinyWords}>
+        SOMEWHERE
+        <br />
+        WITH YOU ♡
+      </span>
+    </div>
+  );
+}
+
+function Letter({ entry, gift }) {
   const content = activeContent(entry);
   const link = safeLink(content.link);
 
@@ -15,58 +70,70 @@ function SurpriseContent({ entry, gift }) {
   );
 
   return (
-    <div className={s.newSurprise}>
-      <p className={s.newEyebrow}>A LITTLE SURPRISE ♡</p>
+    <div className={s.letter}>
+      <p className={s.eyebrow}>JUST FOR YOU ♡</p>
 
-      <h3>{entry.title}</h3>
+      <h3>{entry.title || 'A little something for you'}</h3>
 
       {content.message && (
-        <p className={s.newSurpriseMessage}>{content.message}</p>
+        <p className={s.letterText}>{content.message}</p>
       )}
 
       {details.length > 0 && (
-        <dl className={s.newDetails}>
+        <div>
           {details.map(([label, value]) => (
-            <div key={label}>
-              <dt>{label}</dt>
-              <dd>{value}</dd>
-            </div>
+            <p className={s.letterText} key={label}>
+              <strong>{label}: </strong>
+              {value}
+            </p>
           ))}
-        </dl>
+        </div>
       )}
 
       {content.audio?.data && (
-        <div className={s.newMedia}>
-          <span>press play when you need me ♡</span>
-          <audio controls preload="none" src={content.audio.data}>
-            Your browser does not support audio.
-          </audio>
+        <div>
+          <p className={s.letterText}>
+            press play when you need me ♡
+          </p>
+
+          <audio
+            controls
+            preload="none"
+            src={content.audio.data}
+            style={{ width: '100%' }}
+          />
         </div>
       )}
 
       {link && (
-        <a
-          className={s.newLink}
-          href={link}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          OPEN THIS LITTLE THING ↗
-        </a>
+        <p>
+          <a
+            href={link}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            OPEN THIS LITTLE THING ↗
+          </a>
+        </p>
       )}
 
       {content.attachment?.data && (
-        <div className={s.newMedia}>
+        <div>
           {content.attachment.type?.startsWith('image/') && (
             <img
-              className={s.newAttachment}
               src={content.attachment.data}
               alt="Attached surprise"
+              style={{
+                display: 'block',
+                width: '100%',
+                maxHeight: 220,
+                objectFit: 'contain',
+                marginBottom: 10,
+              }}
             />
           )}
 
           <a
-            className={s.newLink}
             href={content.attachment.data}
             download={content.attachment.name || 'surprise'}
           >
@@ -75,7 +142,7 @@ function SurpriseContent({ entry, gift }) {
         </div>
       )}
 
-      <p className={s.newSignature}>
+      <p className={s.signature}>
         always in your corner,
         <br />
         {gift.from || 'me'} ♡
@@ -84,327 +151,303 @@ function SurpriseContent({ entry, gift }) {
   );
 }
 
-function Polaroid({ photo, caption }) {
-  return (
-    <figure className={s.newPolaroid}>
-      <div className={s.newPhotoWindow}>
-        {photo?.data ? (
-          <img src={photo.data} alt={caption || 'Our memory'} />
-        ) : (
-          <div className={s.newPhotoPlaceholder}>
-            <span>♡</span>
-            <small>our little memory</small>
-          </div>
-        )}
-      </div>
-
-      <figcaption>{caption || 'You. Always. ♡'}</figcaption>
-    </figure>
-  );
-}
-
-function Envelope({ entry, gift }) {
-  const [open, setOpen] = useState(false);
+function SurprisePage({ entry, gift }) {
+  const [opened, setOpened] = useState(false);
 
   return (
-    <div className={`${s.newEnvelopeArea} ${open ? s.newEnvelopeIsOpen : ''}`}>
-      <button
-        type="button"
-        className={s.newEnvelopeButton}
-        onClick={() => setOpen((value) => !value)}
-        aria-expanded={open}
-      >
-        <img
-          className={s.newEnvelopeImage}
-          src={`${ASSET}/${open ? 'envelope-open.png' : 'envelope-closed.png'}`}
-          alt=""
-          draggable="false"
-        />
+    <div className={s.surprisePage}>
+      <p className={s.eyebrow}>OPEN WHEN…</p>
 
-        {!open && (
-          <span className={s.newEnvelopeLabel}>
-            <small>OPEN WHEN…</small>
-            <strong>{entry.when}</strong>
-          </span>
-        )}
-      </button>
+      <h2 className={s.title}>
+        you
+        <em>{entry.when}</em>
+      </h2>
 
-      <p className={s.newEnvelopeHint}>
-        {open ? 'tap again to close ↑' : 'tap the envelope ♡'}
-      </p>
+      {!opened ? (
+        <>
+          <button
+            type="button"
+            className={s.envelopeButton}
+            onClick={() => setOpened(true)}
+            aria-label={`Open when ${entry.when}`}
+          >
+            <img
+              className={s.envelope}
+              src={`${ASSET}/download-1.png`}
+              alt=""
+              draggable="false"
+            />
+          </button>
 
-      {open && (
-        <div className={s.newSurpriseReveal}>
-          <SurpriseContent entry={entry} gift={gift} />
-        </div>
+          <p className={s.envelopeHint}>
+            tap the envelope ♡
+          </p>
+        </>
+      ) : (
+        <>
+          <button
+            type="button"
+            className={s.envelopeButton}
+            onClick={() => setOpened(false)}
+            aria-label="Close letter"
+          >
+            <img
+              className={s.envelope}
+              src={`${ASSET}/download.png`}
+              alt=""
+              draggable="false"
+            />
+          </button>
+
+          <Letter entry={entry} gift={gift} />
+        </>
       )}
+
+      <img
+        className={s.ribbon}
+        src={`${ASSET}/download-5.png`}
+        alt=""
+        draggable="false"
+      />
     </div>
   );
 }
 
 /*
- * Keep this export.
- * OpenWhenBuilder already imports Cover.
+ * IMPORTANT:
+ * OpenWhenBuilder imports this named export.
  */
 export function Cover({ gift, onOpen = () => {} }) {
   return (
-    <div className={s.newCoverWrap}>
-      <button type="button" className={s.newCoverButton} onClick={onOpen}>
+    <div
+      style={{
+        width: 'min(82vw, 430px)',
+        margin: 'auto',
+      }}
+    >
+      <button
+        type="button"
+        onClick={onOpen}
+        style={{
+          position: 'relative',
+          display: 'block',
+          width: '100%',
+          padding: 0,
+          border: 0,
+          background: 'transparent',
+          cursor: 'pointer',
+          filter: 'drop-shadow(0 28px 24px rgba(26,10,7,.4))',
+        }}
+      >
         <img
           src={`${ASSET}/journal-cover.png`}
           alt="Open When journal"
-          className={s.newCoverImage}
           draggable="false"
+          style={{
+            display: 'block',
+            width: '100%',
+            height: 'auto',
+          }}
         />
 
-        <div className={s.newCoverCopy}>
-          <small>WIVELI</small>
+        <div
+          style={{
+            position: 'absolute',
+            inset: '18% 19% 18% 16%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#f1dfc6',
+            textAlign: 'center',
+            pointerEvents: 'none',
+          }}
+        >
+          <small
+            style={{
+              marginBottom: 10,
+              fontSize: 7,
+              fontWeight: 800,
+              letterSpacing: '.2em',
+            }}
+          >
+            WIVELI
+          </small>
 
-          <strong>
+          <strong
+            style={{
+              fontFamily: 'Georgia, serif',
+              fontSize: 'clamp(31px, 10vw, 50px)',
+              fontWeight: 400,
+              lineHeight: '.86',
+            }}
+          >
             OPEN
             <br />
             WHEN…
           </strong>
 
-          <span>♡</span>
+          <span
+            style={{
+              margin: '10px 0 3px',
+              fontFamily: "'Care Hand', cursive",
+              fontSize: 30,
+              color: '#e6b6b3',
+            }}
+          >
+            ♡
+          </span>
 
-          <em>for {gift?.to || 'you'}</em>
+          <em
+            style={{
+              fontFamily: "'Care Hand', cursive",
+              fontSize: 'clamp(18px, 5vw, 27px)',
+              fontStyle: 'normal',
+            }}
+          >
+            for {gift?.to || 'you'}
+          </em>
         </div>
       </button>
     </div>
   );
 }
 
-function IntroPage({ gift }) {
-  return (
-    <div className={s.newIntroPage}>
-      <p className={s.newEyebrow}>THIS LITTLE BOOK BELONGS TO</p>
-
-      <h2>{gift.to || 'you'} ♡</h2>
-
-      <div className={s.newIntroPaper}>
-        <span className={s.newTape} />
-
-        <p>
-          Open these pages whenever you need a little comfort, a smile,
-          a reminder, or simply a little bit of me.
-        </p>
-      </div>
-
-      <p className={s.newHandNote}>
-        made with way too much love
-        <br />
-        {gift.from || 'me'} ♡
-      </p>
-    </div>
-  );
-}
-
-function MemoryPage({ entry, gift, index }) {
-  return (
-    <div className={s.newMemoryPage}>
-      <div className={s.newPageTop}>
-        <span>WIVELI</span>
-        <span>{String(index + 1).padStart(2, '0')}</span>
-      </div>
-
-      <h2>
-        Open when
-        <br />
-        <em>{entry.when}</em>
-      </h2>
-
-      <div className={s.newScrapbook}>
-        <Polaroid
-          photo={entry.photo || gift.coverPhoto}
-          caption={entry.caption || 'You. Always. ♡'}
-        />
-
-        <div className={s.newPersonalPaper}>
-          <span className={s.newTape} />
-
-          <p>
-            {entry.note ||
-              `Even when we're apart, you're still so close to my heart.`}
-          </p>
-
-          <small>with love, {gift.from || 'me'} ♡</small>
-        </div>
-
-        <img
-          src={`${ASSET}/flowers.png`}
-          className={s.newFlowers}
-          alt=""
-          draggable="false"
-        />
-
-        <span className={s.newTinyWords}>
-          SAME SOULS
-          <br />
-          DIFFERENT PLACES ♡
-        </span>
-      </div>
-
-      <Envelope entry={entry} gift={gift} />
-    </div>
-  );
-}
-
-function FinalPage({ gift }) {
-  return (
-    <div className={s.newFinalPage}>
-      <span className={s.newFinalHeart}>♡</span>
-
-      <p className={s.newEyebrow}>ONE LAST LITTLE NOTE</p>
-
-      <h2>
-        And when you
-        <br />
-        reach the end…
-      </h2>
-
-      <div className={s.newFinalPaper}>
-        <p>
-          Remember there will always be another page for us to fill.
-        </p>
-      </div>
-
-      <em>love, {gift.from || 'me'} x</em>
-    </div>
-  );
-}
-
-function LightweightBook({ gift, entries, onClose }) {
-  const pages = useMemo(
-    () => [
-      { type: 'intro' },
-      ...entries.map((entry, index) => ({
-        type: 'memory',
-        entry,
-        index,
-      })),
-      { type: 'final' },
-    ],
-    [entries]
-  );
-
+function Reader({ gift, entries, onClose }) {
   const [page, setPage] = useState(0);
-  const [direction, setDirection] = useState('next');
   const touchStart = useRef(null);
 
-  const current = pages[page];
+  const entry = entries[page];
 
-  function goNext() {
-    if (page >= pages.length - 1) return;
-    setDirection('next');
-    setPage((value) => value + 1);
+  function previous() {
+    setPage((value) => Math.max(0, value - 1));
   }
 
-  function goPrevious() {
-    if (page <= 0) return;
-    setDirection('previous');
-    setPage((value) => value - 1);
+  function next() {
+    setPage((value) =>
+      Math.min(entries.length - 1, value + 1)
+    );
   }
 
-  function handleTouchStart(event) {
-    touchStart.current = event.touches[0]?.clientX ?? null;
+  function touchBegin(event) {
+    touchStart.current =
+      event.touches?.[0]?.clientX ?? null;
   }
 
-  function handleTouchEnd(event) {
+  function touchEnd(event) {
     if (touchStart.current === null) return;
 
-    const end = event.changedTouches[0]?.clientX ?? touchStart.current;
-    const distance = end - touchStart.current;
+    const end =
+      event.changedTouches?.[0]?.clientX ??
+      touchStart.current;
+
+    const difference = end - touchStart.current;
 
     touchStart.current = null;
 
-    if (Math.abs(distance) < 55) return;
+    if (Math.abs(difference) < 55) return;
 
-    if (distance < 0) goNext();
-    else goPrevious();
+    if (difference < 0) next();
+    else previous();
   }
 
   return (
-    <section className={s.newReader}>
-      <div className={s.newReaderTop}>
-        <button type="button" onClick={onClose}>
+    <>
+      <header className={s.top}>
+        <button
+          type="button"
+          onClick={onClose}
+          style={{
+            border: 0,
+            padding: 0,
+            color: 'inherit',
+            background: 'transparent',
+            fontSize: 9,
+            fontWeight: 800,
+            letterSpacing: '.15em',
+            cursor: 'pointer',
+          }}
+        >
           CLOSE JOURNAL
         </button>
 
-        <span>
+        <span className={s.counter}>
           {String(page + 1).padStart(2, '0')} /{' '}
-          {String(pages.length).padStart(2, '0')}
+          {String(entries.length).padStart(2, '0')}
         </span>
-      </div>
+      </header>
 
       <div
-        className={s.newBookStage}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
+        className={s.stage}
+        onTouchStart={touchBegin}
+        onTouchEnd={touchEnd}
       >
         <img
+          className={s.book}
           src={`${ASSET}/journal-open.png`}
-          className={s.newOpenJournal}
           alt=""
           draggable="false"
         />
 
-        <div
-          key={page}
-          className={`${s.newPageContent} ${
-            direction === 'next' ? s.newPageNext : s.newPagePrevious
-          }`}
-        >
-          {current.type === 'intro' && <IntroPage gift={gift} />}
+        <section className={s.leftPage}>
+          <PhotoMemory
+            key={`memory-${page}`}
+            entry={entry}
+            gift={gift}
+          />
+        </section>
 
-          {current.type === 'memory' && (
-            <MemoryPage
-              entry={current.entry}
-              gift={gift}
-              index={current.index}
-            />
-          )}
-
-          {current.type === 'final' && <FinalPage gift={gift} />}
-        </div>
+        <section className={s.rightPage}>
+          <SurprisePage
+            key={`surprise-${page}`}
+            entry={entry}
+            gift={gift}
+          />
+        </section>
       </div>
 
-      <nav className={s.newControls}>
+      <nav className={s.navigation}>
         <button
           type="button"
-          onClick={goPrevious}
+          className={s.navButton}
+          onClick={previous}
           disabled={page === 0}
-          aria-label="Previous page"
+          aria-label="Previous surprise"
         >
           ←
         </button>
 
-        <div className={s.newProgress}>
-          <span
-            style={{
-              width: `${((page + 1) / pages.length) * 100}%`,
-            }}
-          />
+        <div className={s.pageDots}>
+          {entries.map((item, index) => (
+            <span
+              key={item.id || index}
+              className={`${s.dot} ${
+                index === page ? s.dotActive : ''
+              }`}
+            />
+          ))}
         </div>
 
         <button
           type="button"
-          onClick={goNext}
-          disabled={page === pages.length - 1}
-          aria-label="Next page"
+          className={s.navButton}
+          onClick={next}
+          disabled={page === entries.length - 1}
+          aria-label="Next surprise"
         >
           →
         </button>
       </nav>
-
-      <p className={s.newSwipeHint}>swipe or use the arrows ♡</p>
-    </section>
+    </>
   );
 }
 
 export default function Journal({ gift }) {
   const entries = useMemo(
-    () => (gift?.entries || []).filter((entry) => entry.selected),
+    () =>
+      (gift?.entries || []).filter(
+        (entry) => entry.selected
+      ),
     [gift?.entries]
   );
 
@@ -412,10 +455,18 @@ export default function Journal({ gift }) {
 
   if (!entries.length) {
     return (
-      <main className={s.newDiaryRoot}>
-        <div className={s.newEmpty}>
-          <span>♡</span>
-          <h1>Your little journal is waiting.</h1>
+      <main className={s.root}>
+        <div
+          style={{
+            minHeight: '100svh',
+            display: 'grid',
+            placeContent: 'center',
+            padding: 30,
+            color: '#fff4e7',
+            textAlign: 'center',
+          }}
+        >
+          <h1>Your little journal is waiting. ♡</h1>
           <p>Add at least one Open When surprise to begin.</p>
         </div>
       </main>
@@ -423,24 +474,30 @@ export default function Journal({ gift }) {
   }
 
   return (
-    <main className={s.newDiaryRoot}>
-      <div className={s.newAmbient} aria-hidden="true">
-        <span className={s.newGlow} />
-        <span className={s.newFabric} />
-      </div>
-
-      <header className={s.newDiaryHeader}>
-        <strong>WIVELI</strong>
-        <small>OPEN WHEN…</small>
-      </header>
-
+    <main className={s.root}>
       {!opened ? (
-        <div className={s.newCoverScene}>
-          <Cover gift={gift} onOpen={() => setOpened(true)} />
-          <p>tap the journal to open it ♡</p>
-        </div>
+        <>
+          <header className={s.top}>
+            <strong className={s.brand}>WIVELI</strong>
+            <span className={s.counter}>OPEN WHEN…</span>
+          </header>
+
+          <div
+            style={{
+              minHeight: 'calc(100svh - 58px)',
+              display: 'grid',
+              placeItems: 'center',
+              padding: '30px 15px 50px',
+            }}
+          >
+            <Cover
+              gift={gift}
+              onOpen={() => setOpened(true)}
+            />
+          </div>
+        </>
       ) : (
-        <LightweightBook
+        <Reader
           gift={gift}
           entries={entries}
           onClose={() => setOpened(false)}
