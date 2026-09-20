@@ -3,11 +3,13 @@
 import { Suspense, useEffect, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import {
+  Bounds,
+  Center,
   Environment,
-  OrbitControls,
   useAnimations,
   useGLTF,
 } from '@react-three/drei';
+import * as THREE from 'three';
 
 const MODEL_URL = '/assets/open-when/gift_box_animation.glb';
 
@@ -23,7 +25,7 @@ function GiftBoxModel({ open = false }) {
 
     if (action) {
       action.reset();
-      action.setLoop(2200, 1);
+      action.setLoop(THREE.LoopOnce, 1);
       action.clampWhenFinished = true;
       action.play();
     }
@@ -32,22 +34,21 @@ function GiftBoxModel({ open = false }) {
   useFrame((state) => {
     if (!group.current || open) return;
 
-    const x = state.pointer.x * 0.12;
-    const y = state.pointer.y * 0.06;
+    const targetY = state.pointer.x * 0.12;
+    const targetX = -state.pointer.y * 0.05;
 
     group.current.rotation.y +=
-      (x - group.current.rotation.y) * 0.04;
+      (targetY - group.current.rotation.y) * 0.04;
 
     group.current.rotation.x +=
-      (-y - group.current.rotation.x) * 0.04;
+      (targetX - group.current.rotation.x) * 0.04;
   });
 
   return (
     <group ref={group}>
-      <primitive
-        object={scene}
-        scale={1.7}
-      />
+      <Center>
+        <primitive object={scene} />
+      </Center>
     </group>
   );
 }
@@ -67,30 +68,31 @@ export default function GiftBox3D({
     >
       <Canvas
         camera={{
-          position: [0, 1.4, 5],
-          fov: 38,
+          position: [0, 1, 5],
+          fov: 35,
         }}
+        dpr={[1, 2]}
         shadows
       >
-        <ambientLight intensity={1.4} />
+        <ambientLight intensity={1.5} />
 
         <directionalLight
-          position={[4, 6, 4]}
+          position={[4, 6, 5]}
           intensity={2.5}
-          castShadow
         />
 
         <Suspense fallback={null}>
-          <GiftBoxModel open={open} />
+          <Bounds
+            fit
+            clip
+            observe
+            margin={1.35}
+          >
+            <GiftBoxModel open={open} />
+          </Bounds>
 
           <Environment preset="studio" />
         </Suspense>
-
-        <OrbitControls
-          enableZoom={false}
-          enablePan={false}
-          enableRotate={false}
-        />
       </Canvas>
     </div>
   );
