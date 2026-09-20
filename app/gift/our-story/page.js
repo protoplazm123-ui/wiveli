@@ -39,12 +39,8 @@ export default function OurStoryGift() {
         </p>
 
         <div className="ourStoryEnvelopeScene">
-          {/* LETTER */}
-
           <div className="ourStoryLetter">
-            <p className="letterSmall">
-              FOR YOU ♡
-            </p>
+            <p className="letterSmall">FOR YOU ♡</p>
 
             <h1>
               Let&apos;s remember
@@ -79,8 +75,6 @@ export default function OurStoryGift() {
             </button>
           </div>
 
-          {/* ENVELOPE */}
-
           <button
             type="button"
             className="ourStoryEnvelope"
@@ -88,7 +82,6 @@ export default function OurStoryGift() {
             aria-label="Open your letter"
           >
             <div className="envelopeBack" />
-
             <div className="envelopeInside" />
 
             <div className="envelopeFront">
@@ -130,23 +123,44 @@ export default function OurStoryGift() {
           ========================================= */}
 
       <section className="journeyUniverse">
+        {/* REAL VIDEO BACKGROUND */}
+
+        <video
+          className="journeyVideo"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+        >
+          <source
+            src="/assets/our-story/334401%20(1).mp4"
+            type="video/mp4"
+          />
+        </video>
+
+        {/* CINEMATIC DARK OVERLAY */}
+
+        <div className="journeyVideoOverlay" />
+
         {/* LIGHT TRANSITION */}
 
         <div className="journeyLight" />
 
-        {/* DEPTH STARS */}
+        {/* EXTRA DEPTH STARS */}
 
         <div className="journeyDepthStars journeyDepthOne" />
         <div className="journeyDepthStars journeyDepthTwo" />
         <div className="journeyDepthStars journeyDepthThree" />
 
-        {/* DISTANT GALAXY */}
+        {/* SOFT GALAXY GLOW */}
 
         <div className="journeyGalaxy">
           <div className="journeyGalaxyCore" />
         </div>
 
-        {/* PATH */}
+        {/* JOURNEY PATH */}
 
         <div className="journeyPath">
           <span className="journeyPathLine" />
@@ -167,9 +181,7 @@ export default function OurStoryGift() {
         {/* FIRST DESTINATION */}
 
         <div className="journeyBeginning">
-          <p>
-            OUR STORY
-          </p>
+          <p>OUR STORY</p>
 
           <h2>
             EVERY UNIVERSE
@@ -194,9 +206,12 @@ export default function OurStoryGift() {
           </small>
         </div>
 
-        {/* FUTURE */}
+        {/* THE UNKNOWN FUTURE */}
 
-        <div className="journeyFuture" aria-hidden="true">
+        <div
+          className="journeyFuture"
+          aria-hidden="true"
+        >
           <span>✦</span>
           <span>·</span>
           <span>✦</span>
