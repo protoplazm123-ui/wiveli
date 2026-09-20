@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import GiftBox3D from './GiftBox3D';
 import { activeContent, safeLink } from './scenarios';
 import s from './Journal.module.css';
 
@@ -225,44 +226,24 @@ function Envelope({ entry, index, onOpen }) {
   );
 }
 
-/*
- * IMPORTANT:
- * OpenWhenBuilder imports this named export.
- */
-export function Cover({ gift, onOpen = () => {} }) {
+export function Cover({
+  gift,
+  onOpen = () => {},
+  opening = false,
+}) {
   return (
-    <button
-      type="button"
-      className={s.giftButton}
-      onClick={onOpen}
-    >
-      <div className={s.giftScene}>
-        <div className={s.giftShadow} />
-
-        <div className={s.boxLid}>
-          <span className={s.lidRibbon} />
-          <span className={s.bow}>♡</span>
-        </div>
-
-        <div className={s.boxBody}>
-          <span className={s.verticalRibbon} />
-
-          <div className={s.boxLabel}>
-            <small>WIVELI</small>
-
-            <strong>OPEN WHEN…</strong>
-
-            <em>
-              for {gift?.to || 'you'} ♡
-            </em>
-          </div>
-        </div>
-      </div>
+    <div className={s.giftButton}>
+      <GiftBox3D
+        open={opening}
+        onClick={onOpen}
+      />
 
       <span className={s.coverHint}>
-        tap to open your gift ♡
+        {opening
+          ? 'opening your little gift…'
+          : 'tap the box to open ♡'}
       </span>
-    </button>
+    </div>
   );
 }
 
@@ -369,7 +350,7 @@ export default function Journal({ gift }) {
     window.setTimeout(() => {
       setOpened(true);
       setBursting(false);
-    }, 950);
+    }, 1800);
   }
 
   return (
@@ -424,6 +405,7 @@ export default function Journal({ gift }) {
 
             <Cover
               gift={gift}
+              opening={bursting}
               onOpen={openGift}
             />
           </div>
