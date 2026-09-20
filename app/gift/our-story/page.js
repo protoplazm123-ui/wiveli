@@ -29,10 +29,26 @@ export default function OurStoryGift() {
   const [opened, setOpened] = useState(false);
   const [journeyStarted, setJourneyStarted] = useState(false);
   const [flightStage, setFlightStage] = useState("idle");
+  const [memoryOpen, setMemoryOpen] = useState(false);
+  const [memoryLeaving, setMemoryLeaving] = useState(false);
 
   const beginJourney = () => {
     setJourneyStarted(true);
     setFlightStage("launch");
+  };
+
+  const openFirstMemory = () => {
+    setMemoryOpen(true);
+    setMemoryLeaving(false);
+  };
+
+  const continueJourney = () => {
+    setMemoryLeaving(true);
+
+    setTimeout(() => {
+      setMemoryOpen(false);
+      setMemoryLeaving(false);
+    }, 1200);
   };
 
   useEffect(() => {
@@ -63,19 +79,15 @@ export default function OurStoryGift() {
         "ourStoryGift",
         opened ? "isOpened" : "",
         journeyStarted ? "journeyStarted" : "",
+        memoryOpen ? "memoryIsOpen" : "",
+        memoryLeaving ? "memoryIsLeaving" : "",
         `flight-${flightStage}`,
       ].join(" ")}
     >
-      {/* MOVING SPACE BEHIND THE ENVELOPE */}
+      {/* OPENING GALAXY */}
 
       <div className="ourStoryOpeningVideo" aria-hidden="true">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-        >
+        <video autoPlay muted loop playsInline preload="auto">
           <source
             src="/assets/our-story/334401%20(1).mp4"
             type="video/mp4"
@@ -85,7 +97,7 @@ export default function OurStoryGift() {
         <div className="ourStoryOpeningShade" />
       </div>
 
-      {/* OPENING SPACE DETAILS */}
+      {/* OPENING SPACE */}
 
       <div className="ourStorySpace" aria-hidden="true">
         <div className="ourStoryStars starsOne" />
@@ -100,7 +112,7 @@ export default function OurStoryGift() {
         <span className="ourStoryStar starC">✦</span>
       </div>
 
-      {/* ENVELOPE + LETTER */}
+      {/* ENVELOPE */}
 
       <section className="ourStoryIntro">
         <p className="ourStoryLabel">
@@ -187,12 +199,9 @@ export default function OurStoryGift() {
         </p>
       </section>
 
-      {/* JOURNEY */}
+      {/* SPACE JOURNEY */}
 
       <section className="journeyUniverse">
-
-        {/* CALM SPACE */}
-
         <video
           className="journeyVideo journeyCalmVideo"
           autoPlay
@@ -207,8 +216,6 @@ export default function OurStoryGift() {
             type="video/mp4"
           />
         </video>
-
-        {/* BRIGHT FLIGHT */}
 
         <video
           className="journeyVideo journeyFlightVideo"
@@ -228,7 +235,7 @@ export default function OurStoryGift() {
         <div className="journeyVideoOverlay" />
         <div className="journeyLight" />
 
-        {/* SMALL FLYING STARS */}
+        {/* SMALL STARS */}
 
         <div className="flightStars" aria-hidden="true">
           {flightStars.map(([left, top, size, delay], index) => (
@@ -244,7 +251,7 @@ export default function OurStoryGift() {
           ))}
         </div>
 
-        {/* DESTINATION STAR */}
+        {/* DESTINATION */}
 
         <div className="destinationStar" aria-hidden="true">
           <div className="destinationHalo haloOuter" />
@@ -253,14 +260,12 @@ export default function OurStoryGift() {
           <div className="destinationStarCore">✦</div>
         </div>
 
-        {/* FLIGHT MESSAGE */}
-
         <div className="flightMessage">
           <p>OUR JOURNEY BEGINS</p>
           <span>FOLLOW THE LIGHT</span>
         </div>
 
-        {/* FIRST MEMORY */}
+        {/* FIRST DESTINATION */}
 
         <div className="journeyBeginning">
           <p>OUR STORY</p>
@@ -277,6 +282,7 @@ export default function OurStoryGift() {
             type="button"
             className="journeyFirstStar"
             aria-label="Open the first memory"
+            onClick={openFirstMemory}
           >
             ✦
           </button>
@@ -284,7 +290,64 @@ export default function OurStoryGift() {
           <small>01 · THE BEGINNING</small>
         </div>
 
-        {/* DISTANT FUTURE */}
+        {/* FIRST MEMORY */}
+
+        <section className="storyMemory">
+          <div className="storyMemoryGlow" aria-hidden="true" />
+
+          <div className="storyMemoryCard">
+            <div className="storyMemoryNumber">
+              <span>MEMORY</span>
+              <strong>01</strong>
+            </div>
+
+            <div className="storyMemoryPhoto">
+              <div className="storyMemoryPhotoPlaceholder">
+                <span>♡</span>
+                <small>YOUR PHOTO</small>
+              </div>
+
+              <div className="storyMemoryPhotoShine" />
+            </div>
+
+            <div className="storyMemoryContent">
+              <p className="storyMemoryDate">
+                SEPTEMBER 26 · 2024
+              </p>
+
+              <h2>
+                THE DAY
+                <br />
+                IT ALL BEGAN.
+              </h2>
+
+              <p className="storyMemoryText">
+                I still remember this moment like it was
+                yesterday. I didn&apos;t know yet how many
+                beautiful memories would come after it.
+              </p>
+
+              <p className="storyMemoryHandwriting">
+                My favorite beginning. ♡
+              </p>
+
+              <button
+                type="button"
+                className="storyMemoryContinue"
+                onClick={continueJourney}
+              >
+                CONTINUE THE JOURNEY
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+
+          <p className="storyMemoryOrbitText">
+            ONE LITTLE MOMENT · ONE WHOLE UNIVERSE
+          </p>
+        </section>
+
+        {/* FUTURE STARS */}
 
         <div className="journeyFuture" aria-hidden="true">
           <span>✦</span>
