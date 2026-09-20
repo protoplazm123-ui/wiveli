@@ -4766,3 +4766,1055 @@
     width: 205px;
   }
 }
+/* =========================================================
+   WIVELI — OPEN WHEN / LIGHTWEIGHT REAL DIARY
+   ========================================================= */
+
+.newDiaryRoot {
+  --wine: #6f2632;
+  --wine-dark: #421820;
+  --rose: #d7a5a8;
+  --paper: #f4ead7;
+  --ink: #342820;
+
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  color: var(--ink);
+  background:
+    linear-gradient(rgba(31, 15, 11, .2), rgba(31, 15, 11, .28)),
+    url('/assets/open-when/diary/wood_table_001_diff_2k.jpg') center / cover fixed;
+}
+
+.newDiaryRoot::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 225, 187, .16), transparent 38%),
+    radial-gradient(circle at 50% 50%, transparent 35%, rgba(25, 10, 7, .36) 100%);
+}
+
+/* ---------- ambient ---------- */
+
+.newAmbient {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.newGlow {
+  position: absolute;
+  width: 55vw;
+  height: 55vw;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: rgba(255, 212, 171, .07);
+  filter: blur(60px);
+}
+
+.newFabric {
+  position: absolute;
+  width: 340px;
+  height: 220px;
+  right: -80px;
+  bottom: -65px;
+  transform: rotate(-16deg);
+  border-radius: 45% 10% 0 0;
+  opacity: .38;
+  background:
+    repeating-linear-gradient(
+      25deg,
+      rgba(255,255,255,.035) 0 2px,
+      transparent 2px 6px
+    ),
+    #8d5960;
+  box-shadow: -25px -20px 50px rgba(35, 14, 12, .18);
+}
+
+/* ---------- header ---------- */
+
+.newDiaryHeader {
+  position: relative;
+  z-index: 20;
+  height: 68px;
+  padding: 0 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: rgba(255, 247, 235, .9);
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  background: rgba(40, 20, 15, .13);
+  backdrop-filter: blur(8px);
+}
+
+.newDiaryHeader strong {
+  font-size: 14px;
+  letter-spacing: .17em;
+}
+
+.newDiaryHeader small {
+  font-size: 8px;
+  letter-spacing: .18em;
+  opacity: .7;
+}
+
+/* =========================================================
+   COVER
+   ========================================================= */
+
+.newCoverScene {
+  position: relative;
+  z-index: 3;
+  min-height: calc(100vh - 68px);
+  padding: 34px 18px 55px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.newCoverScene > p {
+  margin: 25px 0 0;
+  color: rgba(255,245,232,.8);
+  font-family: 'Care Hand', cursive;
+  font-size: 19px;
+  transform: rotate(-2deg);
+}
+
+.newCoverWrap {
+  width: min(84vw, 440px);
+  margin: auto;
+}
+
+.newCoverButton {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  filter: drop-shadow(0 28px 24px rgba(26, 10, 7, .4));
+  transition: transform .35s ease, filter .35s ease;
+}
+
+.newCoverButton:hover {
+  transform: translateY(-5px) rotate(-.5deg);
+  filter: drop-shadow(0 35px 28px rgba(26, 10, 7, .46));
+}
+
+.newCoverImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+.newCoverCopy {
+  position: absolute;
+  z-index: 2;
+  inset: 18% 19% 18% 16%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #f1dfc6;
+  text-align: center;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(38, 11, 13, .35);
+}
+
+.newCoverCopy small {
+  margin-bottom: 10px;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: .2em;
+}
+
+.newCoverCopy strong {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(31px, 10vw, 50px);
+  font-weight: 400;
+  line-height: .86;
+  letter-spacing: -.06em;
+}
+
+.newCoverCopy > span {
+  margin: 10px 0 3px;
+  font-family: 'Care Hand', cursive;
+  font-size: 30px;
+  color: #e6b6b3;
+}
+
+.newCoverCopy em {
+  font-family: 'Care Hand', cursive;
+  font-size: clamp(18px, 5vw, 27px);
+  font-style: normal;
+}
+
+/* =========================================================
+   READER
+   ========================================================= */
+
+.newReader {
+  position: relative;
+  z-index: 4;
+  width: 100%;
+  min-height: calc(100vh - 68px);
+  padding: 18px 12px 32px;
+}
+
+.newReaderTop {
+  width: min(100%, 920px);
+  margin: 0 auto 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: rgba(255,247,235,.85);
+}
+
+.newReaderTop button {
+  padding: 9px 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  cursor: pointer;
+}
+
+.newReaderTop span {
+  font-size: 8px;
+  letter-spacing: .15em;
+}
+
+/* =========================================================
+   REAL OPEN JOURNAL
+   ========================================================= */
+
+.newBookStage {
+  position: relative;
+  width: min(100%, 980px);
+  margin: auto;
+  aspect-ratio: 1.42 / 1;
+  min-height: 540px;
+  display: grid;
+  place-items: center;
+  filter: drop-shadow(0 27px 24px rgba(26, 11, 7, .42));
+  touch-action: pan-y;
+}
+
+.newOpenJournal {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.newPageContent {
+  position: absolute;
+  z-index: 3;
+
+  /*
+   * Content sits primarily over the right-hand page.
+   * This avoids covering the binding and gives the mobile
+   * experience one focused page at a time.
+   */
+  left: 50.5%;
+  top: 12%;
+  width: 40%;
+  height: 74%;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 3% 4% 5%;
+
+  scrollbar-width: none;
+
+  transform-origin: left center;
+  backface-visibility: hidden;
+}
+
+.newPageContent::-webkit-scrollbar {
+  display: none;
+}
+
+.newPageNext {
+  animation: newPageInRight .42s cubic-bezier(.22,.75,.3,1);
+}
+
+.newPagePrevious {
+  animation: newPageInLeft .42s cubic-bezier(.22,.75,.3,1);
+}
+
+@keyframes newPageInRight {
+  from {
+    opacity: .2;
+    transform: translateX(12px) rotateY(-7deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) rotateY(0);
+  }
+}
+
+@keyframes newPageInLeft {
+  from {
+    opacity: .2;
+    transform: translateX(-12px) rotateY(7deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) rotateY(0);
+  }
+}
+
+/* =========================================================
+   COMMON TYPOGRAPHY
+   ========================================================= */
+
+.newEyebrow {
+  margin: 0;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: #826d5d;
+}
+
+.newTape {
+  position: absolute;
+  z-index: 5;
+  width: 62px;
+  height: 19px;
+  left: 50%;
+  top: -9px;
+  transform: translateX(-50%) rotate(-4deg);
+  opacity: .6;
+  background: rgba(196, 169, 132, .62);
+  clip-path: polygon(3% 5%, 97% 0, 100% 91%, 4% 100%, 0 70%);
+}
+
+/* =========================================================
+   INTRO PAGE
+   ========================================================= */
+
+.newIntroPage {
+  position: relative;
+  min-height: 100%;
+  padding-top: 12%;
+  text-align: center;
+}
+
+.newIntroPage h2 {
+  margin: 10px 0 30px;
+  color: #7d3440;
+  font-family: 'Care Hand', cursive;
+  font-size: clamp(27px, 3.5vw, 44px);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.newIntroPaper {
+  position: relative;
+  width: 88%;
+  margin: 0 auto;
+  padding: 24px 19px 20px;
+  background: #e6c1bf;
+  box-shadow: 0 8px 13px rgba(72, 45, 31, .12);
+  transform: rotate(-2deg);
+}
+
+.newIntroPaper p {
+  margin: 0;
+  font-family: 'Care Hand', cursive;
+  font-size: clamp(17px, 1.9vw, 24px);
+  line-height: 1.15;
+}
+
+.newHandNote {
+  margin: 27px 0 0;
+  font-family: 'Care Hand', cursive;
+  font-size: clamp(17px, 1.8vw, 23px);
+  line-height: 1.05;
+  color: #796858;
+  transform: rotate(2deg);
+}
+
+/* =========================================================
+   MEMORY PAGE
+   ========================================================= */
+
+.newMemoryPage {
+  position: relative;
+  min-height: 100%;
+  padding-bottom: 25px;
+}
+
+.newPageTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #8b7764;
+  font-size: 6px;
+  font-weight: 800;
+  letter-spacing: .15em;
+}
+
+.newMemoryPage > h2 {
+  position: relative;
+  z-index: 6;
+  margin: 11px 0 14px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(17px, 2.15vw, 30px);
+  font-weight: 400;
+  line-height: .95;
+  letter-spacing: -.04em;
+}
+
+.newMemoryPage > h2 em {
+  color: #843846;
+  font-family: 'Care Hand', cursive;
+  font-size: 1.23em;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.newScrapbook {
+  position: relative;
+  min-height: 265px;
+}
+
+/* ---------- polaroid ---------- */
+
+.newPolaroid {
+  position: relative;
+  z-index: 3;
+  width: 59%;
+  margin: 0;
+  padding: 6px 6px 8px;
+  background: #eee3ce;
+  box-shadow: 0 9px 14px rgba(70, 45, 29, .2);
+  transform: rotate(-4deg);
+}
+
+.newPhotoWindow {
+  aspect-ratio: .94 / 1;
+  overflow: hidden;
+  background: #493f39;
+}
+
+.newPhotoWindow img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.newPhotoPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-content: center;
+  gap: 3px;
+  color: #e5d3bf;
+  text-align: center;
+  background:
+    radial-gradient(circle at 60% 35%, #8d7768, transparent 30%),
+    linear-gradient(145deg, #5d5047, #302b28);
+}
+
+.newPhotoPlaceholder span {
+  font-family: 'Care Hand', cursive;
+  font-size: 30px;
+}
+
+.newPhotoPlaceholder small {
+  font-family: 'Care Hand', cursive;
+  font-size: 13px;
+}
+
+.newPolaroid figcaption {
+  margin-top: 5px;
+  color: #6f5749;
+  font-family: 'Care Hand', cursive;
+  font-size: clamp(13px, 1.4vw, 18px);
+  line-height: 1;
+  text-align: center;
+}
+
+/* ---------- personal paper ---------- */
+
+.newPersonalPaper {
+  position: absolute;
+  z-index: 5;
+  width: 53%;
+  right: 1%;
+  top: 31%;
+  padding: 18px 13px 13px;
+  background: #d9aeb0;
+  box-shadow: 0 7px 12px rgba(70, 45, 29, .13);
+  transform: rotate(2.5deg);
+}
+
+.newPersonalPaper p {
+  margin: 0;
+  font-family: 'Care Hand', cursive;
+  font-size: clamp(13px, 1.35vw, 18px);
+  line-height: 1.08;
+}
+
+.newPersonalPaper small {
+  display: block;
+  margin-top: 9px;
+  color: #713642;
+  font-family: 'Care Hand', cursive;
+  font-size: 12px;
+}
+
+/* ---------- flowers ---------- */
+
+.newFlowers {
+  position: absolute;
+  z-index: 4;
+  width: 36%;
+  right: -4%;
+  bottom: -1%;
+  pointer-events: none;
+  transform: rotate(16deg);
+  filter: drop-shadow(0 5px 5px rgba(63, 42, 28, .15));
+}
+
+.newTinyWords {
+  position: absolute;
+  z-index: 5;
+  right: 2%;
+  top: 7%;
+  color: #876b5a;
+  font-size: 5px;
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: .14em;
+  writing-mode: vertical-rl;
+}
+
+/* =========================================================
+   ENVELOPE
+   ========================================================= */
+
+.newEnvelopeArea {
+  position: relative;
+  z-index: 10;
+  width: 73%;
+  margin: 8px auto 0;
+  text-align: center;
+}
+
+.newEnvelopeButton {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  filter: drop-shadow(0 10px 9px rgba(55, 35, 24, .18));
+  transition: transform .25s ease;
+}
+
+.newEnvelopeButton:active {
+  transform: scale(.97);
+}
+
+.newEnvelopeImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+.newEnvelopeLabel {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 48%;
+  width: 70%;
+  transform: translate(-50%, -50%) rotate(-1deg);
+  color: #60323a;
+  pointer-events: none;
+}
+
+.newEnvelopeLabel small {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 5px;
+  font-weight: 900;
+  letter-spacing: .15em;
+}
+
+.newEnvelopeLabel strong {
+  display: block;
+  font-family: 'Care Hand', cursive;
+  font-size: clamp(13px, 1.45vw, 19px);
+  font-weight: 500;
+  line-height: .95;
+}
+
+.newEnvelopeHint {
+  margin: 3px 0 0;
+  color: #8c715e;
+  font-family: 'Care Hand', cursive;
+  font-size: 12px;
+}
+
+/* ---------- surprise ---------- */
+
+.newSurpriseReveal {
+  position: relative;
+  z-index: 30;
+  margin: 9px -5% 0;
+  animation: newReveal .3s ease-out;
+}
+
+@keyframes newReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.newSurprise {
+  position: relative;
+  padding: 20px 16px;
+  color: #3d3028;
+  text-align: left;
+  background: #f7eedc;
+  box-shadow: 0 12px 20px rgba(63, 39, 25, .18);
+  transform: rotate(-1deg);
+}
+
+.newSurprise h3 {
+  margin: 7px 0 10px;
+  color: #783643;
+  font-family: 'Care Hand', cursive;
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.newSurpriseMessage {
+  white-space: pre-wrap;
+  font-family: 'Care Hand', cursive;
+  font-size: clamp(16px, 1.55vw, 21px);
+  line-height: 1.12;
+}
+
+.newDetails {
+  margin: 14px 0 0;
+}
+
+.newDetails > div {
+  padding: 8px 0;
+  border-top: 1px dashed rgba(96, 71, 54, .24);
+}
+
+.newDetails dt {
+  font-size: 6px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #8d7462;
+}
+
+.newDetails dd {
+  margin: 3px 0 0;
+  white-space: pre-wrap;
+  font-family: 'Care Hand', cursive;
+  font-size: 17px;
+}
+
+.newMedia {
+  margin-top: 14px;
+}
+
+.newMedia > span {
+  display: block;
+  margin-bottom: 7px;
+  font-family: 'Care Hand', cursive;
+  font-size: 16px;
+}
+
+.newMedia audio {
+  width: 100%;
+}
+
+.newAttachment {
+  display: block;
+  width: 100%;
+  max-height: 260px;
+  margin-bottom: 8px;
+  object-fit: contain;
+}
+
+.newLink {
+  display: inline-block;
+  padding: 10px 0;
+  color: #733744;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.newSignature {
+  margin: 15px 0 0;
+  color: #765e4d;
+  font-family: 'Care Hand', cursive;
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* =========================================================
+   FINAL PAGE
+   ========================================================= */
+
+.newFinalPage {
+  min-height: 100%;
+  padding-top: 17%;
+  text-align: center;
+}
+
+.newFinalHeart {
+  display: block;
+  margin-bottom: 6px;
+  color: #853b48;
+  font-family: 'Care Hand', cursive;
+  font-size: 38px;
+}
+
+.newFinalPage h2 {
+  margin: 10px 0 23px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(23px, 2.8vw, 39px);
+  font-weight: 400;
+  line-height: .95;
+  letter-spacing: -.045em;
+}
+
+.newFinalPaper {
+  position: relative;
+  width: 87%;
+  margin: auto;
+  padding: 24px 18px;
+  background: #d8adaf;
+  box-shadow: 0 8px 14px rgba(63, 40, 26, .12);
+  transform: rotate(-2deg);
+}
+
+.newFinalPaper p {
+  margin: 0;
+  font-family: 'Care Hand', cursive;
+  font-size: clamp(17px, 1.8vw, 23px);
+  line-height: 1.1;
+}
+
+.newFinalPage > em {
+  display: block;
+  margin-top: 27px;
+  color: #7a5e4d;
+  font-family: 'Care Hand', cursive;
+  font-size: 21px;
+  font-style: normal;
+}
+
+/* =========================================================
+   CONTROLS
+   ========================================================= */
+
+.newControls {
+  width: min(88%, 520px);
+  margin: 12px auto 0;
+  display: grid;
+  grid-template-columns: 42px 1fr 42px;
+  align-items: center;
+  gap: 15px;
+}
+
+.newControls button {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,244,230,.28);
+  border-radius: 50%;
+  color: #fff5e9;
+  background: rgba(58, 30, 23, .3);
+  backdrop-filter: blur(8px);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.newControls button:disabled {
+  opacity: .25;
+}
+
+.newProgress {
+  height: 2px;
+  overflow: hidden;
+  background: rgba(255,255,255,.2);
+}
+
+.newProgress span {
+  display: block;
+  height: 100%;
+  background: #e3b8b4;
+  transition: width .3s ease;
+}
+
+.newSwipeHint {
+  margin: 9px 0 0;
+  color: rgba(255,245,232,.67);
+  font-family: 'Care Hand', cursive;
+  font-size: 15px;
+  text-align: center;
+}
+
+/* ---------- empty ---------- */
+
+.newEmpty {
+  position: relative;
+  z-index: 3;
+  min-height: 100vh;
+  padding: 30px;
+  display: grid;
+  place-content: center;
+  color: #fff2e2;
+  text-align: center;
+}
+
+.newEmpty > span {
+  color: #e4b0b1;
+  font-family: 'Care Hand', cursive;
+  font-size: 50px;
+}
+
+.newEmpty h1 {
+  margin: 7px 0;
+  font-family: Georgia, serif;
+  font-size: 35px;
+  font-weight: 400;
+}
+
+.newEmpty p {
+  opacity: .7;
+}
+
+/* =========================================================
+   PHONE — PRIMARY EXPERIENCE
+   ========================================================= */
+
+@media (max-width: 700px) {
+  .newDiaryRoot {
+    min-height: 100svh;
+    background-attachment: scroll;
+  }
+
+  .newDiaryHeader {
+    height: 56px;
+    padding-inline: 17px;
+  }
+
+  .newCoverScene {
+    min-height: calc(100svh - 56px);
+    padding: 20px 12px 35px;
+  }
+
+  .newCoverWrap {
+    width: min(92vw, 390px);
+  }
+
+  .newReader {
+    min-height: calc(100svh - 56px);
+    padding: 10px 8px 25px;
+  }
+
+  .newReaderTop {
+    padding-inline: 8px;
+    margin-bottom: 4px;
+  }
+
+  /*
+   * On a phone the real journal remains visible,
+   * but we zoom it so the active right page is large.
+   */
+  .newBookStage {
+    width: min(152vw, 690px);
+    min-height: 0;
+    aspect-ratio: 1.42 / 1;
+    margin-left: 50%;
+    transform: translateX(-58%);
+  }
+
+  .newPageContent {
+    left: 50.7%;
+    top: 11.5%;
+    width: 40.5%;
+    height: 75%;
+    padding: 3% 4% 6%;
+  }
+
+  .newMemoryPage > h2 {
+    margin-top: 7px;
+    margin-bottom: 8px;
+    font-size: clamp(15px, 5.2vw, 22px);
+  }
+
+  .newScrapbook {
+    min-height: 190px;
+  }
+
+  .newPolaroid {
+    width: 58%;
+    padding: 4px 4px 6px;
+  }
+
+  .newPolaroid figcaption {
+    font-size: 11px;
+  }
+
+  .newPersonalPaper {
+    padding: 13px 9px 9px;
+  }
+
+  .newPersonalPaper p {
+    font-size: clamp(10px, 3.1vw, 14px);
+  }
+
+  .newPersonalPaper small {
+    margin-top: 5px;
+    font-size: 9px;
+  }
+
+  .newEnvelopeArea {
+    width: 69%;
+    margin-top: 3px;
+  }
+
+  .newEnvelopeLabel strong {
+    font-size: clamp(10px, 3.3vw, 14px);
+  }
+
+  .newEnvelopeHint {
+    font-size: 9px;
+  }
+
+  .newSurpriseReveal {
+    margin-inline: -22%;
+  }
+
+  .newSurprise {
+    padding: 15px 12px;
+  }
+
+  .newIntroPage {
+    padding-top: 9%;
+  }
+
+  .newIntroPage h2 {
+    font-size: clamp(22px, 7vw, 31px);
+    margin-bottom: 18px;
+  }
+
+  .newIntroPaper {
+    padding: 18px 13px 15px;
+  }
+
+  .newIntroPaper p {
+    font-size: clamp(13px, 4vw, 17px);
+  }
+
+  .newHandNote {
+    margin-top: 18px;
+    font-size: clamp(13px, 4vw, 17px);
+  }
+
+  .newFinalPage {
+    padding-top: 10%;
+  }
+
+  .newFinalPage h2 {
+    font-size: clamp(20px, 6vw, 28px);
+  }
+
+  .newFinalPaper p {
+    font-size: clamp(13px, 4vw, 17px);
+  }
+
+  .newControls {
+    margin-top: 2px;
+  }
+
+  .newSwipeHint {
+    margin-top: 4px;
+  }
+
+  .newFabric {
+    width: 210px;
+    height: 140px;
+    right: -70px;
+    bottom: -30px;
+  }
+}
+
+/* =========================================================
+   LARGE DESKTOP
+   ========================================================= */
+
+@media (min-width: 1000px) {
+  .newReader {
+    padding-top: 25px;
+  }
+
+  .newBookStage {
+    width: min(82vw, 1050px);
+  }
+
+  .newCoverWrap {
+    width: min(35vw, 470px);
+  }
+}
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .newPageNext,
+  .newPagePrevious,
+  .newSurpriseReveal {
+    animation: none;
+  }
+
+  .newCoverButton,
+  .newEnvelopeButton,
+  .newProgress span {
+    transition: none;
+  }
+}
