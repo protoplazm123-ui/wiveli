@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 const memories = [
   {
     number: "01",
@@ -17,7 +18,6 @@ const memories = [
       "I still remember this moment like it was yesterday. I didn't know yet how many beautiful memories would come after it.",
     note: "My favorite beginning. ♡",
   },
-
   {
     number: "02",
     label: "OUR FIRST ADVENTURE",
@@ -33,7 +33,6 @@ const memories = [
       "Somewhere along the way, an ordinary day became one of those memories I knew I would want to keep forever.",
     note: "I'd go there with you all over again. ♡",
   },
-
   {
     number: "03",
     label: "ONE PERFECT DAY",
@@ -49,7 +48,6 @@ const memories = [
       "Nothing extraordinary had to happen. Being there with you was enough to make the whole day feel special.",
     note: "I wish I could live this day twice. ♡",
   },
-
   {
     number: "04",
     label: "OUR FAVORITE PLACE",
@@ -65,7 +63,6 @@ const memories = [
       "It was just another place on the map until we made memories there. Now I don't think I could ever see it without thinking of you.",
     note: "Some places keep a piece of us. ♡",
   },
-
   {
     number: "05",
     label: "RIGHT HERE, RIGHT NOW",
@@ -74,7 +71,7 @@ const memories = [
       <>
         LOOK HOW FAR
         <br />
-        WE'VE COME.
+        WE&apos;VE COME.
       </>
     ),
     text:
@@ -82,6 +79,7 @@ const memories = [
     note: "This is only the beginning. ♡",
   },
 ];
+
 const flightStars = [
   ["12%", "18%", "2px", "0s"],
   ["24%", "34%", "3px", ".3s"],
@@ -115,7 +113,6 @@ const futureStars = Array.from({ length: 90 }, (_, index) => ({
 export default function OurStoryGift() {
   const [opened, setOpened] = useState(false);
   const [journeyStarted, setJourneyStarted] = useState(false);
-
   const [flightStage, setFlightStage] = useState("idle");
 
   const [currentMemory, setCurrentMemory] = useState(0);
@@ -135,10 +132,11 @@ export default function OurStoryGift() {
     setFlightStage("launch");
   };
 
-const openMemory = () => {
-  setMemoryLeaving(false);
-  setMemoryOpen(true);
-};
+  const openMemory = () => {
+    setMemoryLeaving(false);
+    setMemoryOpen(true);
+  };
+
   const continueJourney = () => {
     const hasNextMemory = currentMemory < memories.length - 1;
 
@@ -148,17 +146,13 @@ const openMemory = () => {
       setTimeout(() => {
         setMemoryOpen(false);
         setMemoryLeaving(false);
-
         setCurrentMemory((previous) => previous + 1);
-
         setTravellingBetweenMemories(true);
         setFlightStage("launch");
       }, 1100);
 
       return;
     }
-
-    /* LAST MEMORY → FUTURE */
 
     setMemoryLeaving(true);
 
@@ -210,9 +204,7 @@ const openMemory = () => {
         `flight-${flightStage}`,
       ].join(" ")}
     >
-      {/* =====================================================
-          OPENING VIDEO
-          ===================================================== */}
+      {/* OPENING VIDEO */}
 
       <div className="ourStoryOpeningVideo" aria-hidden="true">
         <video autoPlay muted loop playsInline preload="auto">
@@ -225,9 +217,7 @@ const openMemory = () => {
         <div className="ourStoryOpeningShade" />
       </div>
 
-      {/* =====================================================
-          OPENING SPACE
-          ===================================================== */}
+      {/* OPENING SPACE */}
 
       <div className="ourStorySpace" aria-hidden="true">
         <div className="ourStoryStars starsOne" />
@@ -242,9 +232,7 @@ const openMemory = () => {
         <span className="ourStoryStar starC">✦</span>
       </div>
 
-      {/* =====================================================
-          ENVELOPE + LETTER
-          ===================================================== */}
+      {/* ENVELOPE + LETTER */}
 
       <section className="ourStoryIntro">
         <p className="ourStoryLabel">
@@ -331,9 +319,7 @@ const openMemory = () => {
         </p>
       </section>
 
-      {/* =====================================================
-          JOURNEY UNIVERSE
-          ===================================================== */}
+      {/* JOURNEY */}
 
       <section className="journeyUniverse">
         <video
@@ -410,9 +396,7 @@ const openMemory = () => {
           </span>
         </div>
 
-        {/* ===================================================
-            CURRENT DESTINATION
-            =================================================== */}
+        {/* CURRENT DESTINATION */}
 
         <div
           className="journeyBeginning"
@@ -439,180 +423,171 @@ const openMemory = () => {
               </>
             )}
           </h2>
-<span>
-  {currentMemory === 0
-    ? "Let's go back to ours."
-    : "You found another memory."}
-</span>
-          
-<p
-  style={{
-    margin: "24px 0 -6px",
-    fontSize: "10px",
-    letterSpacing: "0.22em",
-    fontWeight: 700,
-    textTransform: "uppercase",
-    color: "rgba(255,255,255,.72)",
-    textAlign: "center",
-  }}
->
-  {currentMemory === 0
-    ? "TAP THE STAR TO OPEN THIS MEMORY"
-    : "TAP THE STAR TO CONTINUE"}
-</p>
-  <button
-  type="button"
-  aria-label={`Open memory ${memory.number}`}
-  onClick={openMemory}
-  style={{
-    width: "110px",
-    height: "110px",
-    minWidth: "110px",
-    minHeight: "110px",
 
-    margin: "18px auto 10px",
-    padding: 0,
+          <span>
+            {currentMemory === 0
+              ? "Let's go back to ours."
+              : "You found another memory."}
+          </span>
 
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+          {/* CLEAR CLICK TARGET */}
 
-    position: "relative",
-    zIndex: 999999,
+          <div className="memoryStarTarget">
+            <p className="memoryStarInstruction">
+              {currentMemory === 0
+                ? "TAP TO OPEN YOUR FIRST MEMORY"
+                : `TAP TO OPEN MEMORY ${memory.number}`}
+            </p>
 
-    border: "none",
-    outline: "none",
-    background: "transparent",
+            <span
+              className="memoryStarArrow"
+              aria-hidden="true"
+            >
+              ↓
+            </span>
 
-    color: "#ffffff",
-    fontSize: "64px",
-    lineHeight: 1,
+            <button
+              type="button"
+              className="memoryStarButton"
+              aria-label={`Open memory ${memory.number}`}
+              onClick={openMemory}
+            >
+              <span
+                className="memoryStarRing ringOne"
+                aria-hidden="true"
+              />
 
-    cursor: "pointer",
-    pointerEvents: "auto",
-    touchAction: "manipulation",
-    WebkitTapHighlightColor: "transparent",
+              <span
+                className="memoryStarRing ringTwo"
+                aria-hidden="true"
+              />
 
-    filter:
-      "drop-shadow(0 0 8px rgba(255,255,255,1)) drop-shadow(0 0 24px rgba(220,190,255,.95)) drop-shadow(0 0 55px rgba(190,140,255,.75))",
-  }}
->
-  ✦
-</button>
+              <span
+                className="memoryStarSymbol"
+                aria-hidden="true"
+              >
+                ✦
+              </span>
+            </button>
+          </div>
 
-<small>
-  {memory.number} · {memory.label}
-</small>         
-        </div>
-<section
-  className="storyMemory storyMemoryPolaroid"
-  key={`memory-${currentMemory}`}
->
-  <div className="polaroidMemoryGlow" aria-hidden="true" />
-
-  <div className="polaroidMemoryHeader">
-    <p>
-      MEMORY {memory.number} /{" "}
-      {String(memories.length).padStart(2, "0")}
-    </p>
-
-    <h2>{memory.title}</h2>
-
-    <span>{memory.date}</span>
-  </div>
-
-  <div className="polaroidMemoryStage">
-
-    {/* LEFT / PREVIOUS MEMORY */}
-
-    {currentMemory > 0 && (
-      <div className="memoryPolaroid memoryPolaroidLeft">
-        <div className="memoryPolaroidNumber">
-          {memories[currentMemory - 1].number}
+          <small>
+            {memory.number} · {memory.label}
+          </small>
         </div>
 
-        <div className="memoryPolaroidPhoto">
-          <span>♡</span>
-        </div>
+        {/* POLAROID MEMORY */}
 
-        <p>
-          {memories[currentMemory - 1].label}
-        </p>
-      </div>
-    )}
+        <section
+          className="storyMemory storyMemoryPolaroid"
+          key={`memory-${currentMemory}`}
+        >
+          <div
+            className="polaroidMemoryGlow"
+            aria-hidden="true"
+          />
 
-    {/* CURRENT MEMORY */}
+          <div className="polaroidMemoryHeader">
+            <p>
+              MEMORY {memory.number} /{" "}
+              {String(memories.length).padStart(2, "0")}
+            </p>
 
-    <article className="memoryPolaroid memoryPolaroidMain">
-      <div className="memoryPolaroidTop">
-        <span>{memory.number}</span>
-        <span>{memory.date}</span>
-      </div>
+            <h2>{memory.title}</h2>
 
-      <div className="memoryPolaroidPhoto memoryPolaroidMainPhoto">
-        <div className="memoryPhotoPlaceholder">
-          <span>♡</span>
-          <small>YOUR PHOTO</small>
-        </div>
-      </div>
+            <span>{memory.date}</span>
+          </div>
 
-      <p className="memoryPolaroidNote">
-        {memory.note}
-      </p>
-    </article>
+          <div className="polaroidMemoryStage">
+            {/* PREVIOUS */}
 
-    {/* RIGHT / NEXT MEMORY */}
+            {currentMemory > 0 && (
+              <div className="memoryPolaroid memoryPolaroidLeft">
+                <div className="memoryPolaroidNumber">
+                  {memories[currentMemory - 1].number}
+                </div>
 
-    {currentMemory < memories.length - 1 && (
-      <div className="memoryPolaroid memoryPolaroidRight">
-        <div className="memoryPolaroidNumber">
-          {memories[currentMemory + 1].number}
-        </div>
+                <div className="memoryPolaroidPhoto">
+                  <span>♡</span>
+                </div>
 
-        <div className="memoryPolaroidPhoto">
-          <span>♡</span>
-        </div>
+                <p>
+                  {memories[currentMemory - 1].label}
+                </p>
+              </div>
+            )}
 
-        <p>
-          {memories[currentMemory + 1].label}
-        </p>
-      </div>
-    )}
-  </div>
+            {/* CURRENT */}
 
-  <div className="polaroidMemoryStory">
-    <p>{memory.text}</p>
+            <article className="memoryPolaroid memoryPolaroidMain">
+              <div className="memoryPolaroidTop">
+                <span>{memory.number}</span>
+                <span>{memory.date}</span>
+              </div>
 
-    <div className="polaroidStoryLine" />
+              <div className="memoryPolaroidPhoto memoryPolaroidMainPhoto">
+                <div className="memoryPhotoPlaceholder">
+                  <span>♡</span>
+                  <small>YOUR PHOTO</small>
+                </div>
+              </div>
 
-    <button
-      type="button"
-      className="storyMemoryContinue polaroidContinue"
-      onClick={continueJourney}
-    >
-      {currentMemory < memories.length - 1
-        ? "CONTINUE THE JOURNEY"
-        : "SEE WHAT'S AHEAD"}
+              <p className="memoryPolaroidNote">
+                {memory.note}
+              </p>
+            </article>
 
-      <span>→</span>
-    </button>
-  </div>
+            {/* NEXT */}
 
-  <p className="polaroidMemorySideNote polaroidNoteLeft">
-    ONE LITTLE MOMENT
-    <br />
-    ONE WHOLE UNIVERSE
-  </p>
+            {currentMemory < memories.length - 1 && (
+              <div className="memoryPolaroid memoryPolaroidRight">
+                <div className="memoryPolaroidNumber">
+                  {memories[currentMemory + 1].number}
+                </div>
 
-  <p className="polaroidMemorySideNote polaroidNoteRight">
-    LET&apos;S KEEP
-    <br />
-    EXPLORING TOGETHER ∞
-  </p>
-</section>
-        {/* ===================================================
-            SMALL FUTURE INDICATOR
-            =================================================== */}
+                <div className="memoryPolaroidPhoto">
+                  <span>♡</span>
+                </div>
+
+                <p>
+                  {memories[currentMemory + 1].label}
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="polaroidMemoryStory">
+            <p>{memory.text}</p>
+
+            <div className="polaroidStoryLine" />
+
+            <button
+              type="button"
+              className="storyMemoryContinue polaroidContinue"
+              onClick={continueJourney}
+            >
+              {currentMemory < memories.length - 1
+                ? "CONTINUE THE JOURNEY"
+                : "SEE WHAT'S AHEAD"}
+
+              <span>→</span>
+            </button>
+          </div>
+
+          <p className="polaroidMemorySideNote polaroidNoteLeft">
+            ONE LITTLE MOMENT
+            <br />
+            ONE WHOLE UNIVERSE
+          </p>
+
+          <p className="polaroidMemorySideNote polaroidNoteRight">
+            LET&apos;S KEEP
+            <br />
+            EXPLORING TOGETHER ∞
+          </p>
+        </section>
+
+        {/* FUTURE INDICATOR */}
 
         <div className="journeyFuture" aria-hidden="true">
           <span>✦</span>
@@ -622,9 +597,7 @@ const openMemory = () => {
           <span>✦</span>
         </div>
 
-        {/* ===================================================
-            FUTURE UNIVERSE
-            =================================================== */}
+        {/* FUTURE UNIVERSE */}
 
         <section className="ourStoryFutureScene">
           <div className="futureUniverse" aria-hidden="true">
@@ -673,9 +646,7 @@ const openMemory = () => {
           <p className="futureInfinity">∞</p>
         </section>
 
-        {/* ===================================================
-            JOURNEY COLLAGE
-            =================================================== */}
+        {/* FINAL COLLAGE */}
 
         <section className="journeyCollage">
           <div className="collageSpace" aria-hidden="true">
@@ -727,8 +698,6 @@ const openMemory = () => {
             </div>
           </div>
 
-          {/* FINAL ACTIONS */}
-
           <div className="collageActions">
             <button
               type="button"
@@ -759,3 +728,5 @@ const openMemory = () => {
     </main>
   );
 }
+
+   
