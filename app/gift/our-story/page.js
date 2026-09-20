@@ -2,6 +2,39 @@
 
 import { useEffect, useState } from "react";
 
+const memories = [
+  {
+    number: "01",
+    label: "THE BEGINNING",
+    date: "SEPTEMBER 26 · 2024",
+    title: (
+      <>
+        THE DAY
+        <br />
+        IT ALL BEGAN.
+      </>
+    ),
+    text:
+      "I still remember this moment like it was yesterday. I didn't know yet how many beautiful memories would come after it.",
+    note: "My favorite beginning. ♡",
+  },
+  {
+    number: "02",
+    label: "OUR FIRST ADVENTURE",
+    date: "NOVEMBER 08 · 2024",
+    title: (
+      <>
+        OUR FIRST
+        <br />
+        ADVENTURE.
+      </>
+    ),
+    text:
+      "Somewhere along the way, an ordinary day became one of those memories I knew I would want to keep forever.",
+    note: "I'd go there with you all over again. ♡",
+  },
+];
+
 const flightStars = [
   ["12%", "18%", "2px", "0s"],
   ["24%", "34%", "3px", ".3s"],
@@ -28,28 +61,53 @@ const flightStars = [
 export default function OurStoryGift() {
   const [opened, setOpened] = useState(false);
   const [journeyStarted, setJourneyStarted] = useState(false);
+
   const [flightStage, setFlightStage] = useState("idle");
+
+  const [currentMemory, setCurrentMemory] = useState(0);
   const [memoryOpen, setMemoryOpen] = useState(false);
   const [memoryLeaving, setMemoryLeaving] = useState(false);
+
+  const [travellingBetweenMemories, setTravellingBetweenMemories] =
+    useState(false);
+
+  const memory = memories[currentMemory];
 
   const beginJourney = () => {
     setJourneyStarted(true);
     setFlightStage("launch");
   };
 
-  const openFirstMemory = () => {
-    setMemoryOpen(true);
+  const openMemory = () => {
+    if (flightStage !== "landed") return;
+
     setMemoryLeaving(false);
+    setMemoryOpen(true);
   };
 
   const continueJourney = () => {
+    const hasNextMemory = currentMemory < memories.length - 1;
+
+    if (!hasNextMemory) return;
+
     setMemoryLeaving(true);
 
     setTimeout(() => {
       setMemoryOpen(false);
       setMemoryLeaving(false);
-    }, 1200);
+
+      setCurrentMemory((previous) => previous + 1);
+
+      setTravellingBetweenMemories(true);
+      setFlightStage("launch");
+    }, 1100);
   };
+
+  /*
+    Every time flightStage becomes "launch",
+    run one complete journey:
+    launch → flying → arrival → landed
+  */
 
   useEffect(() => {
     if (flightStage !== "launch") return;
@@ -64,6 +122,7 @@ export default function OurStoryGift() {
 
     const landedTimer = setTimeout(() => {
       setFlightStage("landed");
+      setTravellingBetweenMemories(false);
     }, 9000);
 
     return () => {
@@ -81,10 +140,13 @@ export default function OurStoryGift() {
         journeyStarted ? "journeyStarted" : "",
         memoryOpen ? "memoryIsOpen" : "",
         memoryLeaving ? "memoryIsLeaving" : "",
+        travellingBetweenMemories ? "betweenMemories" : "",
         `flight-${flightStage}`,
       ].join(" ")}
     >
-      {/* OPENING GALAXY */}
+      {/* =====================================================
+          OPENING GALAXY
+          ===================================================== */}
 
       <div className="ourStoryOpeningVideo" aria-hidden="true">
         <video autoPlay muted loop playsInline preload="auto">
@@ -97,7 +159,9 @@ export default function OurStoryGift() {
         <div className="ourStoryOpeningShade" />
       </div>
 
-      {/* OPENING SPACE */}
+      {/* =====================================================
+          OPENING SPACE
+          ===================================================== */}
 
       <div className="ourStorySpace" aria-hidden="true">
         <div className="ourStoryStars starsOne" />
@@ -112,7 +176,9 @@ export default function OurStoryGift() {
         <span className="ourStoryStar starC">✦</span>
       </div>
 
-      {/* ENVELOPE */}
+      {/* =====================================================
+          ENVELOPE + LETTER
+          ===================================================== */}
 
       <section className="ourStoryIntro">
         <p className="ourStoryLabel">
@@ -199,9 +265,13 @@ export default function OurStoryGift() {
         </p>
       </section>
 
-      {/* SPACE JOURNEY */}
+      {/* =====================================================
+          JOURNEY
+          ===================================================== */}
 
       <section className="journeyUniverse">
+        {/* CALM GALAXY */}
+
         <video
           className="journeyVideo journeyCalmVideo"
           autoPlay
@@ -216,6 +286,8 @@ export default function OurStoryGift() {
             type="video/mp4"
           />
         </video>
+
+        {/* BRIGHT FLIGHT */}
 
         <video
           className="journeyVideo journeyFlightVideo"
@@ -240,7 +312,7 @@ export default function OurStoryGift() {
         <div className="flightStars" aria-hidden="true">
           {flightStars.map(([left, top, size, delay], index) => (
             <span
-              key={index}
+              key={`${currentMemory}-${index}`}
               style={{
                 "--star-left": left,
                 "--star-top": top,
@@ -251,7 +323,7 @@ export default function OurStoryGift() {
           ))}
         </div>
 
-        {/* DESTINATION */}
+        {/* DESTINATION STAR */}
 
         <div className="destinationStar" aria-hidden="true">
           <div className="destinationHalo haloOuter" />
@@ -260,45 +332,89 @@ export default function OurStoryGift() {
           <div className="destinationStarCore">✦</div>
         </div>
 
+        {/* FLIGHT MESSAGE */}
+
         <div className="flightMessage">
-          <p>OUR JOURNEY BEGINS</p>
-          <span>FOLLOW THE LIGHT</span>
+          <p>
+            {currentMemory === 0
+              ? "OUR JOURNEY BEGINS"
+              : "THE JOURNEY CONTINUES"}
+          </p>
+
+          <span>
+            {currentMemory === 0
+              ? "FOLLOW THE LIGHT"
+              : `DESTINATION ${memory.number}`}
+          </span>
         </div>
 
-        {/* FIRST DESTINATION */}
+        {/* ===================================================
+            CURRENT DESTINATION
+            =================================================== */}
 
-        <div className="journeyBeginning">
-          <p>OUR STORY</p>
+        <div
+          className="journeyBeginning"
+          key={`destination-${currentMemory}`}
+        >
+          <p>
+            {currentMemory === 0
+              ? "OUR STORY"
+              : `MEMORY ${memory.number}`}
+          </p>
 
           <h2>
-            EVERY UNIVERSE
-            <br />
-            HAS A BEGINNING.
+            {currentMemory === 0 ? (
+              <>
+                EVERY UNIVERSE
+                <br />
+                HAS A BEGINNING.
+              </>
+            ) : (
+              <>
+                ANOTHER STAR
+                <br />
+                IN OUR STORY.
+              </>
+            )}
           </h2>
 
-          <span>Let&apos;s go back to ours.</span>
+          <span>
+            {currentMemory === 0
+              ? "Let's go back to ours."
+              : "You found another memory."}
+          </span>
 
           <button
             type="button"
             className="journeyFirstStar"
-            aria-label="Open the first memory"
-            onClick={openFirstMemory}
+            aria-label={`Open memory ${memory.number}`}
+            onClick={openMemory}
           >
             ✦
           </button>
 
-          <small>01 · THE BEGINNING</small>
+          <small>
+            {memory.number} · {memory.label}
+          </small>
         </div>
 
-        {/* FIRST MEMORY */}
+        {/* ===================================================
+            MEMORY
+            =================================================== */}
 
-        <section className="storyMemory">
-          <div className="storyMemoryGlow" aria-hidden="true" />
+        <section
+          className="storyMemory"
+          key={`memory-${currentMemory}`}
+        >
+          <div
+            className="storyMemoryGlow"
+            aria-hidden="true"
+          />
 
           <div className="storyMemoryCard">
             <div className="storyMemoryNumber">
               <span>MEMORY</span>
-              <strong>01</strong>
+              <strong>{memory.number}</strong>
             </div>
 
             <div className="storyMemoryPhoto">
@@ -312,42 +428,45 @@ export default function OurStoryGift() {
 
             <div className="storyMemoryContent">
               <p className="storyMemoryDate">
-                SEPTEMBER 26 · 2024
+                {memory.date}
               </p>
 
-              <h2>
-                THE DAY
-                <br />
-                IT ALL BEGAN.
-              </h2>
+              <h2>{memory.title}</h2>
 
               <p className="storyMemoryText">
-                I still remember this moment like it was
-                yesterday. I didn&apos;t know yet how many
-                beautiful memories would come after it.
+                {memory.text}
               </p>
 
               <p className="storyMemoryHandwriting">
-                My favorite beginning. ♡
+                {memory.note}
               </p>
 
-              <button
-                type="button"
-                className="storyMemoryContinue"
-                onClick={continueJourney}
-              >
-                CONTINUE THE JOURNEY
-                <span>→</span>
-              </button>
+              {currentMemory < memories.length - 1 ? (
+                <button
+                  type="button"
+                  className="storyMemoryContinue"
+                  onClick={continueJourney}
+                >
+                  CONTINUE THE JOURNEY
+                  <span>→</span>
+                </button>
+              ) : (
+                <div className="storyMemoryToBeContinued">
+                  <span>OUR STORY CONTINUES</span>
+                  <strong>∞</strong>
+                </div>
+              )}
             </div>
           </div>
 
           <p className="storyMemoryOrbitText">
-            ONE LITTLE MOMENT · ONE WHOLE UNIVERSE
+            {currentMemory === 0
+              ? "ONE LITTLE MOMENT · ONE WHOLE UNIVERSE"
+              : "ANOTHER MEMORY · ANOTHER STAR"}
           </p>
         </section>
 
-        {/* FUTURE STARS */}
+        {/* FUTURE */}
 
         <div className="journeyFuture" aria-hidden="true">
           <span>✦</span>
