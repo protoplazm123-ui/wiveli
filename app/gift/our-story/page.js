@@ -2,6 +2,29 @@
 
 import { useEffect, useState } from "react";
 
+const flightStars = [
+  ["12%", "18%", "2px", "0s"],
+  ["24%", "34%", "3px", ".3s"],
+  ["38%", "12%", "2px", ".7s"],
+  ["62%", "20%", "2px", ".2s"],
+  ["78%", "14%", "3px", ".9s"],
+  ["89%", "32%", "2px", ".5s"],
+  ["15%", "62%", "3px", ".8s"],
+  ["31%", "76%", "2px", ".1s"],
+  ["46%", "58%", "2px", ".6s"],
+  ["68%", "72%", "3px", ".4s"],
+  ["82%", "63%", "2px", "1s"],
+  ["92%", "79%", "2px", ".2s"],
+  ["7%", "43%", "2px", ".5s"],
+  ["55%", "87%", "2px", ".8s"],
+  ["72%", "45%", "2px", ".15s"],
+  ["35%", "91%", "3px", ".65s"],
+  ["96%", "51%", "2px", ".35s"],
+  ["51%", "31%", "2px", ".95s"],
+  ["19%", "88%", "2px", ".45s"],
+  ["84%", "91%", "3px", ".75s"],
+];
+
 export default function OurStoryGift() {
   const [opened, setOpened] = useState(false);
   const [journeyStarted, setJourneyStarted] = useState(false);
@@ -43,7 +66,26 @@ export default function OurStoryGift() {
         `flight-${flightStage}`,
       ].join(" ")}
     >
-      {/* OPENING SPACE */}
+      {/* MOVING SPACE BEHIND THE ENVELOPE */}
+
+      <div className="ourStoryOpeningVideo" aria-hidden="true">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+        >
+          <source
+            src="/assets/our-story/334401%20(1).mp4"
+            type="video/mp4"
+          />
+        </video>
+
+        <div className="ourStoryOpeningShade" />
+      </div>
+
+      {/* OPENING SPACE DETAILS */}
 
       <div className="ourStorySpace" aria-hidden="true">
         <div className="ourStoryStars starsOne" />
@@ -149,7 +191,7 @@ export default function OurStoryGift() {
 
       <section className="journeyUniverse">
 
-        {/* CALM GALAXY */}
+        {/* CALM SPACE */}
 
         <video
           className="journeyVideo journeyCalmVideo"
@@ -166,7 +208,7 @@ export default function OurStoryGift() {
           />
         </video>
 
-        {/* BRIGHT TRAVEL FOOTAGE */}
+        {/* BRIGHT FLIGHT */}
 
         <video
           className="journeyVideo journeyFlightVideo"
@@ -184,35 +226,25 @@ export default function OurStoryGift() {
         </video>
 
         <div className="journeyVideoOverlay" />
-
-        {/* TRANSITION FLASH */}
-
         <div className="journeyLight" />
 
-        {/* FLYING STAR PARTICLES */}
+        {/* SMALL FLYING STARS */}
 
-        <div className="journeyDepthStars journeyDepthOne" />
-        <div className="journeyDepthStars journeyDepthTwo" />
-        <div className="journeyDepthStars journeyDepthThree" />
-
-        {/* TRAVEL TUNNEL */}
-
-        <div className="starTunnel" aria-hidden="true">
-          <span className="starStreak streak1" />
-          <span className="starStreak streak2" />
-          <span className="starStreak streak3" />
-          <span className="starStreak streak4" />
-          <span className="starStreak streak5" />
-          <span className="starStreak streak6" />
-          <span className="starStreak streak7" />
-          <span className="starStreak streak8" />
-          <span className="starStreak streak9" />
-          <span className="starStreak streak10" />
-          <span className="starStreak streak11" />
-          <span className="starStreak streak12" />
+        <div className="flightStars" aria-hidden="true">
+          {flightStars.map(([left, top, size, delay], index) => (
+            <span
+              key={index}
+              style={{
+                "--star-left": left,
+                "--star-top": top,
+                "--star-size": size,
+                "--star-delay": delay,
+              }}
+            />
+          ))}
         </div>
 
-        {/* DISTANT DESTINATION */}
+        {/* DESTINATION STAR */}
 
         <div className="destinationStar" aria-hidden="true">
           <div className="destinationHalo haloOuter" />
@@ -221,15 +253,7 @@ export default function OurStoryGift() {
           <div className="destinationStarCore">✦</div>
         </div>
 
-        {/* ROUTE */}
-
-        <div className="journeyRoute" aria-hidden="true">
-          <span className="routeOrigin">✦</span>
-          <span className="routeLine" />
-          <span className="routeDestination">✦</span>
-        </div>
-
-        {/* FLIGHT COPY */}
+        {/* FLIGHT MESSAGE */}
 
         <div className="flightMessage">
           <p>OUR JOURNEY BEGINS</p>
@@ -260,7 +284,7 @@ export default function OurStoryGift() {
           <small>01 · THE BEGINNING</small>
         </div>
 
-        {/* FUTURE UNIVERSE */}
+        {/* DISTANT FUTURE */}
 
         <div className="journeyFuture" aria-hidden="true">
           <span>✦</span>
