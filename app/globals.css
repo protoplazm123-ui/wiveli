@@ -8859,3 +8859,542 @@ footer p {
     animation-delay: 0s !important;
   }
 }
+/* =========================================================
+   WIVELI — OUR STORY / CINEMATIC STAR FLIGHT
+   ========================================================= */
+
+.journeyVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.journeyCalmVideo {
+  z-index: 0;
+  opacity: 0;
+  transform: scale(1.08);
+  filter: brightness(.58) saturate(1.15);
+  transition:
+    opacity 1.8s ease,
+    transform 8s ease;
+}
+
+.journeyFlightVideo {
+  z-index: 1;
+  opacity: 0;
+  transform: scale(1.18);
+  filter: brightness(.72) saturate(1.35) contrast(1.08);
+  transition:
+    opacity 1.2s ease,
+    transform 6s cubic-bezier(.16,.7,.2,1);
+}
+
+.journeyVideoOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at center,
+      transparent 0%,
+      rgba(5, 4, 16, .05) 38%,
+      rgba(4, 3, 14, .35) 72%,
+      rgba(3, 2, 10, .72) 100%
+    );
+}
+
+
+/* ---------- LAUNCH ---------- */
+
+.flight-launch .journeyCalmVideo {
+  opacity: .7;
+  transform: scale(1.13);
+}
+
+.flight-launch .journeyFlightVideo {
+  opacity: 0;
+}
+
+
+/* ---------- FULL FLIGHT ---------- */
+
+.flight-flying .journeyCalmVideo {
+  opacity: .12;
+  transform: scale(1.35);
+}
+
+.flight-flying .journeyFlightVideo {
+  opacity: .9;
+  transform: scale(1.02);
+}
+
+
+/* ---------- ARRIVAL ---------- */
+
+.flight-arrival .journeyFlightVideo {
+  opacity: .42;
+  transform: scale(1.12);
+}
+
+.flight-arrival .journeyCalmVideo {
+  opacity: .7;
+  transform: scale(1.05);
+}
+
+
+/* ---------- LANDED ---------- */
+
+.flight-landed .journeyFlightVideo {
+  opacity: 0;
+}
+
+.flight-landed .journeyCalmVideo {
+  opacity: .82;
+  transform: scale(1);
+}
+
+
+/* =========================================================
+   DESTINATION STAR
+   ========================================================= */
+
+.destinationStar {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  width: 26px;
+  height: 26px;
+
+  z-index: 15;
+
+  transform:
+    translate(-50%, -50%)
+    scale(.08);
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition:
+    transform 3.2s cubic-bezier(.16,.8,.2,1),
+    opacity 1s ease;
+}
+
+.destinationStarCore {
+  position: absolute;
+  inset: 0;
+
+  display: grid;
+  place-items: center;
+
+  color: white;
+  font-size: 28px;
+
+  text-shadow:
+    0 0 8px white,
+    0 0 22px rgba(255,220,255,.95),
+    0 0 55px rgba(215,170,255,.85),
+    0 0 110px rgba(170,120,255,.7);
+
+  animation: destinationTwinkle 1.7s ease-in-out infinite;
+}
+
+.destinationHalo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+
+  border-radius: 999px;
+
+  transform: translate(-50%, -50%);
+
+  border: 1px solid rgba(255,255,255,.22);
+}
+
+.haloInner {
+  width: 75px;
+  height: 75px;
+
+  box-shadow:
+    0 0 45px rgba(255,210,255,.6),
+    inset 0 0 30px rgba(255,255,255,.12);
+}
+
+.haloMiddle {
+  width: 150px;
+  height: 150px;
+
+  border-color: rgba(221,190,255,.12);
+}
+
+.haloOuter {
+  width: 260px;
+  height: 260px;
+
+  border-color: rgba(200,170,255,.07);
+}
+
+
+/* star appears far away */
+
+.flight-launch .destinationStar {
+  opacity: .5;
+
+  transform:
+    translate(-50%, -50%)
+    scale(.08);
+}
+
+
+/* camera approaches */
+
+.flight-flying .destinationStar {
+  opacity: .95;
+
+  transform:
+    translate(-50%, -50%)
+    scale(.32);
+}
+
+
+/* huge destination approaching */
+
+.flight-arrival .destinationStar {
+  opacity: 1;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1.25);
+}
+
+
+/* disappear into light */
+
+.flight-landed .destinationStar {
+  opacity: 0;
+
+  transform:
+    translate(-50%, -50%)
+    scale(5);
+}
+
+
+/* =========================================================
+   STAR SPEED LINES
+   ========================================================= */
+
+.starTunnel {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+
+  overflow: hidden;
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition: opacity .6s ease;
+}
+
+.flight-flying .starTunnel {
+  opacity: 1;
+}
+
+.flight-arrival .starTunnel {
+  opacity: .15;
+}
+
+.flight-landed .starTunnel {
+  opacity: 0;
+}
+
+.starStreak {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 2px;
+  height: 90px;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      to bottom,
+      transparent,
+      rgba(255,255,255,.9),
+      transparent
+    );
+
+  transform-origin: center bottom;
+
+  opacity: .7;
+
+  animation:
+    starFlightStreak 1.15s linear infinite;
+}
+
+.streak1  { --x: -43vw; --y: -35vh; animation-delay: -.1s; }
+.streak2  { --x:  38vw; --y: -30vh; animation-delay: -.7s; }
+.streak3  { --x: -31vw; --y:  32vh; animation-delay: -.4s; }
+.streak4  { --x:  42vw; --y:  28vh; animation-delay: -.9s; }
+.streak5  { --x: -18vw; --y: -41vh; animation-delay: -.2s; }
+.streak6  { --x:  20vw; --y:  38vh; animation-delay: -.55s; }
+.streak7  { --x: -47vw; --y:   7vh; animation-delay: -.8s; }
+.streak8  { --x:  46vw; --y:  -4vh; animation-delay: -.35s; }
+.streak9  { --x: -25vw; --y:  14vh; animation-delay: -.65s; }
+.streak10 { --x:  27vw; --y: -17vh; animation-delay: -.05s; }
+.streak11 { --x:  -9vw; --y:  42vh; animation-delay: -.45s; }
+.streak12 { --x:  11vw; --y: -43vh; animation-delay: -.95s; }
+
+
+/* =========================================================
+   ROUTE
+   ========================================================= */
+
+.journeyRoute {
+  position: absolute;
+
+  left: 50%;
+  bottom: 7%;
+
+  z-index: 17;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  transform: translateX(-50%);
+
+  opacity: 0;
+
+  color: rgba(255,255,255,.65);
+
+  transition: opacity 1s ease;
+}
+
+.flight-flying .journeyRoute {
+  opacity: .65;
+}
+
+.flight-arrival .journeyRoute {
+  opacity: 0;
+}
+
+.routeOrigin,
+.routeDestination {
+  font-size: 10px;
+}
+
+.routeLine {
+  display: block;
+
+  width: min(30vw, 240px);
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.8),
+      rgba(221,180,255,.3),
+      rgba(255,255,255,.8)
+    );
+
+  transform-origin: left;
+  animation: routeTravel 2.2s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   FLIGHT MESSAGE
+   ========================================================= */
+
+.flightMessage {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  z-index: 20;
+
+  transform: translate(-50%, -50%);
+
+  text-align: center;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition:
+    opacity .8s ease,
+    transform 1.4s ease;
+}
+
+.flightMessage p {
+  margin: 0 0 8px;
+
+  color: white;
+
+  font-size: clamp(11px, 1vw, 14px);
+  letter-spacing: .3em;
+}
+
+.flightMessage span {
+  color: rgba(255,255,255,.58);
+
+  font-size: 9px;
+  letter-spacing: .35em;
+}
+
+.flight-launch .flightMessage {
+  opacity: 1;
+}
+
+.flight-flying .flightMessage {
+  opacity: 0;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1.5);
+}
+
+
+/* =========================================================
+   FIRST MEMORY APPEARANCE
+   ========================================================= */
+
+.journeyBeginning {
+  opacity: 0;
+
+  transform:
+    translate(-50%, -45%)
+    scale(.9);
+
+  transition:
+    opacity 1.6s ease,
+    transform 2s cubic-bezier(.16,.8,.2,1);
+}
+
+.flight-landed .journeyBeginning {
+  opacity: 1;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1);
+}
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes destinationTwinkle {
+  0%,
+  100% {
+    transform: scale(.85);
+    opacity: .7;
+  }
+
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes starFlightStreak {
+  0% {
+    transform:
+      translate(0, 0)
+      scaleY(.1);
+
+    opacity: 0;
+  }
+
+  20% {
+    opacity: .9;
+  }
+
+  100% {
+    transform:
+      translate(var(--x), var(--y))
+      scaleY(2.5);
+
+    opacity: 0;
+  }
+}
+
+@keyframes routeTravel {
+  0% {
+    opacity: .25;
+    transform: scaleX(.15);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  100% {
+    opacity: .25;
+    transform: scaleX(.15);
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .journeyFlightVideo {
+    filter:
+      brightness(.68)
+      saturate(1.25)
+      contrast(1.05);
+  }
+
+  .haloInner {
+    width: 55px;
+    height: 55px;
+  }
+
+  .haloMiddle {
+    width: 110px;
+    height: 110px;
+  }
+
+  .haloOuter {
+    width: 190px;
+    height: 190px;
+  }
+
+  .journeyRoute {
+    bottom: 10%;
+  }
+
+  .routeLine {
+    width: 42vw;
+  }
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .starStreak,
+  .destinationStarCore,
+  .routeLine {
+    animation: none !important;
+  }
+}
