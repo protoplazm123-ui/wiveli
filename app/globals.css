@@ -7332,3 +7332,597 @@ footer p {
 
   transition: translate .12s ease-out;
 }
+/* =========================================================
+   WIVELI — OUR STORY / OPENING ENVELOPE
+   ========================================================= */
+
+.ourStoryGift {
+  --space: #070812;
+  --space-soft: #111327;
+  --paper: #f5f0e6;
+  --paper-dark: #ddd0b8;
+  --pink: #d9b4b7;
+  --sage: #9daa8d;
+  --ink: #25221f;
+
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  color: var(--paper);
+  background:
+    radial-gradient(circle at 50% 35%, #202044 0%, transparent 32%),
+    radial-gradient(circle at 15% 80%, rgba(90, 73, 120, .28), transparent 30%),
+    linear-gradient(180deg, #0d0e1d 0%, #06070e 100%);
+}
+
+/* =========================
+   SPACE
+   ========================= */
+
+.ourStorySpace {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ourStoryStars {
+  position: absolute;
+  inset: -20%;
+  background-repeat: repeat;
+  will-change: transform;
+}
+
+.starsOne {
+  opacity: .45;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.9) 0 1px, transparent 1.4px);
+  background-size: 63px 63px;
+  animation: ourStarsDriftOne 30s linear infinite;
+}
+
+.starsTwo {
+  opacity: .32;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.85) 0 1.3px, transparent 1.8px);
+  background-size: 113px 113px;
+  background-position: 30px 70px;
+  animation: ourStarsDriftTwo 45s linear infinite;
+}
+
+.starsThree {
+  opacity: .18;
+  background-image:
+    radial-gradient(circle, rgba(217,180,183,.9) 0 2px, transparent 2.5px);
+  background-size: 181px 181px;
+  background-position: 80px 20px;
+  filter: blur(.2px);
+  animation: ourStarsDriftThree 60s linear infinite;
+}
+
+.ourStoryGlow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: .24;
+}
+
+.glowOne {
+  width: 420px;
+  height: 420px;
+  left: -120px;
+  top: 12%;
+  background: #8d709b;
+  animation: ourGlowFloat 10s ease-in-out infinite;
+}
+
+.glowTwo {
+  width: 520px;
+  height: 520px;
+  right: -180px;
+  bottom: -150px;
+  background: #565f91;
+  animation: ourGlowFloat 13s ease-in-out infinite reverse;
+}
+
+.ourStoryStar {
+  position: absolute;
+  color: rgba(255,255,255,.85);
+  text-shadow: 0 0 18px rgba(255,255,255,.8);
+  animation: ourTwinkle 3s ease-in-out infinite;
+}
+
+.starA {
+  left: 16%;
+  top: 20%;
+  font-size: 15px;
+}
+
+.starB {
+  right: 18%;
+  top: 30%;
+  font-size: 10px;
+  animation-delay: -1s;
+}
+
+.starC {
+  left: 25%;
+  bottom: 18%;
+  font-size: 8px;
+  animation-delay: -2s;
+}
+
+/* =========================
+   INTRO LAYOUT
+   ========================= */
+
+.ourStoryIntro {
+  position: relative;
+  z-index: 5;
+  min-height: 100vh;
+  padding: 40px 28px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ourStoryLabel {
+  margin: 0;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .28em;
+  opacity: .58;
+}
+
+.ourStoryEnvelopeScene {
+  position: relative;
+  width: min(720px, 94vw);
+  height: 680px;
+  margin: auto;
+  perspective: 1500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================
+   ENVELOPE
+   ========================= */
+
+.ourStoryEnvelope {
+  position: absolute;
+  z-index: 10;
+  width: min(520px, 82vw);
+  aspect-ratio: 1.55 / 1;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  background: transparent;
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 35px 55px rgba(0,0,0,.42));
+  transition:
+    transform 1.3s cubic-bezier(.2,.75,.2,1),
+    opacity .9s ease;
+}
+
+.envelopeBack {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  background:
+    linear-gradient(145deg, #eee6d8, #d8cab6);
+}
+
+.envelopeInside {
+  position: absolute;
+  inset: 5px;
+  border-radius: 4px;
+  background: #cbbca8;
+}
+
+.envelopeFront {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 5px;
+}
+
+.envelopeFrontLeft,
+.envelopeFrontRight,
+.envelopeFrontBottom {
+  position: absolute;
+}
+
+.envelopeFrontLeft {
+  left: 0;
+  top: 0;
+  width: 55%;
+  height: 100%;
+  background: #e7ddce;
+  clip-path: polygon(0 0, 100% 52%, 0 100%);
+}
+
+.envelopeFrontRight {
+  right: 0;
+  top: 0;
+  width: 55%;
+  height: 100%;
+  background: #ded2c1;
+  clip-path: polygon(100% 0, 0 52%, 100% 100%);
+}
+
+.envelopeFrontBottom {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 62%;
+  background:
+    linear-gradient(180deg, #eee5d8, #ddd0bd);
+  clip-path: polygon(0 100%, 50% 0, 100% 100%);
+}
+
+/* =========================
+   FLAP
+   ========================= */
+
+.envelopeFlap {
+  position: absolute;
+  z-index: 7;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 58%;
+  transform-origin: top center;
+  transform-style: preserve-3d;
+  transition:
+    transform 1.15s cubic-bezier(.4,0,.15,1);
+}
+
+.envelopeFlap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(155deg, #f2eadf, #d9cbb8);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  backface-visibility: hidden;
+}
+
+.envelopeFlapInner {
+  position: absolute;
+  inset: 0;
+  background: #cbbca8;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform: rotateX(180deg);
+  backface-visibility: hidden;
+}
+
+/* =========================
+   WAX SEAL
+   ========================= */
+
+.envelopeSeal {
+  position: absolute;
+  z-index: 12;
+  left: 50%;
+  top: 48%;
+  width: 68px;
+  height: 68px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #f5dfdf;
+  font-family: Georgia, serif;
+  font-size: 30px;
+  background:
+    radial-gradient(circle at 32% 25%, #dbaeb5, #9f6673 70%);
+  box-shadow:
+    inset 0 0 0 3px rgba(255,255,255,.09),
+    0 9px 18px rgba(62,31,39,.28);
+  transform: translate(-50%, -50%) rotate(-7deg);
+  transition:
+    opacity .35s ease,
+    transform .6s cubic-bezier(.2,.8,.2,1);
+}
+
+.envelopeName {
+  position: absolute;
+  z-index: 8;
+  left: 50%;
+  bottom: 18%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #4b443d;
+  transform: translateX(-50%);
+}
+
+.envelopeName span {
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .24em;
+}
+
+.envelopeName strong {
+  color: #a97580;
+  font-family: Georgia, serif;
+  font-size: 18px;
+}
+
+/* =========================
+   LETTER
+   ========================= */
+
+.ourStoryLetter {
+  position: absolute;
+  z-index: 3;
+  width: min(490px, 78vw);
+  min-height: 570px;
+  padding: 56px 50px 45px;
+  color: var(--ink);
+  text-align: center;
+  border-radius: 4px;
+  background:
+    linear-gradient(rgba(255,255,255,.24), rgba(255,255,255,.24)),
+    var(--paper);
+  box-shadow: 0 35px 80px rgba(0,0,0,.34);
+  opacity: 0;
+  transform:
+    translateY(115px)
+    scale(.78)
+    rotate(-2deg);
+  transition:
+    transform 1.55s cubic-bezier(.16,1,.3,1),
+    opacity .8s ease;
+}
+
+.letterSmall {
+  margin: 0 0 34px;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .25em;
+}
+
+.ourStoryLetter h1 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(32px, 4vw, 49px);
+  line-height: .98;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -.04em;
+}
+
+.letterLine {
+  width: 45px;
+  height: 1px;
+  margin: 32px auto;
+  background: rgba(37,34,31,.35);
+}
+
+.letterText {
+  width: 90%;
+  margin: auto;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(37,34,31,.72);
+}
+
+.letterEnding {
+  margin: 30px 0 25px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  line-height: 1.35;
+  font-style: italic;
+}
+
+.beginJourney {
+  width: 220px;
+  min-height: 48px;
+  margin: 0 auto;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid rgba(37,34,31,.65);
+  border-radius: 999px;
+  color: var(--ink);
+  background: transparent;
+  cursor: pointer;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .15em;
+  transition:
+    transform .25s ease,
+    background .25s ease;
+}
+
+/* =========================
+   OPEN STATE
+   ========================= */
+
+.ourStoryGift.isOpened .envelopeSeal {
+  opacity: 0;
+  transform:
+    translate(-50%, -50%)
+    scale(.35)
+    rotate(18deg);
+}
+
+.ourStoryGift.isOpened .envelopeFlap {
+  transform: rotateX(180deg);
+  transition-delay: .25s;
+}
+
+.ourStoryGift.isOpened .ourStoryEnvelope {
+  transform:
+    translateY(235px)
+    scale(.88);
+  opacity: .9;
+  transition-delay: .55s;
+}
+
+.ourStoryGift.isOpened .ourStoryLetter {
+  z-index: 20;
+  opacity: 1;
+  transform:
+    translateY(-18px)
+    scale(1)
+    rotate(0deg);
+  transition-delay: .85s;
+}
+
+/* =========================
+   BOTTOM
+   ========================= */
+
+.tapToOpen {
+  position: relative;
+  z-index: 30;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 0;
+  color: rgba(245,240,230,.7);
+  background: transparent;
+  cursor: pointer;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .22em;
+}
+
+.ourStoryMade {
+  margin: 17px 0 0;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: .18em;
+  opacity: .32;
+}
+
+/* =========================
+   HOVER
+   ========================= */
+
+@media (hover: hover) and (pointer: fine) {
+  .ourStoryEnvelope:hover:not(
+    .ourStoryGift.isOpened .ourStoryEnvelope
+  ) {
+    transform: translateY(-8px) rotate(.5deg);
+  }
+
+  .beginJourney:hover {
+    transform: translateY(-3px);
+    background: rgba(37,34,31,.06);
+  }
+}
+
+/* =========================
+   ANIMATIONS
+   ========================= */
+
+@keyframes ourStarsDriftOne {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(40px, 70px, 0);
+  }
+}
+
+@keyframes ourStarsDriftTwo {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    transform: translate3d(-60px, 90px, 0) scale(1.03);
+  }
+}
+
+@keyframes ourStarsDriftThree {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(80px, -50px, 0);
+  }
+}
+
+@keyframes ourGlowFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(35px, -25px, 0);
+  }
+}
+
+@keyframes ourTwinkle {
+  0%,
+  100% {
+    opacity: .25;
+    transform: scale(.8);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+}
+
+/* =========================
+   TABLET / MOBILE
+   ========================= */
+
+@media (max-width: 700px) {
+  .ourStoryIntro {
+    padding: 28px 14px 22px;
+  }
+
+  .ourStoryEnvelopeScene {
+    height: 620px;
+  }
+
+  .ourStoryLetter {
+    min-height: 520px;
+    padding: 44px 27px 34px;
+  }
+
+  .letterText {
+    width: 100%;
+    font-size: 13px;
+  }
+
+  .ourStoryGift.isOpened .ourStoryEnvelope {
+    transform:
+      translateY(220px)
+      scale(.83);
+  }
+
+  .ourStoryGift.isOpened .ourStoryLetter {
+    transform:
+      translateY(-5px)
+      scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ourStoryStars,
+  .ourStoryGlow,
+  .ourStoryStar {
+    animation: none !important;
+  }
+
+  .ourStoryEnvelope,
+  .ourStoryLetter,
+  .envelopeFlap,
+  .envelopeSeal {
+    transition-duration: .01ms !important;
+  }
+}
