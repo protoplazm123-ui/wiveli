@@ -12622,3 +12622,288 @@ footer p {
     display: none;
   }
 }
+/* =========================================================
+   WIVELI — OUR STORY / MEMORY STAR TARGET
+   ========================================================= */
+
+.memoryStarTarget {
+  position: relative;
+  z-index: 999999;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  margin: 20px auto 8px;
+
+  pointer-events: auto;
+}
+
+.memoryStarInstruction {
+  margin: 0;
+
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: .22em;
+
+  text-align: center;
+  text-transform: uppercase;
+
+  color: rgba(255, 255, 255, .85);
+
+  text-shadow:
+    0 0 12px rgba(255, 255, 255, .25);
+
+  animation:
+    memoryInstructionPulse
+    2s
+    ease-in-out
+    infinite;
+}
+
+
+/* MOVING ARROW */
+
+.memoryStarArrow {
+  display: block;
+
+  margin: 8px 0 3px;
+
+  font-size: 19px;
+  line-height: 1;
+
+  color: rgba(255, 255, 255, .9);
+
+  filter:
+    drop-shadow(0 0 8px rgba(255,255,255,.5));
+
+  animation:
+    memoryArrowMove
+    1.3s
+    ease-in-out
+    infinite;
+}
+
+
+/* CLICKABLE STAR */
+
+.memoryStarButton {
+  position: relative;
+  z-index: 10;
+
+  width: 110px;
+  height: 110px;
+
+  min-width: 110px;
+  min-height: 110px;
+
+  display: grid;
+  place-items: center;
+
+  margin: 0;
+  padding: 0;
+
+  border: 0;
+  border-radius: 50%;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #fff;
+
+  cursor: pointer;
+
+  pointer-events: auto !important;
+  touch-action: manipulation;
+
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+/* STAR */
+
+.memoryStarSymbol {
+  position: relative;
+  z-index: 5;
+
+  display: block;
+
+  font-size: 62px;
+  line-height: 1;
+
+  color: #fff;
+
+  filter:
+    drop-shadow(0 0 7px rgba(255,255,255,1))
+    drop-shadow(0 0 20px rgba(218,190,255,.95))
+    drop-shadow(0 0 48px rgba(170,115,255,.85));
+
+  animation:
+    memoryStarPulse
+    2s
+    ease-in-out
+    infinite;
+}
+
+
+/* PULSING TARGET RINGS */
+
+.memoryStarRing {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: 70px;
+  height: 70px;
+
+  border:
+    1px solid
+    rgba(225, 205, 255, .7);
+
+  border-radius: 50%;
+
+  transform:
+    translate(-50%, -50%)
+    scale(.7);
+
+  pointer-events: none;
+
+  box-shadow:
+    0 0 20px
+    rgba(186, 140, 255, .15);
+}
+
+.memoryStarRing.ringOne {
+  animation:
+    memoryRingPulse
+    2.2s
+    ease-out
+    infinite;
+}
+
+.memoryStarRing.ringTwo {
+  animation:
+    memoryRingPulse
+    2.2s
+    ease-out
+    1.1s
+    infinite;
+}
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes memoryRingPulse {
+
+  0% {
+    opacity: .9;
+
+    transform:
+      translate(-50%, -50%)
+      scale(.55);
+  }
+
+  70% {
+    opacity: .25;
+  }
+
+  100% {
+    opacity: 0;
+
+    transform:
+      translate(-50%, -50%)
+      scale(1.7);
+  }
+}
+
+
+@keyframes memoryStarPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.16);
+  }
+}
+
+
+@keyframes memoryArrowMove {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(6px);
+  }
+}
+
+
+@keyframes memoryInstructionPulse {
+
+  0%,
+  100% {
+    opacity: .65;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .memoryStarTarget {
+    margin:
+      18px
+      auto
+      6px;
+  }
+
+  .memoryStarInstruction {
+    width: 240px;
+    max-width: 75vw;
+
+    font-size: 9px;
+    line-height: 1.45;
+
+    letter-spacing: .17em;
+  }
+
+  .memoryStarArrow {
+    margin-top: 7px;
+
+    font-size: 18px;
+  }
+
+  .memoryStarButton {
+    width: 115px;
+    height: 115px;
+
+    min-width: 115px;
+    min-height: 115px;
+  }
+
+  .memoryStarSymbol {
+    font-size: 64px;
+  }
+
+  .memoryStarRing {
+    width: 72px;
+    height: 72px;
+  }
+}
