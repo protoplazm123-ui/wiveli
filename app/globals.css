@@ -11887,3 +11887,112 @@ footer p {
     -webkit-tap-highlight-color: transparent;
   }
 }
+/* =========================================================
+   OUR STORY — SAFE INTERACTIVE STAR
+   ========================================================= */
+
+.memoryStarInteractionLayer {
+  position: absolute;
+  inset: 0;
+
+  z-index: 9999;
+
+  display: grid;
+  place-items: center;
+
+  pointer-events: none;
+}
+
+.journeyFirstStarInteractive {
+  position: relative !important;
+
+  z-index: 10000 !important;
+
+  width: 96px !important;
+  height: 96px !important;
+  min-width: 96px !important;
+  min-height: 96px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  margin: 0 !important;
+
+  border: 0;
+
+  background: transparent;
+
+  color: white;
+
+  font-size: 58px;
+
+  cursor: pointer;
+
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+
+  filter:
+    drop-shadow(0 0 12px rgba(255,255,255,.9))
+    drop-shadow(0 0 35px rgba(210,190,255,.7));
+
+  animation:
+    interactiveStarPulse
+    2.4s
+    ease-in-out
+    infinite;
+}
+
+.journeyFirstStarInteractive::before {
+  content: "";
+
+  position: absolute;
+  inset: 5px;
+
+  z-index: -1;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,255,255,.16),
+      rgba(190,170,255,.06) 45%,
+      transparent 72%
+    );
+}
+
+
+/* hide any legacy star inside destination content */
+
+.journeyBeginning .journeyFirstStar {
+  display: none !important;
+}
+
+
+@keyframes interactiveStarPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: .85;
+  }
+
+  50% {
+    transform: scale(1.16);
+    opacity: 1;
+  }
+}
+
+
+@media (max-width: 700px) {
+
+  .journeyFirstStarInteractive {
+    width: 110px !important;
+    height: 110px !important;
+
+    min-width: 110px !important;
+    min-height: 110px !important;
+
+    font-size: 62px;
+  }
+}
