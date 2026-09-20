@@ -1,35 +1,10 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { activeContent, safeLink } from './scenarios';
 import s from './OpenWhen.module.css';
 
-/* =========================================================
-   SMALL SCRAPBOOK ELEMENTS
-   ========================================================= */
-
-function Polaroid({ photo, caption, rotate = 'left' }) {
-  return (
-    <figure
-      className={`${s.flipPolaroid} ${
-        rotate === 'right' ? s.flipPolaroidRight : s.flipPolaroidLeft
-      }`}
-    >
-      <span className={s.flipTape} />
-
-      {photo?.data ? (
-        <img src={photo.data} alt={caption || 'A little memory'} />
-      ) : (
-        <div className={s.flipPhotoPlaceholder}>
-          <span>♡</span>
-          <small>our little memory</small>
-        </div>
-      )}
-
-      <figcaption>{caption || 'a little piece of us ♡'}</figcaption>
-    </figure>
-  );
-}
+const ASSET = '/assets/open-when/diary-kit';
 
 function SurpriseContent({ entry, gift }) {
   const content = activeContent(entry);
@@ -40,19 +15,17 @@ function SurpriseContent({ entry, gift }) {
   );
 
   return (
-    <div className={s.flipSurpriseCard}>
-      <span className={s.flipSurpriseTape} />
-
-      <p className={s.flipEyebrow}>A LITTLE SURPRISE ♡</p>
+    <div className={s.newSurprise}>
+      <p className={s.newEyebrow}>A LITTLE SURPRISE ♡</p>
 
       <h3>{entry.title}</h3>
 
       {content.message && (
-        <p className={s.flipSurpriseMessage}>{content.message}</p>
+        <p className={s.newSurpriseMessage}>{content.message}</p>
       )}
 
       {details.length > 0 && (
-        <dl className={s.flipDetails}>
+        <dl className={s.newDetails}>
           {details.map(([label, value]) => (
             <div key={label}>
               <dt>{label}</dt>
@@ -63,7 +36,7 @@ function SurpriseContent({ entry, gift }) {
       )}
 
       {content.audio?.data && (
-        <div className={s.flipMedia}>
+        <div className={s.newMedia}>
           <span>press play when you need me ♡</span>
           <audio controls preload="none" src={content.audio.data}>
             Your browser does not support audio.
@@ -73,7 +46,7 @@ function SurpriseContent({ entry, gift }) {
 
       {link && (
         <a
-          className={s.flipLink}
+          className={s.newLink}
           href={link}
           target="_blank"
           rel="noopener noreferrer"
@@ -83,17 +56,17 @@ function SurpriseContent({ entry, gift }) {
       )}
 
       {content.attachment?.data && (
-        <div className={s.flipMedia}>
+        <div className={s.newMedia}>
           {content.attachment.type?.startsWith('image/') && (
             <img
-              className={s.flipAttachment}
+              className={s.newAttachment}
               src={content.attachment.data}
               alt="Attached surprise"
             />
           )}
 
           <a
-            className={s.flipLink}
+            className={s.newLink}
             href={content.attachment.data}
             download={content.attachment.name || 'surprise'}
           >
@@ -102,7 +75,7 @@ function SurpriseContent({ entry, gift }) {
         </div>
       )}
 
-      <p className={s.flipSignature}>
+      <p className={s.newSignature}>
         always in your corner,
         <br />
         {gift.from || 'me'} ♡
@@ -111,47 +84,57 @@ function SurpriseContent({ entry, gift }) {
   );
 }
 
+function Polaroid({ photo, caption }) {
+  return (
+    <figure className={s.newPolaroid}>
+      <div className={s.newPhotoWindow}>
+        {photo?.data ? (
+          <img src={photo.data} alt={caption || 'Our memory'} />
+        ) : (
+          <div className={s.newPhotoPlaceholder}>
+            <span>♡</span>
+            <small>our little memory</small>
+          </div>
+        )}
+      </div>
+
+      <figcaption>{caption || 'You. Always. ♡'}</figcaption>
+    </figure>
+  );
+}
+
 function Envelope({ entry, gift }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className={`${s.flipEnvelopeWrap} ${open ? s.flipEnvelopeOpen : ''}`}>
+    <div className={`${s.newEnvelopeArea} ${open ? s.newEnvelopeIsOpen : ''}`}>
       <button
         type="button"
-        className={s.flipEnvelope}
-        onClick={(event) => {
-          event.stopPropagation();
-          setOpen((value) => !value);
-        }}
+        className={s.newEnvelopeButton}
+        onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
       >
-        <span className={s.flipEnvelopeBack} />
+        <img
+          className={s.newEnvelopeImage}
+          src={`${ASSET}/${open ? 'envelope-open.png' : 'envelope-closed.png'}`}
+          alt=""
+          draggable="false"
+        />
 
-        <span className={s.flipEnvelopeLetter}>
-          <small>something</small>
-          <strong>just for you ♡</strong>
-        </span>
-
-        <span className={s.flipEnvelopeFront} />
-        <span className={s.flipEnvelopeFlap} />
-
-        <span className={s.flipWax}>♡</span>
-
-        <span className={s.flipEnvelopeText}>
-          OPEN WHEN…
-          <strong>{entry.when}</strong>
-        </span>
+        {!open && (
+          <span className={s.newEnvelopeLabel}>
+            <small>OPEN WHEN…</small>
+            <strong>{entry.when}</strong>
+          </span>
+        )}
       </button>
 
-      <p className={s.flipTap}>
-        {open ? 'tap to close ↑' : 'tap the envelope ♡'}
+      <p className={s.newEnvelopeHint}>
+        {open ? 'tap again to close ↑' : 'tap the envelope ♡'}
       </p>
 
       {open && (
-        <div
-          className={s.flipSurpriseReveal}
-          onClick={(event) => event.stopPropagation()}
-        >
+        <div className={s.newSurpriseReveal}>
           <SurpriseContent entry={entry} gift={gift} />
         </div>
       )}
@@ -159,23 +142,23 @@ function Envelope({ entry, gift }) {
   );
 }
 
-/* =========================================================
-   COVER
-   Keep exported because OpenWhenBuilder already imports Cover.
-   ========================================================= */
-
+/*
+ * Keep this export.
+ * OpenWhenBuilder already imports Cover.
+ */
 export function Cover({ gift, onOpen = () => {} }) {
   return (
-    <div className={s.flipCoverPreview}>
-      <button
-        type="button"
-        className={s.flipPhysicalCover}
-        onClick={onOpen}
-      >
-        <span className={s.flipCoverSpine} />
+    <div className={s.newCoverWrap}>
+      <button type="button" className={s.newCoverButton} onClick={onOpen}>
+        <img
+          src={`${ASSET}/journal-cover.png`}
+          alt="Open When journal"
+          className={s.newCoverImage}
+          draggable="false"
+        />
 
-        <span className={s.flipCoverInner}>
-          <small>WIVELI PRESENTS</small>
+        <div className={s.newCoverCopy}>
+          <small>WIVELI</small>
 
           <strong>
             OPEN
@@ -183,97 +166,82 @@ export function Cover({ gift, onOpen = () => {} }) {
             WHEN…
           </strong>
 
-          <span className={s.flipCoverHeart}>♡</span>
+          <span>♡</span>
 
-          <em>
-            a little book for
-            <br />
-            {gift?.to || 'you'}
-          </em>
-
-          <b>
-            THIS IS MY WAY
-            <br />
-            OF TAKING CARE OF YOU
-          </b>
-
-          <i>with love, {gift?.from || 'me'} x</i>
-        </span>
+          <em>for {gift?.to || 'you'}</em>
+        </div>
       </button>
     </div>
   );
 }
 
-/* =========================================================
-   ACTUAL BOOK PAGES
-   ========================================================= */
-
 function IntroPage({ gift }) {
   return (
-    <div className={s.flipIntro}>
-      <span className={s.flipIntroHeart}>♡</span>
+    <div className={s.newIntroPage}>
+      <p className={s.newEyebrow}>THIS LITTLE BOOK BELONGS TO</p>
 
-      <p>THIS LITTLE BOOK BELONGS TO</p>
+      <h2>{gift.to || 'you'} ♡</h2>
 
-      <h2>{gift.to || 'you'}</h2>
+      <div className={s.newIntroPaper}>
+        <span className={s.newTape} />
 
-      <div className={s.flipIntroNote}>
-        <span className={s.flipTape} />
         <p>
-          Open these pages whenever you need a little comfort,
-          a smile, a reminder, or simply a little bit of me.
+          Open these pages whenever you need a little comfort, a smile,
+          a reminder, or simply a little bit of me.
         </p>
       </div>
 
-      <span className={s.flipHandNote}>
+      <p className={s.newHandNote}>
         made with way too much love
         <br />
         {gift.from || 'me'} ♡
-      </span>
+      </p>
     </div>
   );
 }
 
 function MemoryPage({ entry, gift, index }) {
-  const layouts = [
-    s.flipLayoutOne,
-    s.flipLayoutTwo,
-    s.flipLayoutThree,
-    s.flipLayoutFour,
-  ];
-
   return (
-    <div className={`${s.flipMemoryPage} ${layouts[index % layouts.length]}`}>
-      <div className={s.flipPageHeader}>
-        <span>OPEN WHEN…</span>
+    <div className={s.newMemoryPage}>
+      <div className={s.newPageTop}>
+        <span>WIVELI</span>
         <span>{String(index + 1).padStart(2, '0')}</span>
       </div>
 
-      <h2>{entry.when}</h2>
+      <h2>
+        Open when
+        <br />
+        <em>{entry.when}</em>
+      </h2>
 
-      <div className={s.flipMemoryCollage}>
+      <div className={s.newScrapbook}>
         <Polaroid
           photo={entry.photo || gift.coverPhoto}
-          caption={entry.caption || 'one of my favorite moments ♡'}
-          rotate={index % 2 ? 'right' : 'left'}
+          caption={entry.caption || 'You. Always. ♡'}
         />
 
-        <div className={s.flipPersonalNote}>
-          <span className={s.flipNoteTape} />
+        <div className={s.newPersonalPaper}>
+          <span className={s.newTape} />
+
           <p>
             {entry.note ||
-              `For the moments when you need a little reminder that I'm always here.`}
+              `Even when we're apart, you're still so close to my heart.`}
           </p>
 
-          <small>
-            with love,
-            <br />
-            {gift.from || 'me'} ♡
-          </small>
+          <small>with love, {gift.from || 'me'} ♡</small>
         </div>
 
-        <span className={s.flipDoodle}>
-          {index % 3 === 0 ? '♡' : index % 3 === 1 ? '✦ ♡ ✧' : '↘ ♡'}
+        <img
+          src={`${ASSET}/flowers.png`}
+          className={s.newFlowers}
+          alt=""
+          draggable="false"
+        />
+
+        <span className={s.newTinyWords}>
+          SAME SOULS
+          <br />
+          DIFFERENT PLACES ♡
         </span>
       </div>
 
@@ -284,224 +252,155 @@ function MemoryPage({ entry, gift, index }) {
 
 function FinalPage({ gift }) {
   return (
-    <div className={s.flipFinalPage}>
-      <span>♡</span>
+    <div className={s.newFinalPage}>
+      <span className={s.newFinalHeart}>♡</span>
+
+      <p className={s.newEyebrow}>ONE LAST LITTLE NOTE</p>
 
       <h2>
-        AND WHEN
+        And when you
         <br />
-        YOU REACH
-        <br />
-        THE END…
+        reach the end…
       </h2>
 
-      <p>
-        remember there will always be another page for us to fill.
-      </p>
+      <div className={s.newFinalPaper}>
+        <p>
+          Remember there will always be another page for us to fill.
+        </p>
+      </div>
 
       <em>love, {gift.from || 'me'} x</em>
     </div>
   );
 }
 
-/* =========================================================
-   PAGE FLIP BOOK
-   ========================================================= */
-
-function RealBook({ gift, entries, onClose }) {
-  const bookRef = useRef(null);
-  const pageFlipRef = useRef(null);
+function LightweightBook({ gift, entries, onClose }) {
+  const pages = useMemo(
+    () => [
+      { type: 'intro' },
+      ...entries.map((entry, index) => ({
+        type: 'memory',
+        entry,
+        index,
+      })),
+      { type: 'final' },
+    ],
+    [entries]
+  );
 
   const [page, setPage] = useState(0);
-  const totalPages = entries.length + 2;
+  const [direction, setDirection] = useState('next');
+  const touchStart = useRef(null);
 
-  useEffect(() => {
-    let cancelled = false;
+  const current = pages[page];
 
-    async function createBook() {
-      if (!bookRef.current) return;
-
-      const { PageFlip } = await import('page-flip');
-
-      if (cancelled || !bookRef.current) return;
-
-      const width = window.innerWidth <= 600 ? 330 : 430;
-      const height = window.innerWidth <= 600 ? 540 : 620;
-
-      const pageFlip = new PageFlip(bookRef.current, {
-        width,
-        height,
-
-        size: 'stretch',
-
-        minWidth: 280,
-        maxWidth: 480,
-
-        minHeight: 460,
-        maxHeight: 700,
-
-        maxShadowOpacity: 0.45,
-
-        showCover: true,
-
-        mobileScrollSupport: false,
-
-        usePortrait: true,
-
-        flippingTime: 900,
-
-        drawShadow: true,
-
-        autoSize: true,
-
-        clickEventForward: true,
-
-        useMouseEvents: true,
-
-        swipeDistance: 25,
-
-        showPageCorners: true,
-
-        disableFlipByClick: false,
-      });
-
-      const pages = bookRef.current.querySelectorAll('[data-page]');
-
-      pageFlip.loadFromHTML(pages);
-
-      pageFlip.on('flip', (event) => {
-        setPage(event.data);
-      });
-
-      pageFlipRef.current = pageFlip;
-    }
-
-    createBook();
-
-    return () => {
-      cancelled = true;
-
-      try {
-        pageFlipRef.current?.destroy();
-      } catch {
-        // PageFlip may already be destroyed during hot reload.
-      }
-
-      pageFlipRef.current = null;
-    };
-  }, []);
-
-  function previous() {
-    pageFlipRef.current?.flipPrev();
+  function goNext() {
+    if (page >= pages.length - 1) return;
+    setDirection('next');
+    setPage((value) => value + 1);
   }
 
-  function next() {
-    pageFlipRef.current?.flipNext();
+  function goPrevious() {
+    if (page <= 0) return;
+    setDirection('previous');
+    setPage((value) => value - 1);
+  }
+
+  function handleTouchStart(event) {
+    touchStart.current = event.touches[0]?.clientX ?? null;
+  }
+
+  function handleTouchEnd(event) {
+    if (touchStart.current === null) return;
+
+    const end = event.changedTouches[0]?.clientX ?? touchStart.current;
+    const distance = end - touchStart.current;
+
+    touchStart.current = null;
+
+    if (Math.abs(distance) < 55) return;
+
+    if (distance < 0) goNext();
+    else goPrevious();
   }
 
   return (
-    <section className={s.realBookScene}>
-      <div className={s.realBookTop}>
+    <section className={s.newReader}>
+      <div className={s.newReaderTop}>
         <button type="button" onClick={onClose}>
           CLOSE JOURNAL
         </button>
 
         <span>
           {String(page + 1).padStart(2, '0')} /{' '}
-          {String(totalPages).padStart(2, '0')}
+          {String(pages.length).padStart(2, '0')}
         </span>
       </div>
 
-      <div className={s.realBookStage}>
-        <div ref={bookRef} className={s.realBook}>
-          <div
-            data-page
-            data-density="hard"
-            className={`${s.realBookPage} ${s.realBookCoverPage}`}
-          >
-            <div className={s.realInsideCover}>
-              <span>WIVELI</span>
+      <div
+        className={s.newBookStage}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        <img
+          src={`${ASSET}/journal-open.png`}
+          className={s.newOpenJournal}
+          alt=""
+          draggable="false"
+        />
 
-              <h2>
-                OPEN
-                <br />
-                WHEN…
-              </h2>
+        <div
+          key={page}
+          className={`${s.newPageContent} ${
+            direction === 'next' ? s.newPageNext : s.newPagePrevious
+          }`}
+        >
+          {current.type === 'intro' && <IntroPage gift={gift} />}
 
-              <p>
-                for {gift.to || 'you'} ♡
-              </p>
+          {current.type === 'memory' && (
+            <MemoryPage
+              entry={current.entry}
+              gift={gift}
+              index={current.index}
+            />
+          )}
 
-              <small>turn the page →</small>
-            </div>
-          </div>
-
-          <div data-page className={s.realBookPage}>
-            <IntroPage gift={gift} />
-          </div>
-
-          {entries.map((entry, index) => (
-            <div
-              data-page
-              className={s.realBookPage}
-              key={entry.id || `${entry.when}-${index}`}
-            >
-              <MemoryPage
-                entry={entry}
-                gift={gift}
-                index={index}
-              />
-            </div>
-          ))}
-
-          <div
-            data-page
-            data-density="hard"
-            className={`${s.realBookPage} ${s.realBookLastPage}`}
-          >
-            <FinalPage gift={gift} />
-          </div>
+          {current.type === 'final' && <FinalPage gift={gift} />}
         </div>
       </div>
 
-      <nav className={s.realBookControls}>
+      <nav className={s.newControls}>
         <button
           type="button"
-          onClick={previous}
+          onClick={goPrevious}
           disabled={page === 0}
           aria-label="Previous page"
         >
           ←
         </button>
 
-        <div className={s.realBookProgress}>
+        <div className={s.newProgress}>
           <span
             style={{
-              width: `${((page + 1) / totalPages) * 100}%`,
+              width: `${((page + 1) / pages.length) * 100}%`,
             }}
           />
         </div>
 
         <button
           type="button"
-          onClick={next}
-          disabled={page >= totalPages - 1}
+          onClick={goNext}
+          disabled={page === pages.length - 1}
           aria-label="Next page"
         >
           →
         </button>
       </nav>
 
-      <p className={s.realBookHint}>
-        swipe the page with your finger ♡
-      </p>
+      <p className={s.newSwipeHint}>swipe or use the arrows ♡</p>
     </section>
   );
 }
-
-/* =========================================================
-   MAIN READER
-   ========================================================= */
 
 export default function Journal({ gift }) {
   const entries = useMemo(
@@ -513,8 +412,8 @@ export default function Journal({ gift }) {
 
   if (!entries.length) {
     return (
-      <main className={s.realDiaryRoot}>
-        <div className={s.realDiaryEmpty}>
+      <main className={s.newDiaryRoot}>
+        <div className={s.newEmpty}>
           <span>♡</span>
           <h1>Your little journal is waiting.</h1>
           <p>Add at least one Open When surprise to begin.</p>
@@ -524,44 +423,24 @@ export default function Journal({ gift }) {
   }
 
   return (
-    <main className={s.realDiaryRoot}>
-      <div className={s.realDeskDecor} aria-hidden="true">
-        <div className={s.realFabric} />
-        <div className={s.realCoffee}>
-          <span>♡</span>
-        </div>
-
-        <div className={s.realLoosePolaroid}>
-          <span>♡</span>
-        </div>
-
-        <div className={s.realPressedFlower}>✿</div>
-
-        <div className={s.realDeskNote}>
-          made
-          <br />
-          for you ♡
-        </div>
+    <main className={s.newDiaryRoot}>
+      <div className={s.newAmbient} aria-hidden="true">
+        <span className={s.newGlow} />
+        <span className={s.newFabric} />
       </div>
 
-      <header className={s.realDiaryHeader}>
-        <span>WIVELI</span>
+      <header className={s.newDiaryHeader}>
+        <strong>WIVELI</strong>
         <small>OPEN WHEN…</small>
       </header>
 
       {!opened ? (
-        <div className={s.realCoverScene}>
-          <Cover
-            gift={gift}
-            onOpen={() => setOpened(true)}
-          />
-
-          <p className={s.realCoverHint}>
-            tap the journal to open it ♡
-          </p>
+        <div className={s.newCoverScene}>
+          <Cover gift={gift} onOpen={() => setOpened(true)} />
+          <p>tap the journal to open it ♡</p>
         </div>
       ) : (
-        <RealBook
+        <LightweightBook
           gift={gift}
           entries={entries}
           onClose={() => setOpened(false)}
