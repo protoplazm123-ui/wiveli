@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 const memories = [
   {
     number: "01",
@@ -18,6 +17,7 @@ const memories = [
       "I still remember this moment like it was yesterday. I didn't know yet how many beautiful memories would come after it.",
     note: "My favorite beginning. ♡",
   },
+
   {
     number: "02",
     label: "OUR FIRST ADVENTURE",
@@ -33,8 +33,55 @@ const memories = [
       "Somewhere along the way, an ordinary day became one of those memories I knew I would want to keep forever.",
     note: "I'd go there with you all over again. ♡",
   },
-];
 
+  {
+    number: "03",
+    label: "ONE PERFECT DAY",
+    date: "FEBRUARY 14 · 2025",
+    title: (
+      <>
+        ONE OF THOSE
+        <br />
+        PERFECT DAYS.
+      </>
+    ),
+    text:
+      "Nothing extraordinary had to happen. Being there with you was enough to make the whole day feel special.",
+    note: "I wish I could live this day twice. ♡",
+  },
+
+  {
+    number: "04",
+    label: "OUR FAVORITE PLACE",
+    date: "MAY 24 · 2025",
+    title: (
+      <>
+        A PLACE THAT
+        <br />
+        BECAME OURS.
+      </>
+    ),
+    text:
+      "It was just another place on the map until we made memories there. Now I don't think I could ever see it without thinking of you.",
+    note: "Some places keep a piece of us. ♡",
+  },
+
+  {
+    number: "05",
+    label: "RIGHT HERE, RIGHT NOW",
+    date: "SEPTEMBER 26 · 2026",
+    title: (
+      <>
+        LOOK HOW FAR
+        <br />
+        WE'VE COME.
+      </>
+    ),
+    text:
+      "All these little moments somehow became our story. And the best part is knowing there are still so many waiting for us.",
+    note: "This is only the beginning. ♡",
+  },
+];
 const flightStars = [
   ["12%", "18%", "2px", "0s"],
   ["24%", "34%", "3px", ".3s"],
@@ -397,8 +444,23 @@ const openMemory = () => {
     ? "Let's go back to ours."
     : "You found another memory."}
 </span>
-
-<button
+          
+<p
+  style={{
+    margin: "24px 0 -6px",
+    fontSize: "10px",
+    letterSpacing: "0.22em",
+    fontWeight: 700,
+    textTransform: "uppercase",
+    color: "rgba(255,255,255,.72)",
+    textAlign: "center",
+  }}
+>
+  {currentMemory === 0
+    ? "TAP THE STAR TO OPEN THIS MEMORY"
+    : "TAP THE STAR TO CONTINUE"}
+</p>
+  <button
   type="button"
   aria-label={`Open memory ${memory.number}`}
   onClick={openMemory}
