@@ -11731,3 +11731,65 @@ footer p {
     -webkit-tap-highlight-color: transparent;
   }
 }
+/* =========================================================
+   WIVELI — OUR STORY / ENVELOPE CLICK FIX
+   ========================================================= */
+
+/* После открытия конверт больше не должен перехватывать клики */
+
+.ourStoryGift.isOpened .ourStoryEnvelope {
+  pointer-events: none !important;
+
+  animation:
+    envelopeDisappear
+    .9s
+    cubic-bezier(.16, 1, .3, 1)
+    .55s
+    forwards !important;
+}
+
+
+/* Письмо всегда выше открытого конверта */
+
+.ourStoryGift.isOpened .ourStoryLetter {
+  position: relative;
+  z-index: 50;
+
+  pointer-events: auto !important;
+}
+
+
+/* Кнопка путешествия гарантированно кликабельна */
+
+.ourStoryGift.isOpened .beginJourney {
+  position: relative;
+  z-index: 100;
+
+  pointer-events: auto !important;
+  touch-action: manipulation;
+}
+
+
+/* Нижняя кнопка YOUR LETTER после открытия не нужна */
+
+.ourStoryGift.isOpened .tapToOpen {
+  pointer-events: none;
+
+  opacity: 0;
+}
+
+
+/* Убираем конверт после его открытия */
+
+@keyframes envelopeDisappear {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(150px) scale(.88);
+    visibility: hidden;
+  }
+}
