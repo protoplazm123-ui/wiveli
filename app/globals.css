@@ -10354,3 +10354,190 @@ footer p {
     animation-delay: 0s !important;
   }
 }
+/* =========================================================
+   WIVELI — OUR STORY / BETWEEN MEMORIES
+   ========================================================= */
+
+.betweenMemories .journeyUniverse {
+  perspective: 1200px;
+}
+
+/* slightly different atmosphere for the next flight */
+
+.betweenMemories.flight-launch .journeyFlightVideo {
+  opacity: .18;
+  transform:
+    scale(1.18)
+    rotate(-1.5deg);
+}
+
+.betweenMemories.flight-flying .journeyFlightVideo {
+  opacity: .95;
+
+  transform:
+    scale(1.03)
+    rotate(1.2deg);
+
+  filter:
+    brightness(.78)
+    saturate(1.45)
+    contrast(1.08);
+}
+
+.betweenMemories.flight-arrival .journeyFlightVideo {
+  opacity: .45;
+
+  transform:
+    scale(1.13)
+    rotate(0deg);
+}
+
+
+/* stronger depth during travel */
+
+.betweenMemories.flight-flying .flightStars span {
+  animation:
+    memoryStarTravel
+    2.2s
+    cubic-bezier(.18,.65,.25,1)
+    var(--star-delay)
+    infinite;
+}
+
+
+/* destination comes from a slightly different direction */
+
+.betweenMemories .destinationStar {
+  left: 58%;
+  top: 44%;
+}
+
+.betweenMemories.flight-launch .destinationStar {
+  transform:
+    translate(-50%, -50%)
+    scale(.04);
+}
+
+.betweenMemories.flight-flying .destinationStar {
+  transform:
+    translate(-50%, -50%)
+    scale(.28);
+}
+
+.betweenMemories.flight-arrival .destinationStar {
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1.35);
+}
+
+
+/* flight text gets a little cinematic movement */
+
+.betweenMemories.flight-launch .flightMessage {
+  opacity: 1;
+
+  transform:
+    translate(-50%, -45%)
+    scale(.9);
+}
+
+.betweenMemories.flight-flying .flightMessage {
+  opacity: 0;
+
+  transform:
+    translate(-50%, -70%)
+    scale(1.35);
+
+  filter: blur(5px);
+}
+
+
+/* hide old destination while travelling */
+
+.betweenMemories .journeyBeginning {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   FINAL MEMORY
+   ========================================================= */
+
+.storyMemoryToBeContinued {
+  margin-top: 38px;
+  padding-top: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-top: 1px solid rgba(33, 28, 32, .18);
+}
+
+.storyMemoryToBeContinued span {
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .17em;
+}
+
+.storyMemoryToBeContinued strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 34px;
+  font-weight: 400;
+}
+
+
+/* =========================================================
+   ANIMATION
+   ========================================================= */
+
+@keyframes memoryStarTravel {
+  0% {
+    opacity: 0;
+
+    transform:
+      translate(-50%, -50%)
+      scale(.15);
+  }
+
+  18% {
+    opacity: .7;
+  }
+
+  60% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+
+    transform:
+      translate(-50%, -50%)
+      scale(4.6);
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+  .betweenMemories .destinationStar {
+    left: 62%;
+    top: 40%;
+  }
+
+  .betweenMemories.flight-arrival .destinationStar {
+    left: 50%;
+    top: 50%;
+  }
+
+  .storyMemoryToBeContinued {
+    margin-top: 27px;
+  }
+}
