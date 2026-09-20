@@ -392,18 +392,55 @@ const openMemory = () => {
               </>
             )}
           </h2>
+<span>
+  {currentMemory === 0
+    ? "Let's go back to ours."
+    : "You found another memory."}
+</span>
 
-          <span>
-            {currentMemory === 0
-              ? "Let's go back to ours."
-              : "You found another memory."}
-          </span>
+<button
+  type="button"
+  aria-label={`Open memory ${memory.number}`}
+  onClick={openMemory}
+  style={{
+    width: "110px",
+    height: "110px",
+    minWidth: "110px",
+    minHeight: "110px",
 
-         
+    margin: "18px auto 10px",
+    padding: 0,
 
-          <small>
-            {memory.number} · {memory.label}
-          </small>
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+
+    position: "relative",
+    zIndex: 999999,
+
+    border: "none",
+    outline: "none",
+    background: "transparent",
+
+    color: "#ffffff",
+    fontSize: "64px",
+    lineHeight: 1,
+
+    cursor: "pointer",
+    pointerEvents: "auto",
+    touchAction: "manipulation",
+    WebkitTapHighlightColor: "transparent",
+
+    filter:
+      "drop-shadow(0 0 8px rgba(255,255,255,1)) drop-shadow(0 0 24px rgba(220,190,255,.95)) drop-shadow(0 0 55px rgba(190,140,255,.75))",
+  }}
+>
+  ✦
+</button>
+
+<small>
+  {memory.number} · {memory.label}
+</small>         
         </div>
 {/* ===================================================
     INTERACTIVE MEMORY STAR
