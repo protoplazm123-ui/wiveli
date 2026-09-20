@@ -11619,3 +11619,115 @@ footer p {
     animation-delay: 0s !important;
   }
 }
+/* =========================================================
+   WIVELI — OUR STORY / MOBILE INTERACTION FIX
+   ========================================================= */
+
+/* decorative fullscreen layers must never steal taps */
+
+.ourStoryOpeningVideo,
+.ourStoryOpeningShade,
+.ourStorySpace,
+.journeyVideo,
+.journeyVideoOverlay,
+.journeyLight,
+.flightStars,
+.destinationStar,
+.flightMessage,
+.journeyFuture,
+.storyMemoryGlow,
+.futureUniverse,
+.futureUniverseGlow,
+.collageSpace {
+  pointer-events: none !important;
+}
+
+
+/* destination text itself doesn't need touch events */
+
+.journeyBeginning {
+  pointer-events: none;
+}
+
+
+/* but the star absolutely does */
+
+.journeyFirstStar {
+  position: relative;
+  z-index: 100;
+
+  pointer-events: auto !important;
+  touch-action: manipulation;
+
+  cursor: pointer;
+}
+
+
+/* memory card must be above the universe */
+
+.storyMemory {
+  z-index: 120;
+}
+
+.storyMemoryCard {
+  position: relative;
+  z-index: 125;
+
+  pointer-events: auto;
+}
+
+
+/* all important buttons */
+
+.storyMemoryContinue,
+.futureContinue,
+.collageSave,
+.collageWatch,
+.beginJourney,
+.ourStoryEnvelope,
+.tapToOpen {
+  position: relative;
+  z-index: 150;
+
+  pointer-events: auto !important;
+  touch-action: manipulation;
+}
+
+
+/* once landed, guarantee that destination is usable */
+
+.ourStoryGift.flight-landed .journeyBeginning {
+  opacity: 1 !important;
+  visibility: visible !important;
+
+  pointer-events: none;
+}
+
+.ourStoryGift.flight-landed .journeyFirstStar {
+  pointer-events: auto !important;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+  .journeyFirstStar {
+    min-width: 82px;
+    min-height: 82px;
+
+    display: grid;
+    place-items: center;
+
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .storyMemoryContinue,
+  .futureContinue,
+  .collageSave,
+  .collageWatch,
+  .beginJourney,
+  .tapToOpen {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
