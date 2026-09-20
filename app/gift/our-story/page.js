@@ -88,13 +88,10 @@ export default function OurStoryGift() {
     setFlightStage("launch");
   };
 
-  const openMemory = () => {
-    if (flightStage !== "landed") return;
-
-    setMemoryLeaving(false);
-    setMemoryOpen(true);
-  };
-
+const openMemory = () => {
+  setMemoryLeaving(false);
+  setMemoryOpen(true);
+};
   const continueJourney = () => {
     const hasNextMemory = currentMemory < memories.length - 1;
 
