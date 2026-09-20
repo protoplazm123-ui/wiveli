@@ -447,18 +447,7 @@ const openMemory = () => {
     Separate layer so nothing can block the click
     =================================================== */}
 
-{flightStage === "landed" && !memoryOpen && !futureOpen && (
-  <div className="memoryStarInteractionLayer">
-    <button
-      type="button"
-      className="journeyFirstStar journeyFirstStarInteractive"
-      aria-label={`Open memory ${memory.number}`}
-      onClick={openMemory}
-    >
-      ✦
-    </button>
-  </div>
-)}        {/* ===================================================
+     {/* ===================================================
             CURRENT MEMORY
             =================================================== */}
 
