@@ -58,6 +58,13 @@ const flightStars = [
   ["84%", "91%", "3px", ".75s"],
 ];
 
+const futureStars = Array.from({ length: 90 }, (_, index) => ({
+  left: `${(index * 37) % 100}%`,
+  top: `${(index * 61) % 100}%`,
+  size: `${1 + (index % 4)}px`,
+  delay: `${(index % 12) * 0.12}s`,
+}));
+
 export default function OurStoryGift() {
   const [opened, setOpened] = useState(false);
   const [journeyStarted, setJourneyStarted] = useState(false);
@@ -70,6 +77,9 @@ export default function OurStoryGift() {
 
   const [travellingBetweenMemories, setTravellingBetweenMemories] =
     useState(false);
+
+  const [futureOpen, setFutureOpen] = useState(false);
+  const [collageOpen, setCollageOpen] = useState(false);
 
   const memory = memories[currentMemory];
 
@@ -88,26 +98,36 @@ export default function OurStoryGift() {
   const continueJourney = () => {
     const hasNextMemory = currentMemory < memories.length - 1;
 
-    if (!hasNextMemory) return;
+    if (hasNextMemory) {
+      setMemoryLeaving(true);
+
+      setTimeout(() => {
+        setMemoryOpen(false);
+        setMemoryLeaving(false);
+
+        setCurrentMemory((previous) => previous + 1);
+
+        setTravellingBetweenMemories(true);
+        setFlightStage("launch");
+      }, 1100);
+
+      return;
+    }
+
+    /* LAST MEMORY → FUTURE */
 
     setMemoryLeaving(true);
 
     setTimeout(() => {
       setMemoryOpen(false);
       setMemoryLeaving(false);
-
-      setCurrentMemory((previous) => previous + 1);
-
-      setTravellingBetweenMemories(true);
-      setFlightStage("launch");
+      setFutureOpen(true);
     }, 1100);
   };
 
-  /*
-    Every time flightStage becomes "launch",
-    run one complete journey:
-    launch → flying → arrival → landed
-  */
+  const openCollage = () => {
+    setCollageOpen(true);
+  };
 
   useEffect(() => {
     if (flightStage !== "launch") return;
@@ -141,11 +161,13 @@ export default function OurStoryGift() {
         memoryOpen ? "memoryIsOpen" : "",
         memoryLeaving ? "memoryIsLeaving" : "",
         travellingBetweenMemories ? "betweenMemories" : "",
+        futureOpen ? "futureIsOpen" : "",
+        collageOpen ? "collageIsOpen" : "",
         `flight-${flightStage}`,
       ].join(" ")}
     >
       {/* =====================================================
-          OPENING GALAXY
+          OPENING VIDEO
           ===================================================== */}
 
       <div className="ourStoryOpeningVideo" aria-hidden="true">
@@ -266,12 +288,10 @@ export default function OurStoryGift() {
       </section>
 
       {/* =====================================================
-          JOURNEY
+          JOURNEY UNIVERSE
           ===================================================== */}
 
       <section className="journeyUniverse">
-        {/* CALM GALAXY */}
-
         <video
           className="journeyVideo journeyCalmVideo"
           autoPlay
@@ -286,8 +306,6 @@ export default function OurStoryGift() {
             type="video/mp4"
           />
         </video>
-
-        {/* BRIGHT FLIGHT */}
 
         <video
           className="journeyVideo journeyFlightVideo"
@@ -307,7 +325,7 @@ export default function OurStoryGift() {
         <div className="journeyVideoOverlay" />
         <div className="journeyLight" />
 
-        {/* SMALL STARS */}
+        {/* FLIGHT STARS */}
 
         <div className="flightStars" aria-hidden="true">
           {flightStars.map(([left, top, size, delay], index) => (
@@ -399,7 +417,7 @@ export default function OurStoryGift() {
         </div>
 
         {/* ===================================================
-            MEMORY
+            CURRENT MEMORY
             =================================================== */}
 
         <section
@@ -441,21 +459,17 @@ export default function OurStoryGift() {
                 {memory.note}
               </p>
 
-              {currentMemory < memories.length - 1 ? (
-                <button
-                  type="button"
-                  className="storyMemoryContinue"
-                  onClick={continueJourney}
-                >
-                  CONTINUE THE JOURNEY
-                  <span>→</span>
-                </button>
-              ) : (
-                <div className="storyMemoryToBeContinued">
-                  <span>OUR STORY CONTINUES</span>
-                  <strong>∞</strong>
-                </div>
-              )}
+              <button
+                type="button"
+                className="storyMemoryContinue"
+                onClick={continueJourney}
+              >
+                {currentMemory < memories.length - 1
+                  ? "CONTINUE THE JOURNEY"
+                  : "SEE WHAT'S AHEAD"}
+
+                <span>→</span>
+              </button>
             </div>
           </div>
 
@@ -466,7 +480,9 @@ export default function OurStoryGift() {
           </p>
         </section>
 
-        {/* FUTURE */}
+        {/* ===================================================
+            SMALL FUTURE INDICATOR
+            =================================================== */}
 
         <div className="journeyFuture" aria-hidden="true">
           <span>✦</span>
@@ -475,6 +491,140 @@ export default function OurStoryGift() {
           <span>·</span>
           <span>✦</span>
         </div>
+
+        {/* ===================================================
+            FUTURE UNIVERSE
+            =================================================== */}
+
+        <section className="ourStoryFutureScene">
+          <div className="futureUniverse" aria-hidden="true">
+            {futureStars.map((star, index) => (
+              <span
+                key={index}
+                style={{
+                  "--future-x": star.left,
+                  "--future-y": star.top,
+                  "--future-size": star.size,
+                  "--future-delay": star.delay,
+                }}
+              />
+            ))}
+          </div>
+
+          <div className="futureUniverseGlow" />
+
+          <div className="futureMessage">
+            <p>THIS ISN&apos;T THE END.</p>
+
+            <h2>
+              AND THERE&apos;S STILL
+              <br />
+              SO MUCH MORE
+              <br />
+              TO DISCOVER.
+            </h2>
+
+            <span>
+              Every little light is a memory
+              <br />
+              we haven&apos;t made yet.
+            </span>
+
+            <button
+              type="button"
+              className="futureContinue"
+              onClick={openCollage}
+            >
+              LOOK BACK AT OUR JOURNEY
+              <strong>→</strong>
+            </button>
+          </div>
+
+          <p className="futureInfinity">∞</p>
+        </section>
+
+        {/* ===================================================
+            JOURNEY COLLAGE
+            =================================================== */}
+
+        <section className="journeyCollage">
+          <div className="collageSpace" aria-hidden="true">
+            <span>✦</span>
+            <span>✦</span>
+            <span>✦</span>
+            <span>✦</span>
+            <span>✦</span>
+          </div>
+
+          <div className="collageHeading">
+            <p>OUR JOURNEY SO FAR</p>
+
+            <h2>
+              LOOK AT ALL
+              <br />
+              WE&apos;VE FOUND.
+            </h2>
+
+            <span>
+              A little universe made from us.
+            </span>
+          </div>
+
+          <div className="memoryCollage">
+            {memories.map((item, index) => (
+              <article
+                className={`collageMemory collageMemory${index + 1}`}
+                key={item.number}
+              >
+                <div className="collagePhoto">
+                  <span>♡</span>
+
+                  <small>
+                    MEMORY {item.number}
+                  </small>
+                </div>
+
+                <div className="collageCaption">
+                  <strong>{item.label}</strong>
+                  <span>{item.date}</span>
+                </div>
+              </article>
+            ))}
+
+            <div className="collageCenter">
+              <span>OUR STORY</span>
+              <strong>∞</strong>
+            </div>
+          </div>
+
+          {/* FINAL ACTIONS */}
+
+          <div className="collageActions">
+            <button
+              type="button"
+              className="collageSave"
+            >
+              <span>SAVE OUR STORY</span>
+              <strong>↓</strong>
+            </button>
+
+            <button
+              type="button"
+              className="collageWatch"
+            >
+              <span>WATCH OUR JOURNEY</span>
+              <strong>▶</strong>
+            </button>
+          </div>
+
+          <p className="collageEnding">
+            LET&apos;S KEEP EXPLORING TOGETHER ∞
+          </p>
+
+          <p className="collageBrand">
+            OUR STORY · MADE WITH WIVELI
+          </p>
+        </section>
       </section>
     </main>
   );
