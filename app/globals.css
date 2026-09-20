@@ -9398,3 +9398,370 @@ footer p {
     animation: none !important;
   }
 }
+/* =========================================================
+   WIVELI — OUR STORY / CLEAN SPACE FLIGHT V2
+   ========================================================= */
+
+/* ---------- VIDEO BEHIND ENVELOPE ---------- */
+
+.ourStoryOpeningVideo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: #050510;
+}
+
+.ourStoryOpeningVideo video {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  transform: scale(1.04);
+
+  filter:
+    brightness(.72)
+    saturate(1.18)
+    contrast(1.05);
+}
+
+.ourStoryOpeningShade {
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(7, 7, 20, .04) 0%,
+      rgba(5, 5, 17, .15) 48%,
+      rgba(3, 3, 12, .62) 100%
+    );
+}
+
+/* keep envelope above video */
+
+.ourStorySpace {
+  z-index: 1;
+}
+
+.ourStoryIntro {
+  position: relative;
+  z-index: 5;
+}
+
+/* video leaves with the opening scene */
+
+.ourStoryGift.journeyStarted .ourStoryOpeningVideo {
+  animation:
+    openingSpaceLeave
+    2.2s
+    cubic-bezier(.16, .8, .2, 1)
+    forwards;
+}
+
+
+/* =========================================================
+   REMOVE OLD SPEED LINES COMPLETELY
+   ========================================================= */
+
+.starTunnel,
+.starStreak {
+  display: none !important;
+}
+
+
+/* =========================================================
+   SMALL SPACE STARS
+   ========================================================= */
+
+.flightStars {
+  position: absolute;
+  inset: 0;
+
+  z-index: 11;
+
+  overflow: hidden;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition: opacity 1s ease;
+}
+
+.flightStars span {
+  position: absolute;
+
+  left: var(--star-left);
+  top: var(--star-top);
+
+  width: var(--star-size);
+  height: var(--star-size);
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, .95);
+
+  box-shadow:
+    0 0 4px rgba(255,255,255,.9),
+    0 0 10px rgba(220,205,255,.55);
+
+  opacity: .72;
+
+  transform:
+    translate(-50%, -50%)
+    scale(.65);
+
+  animation:
+    littleStarTwinkle
+    2.8s
+    ease-in-out
+    var(--star-delay)
+    infinite;
+}
+
+
+/* launch — stars slowly appear */
+
+.flight-launch .flightStars {
+  opacity: .4;
+}
+
+
+/* flight — visible moving star field */
+
+.flight-flying .flightStars {
+  opacity: 1;
+}
+
+.flight-flying .flightStars span {
+  animation:
+    littleStarTravel
+    2.4s
+    cubic-bezier(.2,.65,.3,1)
+    var(--star-delay)
+    infinite;
+}
+
+
+/* approaching destination */
+
+.flight-arrival .flightStars {
+  opacity: .55;
+}
+
+.flight-arrival .flightStars span {
+  animation:
+    littleStarSlow
+    3.2s
+    ease-out
+    var(--star-delay)
+    infinite;
+}
+
+
+/* landed */
+
+.flight-landed .flightStars {
+  opacity: .18;
+}
+
+.flight-landed .flightStars span {
+  animation:
+    littleStarTwinkle
+    3.5s
+    ease-in-out
+    var(--star-delay)
+    infinite;
+}
+
+
+/* =========================================================
+   VIDEO TRANSITION
+   ========================================================= */
+
+.flight-launch .journeyCalmVideo {
+  opacity: .85;
+  transform: scale(1.05);
+}
+
+.flight-launch .journeyFlightVideo {
+  opacity: 0;
+  transform: scale(1.12);
+}
+
+.flight-flying .journeyCalmVideo {
+  opacity: .18;
+  transform: scale(1.2);
+}
+
+.flight-flying .journeyFlightVideo {
+  opacity: .92;
+  transform: scale(1.03);
+}
+
+.flight-arrival .journeyCalmVideo {
+  opacity: .58;
+  transform: scale(1.04);
+}
+
+.flight-arrival .journeyFlightVideo {
+  opacity: .4;
+  transform: scale(1.08);
+}
+
+.flight-landed .journeyCalmVideo {
+  opacity: .82;
+  transform: scale(1);
+}
+
+.flight-landed .journeyFlightVideo {
+  opacity: 0;
+}
+
+
+/* =========================================================
+   DESTINATION STAR — SOFTER
+   ========================================================= */
+
+.destinationStarCore {
+  font-size: 22px;
+
+  text-shadow:
+    0 0 7px rgba(255,255,255,1),
+    0 0 20px rgba(235,215,255,.9),
+    0 0 50px rgba(205,175,255,.65);
+}
+
+.destinationHalo {
+  border-color: rgba(255,255,255,.09);
+}
+
+.haloInner {
+  box-shadow:
+    0 0 35px rgba(240,220,255,.42);
+}
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes openingSpaceLeave {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+
+  55% {
+    opacity: .8;
+    transform: scale(1.12);
+    filter: blur(1px);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.35);
+    filter: blur(9px);
+  }
+}
+
+@keyframes littleStarTwinkle {
+  0%,
+  100% {
+    opacity: .25;
+    transform:
+      translate(-50%, -50%)
+      scale(.6);
+  }
+
+  50% {
+    opacity: 1;
+    transform:
+      translate(-50%, -50%)
+      scale(1.15);
+  }
+}
+
+@keyframes littleStarTravel {
+  0% {
+    opacity: 0;
+
+    transform:
+      translate(-50%, -50%)
+      scale(.2);
+  }
+
+  18% {
+    opacity: .8;
+  }
+
+  65% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+
+    transform:
+      translate(-50%, -50%)
+      scale(3.4);
+  }
+}
+
+@keyframes littleStarSlow {
+  0% {
+    opacity: .35;
+
+    transform:
+      translate(-50%, -50%)
+      scale(.7);
+  }
+
+  55% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: .15;
+
+    transform:
+      translate(-50%, -50%)
+      scale(1.5);
+  }
+}
+
+
+/* =========================================================
+   MOBILE / IPAD
+   ========================================================= */
+
+@media (max-width: 700px) {
+  .ourStoryOpeningVideo video {
+    transform: scale(1.08);
+  }
+
+  .flightStars span {
+    box-shadow:
+      0 0 3px rgba(255,255,255,.9),
+      0 0 7px rgba(220,205,255,.45);
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .flightStars span,
+  .ourStoryGift.journeyStarted .ourStoryOpeningVideo {
+    animation: none !important;
+  }
+}
