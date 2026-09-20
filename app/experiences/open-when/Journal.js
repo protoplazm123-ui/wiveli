@@ -1,135 +1,66 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { activeContent, safeLink } from './scenarios';
 import s from './Journal.module.css';
 
 const ASSET = '/assets/open-when/diary-kit';
 
-function PhotoMemory({ entry, gift }) {
-  const photo = entry.photo || gift.coverPhoto;
-
-  return (
-    <div className={s.memory}>
-      <div className={s.polaroid}>
-        {photo?.data && (
-          <img
-            className={s.photo}
-            src={photo.data}
-            alt="Our memory"
-          />
-        )}
-
-        <img
-          className={s.polaroidFrame}
-          src={`${ASSET}/download-2.png`}
-          alt=""
-          draggable="false"
-        />
-      </div>
-
-      <p className={s.caption}>
-        {entry.caption || 'A tiny way to be a little closer. ♡'}
-      </p>
-
-      <div className={s.note}>
-        <p>
-          {entry.note ||
-            `For the moments when you need a little reminder that I'm always here.`}
-        </p>
-
-        <small>
-          with love,
-          <br />
-          {gift.from || 'me'} ♡
-        </small>
-      </div>
-
-      <img
-        className={s.flowers}
-        src={`${ASSET}/download-4.png`}
-        alt=""
-        draggable="false"
-      />
-
-      <span className={s.tinyWords}>
-        SOMEWHERE
-        <br />
-        WITH YOU ♡
-      </span>
-    </div>
-  );
-}
-
-function Letter({ entry, gift }) {
+function SurpriseBack({ entry, gift }) {
   const content = activeContent(entry);
   const link = safeLink(content.link);
 
-  const details = Object.entries(content.details || {}).filter(
-    ([, value]) => String(value || '').trim()
+  const details = Object.entries(content.details || {}).filter(([, value]) =>
+    String(value || '').trim()
   );
 
   return (
-    <div className={s.letter}>
-      <p className={s.eyebrow}>JUST FOR YOU ♡</p>
+    <div className={s.cardBack}>
+      <p className={s.kicker}>A LITTLE SURPRISE FOR YOU ♡</p>
 
-      <h3>{entry.title || 'A little something for you'}</h3>
+      <h2>{entry.title || 'Just for you'}</h2>
 
       {content.message && (
-        <p className={s.letterText}>{content.message}</p>
+        <p className={s.message}>{content.message}</p>
       )}
 
       {details.length > 0 && (
-        <div>
+        <div className={s.details}>
           {details.map(([label, value]) => (
-            <p className={s.letterText} key={label}>
-              <strong>{label}: </strong>
-              {value}
+            <p key={label}>
+              <strong>{label}</strong>
+              <span>{value}</span>
             </p>
           ))}
         </div>
       )}
 
       {content.audio?.data && (
-        <div>
-          <p className={s.letterText}>
-            press play when you need me ♡
-          </p>
-
-          <audio
-            controls
-            preload="none"
-            src={content.audio.data}
-            style={{ width: '100%' }}
-          />
-        </div>
+        <audio
+          className={s.audio}
+          controls
+          preload="none"
+          src={content.audio.data}
+        />
       )}
 
       {link && (
-        <p>
-          <a
-            href={link}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            OPEN THIS LITTLE THING ↗
-          </a>
-        </p>
+        <a
+          className={s.surpriseLink}
+          href={link}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          OPEN THIS LITTLE THING ↗
+        </a>
       )}
 
       {content.attachment?.data && (
-        <div>
+        <div className={s.attachment}>
           {content.attachment.type?.startsWith('image/') && (
             <img
               src={content.attachment.data}
               alt="Attached surprise"
-              style={{
-                display: 'block',
-                width: '100%',
-                maxHeight: 220,
-                objectFit: 'contain',
-                marginBottom: 10,
-              }}
             />
           )}
 
@@ -143,7 +74,7 @@ function Letter({ entry, gift }) {
       )}
 
       <p className={s.signature}>
-        always in your corner,
+        with love,
         <br />
         {gift.from || 'me'} ♡
       </p>
@@ -151,65 +82,146 @@ function Letter({ entry, gift }) {
   );
 }
 
-function SurprisePage({ entry, gift }) {
-  const [opened, setOpened] = useState(false);
+function MemoryFront({ entry, gift }) {
+  const photo = entry.photo || gift.coverPhoto;
 
   return (
-    <div className={s.surprisePage}>
-      <p className={s.eyebrow}>OPEN WHEN…</p>
+    <div className={s.cardFront}>
+      <div className={s.photoWrap}>
+        {photo?.data ? (
+          <img
+            className={s.photo}
+            src={photo.data}
+            alt="Our memory"
+          />
+        ) : (
+          <div className={s.photoPlaceholder}>♡</div>
+        )}
 
-      <h2 className={s.title}>
-        you
-        <em>{entry.when}</em>
-      </h2>
+        <span className={s.tape} />
+      </div>
 
-      {!opened ? (
-        <>
-          <button
-            type="button"
-            className={s.envelopeButton}
-            onClick={() => setOpened(true)}
-            aria-label={`Open when ${entry.when}`}
+      <p className={s.handCaption}>
+        {entry.caption || 'A tiny way to be a little closer. ♡'}
+      </p>
+
+      <div className={s.littleNote}>
+        for the moments when you need
+        <br />
+        a little bit of me ♡
+      </div>
+
+      <p className={s.flipHint}>
+        tap the card to reveal your surprise →
+      </p>
+    </div>
+  );
+}
+
+function SurpriseModal({ entry, gift, onClose }) {
+  const [flipped, setFlipped] = useState(false);
+
+  return (
+    <div
+      className={s.modal}
+      role="dialog"
+      aria-modal="true"
+    >
+      <button
+        className={s.modalBackdrop}
+        type="button"
+        onClick={onClose}
+        aria-label="Close"
+      />
+
+      <div className={s.modalContent}>
+        <button
+          className={s.close}
+          type="button"
+          onClick={onClose}
+          aria-label="Close surprise"
+        >
+          ×
+        </button>
+
+        <p className={s.openWhen}>OPEN WHEN…</p>
+
+        <h1 className={s.modalTitle}>
+          {entry.when}
+        </h1>
+
+        <button
+          type="button"
+          className={s.flipButton}
+          onClick={() => setFlipped((value) => !value)}
+          aria-label={
+            flipped ? 'Show memory' : 'Reveal surprise'
+          }
+        >
+          <div
+            className={`${s.flipCard} ${
+              flipped ? s.flipped : ''
+            }`}
           >
-            <img
-              className={s.envelope}
-              src={`${ASSET}/download-1.png`}
-              alt=""
-              draggable="false"
-            />
-          </button>
+            <div
+              className={`${s.cardFace} ${s.frontFace}`}
+            >
+              <MemoryFront
+                entry={entry}
+                gift={gift}
+              />
+            </div>
 
-          <p className={s.envelopeHint}>
-            tap the envelope ♡
-          </p>
-        </>
-      ) : (
-        <>
-          <button
-            type="button"
-            className={s.envelopeButton}
-            onClick={() => setOpened(false)}
-            aria-label="Close letter"
-          >
-            <img
-              className={s.envelope}
-              src={`${ASSET}/download.png`}
-              alt=""
-              draggable="false"
-            />
-          </button>
+            <div
+              className={`${s.cardFace} ${s.backFace}`}
+            >
+              <SurpriseBack
+                entry={entry}
+                gift={gift}
+              />
+            </div>
+          </div>
+        </button>
 
-          <Letter entry={entry} gift={gift} />
-        </>
-      )}
+        <span className={s.modalTiny}>
+          {flipped
+            ? 'tap to see the photo again'
+            : 'made just for you'}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function Envelope({ entry, index, onOpen }) {
+  return (
+    <button
+      type="button"
+      className={s.envelopeCard}
+      style={{ '--i': index }}
+      onClick={onOpen}
+      aria-label={`Open when ${entry.when}`}
+    >
+      <div className={s.envelopePaper}>
+        <span className={s.envelopeNumber}>
+          {String(index + 1).padStart(2, '0')}
+        </span>
+
+        <span className={s.envelopeSmall}>
+          OPEN WHEN…
+        </span>
+
+        <strong>{entry.when}</strong>
+
+        <span className={s.envelopeHeart}>♡</span>
+      </div>
 
       <img
-        className={s.ribbon}
-        src={`${ASSET}/download-5.png`}
+        src={`${ASSET}/download-1.png`}
         alt=""
         draggable="false"
       />
-    </div>
+    </button>
   );
 }
 
@@ -219,225 +231,104 @@ function SurprisePage({ entry, gift }) {
  */
 export function Cover({ gift, onOpen = () => {} }) {
   return (
-    <div
-      style={{
-        width: 'min(82vw, 430px)',
-        margin: 'auto',
-      }}
+    <button
+      type="button"
+      className={s.giftButton}
+      onClick={onOpen}
     >
-      <button
-        type="button"
-        onClick={onOpen}
-        style={{
-          position: 'relative',
-          display: 'block',
-          width: '100%',
-          padding: 0,
-          border: 0,
-          background: 'transparent',
-          cursor: 'pointer',
-          filter: 'drop-shadow(0 28px 24px rgba(26,10,7,.4))',
-        }}
-      >
-        <img
-          src={`${ASSET}/journal-cover.png`}
-          alt="Open When journal"
-          draggable="false"
-          style={{
-            display: 'block',
-            width: '100%',
-            height: 'auto',
-          }}
-        />
+      <div className={s.giftScene}>
+        <div className={s.giftShadow} />
 
-        <div
-          style={{
-            position: 'absolute',
-            inset: '18% 19% 18% 16%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#f1dfc6',
-            textAlign: 'center',
-            pointerEvents: 'none',
-          }}
-        >
-          <small
-            style={{
-              marginBottom: 10,
-              fontSize: 7,
-              fontWeight: 800,
-              letterSpacing: '.2em',
-            }}
-          >
-            WIVELI
-          </small>
-
-          <strong
-            style={{
-              fontFamily: 'Georgia, serif',
-              fontSize: 'clamp(31px, 10vw, 50px)',
-              fontWeight: 400,
-              lineHeight: '.86',
-            }}
-          >
-            OPEN
-            <br />
-            WHEN…
-          </strong>
-
-          <span
-            style={{
-              margin: '10px 0 3px',
-              fontFamily: "'Care Hand', cursive",
-              fontSize: 30,
-              color: '#e6b6b3',
-            }}
-          >
-            ♡
-          </span>
-
-          <em
-            style={{
-              fontFamily: "'Care Hand', cursive",
-              fontSize: 'clamp(18px, 5vw, 27px)',
-              fontStyle: 'normal',
-            }}
-          >
-            for {gift?.to || 'you'}
-          </em>
+        <div className={s.boxLid}>
+          <span className={s.lidRibbon} />
+          <span className={s.bow}>♡</span>
         </div>
-      </button>
-    </div>
+
+        <div className={s.boxBody}>
+          <span className={s.verticalRibbon} />
+
+          <div className={s.boxLabel}>
+            <small>WIVELI</small>
+
+            <strong>OPEN WHEN…</strong>
+
+            <em>
+              for {gift?.to || 'you'} ♡
+            </em>
+          </div>
+        </div>
+      </div>
+
+      <span className={s.coverHint}>
+        tap to open your gift ♡
+      </span>
+    </button>
   );
 }
 
-function Reader({ gift, entries, onClose }) {
-  const [page, setPage] = useState(0);
-  const touchStart = useRef(null);
-
-  const entry = entries[page];
-
-  function previous() {
-    setPage((value) => Math.max(0, value - 1));
-  }
-
-  function next() {
-    setPage((value) =>
-      Math.min(entries.length - 1, value + 1)
-    );
-  }
-
-  function touchBegin(event) {
-    touchStart.current =
-      event.touches?.[0]?.clientX ?? null;
-  }
-
-  function touchEnd(event) {
-    if (touchStart.current === null) return;
-
-    const end =
-      event.changedTouches?.[0]?.clientX ??
-      touchStart.current;
-
-    const difference = end - touchStart.current;
-
-    touchStart.current = null;
-
-    if (Math.abs(difference) < 55) return;
-
-    if (difference < 0) next();
-    else previous();
-  }
+function EnvelopeCollage({
+  gift,
+  entries,
+  onClose,
+}) {
+  const [selected, setSelected] = useState(null);
 
   return (
     <>
       <header className={s.top}>
         <button
           type="button"
+          className={s.backButton}
           onClick={onClose}
-          style={{
-            border: 0,
-            padding: 0,
-            color: 'inherit',
-            background: 'transparent',
-            fontSize: 9,
-            fontWeight: 800,
-            letterSpacing: '.15em',
-            cursor: 'pointer',
-          }}
         >
-          CLOSE JOURNAL
+          CLOSE GIFT
         </button>
 
+        <strong className={s.brand}>WIVELI</strong>
+
         <span className={s.counter}>
-          {String(page + 1).padStart(2, '0')} /{' '}
-          {String(entries.length).padStart(2, '0')}
+          {entries.length} LITTLE SURPRISES
         </span>
       </header>
 
-      <div
-        className={s.stage}
-        onTouchStart={touchBegin}
-        onTouchEnd={touchEnd}
-      >
-        <img
-          className={s.book}
-          src={`${ASSET}/journal-open.png`}
-          alt=""
-          draggable="false"
-        />
+      <section className={s.collageIntro}>
+        <p>MADE WITH LOVE, FOR</p>
 
-        <section className={s.leftPage}>
-          <PhotoMemory
-            key={`memory-${page}`}
-            entry={entry}
-            gift={gift}
-          />
-        </section>
+        <h1>{gift.to || 'you'} ♡</h1>
 
-        <section className={s.rightPage}>
-          <SurprisePage
-            key={`surprise-${page}`}
+        <span>
+          Pick the envelope you need today.
+        </span>
+      </section>
+
+      <div className={s.collage}>
+        <span className={s.doodleOne}>♡</span>
+        <span className={s.doodleTwo}>✦</span>
+        <span className={s.doodleThree}>
+          love you
+        </span>
+
+        {entries.map((entry, index) => (
+          <Envelope
+            key={entry.id || index}
             entry={entry}
-            gift={gift}
+            index={index}
+            onOpen={() => setSelected(entry)}
           />
-        </section>
+        ))}
       </div>
 
-      <nav className={s.navigation}>
-        <button
-          type="button"
-          className={s.navButton}
-          onClick={previous}
-          disabled={page === 0}
-          aria-label="Previous surprise"
-        >
-          ←
-        </button>
+      <p className={s.footerNote}>
+        there is always a little something here for you ♡
+      </p>
 
-        <div className={s.pageDots}>
-          {entries.map((item, index) => (
-            <span
-              key={item.id || index}
-              className={`${s.dot} ${
-                index === page ? s.dotActive : ''
-              }`}
-            />
-          ))}
-        </div>
-
-        <button
-          type="button"
-          className={s.navButton}
-          onClick={next}
-          disabled={page === entries.length - 1}
-          aria-label="Next surprise"
-        >
-          →
-        </button>
-      </nav>
+      {selected && (
+        <SurpriseModal
+          entry={selected}
+          gift={gift}
+          onClose={() => setSelected(null)}
+        />
+      )}
     </>
   );
 }
@@ -452,52 +343,93 @@ export default function Journal({ gift }) {
   );
 
   const [opened, setOpened] = useState(false);
+  const [bursting, setBursting] = useState(false);
 
   if (!entries.length) {
     return (
       <main className={s.root}>
-        <div
-          style={{
-            minHeight: '100svh',
-            display: 'grid',
-            placeContent: 'center',
-            padding: 30,
-            color: '#fff4e7',
-            textAlign: 'center',
-          }}
-        >
-          <h1>Your little journal is waiting. ♡</h1>
-          <p>Add at least one Open When surprise to begin.</p>
+        <div className={s.empty}>
+          <h1>
+            Your little gift is waiting. ♡
+          </h1>
+
+          <p>
+            Add at least one Open When surprise to begin.
+          </p>
         </div>
       </main>
     );
   }
 
+  function openGift() {
+    if (bursting) return;
+
+    setBursting(true);
+
+    window.setTimeout(() => {
+      setOpened(true);
+      setBursting(false);
+    }, 950);
+  }
+
   return (
     <main className={s.root}>
       {!opened ? (
-        <>
+        <div
+          className={`${s.coverScreen} ${
+            bursting ? s.isOpening : ''
+          }`}
+        >
           <header className={s.top}>
-            <strong className={s.brand}>WIVELI</strong>
-            <span className={s.counter}>OPEN WHEN…</span>
+            <strong className={s.brand}>
+              WIVELI
+            </strong>
+
+            <span className={s.counter}>
+              A LITTLE GIFT FOR YOU ♡
+            </span>
           </header>
 
-          <div
-            style={{
-              minHeight: 'calc(100svh - 58px)',
-              display: 'grid',
-              placeItems: 'center',
-              padding: '30px 15px 50px',
-            }}
-          >
+          <div className={s.coverCenter}>
+            <p className={s.coverEyebrow}>
+              SOME THINGS ARE BETTER OPENED
+              WHEN YOU NEED THEM
+            </p>
+
+            <h1 className={s.coverTitle}>
+              A box full of
+              <br />
+              <em>little moments.</em>
+            </h1>
+
+            <div
+              className={s.flyingEnvelopes}
+              aria-hidden="true"
+            >
+              {entries
+                .slice(0, 7)
+                .map((entry, index) => (
+                  <div
+                    key={entry.id || index}
+                    className={s.flyEnvelope}
+                    style={{ '--fly': index }}
+                  >
+                    <span>OPEN WHEN…</span>
+                    <strong>
+                      {entry.when}
+                    </strong>
+                  </div>
+                ))}
+            </div>
+
             <Cover
               gift={gift}
-              onOpen={() => setOpened(true)}
+              onOpen={openGift}
             />
           </div>
-        </>
+        </div>
       ) : (
-        <Reader
+        <EnvelopeCollage
           gift={gift}
           entries={entries}
           onClose={() => setOpened(false)}
