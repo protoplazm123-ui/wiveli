@@ -399,21 +399,29 @@ const openMemory = () => {
               : "You found another memory."}
           </span>
 
-          <button
-            type="button"
-            className="journeyFirstStar"
-            aria-label={`Open memory ${memory.number}`}
-            onClick={openMemory}
-          >
-            ✦
-          </button>
+         
 
           <small>
             {memory.number} · {memory.label}
           </small>
         </div>
+{/* ===================================================
+    INTERACTIVE MEMORY STAR
+    Separate layer so nothing can block the click
+    =================================================== */}
 
-        {/* ===================================================
+{flightStage === "landed" && !memoryOpen && !futureOpen && (
+  <div className="memoryStarInteractionLayer">
+    <button
+      type="button"
+      className="journeyFirstStar journeyFirstStarInteractive"
+      aria-label={`Open memory ${memory.number}`}
+      onClick={openMemory}
+    >
+      ✦
+    </button>
+  </div>
+)}        {/* ===================================================
             CURRENT MEMORY
             =================================================== */}
 
