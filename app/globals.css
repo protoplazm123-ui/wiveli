@@ -11793,3 +11793,97 @@ footer p {
     visibility: hidden;
   }
 }
+/* =========================================================
+   OUR STORY — FINAL INTERACTION OVERRIDE
+   ========================================================= */
+
+/* OPEN LETTER: remove envelope completely */
+
+.ourStoryGift.isOpened .ourStoryEnvelope {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translateY(180px) scale(.8) !important;
+  animation: none !important;
+}
+
+.ourStoryGift.isOpened .ourStoryLetter {
+  position: relative !important;
+  z-index: 200 !important;
+  pointer-events: auto !important;
+}
+
+.ourStoryGift.isOpened .beginJourney {
+  position: relative !important;
+  z-index: 210 !important;
+  pointer-events: auto !important;
+}
+
+
+/* JOURNEY DESTINATION */
+
+.ourStoryGift.flight-landed .journeyBeginning {
+  position: relative !important;
+  z-index: 200 !important;
+
+  opacity: 1 !important;
+  visibility: visible !important;
+
+  pointer-events: auto !important;
+}
+
+
+/* THE MAIN STAR */
+
+.ourStoryGift.flight-landed .journeyFirstStar {
+  position: relative !important;
+  z-index: 220 !important;
+
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+
+  cursor: pointer !important;
+}
+
+
+/* all visual journey layers stay behind */
+
+.journeyVideo,
+.journeyVideoOverlay,
+.journeyLight,
+.flightStars,
+.destinationStar,
+.flightMessage,
+.journeyFuture {
+  pointer-events: none !important;
+}
+
+
+/* mobile */
+
+@media (max-width: 700px) {
+
+  .ourStoryGift.isOpened .ourStoryEnvelope {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+
+    transform: translateY(180px) scale(.8) !important;
+  }
+
+  .ourStoryGift.flight-landed .journeyBeginning {
+    pointer-events: auto !important;
+  }
+
+  .ourStoryGift.flight-landed .journeyFirstStar {
+    width: 90px !important;
+    height: 90px !important;
+
+    min-width: 90px !important;
+    min-height: 90px !important;
+
+    pointer-events: auto !important;
+
+    -webkit-tap-highlight-color: transparent;
+  }
+}
