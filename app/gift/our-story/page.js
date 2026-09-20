@@ -4,10 +4,18 @@ import { useState } from "react";
 
 export default function OurStoryGift() {
   const [opened, setOpened] = useState(false);
+  const [journeyStarted, setJourneyStarted] = useState(false);
 
   return (
-    <main className={`ourStoryGift ${opened ? "isOpened" : ""}`}>
-      {/* SPACE */}
+    <main
+      className={`ourStoryGift ${opened ? "isOpened" : ""} ${
+        journeyStarted ? "journeyStarted" : ""
+      }`}
+    >
+      {/* =========================================
+          OPENING SPACE
+          ========================================= */}
+
       <div className="ourStorySpace" aria-hidden="true">
         <div className="ourStoryStars starsOne" />
         <div className="ourStoryStars starsTwo" />
@@ -21,7 +29,10 @@ export default function OurStoryGift() {
         <span className="ourStoryStar starC">✦</span>
       </div>
 
-      {/* INTRO */}
+      {/* =========================================
+          ENVELOPE + LETTER
+          ========================================= */}
+
       <section className="ourStoryIntro">
         <p className="ourStoryLabel">
           SOMETHING WAS LEFT HERE FOR YOU
@@ -29,8 +40,11 @@ export default function OurStoryGift() {
 
         <div className="ourStoryEnvelopeScene">
           {/* LETTER */}
+
           <div className="ourStoryLetter">
-            <p className="letterSmall">FOR YOU ♡</p>
+            <p className="letterSmall">
+              FOR YOU ♡
+            </p>
 
             <h1>
               Let&apos;s remember
@@ -58,9 +72,7 @@ export default function OurStoryGift() {
             <button
               type="button"
               className="beginJourney"
-              onClick={() => {
-                alert("Next: our journey begins ✦");
-              }}
+              onClick={() => setJourneyStarted(true)}
             >
               BEGIN OUR JOURNEY
               <span>→</span>
@@ -68,6 +80,7 @@ export default function OurStoryGift() {
           </div>
 
           {/* ENVELOPE */}
+
           <button
             type="button"
             className="ourStoryEnvelope"
@@ -110,6 +123,86 @@ export default function OurStoryGift() {
         <p className="ourStoryMade">
           OUR STORY · MADE WITH WIVELI
         </p>
+      </section>
+
+      {/* =========================================
+          JOURNEY UNIVERSE
+          ========================================= */}
+
+      <section className="journeyUniverse">
+        {/* LIGHT TRANSITION */}
+
+        <div className="journeyLight" />
+
+        {/* DEPTH STARS */}
+
+        <div className="journeyDepthStars journeyDepthOne" />
+        <div className="journeyDepthStars journeyDepthTwo" />
+        <div className="journeyDepthStars journeyDepthThree" />
+
+        {/* DISTANT GALAXY */}
+
+        <div className="journeyGalaxy">
+          <div className="journeyGalaxyCore" />
+        </div>
+
+        {/* PATH */}
+
+        <div className="journeyPath">
+          <span className="journeyPathLine" />
+
+          <span className="journeyPlanet planetOne">
+            <i />
+          </span>
+
+          <span className="journeyPlanet planetTwo">
+            <i />
+          </span>
+
+          <span className="journeyPlanet planetThree">
+            <i />
+          </span>
+        </div>
+
+        {/* FIRST DESTINATION */}
+
+        <div className="journeyBeginning">
+          <p>
+            OUR STORY
+          </p>
+
+          <h2>
+            EVERY UNIVERSE
+            <br />
+            HAS A BEGINNING.
+          </h2>
+
+          <span>
+            Let&apos;s go back to ours.
+          </span>
+
+          <button
+            type="button"
+            className="journeyFirstStar"
+            aria-label="Open the first memory"
+          >
+            ✦
+          </button>
+
+          <small>
+            01 · THE BEGINNING
+          </small>
+        </div>
+
+        {/* FUTURE */}
+
+        <div className="journeyFuture" aria-hidden="true">
+          <span>✦</span>
+          <span>·</span>
+          <span>✦</span>
+          <span>·</span>
+          <span>✦</span>
+        </div>
       </section>
     </main>
   );
