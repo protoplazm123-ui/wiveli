@@ -26,55 +26,60 @@ const MODEL_URL =
   '/assets/open-when/gift_box_animation.glb';
 
 
-/* -----------------------------
+/* --------------------------------
    ONE FLYING ENVELOPE
------------------------------ */
+-------------------------------- */
 
 function FlyingEnvelope({
   index,
   total,
-  open,
 }) {
   const ref = useRef();
+  const startTime = useRef(null);
 
   const data = useMemo(() => {
     const angle =
       (index / Math.max(total, 1)) *
         Math.PI *
         2 +
-      (Math.random() - 0.5) * 0.7;
+      (Math.random() - 0.5) * 0.55;
 
     const distance =
-      1.3 + Math.random() * 1.8;
+      1.15 + Math.random() * 1.25;
 
     return {
-      delay: Math.random() * 0.35,
+      delay:
+        index * 0.045 +
+        Math.random() * 0.12,
 
       x:
         Math.cos(angle) *
         distance,
 
       y:
-        1.8 +
-        Math.random() * 1.8,
+        1.6 +
+        Math.random() * 1.25,
 
       z:
+        0.25 +
         Math.sin(angle) *
-        distance *
-        0.55,
+          0.65,
 
-      rotation:
-        (Math.random() - 0.5) *
-        Math.PI *
-        2,
-
-      spin:
+      spinX:
         (Math.random() - 0.5) *
         2.5,
 
+      spinY:
+        (Math.random() - 0.5) *
+        3.5,
+
+      spinZ:
+        (Math.random() - 0.5) *
+        2.2,
+
       scale:
-        0.16 +
-        Math.random() * 0.09,
+        0.18 +
+        Math.random() * 0.07,
     };
   }, [index, total]);
 
@@ -82,24 +87,35 @@ function FlyingEnvelope({
   useFrame((state) => {
     if (!ref.current) return;
 
-    if (!open) {
-      ref.current.visible = false;
-      return;
+    if (startTime.current === null) {
+      startTime.current =
+        state.clock.elapsedTime;
     }
 
-    const time =
+    const elapsed =
       state.clock.elapsedTime -
+      startTime.current -
       data.delay;
 
-    if (time < 0) {
+    if (elapsed < 0) {
       ref.current.visible = false;
       return;
     }
 
     ref.current.visible = true;
 
+    const duration = 1.35;
+
     const progress =
-      Math.min(time / 1.35, 1);
+      Math.min(
+        elapsed / duration,
+        1
+      );
+
+    /*
+      Fast launch,
+      then softer landing.
+    */
 
     const ease =
       1 -
@@ -109,37 +125,46 @@ function FlyingEnvelope({
       );
 
     /*
-      Start inside the box
+      Starts INSIDE the box.
     */
 
     ref.current.position.x =
       data.x * ease;
 
     ref.current.position.y =
-      0.15 +
+      0.18 +
       data.y * ease -
-      Math.pow(progress, 2) *
-        0.55;
+      0.45 *
+        progress *
+        progress;
 
     ref.current.position.z =
       data.z * ease;
 
+    /*
+      Rotation while flying.
+    */
+
     ref.current.rotation.x =
-      progress *
-      data.spin;
+      data.spinX *
+      progress;
 
     ref.current.rotation.y =
-      progress *
-      data.rotation;
+      data.spinY *
+      progress;
 
     ref.current.rotation.z =
-      progress *
-      data.spin *
-      0.7;
+      data.spinZ *
+      progress;
+
+    /*
+      Small "pop" as envelope
+      leaves the box.
+    */
 
     const pop =
       Math.min(
-        progress * 5,
+        progress * 6,
         1
       );
 
@@ -154,31 +179,31 @@ function FlyingEnvelope({
       ref={ref}
       visible={false}
     >
-      {/* envelope body */}
+      {/* BODY */}
 
-      <mesh>
+      <mesh castShadow>
         <boxGeometry
           args={[
             1.35,
             0.82,
-            0.055,
+            0.06,
           ]}
         />
 
         <meshStandardMaterial
-          color="#fff4e9"
-          roughness={0.72}
+          color="#fff5ea"
+          roughness={0.68}
         />
       </mesh>
 
 
-      {/* envelope flap */}
+      {/* FLAP */}
 
       <mesh
         position={[
           0,
-          0.04,
-          0.035,
+          0.06,
+          0.036,
         ]}
         rotation={[
           0,
@@ -200,25 +225,24 @@ function FlyingEnvelope({
 
         <meshStandardMaterial
           color="#ead7ca"
-          side={
-            THREE.DoubleSide
-          }
+          side={THREE.DoubleSide}
+          roughness={0.75}
         />
       </mesh>
 
 
-      {/* little heart seal */}
+      {/* SEAL */}
 
       <mesh
         position={[
           0,
-          -0.02,
-          0.075,
+          -0.03,
+          0.08,
         ]}
       >
         <sphereGeometry
           args={[
-            0.11,
+            0.105,
             20,
             20,
           ]}
@@ -234,28 +258,25 @@ function FlyingEnvelope({
 }
 
 
-/* -----------------------------
+/* --------------------------------
    ENVELOPE BURST
------------------------------ */
+-------------------------------- */
 
 function EnvelopeBurst({
-  open,
-  count,
+  count = 6,
 }) {
   const safeCount =
     Math.min(
-      Math.max(count || 0, 0),
+      Math.max(count, 1),
       30
     );
-
-  if (!open) return null;
 
   return (
     <group
       position={[
         0,
-        0.25,
-        0.4,
+        0.15,
+        0.55,
       ]}
     >
       {Array.from({
@@ -265,7 +286,6 @@ function EnvelopeBurst({
           key={index}
           index={index}
           total={safeCount}
-          open={open}
         />
       ))}
     </group>
@@ -273,9 +293,9 @@ function EnvelopeBurst({
 }
 
 
-/* -----------------------------
-   GIFT BOX
------------------------------ */
+/* --------------------------------
+   EXISTING GIFT BOX
+-------------------------------- */
 
 function GiftBoxModel({
   open = false,
@@ -307,19 +327,19 @@ function GiftBoxModel({
     const action =
       actions[names[0]];
 
-    if (action) {
-      action.reset();
+    if (!action) return;
 
-      action.setLoop(
-        THREE.LoopOnce,
-        1
-      );
+    action.reset();
 
-      action.clampWhenFinished =
-        true;
+    action.setLoop(
+      THREE.LoopOnce,
+      1
+    );
 
-      action.play();
-    }
+    action.clampWhenFinished =
+      true;
+
+    action.play();
   }, [
     open,
     actions,
@@ -371,9 +391,9 @@ function GiftBoxModel({
 }
 
 
-/* -----------------------------
-   COMPLETE 3D SCENE
------------------------------ */
+/* --------------------------------
+   COMPLETE SCENE
+-------------------------------- */
 
 export default function GiftBox3D({
   open = false,
@@ -382,7 +402,11 @@ export default function GiftBox3D({
 }) {
   return (
     <div
-      onClick={onClick}
+      onClick={
+        open
+          ? undefined
+          : onClick
+      }
       style={{
         width: '100%',
         height: '430px',
@@ -415,6 +439,7 @@ export default function GiftBox3D({
             5,
           ]}
           intensity={2.5}
+          castShadow
         />
 
 
@@ -433,12 +458,13 @@ export default function GiftBox3D({
           </Bounds>
 
 
-          <EnvelopeBurst
-            open={open}
-            count={
-              envelopeCount
-            }
-          />
+          {open && (
+            <EnvelopeBurst
+              count={
+                envelopeCount
+              }
+            />
+          )}
 
 
           <Environment
