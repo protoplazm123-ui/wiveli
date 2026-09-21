@@ -289,3 +289,1146 @@
   .root *, .root *::before, .root *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   :global(html):has(.root) { scroll-behavior: auto; }
 }
+/* =========================================================
+   OPEN WHEN — INTERACTIVE SCRAPBOOK READER
+   ========================================================= */
+
+.reader {
+  --diary-ink: #2b2722;
+  --diary-paper: #f3ead8;
+  --diary-paper-light: #fbf5e8;
+  --diary-pink: #d8aeb1;
+  --diary-red: #a64e48;
+  --diary-sage: #9da58b;
+  --diary-shadow: rgba(48, 32, 21, 0.26);
+
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: var(--diary-ink);
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,.08), transparent 30%),
+    linear-gradient(135deg, #8f6d54 0%, #75553f 42%, #684a38 100%);
+}
+
+/* subtle wood grain */
+.reader::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .18;
+  z-index: 0;
+  background:
+    repeating-linear-gradient(
+      3deg,
+      transparent 0 14px,
+      rgba(30, 17, 10, .12) 15px,
+      transparent 17px 31px
+    ),
+    repeating-linear-gradient(
+      92deg,
+      transparent 0 160px,
+      rgba(255,255,255,.08) 162px,
+      transparent 165px 310px
+    );
+}
+
+.diaryHeader {
+  position: relative;
+  z-index: 20;
+  min-height: 78px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 32px;
+  color: #f7efe4;
+  border-bottom: 1px solid rgba(255,255,255,.16);
+  background: rgba(47, 31, 23, .22);
+  backdrop-filter: blur(10px);
+}
+
+.diaryLogo {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 900;
+  letter-spacing: .12em;
+  font-size: 20px;
+}
+
+.diaryHeader > p {
+  margin: 0;
+  text-align: center;
+  font-family: var(--hand);
+  font-size: 26px;
+  line-height: .9;
+}
+
+.diaryHeader > p span {
+  display: block;
+  margin-top: 8px;
+  font-family: Arial, sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  opacity: .72;
+}
+
+.diaryHeaderRight {
+  justify-self: end;
+  font-family: var(--hand);
+  font-size: 19px;
+}
+
+.diaryScene {
+  position: relative;
+  z-index: 2;
+  width: min(1500px, 100%);
+  min-height: calc(100vh - 130px);
+  margin: 0 auto;
+  padding: 38px 30px 50px;
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 34px;
+  align-items: center;
+}
+
+/* LEFT ENVELOPE INDEX */
+
+.envelopeIndex {
+  align-self: stretch;
+  min-height: 650px;
+  padding: 28px 12px 22px;
+  color: #f8efe4;
+  display: flex;
+  flex-direction: column;
+}
+
+.indexIntro {
+  padding: 0 8px 20px;
+}
+
+.indexIntro strong {
+  display: block;
+  font-family: var(--hand);
+  font-size: 31px;
+  font-weight: 400;
+}
+
+.indexIntro span {
+  display: block;
+  max-width: 170px;
+  margin-top: 5px;
+  font-size: 10px;
+  line-height: 1.5;
+  text-transform: uppercase;
+  letter-spacing: .11em;
+  opacity: .7;
+}
+
+.envelopeIndex nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 470px;
+  overflow-y: auto;
+  padding: 5px 12px 14px 3px;
+  scrollbar-width: thin;
+}
+
+.envelopeIndex nav button {
+  position: relative;
+  width: 100%;
+  min-height: 56px;
+  padding: 12px 38px 12px 14px;
+  border: 0;
+  cursor: pointer;
+  color: #3c3028;
+  text-align: left;
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: .045em;
+  text-transform: uppercase;
+  background: #e7d8bf;
+  box-shadow: 0 8px 16px rgba(37, 22, 14, .15);
+  transform: rotate(-.7deg);
+  transition: transform .25s ease, background .25s ease, box-shadow .25s ease;
+}
+
+.envelopeIndex nav button:nth-child(even) {
+  transform: rotate(.8deg);
+  background: #eee2cd;
+}
+
+.envelopeIndex nav button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  clip-path: polygon(0 0, 50% 55%, 100% 0);
+  border-top: 1px solid rgba(67, 49, 37, .18);
+}
+
+.envelopeIndex nav button:hover {
+  transform: translateX(7px) rotate(0);
+}
+
+.envelopeIndex nav button b {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #f7eee2;
+  background: var(--diary-red);
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+}
+
+.envelopeIndex nav .indexEnvelopeActive {
+  background: #f7ead7;
+  transform: translateX(9px) rotate(1deg);
+  box-shadow: 0 12px 22px rgba(31, 18, 10, .25);
+}
+
+.indexScribble {
+  margin: auto 0 0 10px;
+  font-family: var(--hand);
+  font-size: 21px;
+  line-height: 1.05;
+  transform: rotate(-5deg);
+  opacity: .82;
+}
+
+/* BOOK */
+
+.bookStage {
+  position: relative;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1800px;
+}
+
+.bookPerspective {
+  position: relative;
+  width: min(100%, 1040px);
+  aspect-ratio: 1.52 / 1;
+  perspective: 2200px;
+  filter: drop-shadow(0 32px 30px rgba(32, 17, 9, .34));
+}
+
+.bookSpread {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  transform-style: preserve-3d;
+  border-radius: 8px 12px 12px 8px;
+}
+
+.bookPage {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  padding: clamp(28px, 3vw, 50px);
+  background:
+    radial-gradient(circle at 20% 30%, rgba(122, 87, 54, .035), transparent 2px),
+    radial-gradient(circle at 70% 60%, rgba(122, 87, 54, .025), transparent 2px),
+    linear-gradient(90deg, #efe5d1, #faf3e5 15%, #f7efdf 82%, #e7dcc8);
+  border: 1px solid rgba(72, 53, 37, .12);
+}
+
+.bookPage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .25;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 4px,
+      rgba(73, 52, 35, .02) 5px,
+      transparent 6px
+    );
+}
+
+.bookPageLeft {
+  border-radius: 8px 2px 2px 9px;
+  box-shadow:
+    inset -26px 0 30px -28px rgba(40, 25, 16, .5),
+    inset 8px 0 14px rgba(255,255,255,.38);
+}
+
+.bookPageRight {
+  border-radius: 2px 9px 9px 2px;
+  box-shadow:
+    inset 26px 0 30px -28px rgba(40, 25, 16, .5),
+    inset -8px 0 14px rgba(255,255,255,.3);
+}
+
+.bookGutter {
+  position: absolute;
+  z-index: 12;
+  top: 1%;
+  bottom: 1%;
+  left: 50%;
+  width: 28px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(59, 39, 25, .18) 45%,
+    rgba(255,255,255,.2) 52%,
+    transparent
+  );
+  filter: blur(3px);
+}
+
+.bookPagesLeft,
+.bookPagesRight {
+  position: absolute;
+  z-index: -2;
+  bottom: -10px;
+  width: 49%;
+  height: 18px;
+  border-radius: 0 0 9px 9px;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      #d8cbb5 0 1px,
+      #eee4d2 1px 3px
+    );
+}
+
+.bookPagesLeft {
+  left: 5px;
+  transform: skewX(4deg);
+}
+
+.bookPagesRight {
+  right: 5px;
+  transform: skewX(-4deg);
+}
+
+.bookPageTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  opacity: .6;
+}
+
+.bookWhen {
+  position: relative;
+  z-index: 2;
+  max-width: 390px;
+  margin: 22px 0 15px;
+  font-family: Arial, sans-serif;
+  font-size: clamp(25px, 2.5vw, 44px);
+  line-height: .92;
+  letter-spacing: -.065em;
+  text-transform: uppercase;
+}
+
+.bookHeart {
+  position: absolute;
+  right: 8%;
+  top: 10%;
+  font-family: var(--hand);
+  font-size: 55px;
+  color: var(--diary-red);
+  transform: rotate(12deg);
+}
+
+.leftPageStory {
+  position: relative;
+  z-index: 2;
+  height: calc(100% - 120px);
+}
+
+.leftPageStory .polaroid {
+  position: absolute;
+  left: 5%;
+  top: 4%;
+  width: min(64%, 290px);
+  transform: rotate(-4deg);
+  box-shadow: 0 12px 18px rgba(67, 45, 29, .18);
+}
+
+.leftPageStory .polaroid img,
+.leftPageStory .paperArt {
+  height: clamp(180px, 21vw, 300px);
+}
+
+.pageMessage {
+  position: absolute;
+  right: 0;
+  bottom: 5%;
+  width: 56%;
+  padding: 22px 20px;
+  background: rgba(255, 250, 237, .82);
+  box-shadow: 0 7px 14px rgba(70, 45, 29, .08);
+  transform: rotate(1.5deg);
+}
+
+.pageMessage::before {
+  content: "";
+  position: absolute;
+  width: 80px;
+  height: 22px;
+  top: -10px;
+  left: 35%;
+  background: rgba(201, 179, 143, .45);
+  transform: rotate(-3deg);
+}
+
+.pageMessage p {
+  margin: 0;
+  font-family: var(--hand);
+  font-size: clamp(17px, 1.55vw, 23px);
+  line-height: 1.08;
+}
+
+.pageMessage > span {
+  display: block;
+  margin-top: 14px;
+  color: var(--diary-red);
+  font-family: var(--hand);
+  font-size: 18px;
+  transform: rotate(-3deg);
+}
+
+.pageNumber {
+  position: absolute;
+  bottom: 17px;
+  left: 50%;
+  z-index: 4;
+  transform: translateX(-50%);
+  font-size: 8px;
+  font-weight: 800;
+  opacity: .45;
+}
+
+/* RIGHT PAGE */
+
+.handQuote {
+  position: relative;
+  z-index: 2;
+  width: max-content;
+  max-width: 80%;
+  margin: 6% auto 3%;
+  font-family: var(--hand);
+  font-size: clamp(20px, 2vw, 31px);
+  line-height: .95;
+  transform: rotate(-3deg);
+}
+
+.handQuote span {
+  color: var(--diary-red);
+  margin-left: 8px;
+}
+
+.youGotThis {
+  position: absolute;
+  z-index: 3;
+  right: 9%;
+  bottom: 8%;
+  margin: 0;
+  color: var(--diary-red);
+  font-family: var(--hand);
+  font-size: clamp(20px, 2vw, 30px);
+  transform: rotate(-7deg);
+}
+
+/* PHYSICAL ENVELOPE */
+
+.bookEnvelope {
+  position: relative;
+  z-index: 10;
+  width: min(78%, 350px);
+  margin: 8% auto 0;
+  text-align: center;
+}
+
+.envelopeButton {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.52 / 1;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  background: transparent;
+  perspective: 900px;
+  filter: drop-shadow(0 13px 13px rgba(55, 36, 22, .2));
+}
+
+.bookEnvelopeBack {
+  position: absolute;
+  inset: 0;
+  background: #d8c3a2;
+  border: 1px solid rgba(71, 49, 31, .18);
+}
+
+.bookEnvelopeFront {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  overflow: hidden;
+  background: #e8d7bb;
+  clip-path: polygon(0 35%, 50% 72%, 100% 35%, 100% 100%, 0 100%);
+}
+
+.bookEnvelopeFront::before,
+.bookEnvelopeFront::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 70%;
+  height: 100%;
+  background: rgba(255,255,255,.08);
+}
+
+.bookEnvelopeFront::before {
+  left: 0;
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+}
+
+.bookEnvelopeFront::after {
+  right: 0;
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+
+.bookEnvelopeFlap {
+  position: absolute;
+  z-index: 7;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 58%;
+  transform-origin: top center;
+  transform-style: preserve-3d;
+  backface-visibility: visible;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background: #f0dfc2;
+  border-top: 1px solid rgba(72, 49, 31, .14);
+  transition: transform .7s cubic-bezier(.22,.75,.25,1), z-index .15s .25s;
+}
+
+.bookEnvelopeLetter {
+  position: absolute;
+  z-index: 3;
+  left: 7%;
+  right: 7%;
+  bottom: 7%;
+  height: 82%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #41352c;
+  background: #fff9ec;
+  border: 1px solid rgba(70, 48, 30, .1);
+  box-shadow: 0 4px 9px rgba(48, 31, 19, .1);
+  transition: transform .72s cubic-bezier(.2,.8,.2,1);
+}
+
+.bookEnvelopeLetter span {
+  font-family: var(--hand);
+  font-size: 25px;
+}
+
+.bookEnvelopeLetter small {
+  margin-top: 4px;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.bookSeal {
+  position: absolute;
+  z-index: 9;
+  left: 50%;
+  top: 47%;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  color: #f8e8d5;
+  background:
+    radial-gradient(circle at 35% 30%, #bd6c63, #91443f 72%);
+  border: 3px double rgba(255,255,255,.2);
+  box-shadow: 0 4px 8px rgba(57, 31, 25, .25);
+  transition: opacity .25s ease, transform .35s ease;
+}
+
+.bookEnvelopeOpen .bookEnvelopeFlap {
+  z-index: 1;
+  transform: rotateX(178deg);
+}
+
+.bookEnvelopeOpen .bookEnvelopeLetter {
+  transform: translateY(-48%);
+}
+
+.bookEnvelopeOpen .bookSeal {
+  opacity: 0;
+  transform: translate(-50%, -70%) scale(.7);
+}
+
+.envelopeInstruction {
+  position: relative;
+  z-index: 11;
+  margin: 12px 0 0;
+  font-family: var(--hand);
+  font-size: 17px;
+}
+
+/* SURPRISE */
+
+.surpriseDrawer {
+  position: relative;
+  z-index: 20;
+  width: 120%;
+  max-height: 0;
+  margin-left: -10%;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition:
+    max-height .7s ease,
+    opacity .4s ease,
+    transform .5s ease;
+}
+
+.bookEnvelopeOpen .surpriseDrawer {
+  max-height: 850px;
+  opacity: 1;
+  transform: translateY(5px);
+}
+
+.surpriseCard {
+  position: relative;
+  margin-top: 20px;
+  padding: 28px;
+  text-align: left;
+  background: #fff9ec;
+  border: 1px solid rgba(73, 49, 30, .14);
+  box-shadow: 0 14px 28px rgba(55, 34, 20, .16);
+  transform: rotate(-1deg);
+}
+
+.surpriseCard::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 38%;
+  width: 80px;
+  height: 22px;
+  background: rgba(200, 177, 140, .45);
+  transform: rotate(3deg);
+}
+
+.surpriseEyebrow {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+}
+
+.surpriseCard h3 {
+  margin: 0 0 14px;
+  font-family: Arial, sans-serif;
+  font-size: clamp(22px, 2vw, 31px);
+  line-height: .95;
+  text-transform: uppercase;
+}
+
+.surpriseCard .letterText {
+  font-family: var(--hand);
+  font-size: 21px;
+  line-height: 1.05;
+}
+
+.surpriseCard .planDetails {
+  margin: 18px 0;
+}
+
+.surpriseCard .planDetails div {
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(60, 42, 28, .14);
+}
+
+.surpriseCard .planDetails dt {
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  opacity: .55;
+}
+
+.surpriseCard .planDetails dd {
+  margin: 3px 0 0;
+  font-size: 13px;
+}
+
+.surpriseCard .signature {
+  color: var(--diary-red);
+  font-family: var(--hand);
+  font-size: 20px;
+}
+
+/* NAVIGATION */
+
+.pageArrow {
+  position: absolute;
+  z-index: 40;
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(255,255,255,.32);
+  border-radius: 50%;
+  cursor: pointer;
+  color: #fff7ed;
+  background: rgba(52, 34, 24, .32);
+  backdrop-filter: blur(8px);
+  font-size: 34px;
+  line-height: 1;
+  transform: translateY(-50%);
+  transition: transform .2s ease, background .2s ease, opacity .2s ease;
+}
+
+.pageArrow:hover:not(:disabled) {
+  transform: translateY(-50%) scale(1.08);
+  background: rgba(52, 34, 24, .5);
+}
+
+.pageArrow:disabled {
+  opacity: .2;
+  cursor: default;
+}
+
+.pageArrowLeft {
+  left: -60px;
+}
+
+.pageArrowRight {
+  right: -60px;
+}
+
+.bookProgress {
+  position: absolute;
+  z-index: 30;
+  left: 50%;
+  bottom: -34px;
+  display: flex;
+  gap: 7px;
+  transform: translateX(-50%);
+}
+
+.bookProgress button {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  background: rgba(255,255,255,.35);
+}
+
+.bookProgress .progressActive {
+  width: 23px;
+  border-radius: 10px;
+  background: #fff3e4;
+}
+
+.diaryFooter {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 32px 22px;
+  color: rgba(255,244,232,.7);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   REAL PAGE TURN
+   ========================================================= */
+
+.turningSheet {
+  position: absolute;
+  z-index: 25;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+.turnSheetFront,
+.turnSheetBack {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  background:
+    linear-gradient(90deg, #eee3cf, #faf3e5 20%, #f4ead7);
+  border: 1px solid rgba(67, 47, 32, .12);
+}
+
+.turnSheetBack {
+  transform: rotateY(180deg);
+  background:
+    linear-gradient(90deg, #e5d8c2, #f8efdf 80%, #e9deca);
+}
+
+.turnSheetNext {
+  right: 0;
+  transform-origin: left center;
+  animation: diaryTurnNext .68s cubic-bezier(.55,.05,.25,1) forwards;
+}
+
+.turnSheetPrev {
+  left: 0;
+  transform-origin: right center;
+  animation: diaryTurnPrev .68s cubic-bezier(.55,.05,.25,1) forwards;
+}
+
+@keyframes diaryTurnNext {
+  0% {
+    transform: rotateY(0deg);
+    filter: brightness(1);
+  }
+  45% {
+    filter: brightness(.82);
+  }
+  100% {
+    transform: rotateY(-180deg);
+    filter: brightness(1);
+  }
+}
+
+@keyframes diaryTurnPrev {
+  0% {
+    transform: rotateY(0deg);
+    filter: brightness(1);
+  }
+  45% {
+    filter: brightness(.82);
+  }
+  100% {
+    transform: rotateY(180deg);
+    filter: brightness(1);
+  }
+}
+
+/* EMPTY */
+
+.emptyState {
+  position: relative;
+  z-index: 4;
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  color: #fff6eb;
+}
+
+.emptyState h1 {
+  font-family: var(--hand);
+  font-size: 50px;
+  margin: 0;
+}
+
+.emptyState p {
+  opacity: .7;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1180px) {
+  .diaryScene {
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .pageArrowLeft {
+    left: 8px;
+  }
+
+  .pageArrowRight {
+    right: 8px;
+  }
+
+  .pageArrow {
+    top: auto;
+    bottom: 12px;
+    transform: none;
+    color: #3a2e26;
+    background: rgba(255,248,235,.8);
+  }
+
+  .pageArrow:hover:not(:disabled) {
+    transform: scale(1.06);
+  }
+}
+
+/* =========================================================
+   MOBILE — ONE PHYSICAL PAGE AT A TIME
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .reader {
+    min-height: 100svh;
+  }
+
+  .diaryHeader {
+    min-height: 62px;
+    grid-template-columns: auto 1fr auto;
+    padding: 12px 14px;
+  }
+
+  .diaryLogo {
+    font-size: 15px;
+  }
+
+  .diaryHeader > p {
+    font-size: 20px;
+  }
+
+  .diaryHeader > p span {
+    display: none;
+  }
+
+  .diaryHeaderRight {
+    font-size: 14px;
+  }
+
+  .diaryScene {
+    min-height: calc(100svh - 105px);
+    display: block;
+    padding: 18px 12px 60px;
+  }
+
+  .envelopeIndex {
+    min-height: 0;
+    padding: 0 0 15px;
+  }
+
+  .indexIntro,
+  .indexScribble {
+    display: none;
+  }
+
+  .envelopeIndex nav {
+    flex-direction: row;
+    gap: 8px;
+    max-height: none;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 3px 3px 10px;
+    scroll-snap-type: x proximity;
+  }
+
+  .envelopeIndex nav button,
+  .envelopeIndex nav button:nth-child(even) {
+    flex: 0 0 135px;
+    min-height: 45px;
+    padding: 9px 29px 9px 10px;
+    font-size: 8px;
+    transform: none;
+    scroll-snap-align: start;
+  }
+
+  .envelopeIndex nav .indexEnvelopeActive {
+    transform: translateY(-2px);
+  }
+
+  .envelopeIndex nav button b {
+    right: 7px;
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+
+  .bookStage {
+    display: block;
+  }
+
+  .bookPerspective {
+    width: min(100%, 430px);
+    min-height: 670px;
+    margin: 0 auto;
+    aspect-ratio: auto;
+  }
+
+  .bookSpread {
+    display: block;
+  }
+
+  .bookPage {
+    position: absolute;
+    inset: 0;
+    padding: 28px 24px 42px;
+    border-radius: 5px;
+  }
+
+  .bookPageLeft {
+    z-index: 2;
+  }
+
+  .bookPageRight {
+    z-index: 3;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /*
+     On mobile the right page becomes the lower half of the same physical page.
+     This keeps photo + message + envelope together instead of shrinking a
+     desktop two-page spread until it becomes unreadable.
+  */
+
+  .bookPageLeft {
+    overflow-y: auto;
+  }
+
+  .bookPageLeft::before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    top: 58%;
+    border-top: 1px dashed rgba(69, 48, 32, .15);
+  }
+
+  .leftPageStory {
+    height: auto;
+    min-height: 500px;
+  }
+
+  .leftPageStory .polaroid {
+    width: 66%;
+    max-width: 245px;
+  }
+
+  .leftPageStory .polaroid img,
+  .leftPageStory .paperArt {
+    height: 230px;
+  }
+
+  .pageMessage {
+    width: 58%;
+    bottom: 30px;
+  }
+
+  .bookHeart {
+    font-size: 42px;
+  }
+
+  .bookGutter,
+  .bookPagesLeft,
+  .bookPagesRight {
+    display: none;
+  }
+
+  .bookProgress {
+    bottom: -31px;
+  }
+
+  .pageArrow {
+    top: 50%;
+    bottom: auto;
+    width: 42px;
+    height: 42px;
+    color: #3a2e26;
+    background: rgba(255,248,235,.92);
+    transform: translateY(-50%);
+  }
+
+  .pageArrow:hover:not(:disabled) {
+    transform: translateY(-50%);
+  }
+
+  .pageArrowLeft {
+    left: -5px;
+  }
+
+  .pageArrowRight {
+    right: -5px;
+  }
+
+  .turningSheet {
+    left: 0;
+    right: auto;
+    width: 100%;
+    border-radius: 5px;
+  }
+
+  .turnSheetNext {
+    right: auto;
+    transform-origin: left center;
+  }
+
+  .turnSheetPrev {
+    transform-origin: right center;
+  }
+
+  .diaryFooter {
+    padding: 12px 15px 18px;
+  }
+}
+
+@media (max-width: 430px) {
+  .bookPerspective {
+    min-height: 610px;
+  }
+
+  .bookWhen {
+    font-size: 27px;
+    max-width: 260px;
+  }
+
+  .leftPageStory .polaroid {
+    width: 69%;
+  }
+
+  .leftPageStory .polaroid img,
+  .leftPageStory .paperArt {
+    height: 205px;
+  }
+
+  .pageMessage {
+    width: 62%;
+    padding: 16px;
+  }
+
+  .pageMessage p {
+    font-size: 17px;
+  }
+}
