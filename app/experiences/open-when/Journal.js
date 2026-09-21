@@ -1,116 +1,33 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { activeContent, safeLink } from './scenarios';
 import s from './OpenWhen.module.css';
 
-export function Flower({ className = '' }) {
-  return (
-    <svg className={className} viewBox="0 0 110 140" fill="none" aria-hidden="true">
-      <path
-        d="M56 69c-7 27 12 42 2 66M57 110c-24 0-34-14-34-14 21-2 29 7 34 14Z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      {[0, 60, 120, 180, 240, 300].map((angle) => (
-        <ellipse
-          key={angle}
-          cx="55"
-          cy="27"
-          rx="12"
-          ry="22"
-          transform={`rotate(${angle} 55 48)`}
-          fill="#fff8df"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
-      ))}
-      <circle cx="55" cy="48" r="12" fill="#e7b85c" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  );
-}
+/* =========================================================
+   SMALL SCRAPBOOK ELEMENTS
+   ========================================================= */
 
-export function Polaroid({ photo, caption = 'a little piece of us', compact = false }) {
+function Polaroid({ photo, caption, rotate = 'left' }) {
   return (
-    <figure className={`${s.polaroid} ${compact ? s.compactPhoto : ''}`}>
-      <span className={s.tape} aria-hidden="true" />
+    <figure
+      className={`${s.flipPolaroid} ${
+        rotate === 'right' ? s.flipPolaroidRight : s.flipPolaroidLeft
+      }`}
+    >
+      <span className={s.flipTape} />
 
-      {photo ? (
-        <img src={photo.data} alt={caption} />
+      {photo?.data ? (
+        <img src={photo.data} alt={caption || 'A little memory'} />
       ) : (
-        <div className={s.paperArt} aria-hidden="true">
-          <span className={s.sun} />
-          <span className={s.hill} />
-          <span className={s.hillTwo} />
-          <span className={s.artNote}>
-            somewhere
-            <br />
-            with you.
-          </span>
+        <div className={s.flipPhotoPlaceholder}>
+          <span>♡</span>
+          <small>our little memory</small>
         </div>
       )}
 
-      <figcaption>{caption}</figcaption>
+      <figcaption>{caption || 'a little piece of us ♡'}</figcaption>
     </figure>
-  );
-}
-
-export function Cover({ gift, preview = false }) {
-  return (
-    <div className={`${s.cover} ${preview ? s.coverPreview : ''}`}>
-      <span className={s.coverSpine} aria-hidden="true" />
-
-      <div className={s.coverTop}>
-        <span>OPEN WHEN…</span>
-        <span>VOL. 01 / JUST US</span>
-      </div>
-
-      <p className={s.coverFor}>a little book for {gift.to || 'you'}</p>
-
-      <h2>
-        THIS IS MY WAY
-        <br />
-        OF TAKING
-        <br />
-        <em>CARE OF YOU</em> <span>♡</span>
-      </h2>
-
-      <div className={s.coverCollage}>
-        <Polaroid
-          photo={gift.coverPhoto}
-          caption="my favorite place is with you"
-          compact
-        />
-        <span className={s.loveStamp}>
-          MADE
-          <br />
-          WITH
-          <br />
-          LOVE ♡
-        </span>
-        <Flower className={s.coverFlower} />
-        <span className={s.scribble}>
-          for the good days,
-          <br />
-          and the not-so-good ones.
-        </span>
-      </div>
-
-      <p className={s.coverSubtitle}>
-        Open it whenever you need
-        <br />
-        a little bit of me.
-      </p>
-
-      <p className={s.signature}>with love, {gift.from || 'me'} x</p>
-
-      {!preview && (
-        <a className={s.coverOpen} href="#little-pages">
-          OPEN YOUR JOURNAL <span>↗</span>
-        </a>
-      )}
-    </div>
   );
 }
 
@@ -118,32 +35,36 @@ function SurpriseContent({ entry, gift }) {
   const content = activeContent(entry);
   const link = safeLink(content.link);
 
+  const details = Object.entries(content.details || {}).filter(
+    ([, value]) => String(value || '').trim()
+  );
+
   return (
-    <div className={s.surpriseCard}>
-      <span className={s.surpriseEyebrow}>A LITTLE SOMETHING FOR YOU</span>
+    <div className={s.flipSurpriseCard}>
+      <span className={s.flipSurpriseTape} />
+
+      <p className={s.flipEyebrow}>A LITTLE SURPRISE ♡</p>
 
       <h3>{entry.title}</h3>
 
-      <p className={s.letterText}>{content.message}</p>
+      {content.message && (
+        <p className={s.flipSurpriseMessage}>{content.message}</p>
+      )}
 
-      {Object.entries(content.details || {})
-        .filter(([, value]) => String(value || '').trim())
-        .length > 0 && (
-        <dl className={s.planDetails}>
-          {Object.entries(content.details || {})
-            .filter(([, value]) => String(value || '').trim())
-            .map(([label, value]) => (
-              <div key={label}>
-                <dt>{label}</dt>
-                <dd>{value}</dd>
-              </div>
-            ))}
+      {details.length > 0 && (
+        <dl className={s.flipDetails}>
+          {details.map(([label, value]) => (
+            <div key={label}>
+              <dt>{label}</dt>
+              <dd>{value}</dd>
+            </div>
+          ))}
         </dl>
       )}
 
-      {content.audio && (
-        <div className={s.mediaBlock}>
-          <p>A little voice note for you ♡</p>
+      {content.audio?.data && (
+        <div className={s.flipMedia}>
+          <span>press play when you need me ♡</span>
           <audio controls preload="none" src={content.audio.data}>
             Your browser does not support audio.
           </audio>
@@ -152,36 +73,36 @@ function SurpriseContent({ entry, gift }) {
 
       {link && (
         <a
-          className={s.textLink}
+          className={s.flipLink}
           href={link}
           target="_blank"
           rel="noopener noreferrer"
         >
-          One more little thing ↗
+          OPEN THIS LITTLE THING ↗
         </a>
       )}
 
-      {content.attachment && (
-        <div className={s.mediaBlock}>
+      {content.attachment?.data && (
+        <div className={s.flipMedia}>
           {content.attachment.type?.startsWith('image/') && (
             <img
-              className={s.ticketImage}
+              className={s.flipAttachment}
               src={content.attachment.data}
-              alt="Your attached ticket, QR code, or surprise"
+              alt="Attached surprise"
             />
           )}
 
           <a
-            className={s.textLink}
+            className={s.flipLink}
             href={content.attachment.data}
-            download={content.attachment.name}
+            download={content.attachment.name || 'surprise'}
           >
-            Download {content.attachment.name} ↓
+            OPEN YOUR SURPRISE ↓
           </a>
         </div>
       )}
 
-      <p className={s.signature}>
+      <p className={s.flipSignature}>
         always in your corner,
         <br />
         {gift.from || 'me'} ♡
@@ -190,173 +111,412 @@ function SurpriseContent({ entry, gift }) {
   );
 }
 
-function Envelope({ entry, gift, isOpen, onToggle }) {
+function Envelope({ entry, gift }) {
+  const [open, setOpen] = useState(false);
+
   return (
-    <div className={`${s.bookEnvelope} ${isOpen ? s.bookEnvelopeOpen : ''}`}>
+    <div className={`${s.flipEnvelopeWrap} ${open ? s.flipEnvelopeOpen : ''}`}>
       <button
         type="button"
-        className={s.envelopeButton}
-        onClick={onToggle}
-        aria-expanded={isOpen}
-        aria-label={`${isOpen ? 'Close' : 'Open'} surprise: ${entry.when}`}
+        className={s.flipEnvelope}
+        onClick={(event) => {
+          event.stopPropagation();
+          setOpen((value) => !value);
+        }}
+        aria-expanded={open}
       >
-        <span className={s.bookEnvelopeBack} aria-hidden="true" />
+        <span className={s.flipEnvelopeBack} />
 
-        <span className={s.bookEnvelopeLetter} aria-hidden="true">
-          <span>A little surprise</span>
-          <small>for you ♡</small>
+        <span className={s.flipEnvelopeLetter}>
+          <small>something</small>
+          <strong>just for you ♡</strong>
         </span>
 
-        <span className={s.bookEnvelopeFront} aria-hidden="true" />
+        <span className={s.flipEnvelopeFront} />
+        <span className={s.flipEnvelopeFlap} />
 
-        <span className={s.bookEnvelopeFlap} aria-hidden="true" />
+        <span className={s.flipWax}>♡</span>
 
-        <span className={s.bookSeal} aria-hidden="true">
-          ♡
+        <span className={s.flipEnvelopeText}>
+          OPEN WHEN…
+          <strong>{entry.when}</strong>
         </span>
       </button>
 
-      <p className={s.envelopeInstruction}>
-        {isOpen ? 'your surprise is open ♡' : 'tap the envelope to reveal your surprise'}
+      <p className={s.flipTap}>
+        {open ? 'tap to close ↑' : 'tap the envelope ♡'}
       </p>
 
-      <div className={s.surpriseDrawer} aria-hidden={!isOpen}>
-        {isOpen && <SurpriseContent entry={entry} gift={gift} />}
-      </div>
+      {open && (
+        <div
+          className={s.flipSurpriseReveal}
+          onClick={(event) => event.stopPropagation()}
+        >
+          <SurpriseContent entry={entry} gift={gift} />
+        </div>
+      )}
     </div>
   );
 }
 
-function JournalSpread({ entry, gift, index, total, open, onToggle }) {
+/* =========================================================
+   COVER
+   Keep exported because OpenWhenBuilder already imports Cover.
+   ========================================================= */
+
+export function Cover({ gift, onOpen = () => {} }) {
   return (
-    <div className={s.bookSpread}>
-      <section className={`${s.bookPage} ${s.bookPageLeft}`}>
-        <div className={s.bookPageTop}>
-          <span>OPEN WHEN…</span>
-          <span>{String(index + 1).padStart(2, '0')}</span>
-        </div>
+    <div className={s.flipCoverPreview}>
+      <button
+        type="button"
+        className={s.flipPhysicalCover}
+        onClick={onOpen}
+      >
+        <span className={s.flipCoverSpine} />
 
-        <h2 className={s.bookWhen}>{entry.when}</h2>
+        <span className={s.flipCoverInner}>
+          <small>WIVELI PRESENTS</small>
 
-        <span className={s.bookHeart} aria-hidden="true">
-          ♡
+          <strong>
+            OPEN
+            <br />
+            WHEN…
+          </strong>
+
+          <span className={s.flipCoverHeart}>♡</span>
+
+          <em>
+            a little book for
+            <br />
+            {gift?.to || 'you'}
+          </em>
+
+          <b>
+            THIS IS MY WAY
+            <br />
+            OF TAKING CARE OF YOU
+          </b>
+
+          <i>with love, {gift?.from || 'me'} x</i>
         </span>
+      </button>
+    </div>
+  );
+}
 
-        <div className={s.leftPageStory}>
-          <Polaroid
-            photo={entry.photo || gift.coverPhoto}
-            caption={entry.caption || 'same sky, different place ♡'}
-          />
+/* =========================================================
+   ACTUAL BOOK PAGES
+   ========================================================= */
 
-          <div className={s.pageMessage}>
-            <p>
-              {entry.note ||
-                `Even when we're apart, I'm still right here. In your thoughts, in the little things, and in every moment that feels a bit quieter without me.`}
-            </p>
+function IntroPage({ gift }) {
+  return (
+    <div className={s.flipIntro}>
+      <span className={s.flipIntroHeart}>♡</span>
 
-            <span>
-              you’re always
-              <br />
-              on my mind ♡
-            </span>
-          </div>
-        </div>
+      <p>THIS LITTLE BOOK BELONGS TO</p>
 
-        <span className={s.pageNumber}>{index * 2 + 2}</span>
-      </section>
+      <h2>{gift.to || 'you'}</h2>
 
-      <section className={`${s.bookPage} ${s.bookPageRight}`}>
-        <p className={s.handQuote}>
-          “A little love,
-          <br />
-          saved for exactly
-          <br />
-          when you need it.”
-          <span>♡</span>
+      <div className={s.flipIntroNote}>
+        <span className={s.flipTape} />
+        <p>
+          Open these pages whenever you need a little comfort,
+          a smile, a reminder, or simply a little bit of me.
         </p>
+      </div>
 
-        <Envelope
-          entry={entry}
-          gift={gift}
-          isOpen={open}
-          onToggle={onToggle}
+      <span className={s.flipHandNote}>
+        made with way too much love
+        <br />
+        {gift.from || 'me'} ♡
+      </span>
+    </div>
+  );
+}
+
+function MemoryPage({ entry, gift, index }) {
+  const layouts = [
+    s.flipLayoutOne,
+    s.flipLayoutTwo,
+    s.flipLayoutThree,
+    s.flipLayoutFour,
+  ];
+
+  return (
+    <div className={`${s.flipMemoryPage} ${layouts[index % layouts.length]}`}>
+      <div className={s.flipPageHeader}>
+        <span>OPEN WHEN…</span>
+        <span>{String(index + 1).padStart(2, '0')}</span>
+      </div>
+
+      <h2>{entry.when}</h2>
+
+      <div className={s.flipMemoryCollage}>
+        <Polaroid
+          photo={entry.photo || gift.coverPhoto}
+          caption={entry.caption || 'one of my favorite moments ♡'}
+          rotate={index % 2 ? 'right' : 'left'}
         />
 
-        <p className={s.youGotThis}>YOU GOT THIS</p>
+        <div className={s.flipPersonalNote}>
+          <span className={s.flipNoteTape} />
+          <p>
+            {entry.note ||
+              `For the moments when you need a little reminder that I'm always here.`}
+          </p>
 
-        <span className={s.pageNumber}>{index * 2 + 3}</span>
-      </section>
+          <small>
+            with love,
+            <br />
+            {gift.from || 'me'} ♡
+          </small>
+        </div>
 
-      <span className={s.bookGutter} aria-hidden="true" />
-      <span className={s.bookPagesLeft} aria-hidden="true" />
-      <span className={s.bookPagesRight} aria-hidden="true" />
+        <span className={s.flipDoodle}>
+          {index % 3 === 0 ? '♡' : index % 3 === 1 ? '✦ ♡ ✧' : '↘ ♡'}
+        </span>
+      </div>
+
+      <Envelope entry={entry} gift={gift} />
     </div>
   );
 }
+
+function FinalPage({ gift }) {
+  return (
+    <div className={s.flipFinalPage}>
+      <span>♡</span>
+
+      <h2>
+        AND WHEN
+        <br />
+        YOU REACH
+        <br />
+        THE END…
+      </h2>
+
+      <p>
+        remember there will always be another page for us to fill.
+      </p>
+
+      <em>love, {gift.from || 'me'} x</em>
+    </div>
+  );
+}
+
+/* =========================================================
+   PAGE FLIP BOOK
+   ========================================================= */
+
+function RealBook({ gift, entries, onClose }) {
+  const bookRef = useRef(null);
+  const pageFlipRef = useRef(null);
+
+  const [page, setPage] = useState(0);
+  const totalPages = entries.length + 2;
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function createBook() {
+      if (!bookRef.current) return;
+
+      const { PageFlip } = await import('page-flip');
+
+      if (cancelled || !bookRef.current) return;
+
+      const width = window.innerWidth <= 600 ? 330 : 430;
+      const height = window.innerWidth <= 600 ? 540 : 620;
+
+      const pageFlip = new PageFlip(bookRef.current, {
+        width,
+        height,
+
+        size: 'stretch',
+
+        minWidth: 280,
+        maxWidth: 480,
+
+        minHeight: 460,
+        maxHeight: 700,
+
+        maxShadowOpacity: 0.45,
+
+        showCover: true,
+
+        mobileScrollSupport: false,
+
+        usePortrait: true,
+
+        flippingTime: 900,
+
+        drawShadow: true,
+
+        autoSize: true,
+
+        clickEventForward: true,
+
+        useMouseEvents: true,
+
+        swipeDistance: 25,
+
+        showPageCorners: true,
+
+        disableFlipByClick: false,
+      });
+
+      const pages = bookRef.current.querySelectorAll('[data-page]');
+
+      pageFlip.loadFromHTML(pages);
+
+      pageFlip.on('flip', (event) => {
+        setPage(event.data);
+      });
+
+      pageFlipRef.current = pageFlip;
+    }
+
+    createBook();
+
+    return () => {
+      cancelled = true;
+
+      try {
+        pageFlipRef.current?.destroy();
+      } catch {
+        // PageFlip may already be destroyed during hot reload.
+      }
+
+      pageFlipRef.current = null;
+    };
+  }, []);
+
+  function previous() {
+    pageFlipRef.current?.flipPrev();
+  }
+
+  function next() {
+    pageFlipRef.current?.flipNext();
+  }
+
+  return (
+    <section className={s.realBookScene}>
+      <div className={s.realBookTop}>
+        <button type="button" onClick={onClose}>
+          CLOSE JOURNAL
+        </button>
+
+        <span>
+          {String(page + 1).padStart(2, '0')} /{' '}
+          {String(totalPages).padStart(2, '0')}
+        </span>
+      </div>
+
+      <div className={s.realBookStage}>
+        <div ref={bookRef} className={s.realBook}>
+          <div
+            data-page
+            data-density="hard"
+            className={`${s.realBookPage} ${s.realBookCoverPage}`}
+          >
+            <div className={s.realInsideCover}>
+              <span>WIVELI</span>
+
+              <h2>
+                OPEN
+                <br />
+                WHEN…
+              </h2>
+
+              <p>
+                for {gift.to || 'you'} ♡
+              </p>
+
+              <small>turn the page →</small>
+            </div>
+          </div>
+
+          <div data-page className={s.realBookPage}>
+            <IntroPage gift={gift} />
+          </div>
+
+          {entries.map((entry, index) => (
+            <div
+              data-page
+              className={s.realBookPage}
+              key={entry.id || `${entry.when}-${index}`}
+            >
+              <MemoryPage
+                entry={entry}
+                gift={gift}
+                index={index}
+              />
+            </div>
+          ))}
+
+          <div
+            data-page
+            data-density="hard"
+            className={`${s.realBookPage} ${s.realBookLastPage}`}
+          >
+            <FinalPage gift={gift} />
+          </div>
+        </div>
+      </div>
+
+      <nav className={s.realBookControls}>
+        <button
+          type="button"
+          onClick={previous}
+          disabled={page === 0}
+          aria-label="Previous page"
+        >
+          ←
+        </button>
+
+        <div className={s.realBookProgress}>
+          <span
+            style={{
+              width: `${((page + 1) / totalPages) * 100}%`,
+            }}
+          />
+        </div>
+
+        <button
+          type="button"
+          onClick={next}
+          disabled={page >= totalPages - 1}
+          aria-label="Next page"
+        >
+          →
+        </button>
+      </nav>
+
+      <p className={s.realBookHint}>
+        swipe the page with your finger ♡
+      </p>
+    </section>
+  );
+}
+
+/* =========================================================
+   MAIN READER
+   ========================================================= */
 
 export default function Journal({ gift }) {
   const entries = useMemo(
-    () => (gift.entries || []).filter((entry) => entry.selected),
-    [gift.entries]
+    () => (gift?.entries || []).filter((entry) => entry.selected),
+    [gift?.entries]
   );
 
-  const [current, setCurrent] = useState(0);
-  const [direction, setDirection] = useState('next');
-  const [turning, setTurning] = useState(false);
-  const [openEnvelope, setOpenEnvelope] = useState(null);
-
-  const entry = entries[current];
-
-  useEffect(() => {
-    setOpenEnvelope(null);
-  }, [current]);
-
-  function goTo(nextIndex) {
-    if (
-      turning ||
-      nextIndex < 0 ||
-      nextIndex >= entries.length ||
-      nextIndex === current
-    ) {
-      return;
-    }
-
-    setDirection(nextIndex > current ? 'next' : 'prev');
-    setTurning(true);
-    setOpenEnvelope(null);
-
-    window.setTimeout(() => {
-      setCurrent(nextIndex);
-
-      window.setTimeout(() => {
-        setTurning(false);
-      }, 60);
-    }, 330);
-  }
-
-  function nextPage() {
-    goTo(current + 1);
-  }
-
-  function previousPage() {
-    goTo(current - 1);
-  }
-
-  useEffect(() => {
-    function onKeyDown(event) {
-      if (event.key === 'ArrowRight') nextPage();
-      if (event.key === 'ArrowLeft') previousPage();
-    }
-
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  });
+  const [opened, setOpened] = useState(false);
 
   if (!entries.length) {
     return (
-      <main className={`${s.root} ${s.reader}`}>
-        <div className={s.emptyState}>
-          <h1>Your journal is waiting ♡</h1>
+      <main className={s.realDiaryRoot}>
+        <div className={s.realDiaryEmpty}>
+          <span>♡</span>
+          <h1>Your little journal is waiting.</h1>
           <p>Add at least one Open When surprise to begin.</p>
         </div>
       </main>
@@ -364,131 +524,49 @@ export default function Journal({ gift }) {
   }
 
   return (
-    <main className={`${s.root} ${s.reader}`}>
-      <h1 className={s.srOnly}>
-        A little book of care for {gift.to || 'you'}
-      </h1>
-
-      <header className={s.diaryHeader}>
-        <a href="/" className={s.diaryLogo}>
-          WIVELI
-        </a>
-
-        <p>
-          Open When
-          <span>A little love for every version of you.</span>
-        </p>
-
-        <div className={s.diaryHeaderRight}>
-          <span>for {gift.to || 'you'} ♡</span>
+    <main className={s.realDiaryRoot}>
+      <div className={s.realDeskDecor} aria-hidden="true">
+        <div className={s.realFabric} />
+        <div className={s.realCoffee}>
+          <span>♡</span>
         </div>
-      </header>
 
-      <div className={s.diaryScene} id="little-pages">
-        <aside className={s.envelopeIndex}>
-          <div className={s.indexIntro}>
-            <strong>Open When</strong>
-            <span>A little love for every version of you.</span>
-          </div>
+        <div className={s.realLoosePolaroid}>
+          <span>♡</span>
+        </div>
 
-          <nav aria-label="Open When pages">
-            {entries.map((item, index) => (
-              <button
-                type="button"
-                key={item.id}
-                className={index === current ? s.indexEnvelopeActive : ''}
-                onClick={() => goTo(index)}
-              >
-                <span>{item.when}</span>
-                <b aria-hidden="true">{item.symbol || '♡'}</b>
-              </button>
-            ))}
-          </nav>
+        <div className={s.realPressedFlower}>✿</div>
 
-          <p className={s.indexScribble}>
-            different moments,
-            <br />
-            same love ♡
-          </p>
-        </aside>
-
-        <section className={s.bookStage}>
-          <button
-            type="button"
-            className={`${s.pageArrow} ${s.pageArrowLeft}`}
-            onClick={previousPage}
-            disabled={current === 0 || turning}
-            aria-label="Previous page"
-          >
-            ‹
-          </button>
-
-          <div
-            className={`${s.bookPerspective} ${
-              turning
-                ? direction === 'next'
-                  ? s.turningNext
-                  : s.turningPrev
-                : ''
-            }`}
-          >
-            <JournalSpread
-              entry={entry}
-              gift={gift}
-              index={current}
-              total={entries.length}
-              open={openEnvelope === entry.id}
-              onToggle={() =>
-                setOpenEnvelope((value) =>
-                  value === entry.id ? null : entry.id
-                )
-              }
-            />
-
-            {turning && (
-              <div
-                className={`${s.turningSheet} ${
-                  direction === 'next' ? s.turnSheetNext : s.turnSheetPrev
-                }`}
-                aria-hidden="true"
-              >
-                <div className={s.turnSheetFront} />
-                <div className={s.turnSheetBack} />
-              </div>
-            )}
-          </div>
-
-          <button
-            type="button"
-            className={`${s.pageArrow} ${s.pageArrowRight}`}
-            onClick={nextPage}
-            disabled={current === entries.length - 1 || turning}
-            aria-label="Next page"
-          >
-            ›
-          </button>
-
-          <div className={s.bookProgress}>
-            {entries.map((item, index) => (
-              <button
-                key={item.id}
-                type="button"
-                className={index === current ? s.progressActive : ''}
-                onClick={() => goTo(index)}
-                aria-label={`Go to page ${index + 1}`}
-              />
-            ))}
-          </div>
-        </section>
+        <div className={s.realDeskNote}>
+          made
+          <br />
+          for you ♡
+        </div>
       </div>
 
-      <footer className={s.diaryFooter}>
-        <span>made with WIVELI ♡</span>
-        <span>
-          {String(current + 1).padStart(2, '0')} /{' '}
-          {String(entries.length).padStart(2, '0')}
-        </span>
-      </footer>
+      <header className={s.realDiaryHeader}>
+        <span>WIVELI</span>
+        <small>OPEN WHEN…</small>
+      </header>
+
+      {!opened ? (
+        <div className={s.realCoverScene}>
+          <Cover
+            gift={gift}
+            onOpen={() => setOpened(true)}
+          />
+
+          <p className={s.realCoverHint}>
+            tap the journal to open it ♡
+          </p>
+        </div>
+      ) : (
+        <RealBook
+          gift={gift}
+          entries={entries}
+          onClose={() => setOpened(false)}
+        />
+      )}
     </main>
   );
 }

@@ -1432,3 +1432,3337 @@
     font-size: 17px;
   }
 }
+/* =========================================================
+   WIVELI — OPEN WHEN / LIVE HANDMADE DIARY
+   ========================================================= */
+
+.liveDiaryReader {
+  --paper: #f4ead7;
+  --paper-light: #fff8e9;
+  --ink: #342a25;
+  --pink: #d6a6a7;
+  --deep-pink: #a75d5d;
+  --sage: #9da68e;
+  --wood: #76523d;
+  --hand: "Caveat", "Comic Sans MS", cursive;
+
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255, 221, 174, .18), transparent 34%),
+    linear-gradient(135deg, #815e47 0%, #684735 50%, #523728 100%);
+}
+
+/* ---------------------------------------------------------
+   COZY DESK BACKGROUND
+   --------------------------------------------------------- */
+
+.cozyBackground {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.cozyBackground::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: .28;
+  background:
+    repeating-linear-gradient(
+      2deg,
+      transparent 0 24px,
+      rgba(41, 24, 15, .14) 25px,
+      transparent 27px 54px
+    ),
+    repeating-linear-gradient(
+      91deg,
+      transparent 0 180px,
+      rgba(255, 240, 215, .06) 182px,
+      transparent 185px 360px
+    );
+  mix-blend-mode: multiply;
+}
+
+.tableGlow {
+  position: absolute;
+  left: 50%;
+  top: 43%;
+  width: 1000px;
+  height: 800px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse,
+    rgba(255, 214, 158, .23),
+    rgba(255, 208, 147, .06) 43%,
+    transparent 70%
+  );
+  filter: blur(20px);
+}
+
+.blanketCorner {
+  position: absolute;
+  width: 420px;
+  height: 520px;
+  left: -130px;
+  bottom: -180px;
+  transform: rotate(19deg);
+  border-radius: 40% 55% 10% 20%;
+  opacity: .85;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,.025) 0 4px,
+      rgba(54,42,36,.08) 5px 8px
+    ),
+    linear-gradient(145deg, #b8aa98, #8d8173);
+  box-shadow:
+    inset -30px 20px 50px rgba(255,255,255,.09),
+    25px -20px 45px rgba(35,20,13,.18);
+}
+
+.coffeeCup {
+  position: absolute;
+  right: -30px;
+  top: 12%;
+  width: 145px;
+  height: 145px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: rgba(255,255,255,.42);
+  font-family: var(--hand);
+  font-size: 26px;
+  background:
+    radial-gradient(circle at center, #493027 0 42%, #e7d6bc 43% 60%, #baa88f 61%);
+  box-shadow: 0 18px 35px rgba(30,16,10,.3);
+  transform: rotate(-10deg);
+}
+
+.coffeeCup::after {
+  content: "";
+  position: absolute;
+  right: -24px;
+  width: 52px;
+  height: 64px;
+  border: 13px solid #c8b69c;
+  border-left: 0;
+  border-radius: 0 35px 35px 0;
+}
+
+.deskFlower {
+  position: absolute;
+  right: 3%;
+  bottom: 3%;
+  color: #d6c7aa;
+  font-size: 105px;
+  transform: rotate(19deg);
+  text-shadow:
+    20px 25px 0 rgba(123,136,100,.55),
+    -20px 10px 0 rgba(239,224,195,.35);
+  opacity: .75;
+}
+
+.loosePhoto {
+  position: absolute;
+  left: 4%;
+  top: 14%;
+  width: 125px;
+  height: 155px;
+  padding: 12px;
+  display: grid;
+  place-items: center;
+  color: #9d6866;
+  font-family: var(--hand);
+  font-size: 36px;
+  background: #eee4d4;
+  border: 1px solid rgba(70,46,29,.14);
+  box-shadow: 0 15px 30px rgba(37,20,12,.22);
+  transform: rotate(-13deg);
+}
+
+/* ---------------------------------------------------------
+   MINIMAL UI
+   --------------------------------------------------------- */
+
+.readerMinimalHeader {
+  position: relative;
+  z-index: 40;
+  height: 62px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 28px;
+  color: rgba(255,247,237,.8);
+}
+
+.readerLogo {
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: .16em;
+}
+
+.readerMinimalHeader button {
+  padding: 7px 0;
+  border: 0;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  background: transparent;
+}
+
+/* ---------------------------------------------------------
+   CLOSED PHYSICAL JOURNAL
+   --------------------------------------------------------- */
+
+.coverScene {
+  position: relative;
+  z-index: 5;
+  min-height: calc(100svh - 62px);
+  display: grid;
+  place-items: center;
+  padding: 40px 20px 70px;
+  perspective: 1600px;
+}
+
+.physicalJournal {
+  position: relative;
+  width: min(420px, 78vw);
+  aspect-ratio: .72 / 1;
+  padding: 0;
+  border: 0;
+  border-radius: 7px 17px 17px 7px;
+  cursor: pointer;
+  color: #3b332e;
+  text-align: left;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,.035) 0 2px,
+      rgba(65,53,46,.035) 3px 5px
+    ),
+    linear-gradient(135deg, #d5c8b5, #bcae9c);
+  box-shadow:
+    -9px 14px 0 #8c7966,
+    -14px 19px 0 #e2d6c4,
+    0 42px 55px rgba(31,16,9,.36),
+    inset 0 0 0 1px rgba(255,255,255,.25),
+    inset -15px 0 24px rgba(64,49,38,.1);
+  transform: rotate(-3deg) rotateY(-4deg);
+  transition:
+    transform .45s cubic-bezier(.2,.8,.2,1),
+    box-shadow .45s ease;
+}
+
+.physicalJournal:hover {
+  transform: rotate(-1deg) rotateY(0) translateY(-8px);
+  box-shadow:
+    -8px 12px 0 #8c7966,
+    -13px 17px 0 #e2d6c4,
+    0 52px 70px rgba(31,16,9,.4);
+}
+
+.journalSpine {
+  position: absolute;
+  left: 17px;
+  top: 0;
+  bottom: 0;
+  width: 32px;
+  border-right: 1px solid rgba(74,59,47,.15);
+  box-shadow:
+    inset -9px 0 13px rgba(58,45,36,.08),
+    7px 0 10px rgba(255,255,255,.07);
+}
+
+.journalCoverContent {
+  position: absolute;
+  inset: 11% 11% 9% 18%;
+  display: flex;
+  flex-direction: column;
+}
+
+.journalCoverContent small {
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .19em;
+}
+
+.journalCoverContent strong {
+  margin-top: 16%;
+  font-family: Arial, sans-serif;
+  font-size: clamp(43px, 8vw, 70px);
+  line-height: .75;
+  letter-spacing: -.08em;
+}
+
+.journalCoverContent em {
+  position: absolute;
+  right: 3%;
+  top: 26%;
+  color: var(--deep-pink);
+  font-family: var(--hand);
+  font-size: 65px;
+  font-style: normal;
+  transform: rotate(13deg);
+}
+
+.journalCoverContent > span {
+  margin-top: 17px;
+  font-family: var(--hand);
+  font-size: 23px;
+  line-height: .9;
+}
+
+.journalCoverContent b {
+  margin-top: auto;
+  font-size: 13px;
+  line-height: 1.15;
+  letter-spacing: -.02em;
+}
+
+.journalCoverContent i {
+  margin-top: 13px;
+  color: #7e514f;
+  font-family: var(--hand);
+  font-size: 19px;
+  font-style: normal;
+}
+
+.coverHint {
+  position: absolute;
+  bottom: 25px;
+  margin: 0;
+  color: rgba(255,247,236,.75);
+  font-family: var(--hand);
+  font-size: 18px;
+}
+
+.coverDecor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.coverFlower {
+  position: absolute;
+  right: 12%;
+  bottom: 8%;
+  color: #d7c9ab;
+  font-size: 100px;
+  transform: rotate(12deg);
+}
+
+.coverRibbon {
+  position: absolute;
+  left: 13%;
+  top: 10%;
+  color: #c99595;
+  font-family: var(--hand);
+  font-size: 58px;
+  transform: rotate(-17deg);
+}
+
+.coverPaper {
+  position: absolute;
+  left: 9%;
+  bottom: 18%;
+  padding: 15px 22px;
+  color: #4e4138;
+  font-family: var(--hand);
+  font-size: 20px;
+  line-height: .95;
+  background: #e9d8b9;
+  box-shadow: 0 13px 20px rgba(39,23,14,.15);
+  transform: rotate(8deg);
+}
+
+/* ---------------------------------------------------------
+   OPEN BOOK
+   --------------------------------------------------------- */
+
+.bookReader {
+  position: relative;
+  z-index: 5;
+  min-height: calc(100svh - 62px);
+  padding: 5px 20px 45px;
+}
+
+.bookMeta {
+  width: min(760px, 88vw);
+  margin: 0 auto 12px;
+  display: flex;
+  justify-content: space-between;
+  color: rgba(255,246,234,.72);
+  font-family: var(--hand);
+  font-size: 17px;
+}
+
+.bookShell {
+  position: relative;
+  width: min(720px, 84vw);
+  height: min(790px, calc(100svh - 160px));
+  min-height: 570px;
+  margin: 0 auto;
+  perspective: 2200px;
+  filter: drop-shadow(0 34px 32px rgba(30,16,9,.38));
+}
+
+.bookUnderPages {
+  position: absolute;
+  z-index: -2;
+  left: 8px;
+  right: 8px;
+  top: 8px;
+  bottom: -13px;
+  border-radius: 5px 14px 14px 5px;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      #cdbda5 0 1px,
+      #eee2cf 1px 3px
+    );
+  transform: rotate(.3deg);
+}
+
+.bookBinding {
+  position: absolute;
+  z-index: 15;
+  left: -9px;
+  top: 1%;
+  bottom: 1%;
+  width: 27px;
+  border-radius: 12px 0 0 12px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    #8b7460,
+    #b9a48b 50%,
+    rgba(80,60,45,.2)
+  );
+  box-shadow: inset -7px 0 8px rgba(49,35,26,.2);
+}
+
+.currentPaper {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+/* ---------------------------------------------------------
+   PAPER
+   --------------------------------------------------------- */
+
+.diaryPage {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: clamp(28px, 5vw, 55px);
+  border-radius: 3px 11px 11px 3px;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(112,78,47,.04) 0 1px, transparent 2px),
+    radial-gradient(circle at 70% 60%, rgba(112,78,47,.035) 0 1px, transparent 2px),
+    linear-gradient(100deg, #e7dbc6 0%, #f8efde 8%, #f6ecd9 88%, #dfd0b9 100%);
+  border: 1px solid rgba(72,50,34,.15);
+  box-shadow:
+    inset 15px 0 25px rgba(74,50,32,.08),
+    inset -5px 0 12px rgba(255,255,255,.35);
+  scrollbar-width: none;
+}
+
+.diaryPage::-webkit-scrollbar {
+  display: none;
+}
+
+.paperTexture {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .28;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 5px,
+      rgba(74,50,32,.025) 6px,
+      transparent 7px
+    );
+}
+
+.pageTopline {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  opacity: .52;
+}
+
+.pageTitleWrap {
+  position: relative;
+  z-index: 3;
+  margin-top: 20px;
+}
+
+.pageTitleWrap h2 {
+  max-width: 85%;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  font-size: clamp(34px, 7vw, 58px);
+  line-height: .82;
+  letter-spacing: -.07em;
+  text-transform: uppercase;
+}
+
+.pageLittleHeart {
+  position: absolute;
+  right: 3%;
+  top: -17px;
+  color: var(--deep-pink);
+  font-family: var(--hand);
+  font-size: 54px;
+  transform: rotate(15deg);
+}
+
+/* ---------------------------------------------------------
+   SCRAPBOOK COLLAGE
+   --------------------------------------------------------- */
+
+.scrapbookArea {
+  position: relative;
+  min-height: 390px;
+  margin-top: 20px;
+}
+
+.diaryPolaroid {
+  position: absolute;
+  z-index: 4;
+  width: 55%;
+  max-width: 330px;
+  margin: 0;
+  padding: 10px 10px 35px;
+  background: #f9f3e8;
+  border: 1px solid rgba(72,49,32,.12);
+  box-shadow: 0 14px 24px rgba(63,41,26,.17);
+}
+
+.polaroid0 {
+  left: 3%;
+  top: 7%;
+  transform: rotate(-5deg);
+}
+
+.polaroid1 {
+  right: 4%;
+  top: 2%;
+  transform: rotate(4deg);
+}
+
+.polaroid2 {
+  left: 8%;
+  top: 4%;
+  transform: rotate(-2deg);
+}
+
+.diaryPolaroid img,
+.photoPlaceholder {
+  display: block;
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+  background: #c6b7a3;
+}
+
+.photoPlaceholder {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 7px;
+  color: rgba(255,250,240,.8);
+}
+
+.photoPlaceholder span {
+  font-family: var(--hand);
+  font-size: 50px;
+}
+
+.photoPlaceholder small {
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.diaryPolaroid figcaption {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 8px;
+  text-align: center;
+  font-family: var(--hand);
+  font-size: 18px;
+}
+
+.photoTape {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  top: -13px;
+  width: 88px;
+  height: 26px;
+  transform: translateX(-50%) rotate(-2deg);
+  background: rgba(205,185,151,.58);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);
+}
+
+.personalNote {
+  position: absolute;
+  z-index: 5;
+  right: 1%;
+  bottom: 2%;
+  width: 50%;
+  padding: 25px 21px 20px;
+  background: #fff8e9;
+  border: 1px solid rgba(76,52,34,.09);
+  box-shadow: 0 12px 19px rgba(60,39,24,.12);
+  transform: rotate(2.5deg);
+}
+
+.personalNote p {
+  margin: 0;
+  font-family: var(--hand);
+  font-size: clamp(19px, 3.6vw, 25px);
+  line-height: .98;
+}
+
+.personalNote small {
+  display: block;
+  margin-top: 14px;
+  color: var(--deep-pink);
+  font-family: var(--hand);
+  font-size: 17px;
+  line-height: .9;
+}
+
+.noteTape {
+  position: absolute;
+  left: 33%;
+  top: -11px;
+  width: 78px;
+  height: 23px;
+  background: rgba(205,183,149,.45);
+  transform: rotate(4deg);
+}
+
+.doodle {
+  position: absolute;
+  z-index: 7;
+  color: var(--deep-pink);
+  font-family: var(--hand);
+}
+
+.doodleHeart {
+  right: 5%;
+  top: 5%;
+  font-size: 45px;
+  transform: rotate(18deg);
+}
+
+.doodleArrow {
+  left: 48%;
+  bottom: 6%;
+  font-size: 36px;
+  transform: rotate(8deg);
+}
+
+.doodleStars {
+  left: 3%;
+  bottom: 5%;
+  font-size: 24px;
+  transform: rotate(-7deg);
+}
+
+.pressedFlower {
+  position: absolute;
+  z-index: 2;
+  right: 2%;
+  top: 28%;
+  color: #a3a98e;
+  font-size: 66px;
+  opacity: .7;
+  transform: rotate(17deg);
+}
+
+.paperClip {
+  position: absolute;
+  right: 8%;
+  top: 17%;
+  font-size: 55px;
+  transform: rotate(24deg);
+  opacity: .5;
+}
+
+.tinyNote {
+  position: absolute;
+  left: 3%;
+  bottom: 0;
+  font-family: var(--hand);
+  font-size: 16px;
+  transform: rotate(-6deg);
+}
+
+.ticketScrap {
+  position: absolute;
+  right: 2%;
+  top: 12%;
+  padding: 11px 14px;
+  border: 1px dashed rgba(70,49,34,.35);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .1em;
+  transform: rotate(7deg);
+}
+
+/* ---------------------------------------------------------
+   ENVELOPE
+   --------------------------------------------------------- */
+
+.envelopeArea {
+  position: relative;
+  z-index: 8;
+  min-height: 300px;
+  margin-top: 10px;
+  display: grid;
+  place-items: center;
+}
+
+.realEnvelope {
+  position: relative;
+  width: min(360px, 75%);
+  text-align: center;
+}
+
+.realEnvelopeButton {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.5 / 1;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  background: transparent;
+  perspective: 1100px;
+  filter: drop-shadow(0 16px 15px rgba(56,35,21,.19));
+}
+
+.envelopeBack {
+  position: absolute;
+  inset: 0;
+  border-radius: 3px;
+  background: #cfa2a2;
+  border: 1px solid rgba(89,55,52,.13);
+}
+
+.envelopeLetter {
+  position: absolute;
+  z-index: 3;
+  left: 7%;
+  right: 7%;
+  bottom: 8%;
+  height: 78%;
+  display: grid;
+  place-content: center;
+  color: #59433b;
+  background: #fff8e8;
+  border: 1px solid rgba(75,50,33,.1);
+  box-shadow: 0 5px 10px rgba(60,38,23,.12);
+  transition: transform .75s cubic-bezier(.2,.75,.2,1);
+}
+
+.envelopeLetter span {
+  font-family: var(--hand);
+  font-size: 22px;
+}
+
+.envelopeLetter strong {
+  font-family: var(--hand);
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--deep-pink);
+}
+
+.envelopeFront {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  border-radius: 3px;
+  overflow: hidden;
+  background: #ddb3b1;
+  clip-path: polygon(0 33%, 50% 71%, 100% 33%, 100% 100%, 0 100%);
+}
+
+.envelopeFront::before,
+.envelopeFront::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 72%;
+  height: 100%;
+  background: rgba(255,255,255,.055);
+}
+
+.envelopeFront::before {
+  left: 0;
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+}
+
+.envelopeFront::after {
+  right: 0;
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+
+.envelopeFlap {
+  position: absolute;
+  z-index: 7;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 58%;
+  transform-origin: top center;
+  transform-style: preserve-3d;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background: #e8c2bd;
+  transition:
+    transform .72s cubic-bezier(.25,.8,.2,1),
+    z-index .15s .25s;
+}
+
+.waxSeal {
+  position: absolute;
+  z-index: 9;
+  left: 50%;
+  top: 48%;
+  width: 47px;
+  height: 47px;
+  display: grid;
+  place-items: center;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  color: #f7ded5;
+  font-family: var(--hand);
+  font-size: 20px;
+  background:
+    radial-gradient(circle at 32% 27%, #c06d68, #8e4644 73%);
+  border: 3px double rgba(255,255,255,.18);
+  box-shadow: 0 5px 9px rgba(66,35,29,.25);
+  transition: opacity .25s, transform .35s;
+}
+
+.envelopeWriting {
+  position: absolute;
+  z-index: 8;
+  left: 15%;
+  right: 15%;
+  top: 61%;
+  color: #694b48;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.envelopeWriting strong {
+  display: block;
+  margin-top: 3px;
+  font-family: var(--hand);
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.realEnvelopeOpen .envelopeFlap {
+  z-index: 1;
+  transform: rotateX(178deg);
+}
+
+.realEnvelopeOpen .envelopeLetter {
+  transform: translateY(-58%);
+}
+
+.realEnvelopeOpen .waxSeal {
+  opacity: 0;
+  transform: translate(-50%, -75%) scale(.65);
+}
+
+.tapEnvelope {
+  position: relative;
+  z-index: 10;
+  margin: 12px 0 0;
+  font-family: var(--hand);
+  font-size: 17px;
+}
+
+/* ---------------------------------------------------------
+   SURPRISE LETTER
+   --------------------------------------------------------- */
+
+.surpriseReveal {
+  position: relative;
+  z-index: 20;
+  width: 125%;
+  max-height: 0;
+  margin-left: -12.5%;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-25px);
+  transition:
+    max-height .8s ease,
+    opacity .45s ease,
+    transform .6s ease;
+}
+
+.realEnvelopeOpen .surpriseReveal {
+  max-height: 1200px;
+  opacity: 1;
+  transform: translateY(8px);
+}
+
+.surprisePaper {
+  position: relative;
+  margin-top: 18px;
+  padding: 30px 27px;
+  color: #40332b;
+  text-align: left;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 27px,
+      rgba(99,77,57,.07) 28px,
+      transparent 29px
+    ),
+    #fff9eb;
+  border: 1px solid rgba(72,49,32,.12);
+  box-shadow: 0 18px 30px rgba(57,35,20,.17);
+  transform: rotate(-1deg);
+}
+
+.surpriseTape {
+  position: absolute;
+  left: 50%;
+  top: -12px;
+  width: 90px;
+  height: 25px;
+  transform: translateX(-50%) rotate(2deg);
+  background: rgba(205,183,148,.5);
+}
+
+.surpriseMini {
+  margin: 0 0 10px;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .16em;
+}
+
+.surprisePaper h3 {
+  margin: 0 0 15px;
+  font-size: clamp(27px, 5vw, 38px);
+  line-height: .9;
+  letter-spacing: -.055em;
+  text-transform: uppercase;
+}
+
+.surpriseMessage {
+  margin: 0;
+  font-family: var(--hand);
+  font-size: 22px;
+  line-height: 1.03;
+}
+
+.surpriseDetails {
+  margin: 20px 0;
+}
+
+.surpriseDetails div {
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(74,52,35,.12);
+}
+
+.surpriseDetails dt {
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  opacity: .55;
+}
+
+.surpriseDetails dd {
+  margin: 3px 0 0;
+  font-size: 12px;
+}
+
+.surpriseMedia {
+  margin-top: 17px;
+}
+
+.surpriseMedia span {
+  display: block;
+  margin-bottom: 7px;
+  font-family: var(--hand);
+  font-size: 18px;
+}
+
+.surpriseMedia audio {
+  width: 100%;
+}
+
+.surpriseAttachment {
+  display: block;
+  width: 100%;
+  max-height: 300px;
+  margin-bottom: 10px;
+  object-fit: contain;
+}
+
+.surpriseLink {
+  display: inline-block;
+  margin-top: 13px;
+  color: #854f4d;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.surpriseSignature {
+  margin: 22px 0 0;
+  color: var(--deep-pink);
+  font-family: var(--hand);
+  font-size: 19px;
+  line-height: .95;
+}
+
+/* ---------------------------------------------------------
+   FOOTER OF PAPER
+   --------------------------------------------------------- */
+
+.pageFooter {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(75,53,36,.1);
+  font-size: 6px;
+  font-weight: 900;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  opacity: .48;
+}
+
+/* ---------------------------------------------------------
+   REAL 3D PAGE TURN
+   --------------------------------------------------------- */
+
+.pageTurn {
+  position: absolute;
+  z-index: 50;
+  inset: 0;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+.pageTurnFront,
+.pageTurnBack {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  backface-visibility: hidden;
+  border-radius: 3px 11px 11px 3px;
+  background:
+    radial-gradient(circle at 25% 35%, rgba(100,70,44,.035) 0 1px, transparent 2px),
+    linear-gradient(100deg, #e8dcc7, #f7eddb 12%, #f4ead7 88%, #d9cab4);
+  border: 1px solid rgba(71,49,33,.13);
+  box-shadow: inset 12px 0 24px rgba(63,42,27,.08);
+}
+
+.pageTurnFront {
+  font-family: var(--hand);
+  font-size: 60px;
+  color: rgba(159,91,88,.25);
+}
+
+.pageTurnBack {
+  transform: rotateY(180deg);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .18em;
+  color: rgba(57,45,37,.3);
+}
+
+.pageTurnForward {
+  transform-origin: left center;
+  animation: realPageForward .68s cubic-bezier(.45,.05,.2,1) forwards;
+}
+
+.pageTurnBackward {
+  transform-origin: right center;
+  animation: realPageBackward .68s cubic-bezier(.45,.05,.2,1) forwards;
+}
+
+@keyframes realPageForward {
+  0% {
+    transform: rotateY(0deg);
+    filter: brightness(1);
+  }
+
+  28% {
+    transform: rotateY(-48deg) skewY(-1deg);
+    filter: brightness(.92);
+    box-shadow: -20px 8px 35px rgba(40,24,14,.18);
+  }
+
+  58% {
+    transform: rotateY(-112deg) skewY(1.5deg);
+    filter: brightness(.78);
+  }
+
+  100% {
+    transform: rotateY(-180deg);
+    filter: brightness(1);
+  }
+}
+
+@keyframes realPageBackward {
+  0% {
+    transform: rotateY(0deg);
+    filter: brightness(1);
+  }
+
+  28% {
+    transform: rotateY(48deg) skewY(1deg);
+    filter: brightness(.92);
+  }
+
+  58% {
+    transform: rotateY(112deg) skewY(-1.5deg);
+    filter: brightness(.78);
+  }
+
+  100% {
+    transform: rotateY(180deg);
+    filter: brightness(1);
+  }
+}
+
+/* ---------------------------------------------------------
+   NAVIGATION
+   --------------------------------------------------------- */
+
+.bookNavigation {
+  width: min(720px, 84vw);
+  margin: 20px auto 0;
+  display: grid;
+  grid-template-columns: 45px 1fr 45px;
+  align-items: center;
+  gap: 15px;
+}
+
+.bookNavigation > button {
+  width: 43px;
+  height: 43px;
+  border: 1px solid rgba(255,247,236,.25);
+  border-radius: 50%;
+  cursor: pointer;
+  color: #fff4e6;
+  background: rgba(46,29,20,.24);
+  backdrop-filter: blur(8px);
+  font-size: 18px;
+}
+
+.bookNavigation > button:disabled {
+  opacity: .18;
+  cursor: default;
+}
+
+.pageDots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  overflow: hidden;
+}
+
+.pageDots button {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  background: rgba(255,245,232,.3);
+  transition: width .2s, background .2s;
+}
+
+.pageDots .activeDot {
+  width: 23px;
+  border-radius: 8px;
+  background: #f6e7d3;
+}
+
+.swipeHint {
+  margin: 10px 0 0;
+  text-align: center;
+  color: rgba(255,245,232,.62);
+  font-family: var(--hand);
+  font-size: 15px;
+}
+
+/* ---------------------------------------------------------
+   EMPTY STATE
+   --------------------------------------------------------- */
+
+.diaryEmpty {
+  position: relative;
+  z-index: 5;
+  min-height: 100svh;
+  display: grid;
+  place-content: center;
+  padding: 30px;
+  text-align: center;
+  color: #fff4e6;
+}
+
+.diaryEmpty > span {
+  font-family: var(--hand);
+  font-size: 55px;
+}
+
+.diaryEmpty h1 {
+  margin: 10px 0;
+  font-family: var(--hand);
+  font-size: 42px;
+}
+
+.diaryEmpty p {
+  margin: 0;
+  opacity: .65;
+}
+
+/* =========================================================
+   MOBILE — PRIMARY EXPERIENCE
+   ========================================================= */
+
+@media (max-width: 600px) {
+  .liveDiaryReader {
+    min-height: 100svh;
+  }
+
+  .readerMinimalHeader {
+    height: 48px;
+    padding: 0 15px;
+  }
+
+  .readerLogo {
+    font-size: 12px;
+  }
+
+  .readerMinimalHeader button {
+    font-size: 7px;
+  }
+
+  .coffeeCup {
+    width: 105px;
+    height: 105px;
+    right: -45px;
+    top: 8%;
+  }
+
+  .coffeeCup::after {
+    right: -18px;
+    width: 40px;
+    height: 48px;
+    border-width: 10px;
+    border-left: 0;
+  }
+
+  .blanketCorner {
+    width: 280px;
+    height: 360px;
+    left: -130px;
+    bottom: -130px;
+  }
+
+  .deskFlower {
+    right: -20px;
+    bottom: 0;
+    font-size: 70px;
+  }
+
+  .loosePhoto {
+    left: -40px;
+    top: 14%;
+    width: 95px;
+    height: 120px;
+    opacity: .72;
+  }
+
+  /* cover */
+
+  .coverScene {
+    min-height: calc(100svh - 48px);
+    padding: 25px 12px 65px;
+  }
+
+  .physicalJournal {
+    width: min(310px, 75vw);
+    max-height: 68svh;
+  }
+
+  .journalCoverContent {
+    inset: 10% 10% 8% 19%;
+  }
+
+  .journalCoverContent strong {
+    font-size: clamp(40px, 13vw, 58px);
+  }
+
+  .journalCoverContent > span {
+    font-size: 18px;
+  }
+
+  .journalCoverContent b {
+    font-size: 10px;
+  }
+
+  .journalCoverContent i {
+    font-size: 15px;
+  }
+
+  .coverFlower {
+    right: -10px;
+    bottom: 5%;
+    font-size: 65px;
+  }
+
+  .coverRibbon {
+    left: 4%;
+    top: 8%;
+    font-size: 38px;
+  }
+
+  .coverPaper {
+    left: -12px;
+    bottom: 14%;
+    padding: 10px 14px;
+    font-size: 15px;
+  }
+
+  .coverHint {
+    bottom: 20px;
+    font-size: 16px;
+  }
+
+  /* book */
+
+  .bookReader {
+    min-height: calc(100svh - 48px);
+    padding: 0 10px 35px;
+  }
+
+  .bookMeta {
+    width: min(94vw, 430px);
+    margin-bottom: 7px;
+    font-size: 14px;
+  }
+
+  .bookShell {
+    width: min(91vw, 420px);
+    height: calc(100svh - 155px);
+    min-height: 590px;
+    max-height: 760px;
+  }
+
+  .bookBinding {
+    left: -6px;
+    width: 17px;
+  }
+
+  .diaryPage {
+    padding: 26px 21px 35px 27px;
+  }
+
+  .pageTitleWrap {
+    margin-top: 15px;
+  }
+
+  .pageTitleWrap h2 {
+    max-width: 90%;
+    font-size: clamp(29px, 9vw, 42px);
+  }
+
+  .pageLittleHeart {
+    right: 0;
+    font-size: 38px;
+  }
+
+  .scrapbookArea {
+    min-height: 310px;
+    margin-top: 14px;
+  }
+
+  .diaryPolaroid {
+    width: 58%;
+    padding: 7px 7px 28px;
+  }
+
+  .diaryPolaroid img,
+  .photoPlaceholder {
+    height: 165px;
+  }
+
+  .diaryPolaroid figcaption {
+    bottom: 6px;
+    font-size: 14px;
+  }
+
+  .photoTape {
+    width: 65px;
+    height: 19px;
+    top: -10px;
+  }
+
+  .personalNote {
+    width: 50%;
+    padding: 17px 14px 14px;
+  }
+
+  .personalNote p {
+    font-size: 17px;
+  }
+
+  .personalNote small {
+    margin-top: 8px;
+    font-size: 13px;
+  }
+
+  .noteTape {
+    width: 57px;
+    height: 17px;
+    top: -8px;
+  }
+
+  .pressedFlower {
+    font-size: 45px;
+  }
+
+  .doodleHeart {
+    font-size: 32px;
+  }
+
+  .tinyNote {
+    font-size: 12px;
+  }
+
+  /* envelope */
+
+  .envelopeArea {
+    min-height: 225px;
+    margin-top: 0;
+  }
+
+  .realEnvelope {
+    width: min(255px, 74%);
+  }
+
+  .waxSeal {
+    width: 38px;
+    height: 38px;
+  }
+
+  .envelopeWriting strong {
+    font-size: 13px;
+  }
+
+  .tapEnvelope {
+    margin-top: 8px;
+    font-size: 14px;
+  }
+
+  .realEnvelopeOpen .envelopeLetter {
+    transform: translateY(-48%);
+  }
+
+  .surpriseReveal {
+    width: 138%;
+    margin-left: -19%;
+  }
+
+  .surprisePaper {
+    padding: 25px 20px;
+  }
+
+  .surprisePaper h3 {
+    font-size: 27px;
+  }
+
+  .surpriseMessage {
+    font-size: 19px;
+  }
+
+  .pageFooter {
+    margin-top: 18px;
+  }
+
+  /* navigation */
+
+  .bookNavigation {
+    width: min(91vw, 420px);
+    margin-top: 13px;
+    grid-template-columns: 39px 1fr 39px;
+    gap: 8px;
+  }
+
+  .bookNavigation > button {
+    width: 38px;
+    height: 38px;
+    background: rgba(45,29,20,.38);
+  }
+
+  .pageDots {
+    gap: 5px;
+  }
+
+  .pageDots button {
+    width: 5px;
+    height: 5px;
+  }
+
+  .pageDots .activeDot {
+    width: 18px;
+  }
+
+  .swipeHint {
+    margin-top: 6px;
+    font-size: 12px;
+  }
+}
+
+/* Small iPhones */
+@media (max-width: 390px) {
+  .bookShell {
+    min-height: 560px;
+  }
+
+  .diaryPage {
+    padding-left: 24px;
+    padding-right: 18px;
+  }
+
+  .pageTitleWrap h2 {
+    font-size: 29px;
+  }
+
+  .scrapbookArea {
+    min-height: 285px;
+  }
+
+  .diaryPolaroid img,
+  .photoPlaceholder {
+    height: 145px;
+  }
+
+  .personalNote p {
+    font-size: 16px;
+  }
+
+  .envelopeArea {
+    min-height: 205px;
+  }
+
+  .realEnvelope {
+    width: 225px;
+  }
+}
+/* =========================================================
+   OPEN WHEN — REAL SCRAPBOOK DIARY / PAGE-FLIP READER
+   ========================================================= */
+
+.realDiaryRoot {
+  --paper: #f3ead9;
+  --paper-dark: #e7d9c3;
+  --ink: #342b27;
+  --muted: #7b6a61;
+  --pink: #c98f98;
+  --deep-pink: #a86572;
+  --sage: #9da58d;
+
+  position: relative;
+  width: 100%;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  color: var(--ink);
+
+  background:
+    linear-gradient(rgba(38, 25, 18, 0.18), rgba(26, 17, 13, 0.34)),
+    url('/assets/open-when/diary/wood_table_001_diff_2k.jpg');
+
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.realDiaryRoot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(255, 239, 211, 0.22),
+      transparent 42%
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      transparent 35%,
+      rgba(18, 11, 8, 0.34) 110%
+    );
+}
+
+
+/* =========================================================
+   TOP
+   ========================================================= */
+
+.realDiaryHeader {
+  position: absolute;
+  z-index: 20;
+  top: 24px;
+  left: 28px;
+  right: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  color: rgba(255, 248, 235, 0.9);
+  pointer-events: none;
+}
+
+.realDiaryHeader span {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.22em;
+}
+
+.realDiaryHeader small {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  opacity: 0.72;
+}
+
+
+/* =========================================================
+   DESK OBJECTS
+   ========================================================= */
+
+.realDeskDecor {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.realFabric {
+  position: absolute;
+  width: 440px;
+  height: 270px;
+  left: -100px;
+  bottom: -110px;
+
+  border-radius: 44% 56% 36% 64%;
+  transform: rotate(13deg);
+
+  background:
+    repeating-linear-gradient(
+      7deg,
+      rgba(255, 255, 255, 0.05) 0 2px,
+      transparent 2px 7px
+    ),
+    linear-gradient(145deg, #bca4a1, #8e7675);
+
+  box-shadow:
+    0 -10px 40px rgba(25, 14, 10, 0.2),
+    inset 0 8px 18px rgba(255, 255, 255, 0.12);
+
+  filter: saturate(0.72);
+}
+
+.realCoffee {
+  position: absolute;
+  right: 5vw;
+  top: 12vh;
+
+  width: 124px;
+  height: 124px;
+  border-radius: 50%;
+
+  display: grid;
+  place-items: center;
+
+  color: rgba(245, 230, 210, 0.34);
+  font-size: 26px;
+
+  background:
+    radial-gradient(
+      circle,
+      #3c2419 0 42%,
+      #5d3b2d 43% 47%,
+      #e6d7c5 48% 63%,
+      #c5b09b 64% 70%,
+      transparent 71%
+    );
+
+  filter: drop-shadow(0 14px 12px rgba(18, 10, 7, 0.38));
+  transform: rotate(-7deg);
+}
+
+.realCoffee::after {
+  content: '';
+  position: absolute;
+  right: -19px;
+  top: 42px;
+
+  width: 35px;
+  height: 43px;
+
+  border: 9px solid #cdb9a3;
+  border-left: 0;
+  border-radius: 0 22px 22px 0;
+}
+
+.realLoosePolaroid {
+  position: absolute;
+  right: 6vw;
+  bottom: 7vh;
+
+  width: 128px;
+  height: 154px;
+
+  display: grid;
+  place-items: center;
+
+  transform: rotate(12deg);
+
+  background: #f4eee4;
+  border: 1px solid rgba(83, 67, 54, 0.14);
+
+  box-shadow: 0 16px 24px rgba(22, 12, 8, 0.32);
+
+  color: #bb8d91;
+  font-size: 34px;
+}
+
+.realLoosePolaroid::before {
+  content: '';
+  position: absolute;
+  inset: 11px 11px 37px;
+
+  background:
+    linear-gradient(
+      150deg,
+      rgba(187, 160, 151, 0.4),
+      rgba(99, 89, 80, 0.55)
+    );
+}
+
+.realLoosePolaroid span {
+  position: relative;
+  z-index: 1;
+}
+
+.realPressedFlower {
+  position: absolute;
+  left: 6vw;
+  top: 16vh;
+
+  color: #c7b795;
+  font-size: 80px;
+
+  transform: rotate(-24deg);
+  opacity: 0.74;
+
+  filter: drop-shadow(3px 5px 3px rgba(25, 14, 9, 0.25));
+}
+
+.realDeskNote {
+  position: absolute;
+  left: 8vw;
+  bottom: 14vh;
+
+  padding: 17px 24px;
+
+  transform: rotate(-7deg);
+
+  background: #eee2c7;
+
+  box-shadow: 0 10px 22px rgba(26, 15, 9, 0.23);
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 15px;
+  line-height: 1.3;
+  color: #756153;
+}
+
+
+/* =========================================================
+   COVER SCENE
+   ========================================================= */
+
+.realCoverScene {
+  position: relative;
+  z-index: 4;
+
+  min-height: 100svh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 78px 20px 50px;
+  perspective: 1500px;
+}
+
+.flipCoverPreview {
+  display: flex;
+  justify-content: center;
+  perspective: 1500px;
+}
+
+.flipPhysicalCover {
+  position: relative;
+
+  width: min(360px, 77vw);
+  aspect-ratio: 0.72;
+
+  padding: 0;
+
+  overflow: hidden;
+
+  border: 0;
+  border-radius: 5px 14px 14px 5px;
+
+  cursor: pointer;
+  text-align: left;
+
+  color: #4c3e37;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(92, 72, 61, 0.035) 0 1px,
+      rgba(255, 255, 255, 0.03) 1px 4px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(93, 72, 61, 0.025) 0 1px,
+      transparent 1px 4px
+    ),
+    #cfc2aa;
+
+  box-shadow:
+    0 40px 60px rgba(17, 9, 6, 0.45),
+    10px 14px 0 rgba(65, 44, 32, 0.28),
+    13px 18px 22px rgba(20, 10, 6, 0.25),
+    inset -14px 0 24px rgba(74, 56, 45, 0.12),
+    inset 4px 0 8px rgba(255, 255, 255, 0.2);
+
+  transform:
+    rotateX(3deg)
+    rotateY(-7deg)
+    rotateZ(-2deg);
+
+  transition:
+    transform 500ms cubic-bezier(.2,.8,.2,1),
+    box-shadow 500ms ease;
+}
+
+.flipPhysicalCover:hover {
+  transform:
+    translateY(-8px)
+    rotateX(2deg)
+    rotateY(-2deg)
+    rotateZ(-1deg);
+
+  box-shadow:
+    0 54px 74px rgba(17, 9, 6, 0.48),
+    8px 12px 0 rgba(65, 44, 32, 0.24);
+}
+
+.flipCoverSpine {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  width: 32px;
+
+  border-right: 1px solid rgba(68, 50, 42, 0.16);
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(70, 50, 40, 0.18),
+      rgba(255, 255, 255, 0.08),
+      rgba(70, 50, 40, 0.08)
+    );
+}
+
+.flipCoverInner {
+  position: absolute;
+  inset: 11% 10% 10% 16%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+}
+
+.flipCoverInner > small {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 0.25em;
+
+  opacity: 0.57;
+}
+
+.flipCoverInner > strong {
+  margin-top: 17%;
+
+  font-size: clamp(40px, 9vw, 58px);
+  line-height: 0.82;
+  letter-spacing: -0.065em;
+  font-weight: 500;
+}
+
+.flipCoverHeart {
+  margin: 17px 0 10px;
+
+  font-family: Georgia, serif;
+  font-size: 33px;
+
+  color: #9f6770;
+}
+
+.flipCoverInner > em {
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 14px;
+  line-height: 1.45;
+  font-style: normal;
+
+  transform: rotate(-2deg);
+}
+
+.flipCoverInner > b {
+  margin-top: auto;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8px;
+  line-height: 1.5;
+  letter-spacing: 0.14em;
+}
+
+.flipCoverInner > i {
+  margin-top: 14px;
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 11px;
+  font-style: normal;
+
+  transform: rotate(-3deg);
+}
+
+.realCoverHint {
+  margin: 36px 0 0;
+
+  color: rgba(255, 244, 226, 0.72);
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 13px;
+
+  transform: rotate(-2deg);
+}
+
+
+/* =========================================================
+   BOOK SCENE
+   ========================================================= */
+
+.realBookScene {
+  position: relative;
+  z-index: 5;
+
+  min-height: 100svh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 70px 16px 24px;
+}
+
+.realBookTop {
+  width: min(930px, 94vw);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 14px;
+
+  color: rgba(255, 248, 235, 0.82);
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+}
+
+.realBookTop button {
+  border: 0;
+  padding: 9px 0;
+
+  background: transparent;
+  color: inherit;
+
+  font: inherit;
+  letter-spacing: inherit;
+
+  cursor: pointer;
+}
+
+.realBookStage {
+  position: relative;
+
+  width: min(100%, 1000px);
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 650px;
+
+  perspective: 2200px;
+}
+
+.realBookStage::before {
+  content: '';
+
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+
+  width: min(790px, 78vw);
+  height: 75px;
+
+  transform: translateX(-50%);
+
+  border-radius: 50%;
+
+  background: rgba(20, 11, 7, 0.34);
+
+  filter: blur(24px);
+}
+
+.realBook {
+  position: relative;
+  z-index: 2;
+
+  margin: auto;
+}
+
+
+/* =========================================================
+   PHYSICAL PAGES
+   ========================================================= */
+
+.realBookPage {
+  position: relative;
+
+  overflow: hidden;
+
+  color: var(--ink);
+
+  background:
+    radial-gradient(
+      circle at 30% 20%,
+      rgba(255, 255, 255, 0.38),
+      transparent 38%
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(98, 78, 58, 0.018) 0 1px,
+      transparent 1px 4px
+    ),
+    linear-gradient(110deg, #f8f0df, #efe3ce);
+
+  border: 1px solid rgba(102, 76, 56, 0.11);
+
+  box-shadow:
+    inset 0 0 35px rgba(110, 82, 54, 0.08),
+    inset -8px 0 15px rgba(75, 55, 42, 0.06);
+
+  user-select: none;
+}
+
+.realBookPage::after {
+  content: '';
+
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 15% 80%,
+      rgba(145, 111, 78, 0.035),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 88% 16%,
+      rgba(145, 111, 78, 0.04),
+      transparent 27%
+    );
+}
+
+.realBookCoverPage,
+.realBookLastPage {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(85, 65, 54, 0.035) 0 1px,
+      transparent 1px 4px
+    ),
+    #c9bba4;
+
+  border: 1px solid rgba(63, 45, 36, 0.18);
+}
+
+.realInsideCover {
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 13%;
+
+  text-align: center;
+
+  box-shadow:
+    inset 15px 0 28px rgba(65, 46, 37, 0.13),
+    inset -5px 0 14px rgba(255, 255, 255, 0.12);
+}
+
+.realInsideCover > span {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.25em;
+}
+
+.realInsideCover h2 {
+  margin: 35px 0 18px;
+
+  font-size: 57px;
+  line-height: 0.83;
+  letter-spacing: -0.07em;
+  font-weight: 500;
+}
+
+.realInsideCover p {
+  margin: 0;
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 16px;
+
+  transform: rotate(-2deg);
+}
+
+.realInsideCover small {
+  margin-top: auto;
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 11px;
+
+  opacity: 0.6;
+}
+
+
+/* =========================================================
+   INTRO PAGE
+   ========================================================= */
+
+.flipIntro {
+  position: relative;
+
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 13% 11% 9%;
+
+  text-align: center;
+}
+
+.flipIntroHeart {
+  color: var(--pink);
+  font-size: 42px;
+
+  transform: rotate(-8deg);
+}
+
+.flipIntro > p {
+  margin: 26px 0 9px;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.flipIntro > h2 {
+  margin: 0;
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 39px;
+  line-height: 1;
+
+  font-weight: 400;
+
+  transform: rotate(-2deg);
+}
+
+.flipIntroNote {
+  position: relative;
+
+  width: 88%;
+
+  margin-top: 55px;
+  padding: 34px 26px 29px;
+
+  background: #ead9d7;
+
+  box-shadow: 5px 8px 13px rgba(75, 55, 43, 0.12);
+
+  transform: rotate(2deg);
+}
+
+.flipIntroNote p {
+  margin: 0;
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.flipHandNote {
+  margin-top: auto;
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 12px;
+  line-height: 1.45;
+
+  transform: rotate(-4deg);
+}
+
+
+/* =========================================================
+   MEMORY / SCENARIO PAGE
+   ========================================================= */
+
+.flipMemoryPage {
+  position: relative;
+
+  height: 100%;
+
+  padding: 7% 7% 6%;
+}
+
+.flipPageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding-bottom: 8px;
+
+  border-bottom: 1px solid rgba(75, 57, 45, 0.16);
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+
+  opacity: 0.58;
+}
+
+.flipMemoryPage > h2 {
+  width: 90%;
+
+  margin: 22px 0 0;
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: clamp(25px, 6vw, 34px);
+  line-height: 0.98;
+
+  font-weight: 400;
+
+  transform: rotate(-1.5deg);
+}
+
+.flipMemoryCollage {
+  position: relative;
+
+  height: 48%;
+
+  margin-top: 20px;
+}
+
+
+/* =========================================================
+   POLAROID
+   ========================================================= */
+
+.flipPolaroid {
+  position: absolute;
+  z-index: 2;
+
+  width: 58%;
+
+  margin: 0;
+  padding: 9px 9px 28px;
+
+  background: #f7f2e9;
+
+  border: 1px solid rgba(79, 61, 47, 0.12);
+
+  box-shadow:
+    6px 10px 18px rgba(61, 43, 32, 0.18),
+    0 1px 2px rgba(61, 43, 32, 0.13);
+}
+
+.flipPolaroidLeft {
+  left: 1%;
+  top: 6%;
+
+  transform: rotate(-5deg);
+}
+
+.flipPolaroidRight {
+  right: 2%;
+  top: 5%;
+
+  transform: rotate(5deg);
+}
+
+.flipPolaroid img,
+.flipPhotoPlaceholder {
+  display: block;
+
+  width: 100%;
+  aspect-ratio: 1 / 0.86;
+
+  object-fit: cover;
+}
+
+.flipPhotoPlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      145deg,
+      #b8aaa0,
+      #7f7770
+    );
+
+  color: rgba(255, 244, 230, 0.75);
+}
+
+.flipPhotoPlaceholder span {
+  font-size: 32px;
+}
+
+.flipPhotoPlaceholder small {
+  margin-top: 5px;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 6px;
+  letter-spacing: 0.13em;
+}
+
+.flipPolaroid figcaption {
+  position: absolute;
+  left: 9px;
+  right: 9px;
+  bottom: 7px;
+
+  text-align: center;
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 9px;
+
+  color: #66564c;
+}
+
+.flipTape,
+.flipNoteTape,
+.flipSurpriseTape {
+  position: absolute;
+  z-index: 5;
+
+  width: 60px;
+  height: 19px;
+
+  background: rgba(205, 183, 148, 0.72);
+
+  box-shadow: inset 0 0 5px rgba(120, 95, 69, 0.12);
+
+  transform: rotate(-4deg);
+}
+
+.flipTape {
+  top: -9px;
+  left: 50%;
+
+  transform: translateX(-50%) rotate(-4deg);
+}
+
+
+/* =========================================================
+   PERSONAL NOTE
+   ========================================================= */
+
+.flipPersonalNote {
+  position: absolute;
+  z-index: 3;
+
+  width: 48%;
+
+  right: 0;
+  bottom: 0;
+
+  padding: 24px 17px 16px;
+
+  background: #dfc2c3;
+
+  box-shadow: 5px 8px 14px rgba(68, 48, 37, 0.14);
+
+  transform: rotate(4deg);
+}
+
+.flipPersonalNote p {
+  margin: 0;
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 11px;
+  line-height: 1.42;
+}
+
+.flipPersonalNote small {
+  display: block;
+
+  margin-top: 11px;
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 8px;
+
+  opacity: 0.7;
+}
+
+.flipNoteTape {
+  top: -8px;
+  right: 25%;
+
+  width: 48px;
+
+  transform: rotate(7deg);
+}
+
+.flipDoodle {
+  position: absolute;
+  z-index: 4;
+
+  left: 58%;
+  top: 4%;
+
+  color: #a66c74;
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 22px;
+
+  transform: rotate(10deg);
+}
+
+
+/* =========================================================
+   ENVELOPE
+   ========================================================= */
+
+.flipEnvelopeWrap {
+  position: absolute;
+  z-index: 10;
+
+  left: 7%;
+  right: 7%;
+  bottom: 5%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.flipEnvelope {
+  position: relative;
+
+  width: min(255px, 78%);
+  aspect-ratio: 1.55;
+
+  border: 0;
+  padding: 0;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  filter: drop-shadow(6px 10px 9px rgba(55, 35, 27, 0.22));
+
+  transition: transform 300ms ease;
+}
+
+.flipEnvelope:hover {
+  transform: translateY(-3px) rotate(-1deg);
+}
+
+.flipEnvelopeBack {
+  position: absolute;
+  inset: 0;
+
+  border-radius: 3px;
+
+  background: #c98f98;
+}
+
+.flipEnvelopeFront {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+
+  overflow: hidden;
+
+  border-radius: 3px;
+}
+
+.flipEnvelopeFront::before,
+.flipEnvelopeFront::after {
+  content: '';
+
+  position: absolute;
+
+  width: 75%;
+  height: 100%;
+
+  bottom: -47%;
+
+  background: #d39ba4;
+}
+
+.flipEnvelopeFront::before {
+  left: -15%;
+
+  transform: rotate(31deg);
+}
+
+.flipEnvelopeFront::after {
+  right: -15%;
+
+  transform: rotate(-31deg);
+}
+
+.flipEnvelopeFlap {
+  position: absolute;
+  z-index: 4;
+
+  left: 0;
+  right: 0;
+  top: 0;
+
+  height: 58%;
+
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+
+  background: #b97985;
+
+  transform-origin: top center;
+
+  transition:
+    transform 650ms cubic-bezier(.3,.8,.2,1),
+    z-index 0ms 320ms;
+}
+
+.flipWax {
+  position: absolute;
+  z-index: 7;
+
+  left: 50%;
+  top: 48%;
+
+  width: 35px;
+  height: 35px;
+
+  display: grid;
+  place-items: center;
+
+  transform: translate(-50%, -50%);
+
+  border-radius: 50%;
+
+  background: #8d5360;
+  color: #ead8d2;
+
+  font-family: Georgia, serif;
+  font-size: 17px;
+
+  box-shadow:
+    inset 2px 2px 5px rgba(255, 255, 255, 0.15),
+    1px 3px 4px rgba(65, 39, 33, 0.25);
+
+  transition:
+    opacity 250ms ease,
+    transform 350ms ease;
+}
+
+.flipEnvelopeText {
+  position: absolute;
+  z-index: 6;
+
+  left: 8%;
+  right: 8%;
+  bottom: 12%;
+
+  color: #69434b;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 6px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-align: center;
+
+  pointer-events: none;
+}
+
+.flipEnvelopeText strong {
+  display: block;
+
+  margin-top: 3px;
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.flipEnvelopeLetter {
+  position: absolute;
+  z-index: 2;
+
+  left: 8%;
+  right: 8%;
+  top: 10%;
+
+  height: 78%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding-top: 12px;
+
+  background: #f7efdf;
+
+  border: 1px solid rgba(76, 56, 44, 0.1);
+
+  transition: transform 650ms cubic-bezier(.2,.8,.2,1);
+}
+
+.flipEnvelopeLetter small {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 6px;
+  letter-spacing: 0.12em;
+}
+
+.flipEnvelopeLetter strong {
+  margin-top: 5px;
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.flipEnvelopeOpen .flipEnvelopeFlap {
+  z-index: 1;
+
+  transform: rotateX(180deg);
+}
+
+.flipEnvelopeOpen .flipWax {
+  opacity: 0;
+
+  transform: translate(-50%, -50%) scale(0.6);
+}
+
+.flipEnvelopeOpen .flipEnvelopeLetter {
+  transform: translateY(-48%);
+}
+
+.flipTap {
+  margin: 7px 0 0;
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 8px;
+
+  opacity: 0.55;
+}
+
+
+/* =========================================================
+   SURPRISE REVEAL
+   ========================================================= */
+
+.flipSurpriseReveal {
+  position: absolute;
+  z-index: 20;
+
+  left: 50%;
+  bottom: 8px;
+
+  width: min(310px, 88%);
+
+  transform: translateX(-50%);
+
+  animation: flipReveal 450ms cubic-bezier(.2,.8,.2,1) both;
+}
+
+@keyframes flipReveal {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+.flipSurpriseCard {
+  position: relative;
+
+  max-height: 370px;
+  overflow-y: auto;
+
+  padding: 28px 23px 22px;
+
+  background: #f6eddb;
+
+  border: 1px solid rgba(77, 57, 43, 0.12);
+
+  box-shadow:
+    0 15px 28px rgba(48, 31, 23, 0.28),
+    inset 0 0 24px rgba(111, 81, 56, 0.05);
+
+  transform: rotate(-1deg);
+}
+
+.flipSurpriseTape {
+  top: -7px;
+  left: 50%;
+
+  transform: translateX(-50%) rotate(3deg);
+}
+
+.flipEyebrow {
+  margin: 0;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 6px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+
+  opacity: 0.55;
+}
+
+.flipSurpriseCard h3 {
+  margin: 8px 0 12px;
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 20px;
+  line-height: 1.05;
+
+  font-weight: 400;
+}
+
+.flipSurpriseMessage {
+  margin: 0;
+
+  font-family: Georgia, serif;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.flipDetails {
+  margin: 13px 0 0;
+
+  display: grid;
+  gap: 7px;
+}
+
+.flipDetails div {
+  display: grid;
+  grid-template-columns: 38% 1fr;
+  gap: 8px;
+
+  padding-top: 6px;
+
+  border-top: 1px solid rgba(76, 56, 43, 0.12);
+}
+
+.flipDetails dt {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 6px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  opacity: 0.5;
+}
+
+.flipDetails dd {
+  margin: 0;
+
+  font-size: 9px;
+}
+
+.flipMedia {
+  display: grid;
+  gap: 7px;
+
+  margin-top: 13px;
+}
+
+.flipMedia span {
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 9px;
+}
+
+.flipMedia audio {
+  width: 100%;
+  height: 32px;
+}
+
+.flipAttachment {
+  width: 100%;
+  max-height: 140px;
+
+  object-fit: cover;
+}
+
+.flipLink {
+  display: inline-block;
+
+  margin-top: 11px;
+
+  color: #875864;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-decoration: underline;
+}
+
+.flipSignature {
+  margin: 16px 0 0;
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 9px;
+  line-height: 1.35;
+
+  transform: rotate(-2deg);
+}
+
+
+/* =========================================================
+   LAYOUT VARIATIONS
+   ========================================================= */
+
+.flipLayoutTwo .flipMemoryPage > h2 {
+  margin-left: 8%;
+}
+
+.flipLayoutTwo .flipPolaroid {
+  width: 54%;
+}
+
+.flipLayoutTwo .flipPersonalNote {
+  right: auto;
+  left: 2%;
+
+  width: 47%;
+
+  transform: rotate(-4deg);
+}
+
+.flipLayoutTwo .flipPolaroidRight {
+  right: 0;
+}
+
+.flipLayoutThree .flipPolaroid {
+  width: 62%;
+
+  left: 50%;
+  right: auto;
+
+  transform: translateX(-50%) rotate(2deg);
+}
+
+.flipLayoutThree .flipPersonalNote {
+  right: 0;
+  bottom: -3%;
+
+  width: 44%;
+}
+
+.flipLayoutFour .flipPolaroid {
+  width: 52%;
+}
+
+.flipLayoutFour .flipPersonalNote {
+  width: 52%;
+
+  transform: rotate(-2deg);
+}
+
+
+/* =========================================================
+   FINAL PAGE
+   ========================================================= */
+
+.flipFinalPage {
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 13%;
+
+  text-align: center;
+}
+
+.flipFinalPage > span {
+  color: #9c6870;
+  font-size: 43px;
+}
+
+.flipFinalPage h2 {
+  margin: 25px 0 18px;
+
+  font-size: 39px;
+  line-height: 0.88;
+  letter-spacing: -0.05em;
+
+  font-weight: 500;
+}
+
+.flipFinalPage p {
+  max-width: 240px;
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.flipFinalPage em {
+  margin-top: 34px;
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 12px;
+  font-style: normal;
+
+  transform: rotate(-3deg);
+}
+
+
+/* =========================================================
+   BOOK CONTROLS
+   ========================================================= */
+
+.realBookControls {
+  position: relative;
+  z-index: 10;
+
+  width: min(430px, 86vw);
+
+  display: grid;
+  grid-template-columns: 42px 1fr 42px;
+  align-items: center;
+  gap: 15px;
+
+  margin-top: 8px;
+}
+
+.realBookControls button {
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid rgba(255, 244, 227, 0.3);
+  border-radius: 50%;
+
+  background: rgba(51, 35, 27, 0.32);
+  color: #fff5e7;
+
+  backdrop-filter: blur(10px);
+
+  cursor: pointer;
+
+  font-size: 18px;
+
+  transition:
+    transform 180ms ease,
+    opacity 180ms ease,
+    background 180ms ease;
+}
+
+.realBookControls button:hover:not(:disabled) {
+  transform: scale(1.06);
+
+  background: rgba(51, 35, 27, 0.5);
+}
+
+.realBookControls button:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.realBookProgress {
+  height: 2px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: rgba(255, 245, 229, 0.18);
+}
+
+.realBookProgress span {
+  display: block;
+
+  height: 100%;
+
+  background: rgba(255, 245, 229, 0.76);
+
+  border-radius: inherit;
+
+  transition: width 400ms ease;
+}
+
+.realBookHint {
+  margin: 10px 0 0;
+
+  color: rgba(255, 245, 229, 0.6);
+
+  font-family: 'Comic Sans MS', 'Bradley Hand', cursive;
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.realDiaryEmpty {
+  position: relative;
+  z-index: 5;
+
+  min-height: 100svh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px;
+
+  text-align: center;
+
+  color: #fff3e2;
+}
+
+.realDiaryEmpty > span {
+  font-size: 40px;
+}
+
+.realDiaryEmpty h1 {
+  max-width: 420px;
+
+  margin: 20px 0 10px;
+
+  font-size: 42px;
+  line-height: 0.95;
+}
+
+.realDiaryEmpty p {
+  opacity: 0.7;
+}
+
+
+/* =========================================================
+   MOBILE — MOST IMPORTANT VERSION
+   ========================================================= */
+
+@media (max-width: 700px) {
+  .realDiaryRoot {
+    background-attachment: scroll;
+  }
+
+  .realDiaryHeader {
+    top: 17px;
+    left: 17px;
+    right: 17px;
+  }
+
+  .realDiaryHeader span {
+    font-size: 10px;
+  }
+
+  .realDiaryHeader small {
+    font-size: 7px;
+  }
+
+  .realCoffee {
+    width: 82px;
+    height: 82px;
+
+    right: -17px;
+    top: 12%;
+
+    opacity: 0.82;
+  }
+
+  .realCoffee::after {
+    right: -13px;
+    top: 28px;
+
+    width: 25px;
+    height: 29px;
+
+    border-width: 6px;
+  }
+
+  .realPressedFlower {
+    left: -7px;
+    top: 17%;
+
+    font-size: 53px;
+  }
+
+  .realLoosePolaroid {
+    width: 82px;
+    height: 102px;
+
+    right: -16px;
+    bottom: 8%;
+  }
+
+  .realFabric {
+    width: 260px;
+    height: 180px;
+
+    left: -105px;
+    bottom: -75px;
+  }
+
+  .realDeskNote {
+    left: -18px;
+    bottom: 12%;
+
+    padding: 11px 17px;
+
+    font-size: 10px;
+
+    opacity: 0.82;
+  }
+
+  .realCoverScene {
+    padding-top: 65px;
+  }
+
+  .flipPhysicalCover {
+    width: min(315px, 76vw);
+  }
+
+  .flipCoverInner > strong {
+    font-size: 48px;
+  }
+
+  .realBookScene {
+    padding:
+      max(57px, env(safe-area-inset-top))
+      6px
+      max(15px, env(safe-area-inset-bottom));
+  }
+
+  .realBookTop {
+    width: 92vw;
+
+    margin-bottom: 8px;
+
+    font-size: 7px;
+  }
+
+  .realBookStage {
+    width: 100%;
+    min-height: 555px;
+  }
+
+  .realBookStage::before {
+    width: 82vw;
+    height: 45px;
+
+    bottom: 3%;
+
+    filter: blur(17px);
+  }
+
+  .realBook {
+    max-width: 96vw;
+  }
+
+  .flipMemoryPage {
+    padding: 7% 7% 5%;
+  }
+
+  .flipMemoryPage > h2 {
+    margin-top: 17px;
+
+    font-size: 27px;
+  }
+
+  .flipMemoryCollage {
+    height: 46%;
+
+    margin-top: 15px;
+  }
+
+  .flipPolaroid {
+    padding: 7px 7px 24px;
+  }
+
+  .flipPersonalNote {
+    padding: 20px 13px 13px;
+  }
+
+  .flipPersonalNote p {
+    font-size: 9px;
+  }
+
+  .flipEnvelope {
+    width: min(220px, 74%);
+  }
+
+  .flipSurpriseCard {
+    max-height: 315px;
+
+    padding: 24px 18px 18px;
+  }
+
+  .realBookControls {
+    width: min(330px, 84vw);
+
+    grid-template-columns: 38px 1fr 38px;
+
+    gap: 11px;
+
+    margin-top: 2px;
+  }
+
+  .realBookControls button {
+    width: 38px;
+    height: 38px;
+  }
+
+  .realBookHint {
+    font-size: 8px;
+  }
+}
+
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+  .realBookStage {
+    min-height: 515px;
+  }
+
+  .flipMemoryPage > h2 {
+    font-size: 24px;
+  }
+
+  .flipPersonalNote p {
+    font-size: 8px;
+  }
+
+  .flipEnvelope {
+    width: 205px;
+  }
+}

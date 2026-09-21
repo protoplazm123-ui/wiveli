@@ -11,6 +11,9 @@ importers:
       next:
         specifier: ^15.5.0
         version: 15.5.25(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      page-flip:
+        specifier: ^2.0.7
+        version: 2.0.7
       react:
         specifier: ^19.1.0
         version: 19.3.0
@@ -279,6 +282,9 @@ packages:
       sass:
         optional: true
 
+  page-flip@2.0.7:
+    resolution: {integrity: sha512-96lQFUUz7r/LZzEUZJ3yBIMEKU9+m8HMFDzTvTdD6P7Ag/wXINjp9n0W7b4wanwnDbQETo4uNUoL3zMqpFxwGA==}
+
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
@@ -508,6 +514,8 @@ snapshots:
       - '@babel/core'
       - '@types/node'
       - babel-plugin-macros
+
+  page-flip@2.0.7: {}
 
   picocolors@1.1.1: {}
 
