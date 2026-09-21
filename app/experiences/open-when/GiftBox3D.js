@@ -27,7 +27,7 @@ const MODEL_URL =
 
 
 /* --------------------------------
-   ONE FLYING ENVELOPE (confetti physics)
+   ONE FLYING ENVELOPE
 -------------------------------- */
 
 function FlyingEnvelope({
@@ -36,91 +36,202 @@ function FlyingEnvelope({
 }) {
   const ref = useRef();
 
-  // simulation state, kept across frames
   const started = useRef(false);
   const startTime = useRef(null);
-  const velocity = useRef(new THREE.Vector3());
+
+  const velocity = useRef(
+    new THREE.Vector3()
+  );
 
   const GRAVITY = -3.4;
-  const FLOOR_Y = -2.2; // once it falls this low we hide it
+  const FLOOR_Y = -2.2;
+
 
   const data = useMemo(() => {
-    // spread envelopes all around the box, like a confetti burst
     const angle =
-      (index / Math.max(total, 1)) * Math.PI * 2 +
-      (Math.random() - 0.5) * 0.9;
+      (index / Math.max(total, 1)) *
+        Math.PI *
+        2 +
+      (Math.random() - 0.5) *
+        0.9;
 
-    const outSpeed = 1.4 + Math.random() * 2.2;
-    const upSpeed = 2.4 + Math.random() * 2.4;
+    const outSpeed =
+      1.4 +
+      Math.random() *
+        2.2;
+
+    const upSpeed =
+      2.4 +
+      Math.random() *
+        2.4;
 
     return {
-      delay: index * 0.03 + Math.random() * 0.18,
+      delay:
+        index * 0.03 +
+        Math.random() *
+          0.18,
 
-      // initial burst velocity (units/sec)
-      vx: Math.cos(angle) * outSpeed,
-      vy: upSpeed,
-      vz: Math.sin(angle) * outSpeed * 0.6,
+      vx:
+        Math.cos(angle) *
+        outSpeed,
 
-      // continuous tumble speed (rad/sec), never stops
-      spinX: (Math.random() - 0.5) * 7,
-      spinY: (Math.random() - 0.5) * 9,
-      spinZ: (Math.random() - 0.5) * 7,
+      vy:
+        upSpeed,
 
-      // air resistance, applied every frame
-      drag: 0.986 + Math.random() * 0.01,
+      vz:
+        Math.sin(angle) *
+        outSpeed *
+        0.6,
 
-      scale: 0.16 + Math.random() * 0.08,
+      spinX:
+        (Math.random() - 0.5) *
+        7,
+
+      spinY:
+        (Math.random() - 0.5) *
+        9,
+
+      spinZ:
+        (Math.random() - 0.5) *
+        7,
+
+      drag:
+        0.986 +
+        Math.random() *
+          0.01,
+
+      scale:
+        0.16 +
+        Math.random() *
+          0.08,
     };
-  }, [index, total]);
+  }, [
+    index,
+    total,
+  ]);
 
 
-  useFrame((state, delta) => {
+  useFrame((
+    state,
+    delta
+  ) => {
     if (!ref.current) return;
 
-    if (startTime.current === null) {
-      startTime.current = state.clock.elapsedTime;
+
+    if (
+      startTime.current ===
+      null
+    ) {
+      startTime.current =
+        state.clock.elapsedTime;
     }
+
 
     const elapsed =
-      state.clock.elapsedTime - startTime.current - data.delay;
+      state.clock.elapsedTime -
+      startTime.current -
+      data.delay;
+
 
     if (elapsed < 0) {
-      ref.current.visible = false;
+      ref.current.visible =
+        false;
+
       return;
     }
 
-    // first frame this envelope becomes active: launch it
+
     if (!started.current) {
       started.current = true;
-      velocity.current.set(data.vx, data.vy, data.vz);
-      ref.current.position.set(0, 0.18, 0);
-      ref.current.scale.setScalar(0);
+
+      velocity.current.set(
+        data.vx,
+        data.vy,
+        data.vz
+      );
+
+      ref.current.position.set(
+        0,
+        0.18,
+        0
+      );
+
+      ref.current.scale.setScalar(
+        0
+      );
     }
 
-    // once it has fallen far enough below the box, keep it hidden
-    if (ref.current.position.y < FLOOR_Y) {
-      ref.current.visible = false;
+
+    if (
+      ref.current.position.y <
+      FLOOR_Y
+    ) {
+      ref.current.visible =
+        false;
+
       return;
     }
+
 
     ref.current.visible = true;
 
-    // --- physics step (gravity + drag), same idea as confetti ---
-    velocity.current.y += GRAVITY * delta;
-    velocity.current.multiplyScalar(data.drag);
 
-    ref.current.position.x += velocity.current.x * delta;
-    ref.current.position.y += velocity.current.y * delta;
-    ref.current.position.z += velocity.current.z * delta;
+    /* GRAVITY */
 
-    // tumbling never stops, just like a falling confetti piece
-    ref.current.rotation.x += data.spinX * delta;
-    ref.current.rotation.y += data.spinY * delta;
-    ref.current.rotation.z += data.spinZ * delta;
+    velocity.current.y +=
+      GRAVITY *
+      delta;
 
-    // quick "pop" as it leaves the box
-    const pop = Math.min(elapsed * 7, 1);
-    ref.current.scale.setScalar(data.scale * pop);
+
+    /* AIR RESISTANCE */
+
+    velocity.current.multiplyScalar(
+      data.drag
+    );
+
+
+    /* MOVEMENT */
+
+    ref.current.position.x +=
+      velocity.current.x *
+      delta;
+
+    ref.current.position.y +=
+      velocity.current.y *
+      delta;
+
+    ref.current.position.z +=
+      velocity.current.z *
+      delta;
+
+
+    /* ROTATION */
+
+    ref.current.rotation.x +=
+      data.spinX *
+      delta;
+
+    ref.current.rotation.y +=
+      data.spinY *
+      delta;
+
+    ref.current.rotation.z +=
+      data.spinZ *
+      delta;
+
+
+    /* POP OUT OF BOX */
+
+    const pop =
+      Math.min(
+        elapsed * 7,
+        1
+      );
+
+    ref.current.scale.setScalar(
+      data.scale *
+      pop
+    );
   });
 
 
@@ -129,7 +240,8 @@ function FlyingEnvelope({
       ref={ref}
       visible={false}
     >
-      {/* BODY */}
+
+      {/* ENVELOPE BODY */}
 
       <mesh castShadow>
         <boxGeometry
@@ -147,7 +259,7 @@ function FlyingEnvelope({
       </mesh>
 
 
-      {/* FLAP */}
+      {/* ENVELOPE FLAP */}
 
       <mesh
         position={[
@@ -175,7 +287,9 @@ function FlyingEnvelope({
 
         <meshStandardMaterial
           color="#ead7ca"
-          side={THREE.DoubleSide}
+          side={
+            THREE.DoubleSide
+          }
           roughness={0.75}
         />
       </mesh>
@@ -203,6 +317,7 @@ function FlyingEnvelope({
           roughness={0.45}
         />
       </mesh>
+
     </group>
   );
 }
@@ -217,9 +332,13 @@ function EnvelopeBurst({
 }) {
   const safeCount =
     Math.min(
-      Math.max(count, 1),
+      Math.max(
+        count,
+        1
+      ),
       30
     );
+
 
   return (
     <group
@@ -231,7 +350,10 @@ function EnvelopeBurst({
     >
       {Array.from({
         length: safeCount,
-      }).map((_, index) => (
+      }).map((
+        _,
+        index
+      ) => (
         <FlyingEnvelope
           key={index}
           index={index}
@@ -244,7 +366,7 @@ function EnvelopeBurst({
 
 
 /* --------------------------------
-   EXISTING GIFT BOX
+   GIFT BOX
 -------------------------------- */
 
 function GiftBoxModel({
@@ -255,7 +377,9 @@ function GiftBoxModel({
   const {
     scene,
     animations,
-  } = useGLTF(MODEL_URL);
+  } = useGLTF(
+    MODEL_URL
+  );
 
   const {
     actions,
@@ -274,10 +398,15 @@ function GiftBoxModel({
       return;
     }
 
+
     const action =
       actions[names[0]];
 
-    if (!action) return;
+
+    if (!action) {
+      return;
+    }
+
 
     action.reset();
 
@@ -290,6 +419,7 @@ function GiftBoxModel({
       true;
 
     action.play();
+
   }, [
     open,
     actions,
@@ -305,6 +435,7 @@ function GiftBoxModel({
       return;
     }
 
+
     const targetY =
       state.pointer.x *
       0.12;
@@ -313,12 +444,14 @@ function GiftBoxModel({
       -state.pointer.y *
       0.05;
 
+
     group.current.rotation.y +=
       (
         targetY -
         group.current.rotation.y
       ) *
       0.04;
+
 
     group.current.rotation.x +=
       (
@@ -350,6 +483,7 @@ export default function GiftBox3D({
   onClick,
   envelopeCount = 6,
 }) {
+
   return (
     <div
       onClick={
@@ -360,12 +494,14 @@ export default function GiftBox3D({
       style={{
         width: '100%',
         height: '430px',
+
         cursor:
           open
             ? 'default'
             : 'pointer',
       }}
     >
+
       <Canvas
         camera={{
           position: [
@@ -373,14 +509,20 @@ export default function GiftBox3D({
             1,
             5,
           ],
+
           fov: 35,
         }}
-        dpr={[1, 2]}
+        dpr={[
+          1,
+          2,
+        ]}
         shadows
       >
+
         <ambientLight
           intensity={1.5}
         />
+
 
         <directionalLight
           position={[
@@ -396,32 +538,51 @@ export default function GiftBox3D({
         <Suspense
           fallback={null}
         >
+
+          {/*
+
+            IMPORTANT:
+
+            Gift box + envelopes are now
+            inside the SAME Bounds.
+
+          */}
+
           <Bounds
             fit
             clip
             observe
             margin={1.35}
           >
-            <GiftBoxModel
-              open={open}
-            />
+
+            <group>
+
+              <GiftBoxModel
+                open={open}
+              />
+
+
+              {open && (
+                <EnvelopeBurst
+                  count={
+                    envelopeCount
+                  }
+                />
+              )}
+
+            </group>
+
           </Bounds>
-
-
-          {open && (
-            <EnvelopeBurst
-              count={
-                envelopeCount
-              }
-            />
-          )}
 
 
           <Environment
             preset="studio"
           />
+
         </Suspense>
+
       </Canvas>
+
     </div>
   );
 }
