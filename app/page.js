@@ -50,8 +50,8 @@ const experiences = [
   },
   {
     title: "Open When...",
-    tag: "LETTERS FOR EVERY MOMENT",
-    text: "Personal messages they can open exactly when they need them.",
+    tag: "A LITTLE BOOK OF CARE",
+    text: "A handmade journal of notes, memories, and surprises for their everyday moments.",
     symbol: "✉",
     href: "/experiences/open-when",
   },
