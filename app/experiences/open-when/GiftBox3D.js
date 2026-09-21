@@ -27,7 +27,7 @@ const MODEL_URL =
 
 
 /* --------------------------------
-   ONE FLYING ENVELOPE
+   ONE FLYING ENVELOPE (confetti physics)
 -------------------------------- */
 
 function FlyingEnvelope({
@@ -35,142 +35,92 @@ function FlyingEnvelope({
   total,
 }) {
   const ref = useRef();
+
+  // simulation state, kept across frames
+  const started = useRef(false);
   const startTime = useRef(null);
+  const velocity = useRef(new THREE.Vector3());
+
+  const GRAVITY = -3.4;
+  const FLOOR_Y = -2.2; // once it falls this low we hide it
 
   const data = useMemo(() => {
+    // spread envelopes all around the box, like a confetti burst
     const angle =
-      (index / Math.max(total, 1)) *
-        Math.PI *
-        2 +
-      (Math.random() - 0.5) * 0.55;
+      (index / Math.max(total, 1)) * Math.PI * 2 +
+      (Math.random() - 0.5) * 0.9;
 
-    const distance =
-      1.15 + Math.random() * 1.25;
+    const outSpeed = 1.4 + Math.random() * 2.2;
+    const upSpeed = 2.4 + Math.random() * 2.4;
 
     return {
-      delay:
-        index * 0.045 +
-        Math.random() * 0.12,
+      delay: index * 0.03 + Math.random() * 0.18,
 
-      x:
-        Math.cos(angle) *
-        distance,
+      // initial burst velocity (units/sec)
+      vx: Math.cos(angle) * outSpeed,
+      vy: upSpeed,
+      vz: Math.sin(angle) * outSpeed * 0.6,
 
-      y:
-        1.6 +
-        Math.random() * 1.25,
+      // continuous tumble speed (rad/sec), never stops
+      spinX: (Math.random() - 0.5) * 7,
+      spinY: (Math.random() - 0.5) * 9,
+      spinZ: (Math.random() - 0.5) * 7,
 
-      z:
-        0.25 +
-        Math.sin(angle) *
-          0.65,
+      // air resistance, applied every frame
+      drag: 0.986 + Math.random() * 0.01,
 
-      spinX:
-        (Math.random() - 0.5) *
-        2.5,
-
-      spinY:
-        (Math.random() - 0.5) *
-        3.5,
-
-      spinZ:
-        (Math.random() - 0.5) *
-        2.2,
-
-      scale:
-        0.18 +
-        Math.random() * 0.07,
+      scale: 0.16 + Math.random() * 0.08,
     };
   }, [index, total]);
 
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if (!ref.current) return;
 
     if (startTime.current === null) {
-      startTime.current =
-        state.clock.elapsedTime;
+      startTime.current = state.clock.elapsedTime;
     }
 
     const elapsed =
-      state.clock.elapsedTime -
-      startTime.current -
-      data.delay;
+      state.clock.elapsedTime - startTime.current - data.delay;
 
     if (elapsed < 0) {
       ref.current.visible = false;
       return;
     }
 
+    // first frame this envelope becomes active: launch it
+    if (!started.current) {
+      started.current = true;
+      velocity.current.set(data.vx, data.vy, data.vz);
+      ref.current.position.set(0, 0.18, 0);
+      ref.current.scale.setScalar(0);
+    }
+
+    // once it has fallen far enough below the box, keep it hidden
+    if (ref.current.position.y < FLOOR_Y) {
+      ref.current.visible = false;
+      return;
+    }
+
     ref.current.visible = true;
 
-    const duration = 1.35;
+    // --- physics step (gravity + drag), same idea as confetti ---
+    velocity.current.y += GRAVITY * delta;
+    velocity.current.multiplyScalar(data.drag);
 
-    const progress =
-      Math.min(
-        elapsed / duration,
-        1
-      );
+    ref.current.position.x += velocity.current.x * delta;
+    ref.current.position.y += velocity.current.y * delta;
+    ref.current.position.z += velocity.current.z * delta;
 
-    /*
-      Fast launch,
-      then softer landing.
-    */
+    // tumbling never stops, just like a falling confetti piece
+    ref.current.rotation.x += data.spinX * delta;
+    ref.current.rotation.y += data.spinY * delta;
+    ref.current.rotation.z += data.spinZ * delta;
 
-    const ease =
-      1 -
-      Math.pow(
-        1 - progress,
-        3
-      );
-
-    /*
-      Starts INSIDE the box.
-    */
-
-    ref.current.position.x =
-      data.x * ease;
-
-    ref.current.position.y =
-      0.18 +
-      data.y * ease -
-      0.45 *
-        progress *
-        progress;
-
-    ref.current.position.z =
-      data.z * ease;
-
-    /*
-      Rotation while flying.
-    */
-
-    ref.current.rotation.x =
-      data.spinX *
-      progress;
-
-    ref.current.rotation.y =
-      data.spinY *
-      progress;
-
-    ref.current.rotation.z =
-      data.spinZ *
-      progress;
-
-    /*
-      Small "pop" as envelope
-      leaves the box.
-    */
-
-    const pop =
-      Math.min(
-        progress * 6,
-        1
-      );
-
-    ref.current.scale.setScalar(
-      data.scale * pop
-    );
+    // quick "pop" as it leaves the box
+    const pop = Math.min(elapsed * 7, 1);
+    ref.current.scale.setScalar(data.scale * pop);
   });
 
 
