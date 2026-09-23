@@ -156,20 +156,41 @@ export default function LoveCouponsPersonalize() {
     );
   }
 
-  function createGift() {
-    const gift =
-      createLoveCouponsGift({
-        senderName,
-        recipientName,
-        selectedCouponIds:
-          selected,
-        customCoupons,
-        contactType,
-        contact,
-        dailyLimit,
-      });
+ async function createGift() {
+  const gift = createLoveCouponsGift({
+    senderName,
+    recipientName,
+    selectedCouponIds: selected,
+    customCoupons,
+    contactType,
+    contact,
+    dailyLimit,
+  });
 
-    saveLoveCouponsGift(gift);
+  try {
+    const response = await fetch("/api/gifts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        giftType: "love-coupons",
+        giftData: gift,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.id) {
+      throw new Error("Could not save gift");
+    }
+
+    const savedGift = {
+      ...gift,
+      serverId: data.id,
+    };
+
+    saveLoveCouponsGift(savedGift);
 
     setShowReview(false);
     setShowDelivery(true);
@@ -178,7 +199,14 @@ export default function LoveCouponsPersonalize() {
       top: 0,
       behavior: "instant",
     });
+  } catch (error) {
+    console.error(error);
+
+    alert(
+      "We couldn't create your gift right now. Please try again ♡"
+    );
   }
+}
 
   function sendForMe() {
     alert(
