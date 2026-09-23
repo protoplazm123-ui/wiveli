@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import SendForMe from "./SendForMe";
+import SendMyself from "./SendMyself";
 
 export default function GiftDelivery({
   recipientName = "them",
@@ -10,7 +11,7 @@ export default function GiftDelivery({
 }) {
   const [choice, setChoice] = useState(null);
   const [showSendForMe, setShowSendForMe] = useState(false);
-
+ 
 if (showSendForMe) {
   return (
     <SendForMe
@@ -24,7 +25,19 @@ if (showSendForMe) {
     />
   );
 }
+const [showSendMyself, setShowSendMyself] = useState(false);
 
+if (showSendMyself) {
+  return (
+    <SendMyself
+      recipientName={recipientName}
+      onBack={() => setShowSendMyself(false)}
+      onPreview={() => {
+        window.location.href = "/gift/love-coupons";
+      }}
+    />
+  );
+}
   return (
     <main className="delivery">
       <header>
@@ -169,9 +182,9 @@ if (showSendForMe) {
   setShowSendForMe(true);
 }
 
-            if (choice === "myself" && onSendMyself) {
-              onSendMyself();
-            }
+           if (choice === "myself") {
+  setShowSendMyself(true);
+}
           }}
         >
           CONTINUE
