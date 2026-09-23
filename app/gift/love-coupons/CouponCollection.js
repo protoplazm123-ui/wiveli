@@ -7,7 +7,8 @@ export default function CouponCollection({
   gift,
   onRedeem,
 }) {
-  const [selectedCoupon, setSelectedCoupon] = useState(null);
+  const [selectedCoupon, setSelectedCoupon] =
+    useState(null);
 
   const redemptions = gift?.redemptions || [];
 
@@ -19,8 +20,12 @@ export default function CouponCollection({
     const now = new Date();
 
     const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
+    const month = String(
+      now.getMonth() + 1
+    ).padStart(2, "0");
+    const day = String(
+      now.getDate()
+    ).padStart(2, "0");
 
     return `${year}-${month}-${day}`;
   }
@@ -31,7 +36,8 @@ export default function CouponCollection({
     (item) => item.dayKey === todayKey
   ).length;
 
-  const unlimited = gift?.dailyLimit === "unlimited";
+  const unlimited =
+    gift?.dailyLimit === "unlimited";
 
   const dailyLimit = unlimited
     ? null
@@ -39,12 +45,17 @@ export default function CouponCollection({
 
   const leftToday = unlimited
     ? null
-    : Math.max(0, dailyLimit - usedToday);
+    : Math.max(
+        0,
+        dailyLimit - usedToday
+      );
 
   return (
     <main className="collection">
       <header>
-        <span className="logo">WI♡ELI</span>
+        <span className="logo">
+          WI♡ELI
+        </span>
 
         <div className="headerRight">
           <span>LOVE COUPONS</span>
@@ -55,7 +66,8 @@ export default function CouponCollection({
       <section className="hero">
         <p className="eyebrow">
           MADE FOR{" "}
-          {gift?.recipientName?.toUpperCase() || "YOU"}
+          {gift?.recipientName?.toUpperCase() ||
+            "YOU"}
         </p>
 
         <h1>
@@ -67,7 +79,8 @@ export default function CouponCollection({
         <p className="description">
           Pick the one you want today.
           <br />
-          Every little ticket is a promise ♡
+          Every little ticket is a
+          promise ♡
         </p>
 
         <div className="availability">
@@ -102,7 +115,10 @@ export default function CouponCollection({
       <section className="ticketsSection">
         <div className="sectionTop">
           <span>
-            {String(coupons.length).padStart(2, "0")} LITTLE PROMISES
+            {String(
+              coupons.length
+            ).padStart(2, "0")}{" "}
+            LITTLE PROMISES
           </span>
 
           <span>
@@ -111,97 +127,124 @@ export default function CouponCollection({
         </div>
 
         <div className="tickets">
-          {coupons.map((coupon, index) => {
-            const isRedeemed =
-              redeemedIds.has(coupon.id);
+          {coupons.map(
+            (coupon, index) => {
+              const isRedeemed =
+                redeemedIds.has(
+                  coupon.id
+                );
 
-            return (
-              <button
-                type="button"
-                className={`ticket ${
-                  coupon.special ? "special" : ""
-                } ${
-                  isRedeemed ? "redeemed" : ""
-                }`}
-                key={coupon.id}
-                disabled={isRedeemed}
-                onClick={() => {
-                  if (!isRedeemed) {
-                    setSelectedCoupon(coupon);
-                  }
-                }}
-              >
-                <div className="ticketMain">
-                  <div className="ticketMeta">
-                    <span>WI♡ELI</span>
+              return (
+                <button
+                  type="button"
+                  className={`ticket ${
+                    coupon.special
+                      ? "special"
+                      : ""
+                  } ${
+                    isRedeemed
+                      ? "redeemed"
+                      : ""
+                  }`}
+                  key={coupon.id}
+                  disabled={isRedeemed}
+                  onClick={() => {
+                    if (!isRedeemed) {
+                      setSelectedCoupon(
+                        coupon
+                      );
+                    }
+                  }}
+                >
+                  {/* decorative cut-outs */}
+                  <span className="outerNotch outerNotchLeft" />
+                  <span className="outerNotch outerNotchRight" />
 
-                    <span>
-                      {isRedeemed
-                        ? "PROMISE KEPT"
-                        : "LOVE COUPON"}
-                    </span>
-                  </div>
+                  {/* inner double frame */}
+                  <span className="ticketInnerFrame" />
 
-                  <div className="ticketHeart">
-                    ♡
-                  </div>
+                  <div className="ticketMain">
+                    <div className="ticketMeta">
+                      <span>WI♡ELI</span>
 
-                  <h2>{coupon.title}</h2>
-
-                  <p>{coupon.subtitle}</p>
-
-                  {isRedeemed && (
-                    <div className="redeemedStamp">
-                      REDEEMED
+                      <span>
+                        {isRedeemed
+                          ? "PROMISE KEPT"
+                          : "LOVE COUPON"}
+                      </span>
                     </div>
-                  )}
 
-                  <div className="ticketBottom">
-                    <span>
-                      FOR{" "}
-                      {gift?.recipientName?.toUpperCase() ||
-                        "YOU"}
-                    </span>
+                    <div className="ticketHeart">
+                      ♡
+                    </div>
+
+                    <h2>
+                      {coupon.title}
+                    </h2>
+
+                    <p>
+                      {coupon.subtitle}
+                    </p>
+
+                    {isRedeemed && (
+                      <div className="redeemedStamp">
+                        REDEEMED
+                      </div>
+                    )}
+
+                    <div className="ticketBottom">
+                      <span>
+                        FOR{" "}
+                        {gift?.recipientName?.toUpperCase() ||
+                          "YOU"}
+                      </span>
+
+                      <span>
+                        {isRedeemed
+                          ? "USED WITH LOVE ♡"
+                          : "WITH LOVE ♡"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="ticketStub">
+                    <small>
+                      {isRedeemed
+                        ? "USED"
+                        : "NO."}
+                    </small>
+
+                    <strong>
+                      {String(
+                        index + 1
+                      ).padStart(
+                        2,
+                        "0"
+                      )}
+                    </strong>
+
+                    <div className="barcode">
+                      <i />
+                      <i />
+                      <i />
+                      <i />
+                      <i />
+                      <i />
+                      <i />
+                      <i />
+                      <i />
+                    </div>
 
                     <span>
                       {isRedeemed
-                        ? "USED WITH LOVE ♡"
-                        : "WITH LOVE ♡"}
+                        ? "♥"
+                        : "♡"}
                     </span>
                   </div>
-                </div>
-
-                <div className="ticketStub">
-                  <small>
-                    {isRedeemed ? "USED" : "NO."}
-                  </small>
-
-                  <strong>
-                    {String(index + 1).padStart(
-                      2,
-                      "0"
-                    )}
-                  </strong>
-
-                  <div className="barcode">
-                    <i />
-                    <i />
-                    <i />
-                    <i />
-                    <i />
-                    <i />
-                    <i />
-                    <i />
-                    <i />
-                  </div>
-
-                  <span>
-                    {isRedeemed ? "♥" : "♡"}
-                  </span>
-                </div>
-              </button>
-            );
-          })}
+                </button>
+              );
+            }
+          )}
         </div>
       </section>
 
@@ -243,6 +286,10 @@ export default function CouponCollection({
             </p>
 
             <div className="bigTicket">
+              <span className="bigNotch bigNotchLeft" />
+              <span className="bigNotch bigNotchRight" />
+              <span className="bigTicketFrame" />
+
               <div className="bigTicketMain">
                 <span className="bigLogo">
                   WI♡ELI · LOVE COUPON
@@ -253,11 +300,15 @@ export default function CouponCollection({
                 </div>
 
                 <h2>
-                  {selectedCoupon.title}
+                  {
+                    selectedCoupon.title
+                  }
                 </h2>
 
                 <p>
-                  {selectedCoupon.subtitle}
+                  {
+                    selectedCoupon.subtitle
+                  }
                 </p>
 
                 <div className="bigTicketFor">
@@ -284,18 +335,21 @@ export default function CouponCollection({
               </div>
             </div>
 
-            {leftToday === 0 && !unlimited ? (
+            {leftToday === 0 &&
+            !unlimited ? (
               <>
                 <p className="question">
-                  You've used all your coupons
-                  for today ♡
+                  You've used all your
+                  coupons for today ♡
                 </p>
 
                 <button
                   type="button"
                   className="locked"
                   onClick={() =>
-                    setSelectedCoupon(null)
+                    setSelectedCoupon(
+                      null
+                    )
                   }
                 >
                   COME BACK TOMORROW
@@ -304,7 +358,8 @@ export default function CouponCollection({
             ) : (
               <>
                 <p className="question">
-                  Want to use this one today?
+                  Want to use this one
+                  today?
                 </p>
 
                 <button
@@ -326,7 +381,9 @@ export default function CouponCollection({
                   type="button"
                   className="notYet"
                   onClick={() =>
-                    setSelectedCoupon(null)
+                    setSelectedCoupon(
+                      null
+                    )
                   }
                 >
                   NOT YET
@@ -362,15 +419,22 @@ export default function CouponCollection({
 
           display: flex;
           align-items: center;
-          justify-content: space-between;
+          justify-content:
+            space-between;
 
           border-bottom:
             1px solid
-            rgba(80, 9, 20, 0.15);
+            rgba(
+              80,
+              9,
+              20,
+              0.15
+            );
         }
 
         .logo {
-          font-family: Georgia, serif;
+          font-family:
+            Georgia, serif;
           font-size: 22px;
           font-weight: 700;
           letter-spacing: 0.04em;
@@ -387,7 +451,8 @@ export default function CouponCollection({
         }
 
         .headerRight i {
-          font-family: Georgia, serif;
+          font-family:
+            Georgia, serif;
           font-size: 19px;
           font-style: normal;
         }
@@ -416,7 +481,8 @@ export default function CouponCollection({
         .hero h1 {
           margin: 0;
 
-          font-family: Georgia, serif;
+          font-family:
+            Georgia, serif;
 
           font-size:
             clamp(
@@ -436,7 +502,8 @@ export default function CouponCollection({
         .description {
           margin: 30px 0 0;
 
-          font-family: Georgia, serif;
+          font-family:
+            Georgia, serif;
           font-size: 15px;
           line-height: 1.6;
         }
@@ -450,7 +517,12 @@ export default function CouponCollection({
 
           border:
             1px solid
-            rgba(80, 9, 20, 0.22);
+            rgba(
+              80,
+              9,
+              20,
+              0.22
+            );
 
           border-radius: 100px;
 
@@ -467,7 +539,8 @@ export default function CouponCollection({
               0.35
             );
 
-          backdrop-filter: blur(8px);
+          backdrop-filter:
+            blur(8px);
         }
 
         .availabilityHeart {
@@ -496,7 +569,8 @@ export default function CouponCollection({
         }
 
         .availability strong {
-          font-family: Georgia, serif;
+          font-family:
+            Georgia, serif;
           font-size: 15px;
         }
 
@@ -516,11 +590,17 @@ export default function CouponCollection({
           padding: 20px 2px;
 
           display: flex;
-          justify-content: space-between;
+          justify-content:
+            space-between;
 
           border-top:
             1px solid
-            rgba(80, 9, 20, 0.2);
+            rgba(
+              80,
+              9,
+              20,
+              0.2
+            );
 
           font-size: 7px;
           font-weight: 700;
@@ -536,6 +616,10 @@ export default function CouponCollection({
           gap: 20px;
         }
 
+        /*
+          NEW VINTAGE TICKET SHAPE
+        */
+
         .ticket {
           position: relative;
 
@@ -543,7 +627,10 @@ export default function CouponCollection({
 
           padding: 0;
 
-          border: 1px solid #67111d;
+          border:
+            1px solid #67111d;
+
+          border-radius: 15px;
 
           background: #f3cfcb;
           color: #570c17;
@@ -565,9 +652,16 @@ export default function CouponCollection({
 
           box-shadow:
             0 13px 25px
-            rgba(78, 8, 18, 0.08);
+            rgba(
+              78,
+              8,
+              18,
+              0.08
+            );
 
-          overflow: hidden;
+          overflow: visible;
+
+          isolation: isolate;
         }
 
         .ticket:hover:not(
@@ -579,11 +673,85 @@ export default function CouponCollection({
 
           box-shadow:
             0 20px 35px
-            rgba(78, 8, 18, 0.16);
+            rgba(
+              78,
+              8,
+              18,
+              0.16
+            );
         }
 
         .ticket:disabled {
           cursor: default;
+        }
+
+        /*
+          Outer semicircle cut-outs.
+          These give the ticket a real
+          admission-ticket silhouette.
+        */
+
+        .outerNotch {
+          position: absolute;
+
+          z-index: 10;
+
+          top: 50%;
+
+          width: 22px;
+          height: 22px;
+
+          border-radius: 50%;
+
+          background: #e8bdbc;
+
+          pointer-events: none;
+
+          transform:
+            translateY(-50%);
+
+          box-shadow:
+            0 0 0 1px
+            rgba(
+              103,
+              17,
+              29,
+              0.65
+            );
+        }
+
+        .outerNotchLeft {
+          left: -12px;
+        }
+
+        .outerNotchRight {
+          right: -12px;
+        }
+
+        /*
+          Fine second border inside
+          the ticket.
+        */
+
+        .ticketInnerFrame {
+          position: absolute;
+
+          z-index: 3;
+
+          inset: 6px;
+
+          border:
+            1px solid
+            rgba(
+              103,
+              17,
+              29,
+              0.28
+            );
+
+          border-radius: 10px;
+
+          pointer-events: none;
         }
 
         .ticketMain {
@@ -591,11 +759,15 @@ export default function CouponCollection({
             26px 28px 24px;
 
           position: relative;
+
+          border-radius:
+            14px 0 0 14px;
         }
 
         .ticketMeta {
           display: flex;
-          justify-content: space-between;
+          justify-content:
+            space-between;
 
           font-size: 6px;
           font-weight: 800;
@@ -608,7 +780,8 @@ export default function CouponCollection({
           right: 25px;
           top: 57px;
 
-          font-family: Georgia, serif;
+          font-family:
+            Georgia, serif;
           font-size: 32px;
         }
 
@@ -617,7 +790,8 @@ export default function CouponCollection({
 
           margin: 37px 0 7px;
 
-          font-family: Georgia, serif;
+          font-family:
+            Georgia, serif;
           font-style: italic;
 
           font-size:
@@ -634,7 +808,8 @@ export default function CouponCollection({
         .ticket p {
           margin: 0;
 
-          font-family: Georgia, serif;
+          font-family:
+            Georgia, serif;
           font-size: 12px;
         }
 
@@ -646,12 +821,17 @@ export default function CouponCollection({
           bottom: 21px;
 
           display: flex;
-          justify-content: space-between;
+          justify-content:
+            space-between;
 
           font-size: 6px;
           font-weight: 700;
           letter-spacing: 0.12em;
         }
+
+        /*
+          Tear-off stub
+        */
 
         .ticketStub {
           border-left:
@@ -665,7 +845,15 @@ export default function CouponCollection({
           align-items: center;
 
           gap: 8px;
+
+          border-radius:
+            0 14px 14px 0;
         }
+
+        /*
+          Larger top/bottom notches
+          where the tear line begins.
+        */
 
         .ticketStub::before,
         .ticketStub::after {
@@ -673,22 +861,35 @@ export default function CouponCollection({
 
           position: absolute;
 
-          width: 17px;
-          height: 17px;
+          z-index: 8;
+
+          width: 22px;
+          height: 22px;
 
           border-radius: 50%;
 
-          left: -9px;
+          left: -12px;
 
-          background: #e9bebc;
+          background: #e8bdbc;
+
+          box-shadow:
+            0 0 0 1px
+            rgba(
+              103,
+              17,
+              29,
+              0.5
+            );
+
+          pointer-events: none;
         }
 
         .ticketStub::before {
-          top: -9px;
+          top: -12px;
         }
 
         .ticketStub::after {
-          bottom: -9px;
+          bottom: -12px;
         }
 
         .ticketStub small {
@@ -697,12 +898,14 @@ export default function CouponCollection({
         }
 
         .ticketStub strong {
-          font-family: Georgia, serif;
+          font-family:
+            Georgia, serif;
           font-size: 26px;
         }
 
         .ticketStub > span {
-          font-family: Georgia, serif;
+          font-family:
+            Georgia, serif;
           font-size: 20px;
         }
 
@@ -723,11 +926,18 @@ export default function CouponCollection({
           background: #5b0a16;
         }
 
-        .barcode i:nth-child(2),
-        .barcode i:nth-child(5),
-        .barcode i:nth-child(8) {
+        .barcode
+          i:nth-child(2),
+        .barcode
+          i:nth-child(5),
+        .barcode
+          i:nth-child(8) {
           width: 4px;
         }
+
+        /*
+          SPECIAL COUPON
+        */
 
         .special {
           background: #5a0a16;
@@ -736,20 +946,65 @@ export default function CouponCollection({
           border-color: #39030a;
         }
 
-        .special .ticketStub {
+        .special
+          .ticketInnerFrame {
+          border-color:
+            rgba(
+              242,
+              203,
+              199,
+              0.25
+            );
+        }
+
+        .special
+          .ticketStub {
           border-color: #e2aaa8;
         }
+
+        /*
+          The holes stay the same
+          background color even on
+          the burgundy ticket.
+        */
 
         .special
           .ticketStub::before,
         .special
           .ticketStub::after {
-          background: #e7b9b7;
+          background: #e8bdbc;
+
+          box-shadow:
+            0 0 0 1px
+            rgba(
+              57,
+              3,
+              10,
+              0.7
+            );
+        }
+
+        .special
+          .outerNotch {
+          background: #e8bdbc;
+
+          box-shadow:
+            0 0 0 1px
+            rgba(
+              57,
+              3,
+              10,
+              0.7
+            );
         }
 
         .special .barcode i {
           background: #f2cbc7;
         }
+
+        /*
+          REDEEMED
+        */
 
         .redeemed {
           opacity: 0.58;
@@ -761,27 +1016,10 @@ export default function CouponCollection({
           transform: none;
         }
 
-        .redeemed::after {
-          content: "";
-
-          position: absolute;
-          inset: 0;
-
-          background:
-            rgba(
-              255,
-              240,
-              236,
-              0.08
-            );
-
-          pointer-events: none;
-        }
-
         .redeemedStamp {
           position: absolute;
 
-          z-index: 3;
+          z-index: 6;
 
           right: 24px;
           top: 88px;
@@ -805,6 +1043,10 @@ export default function CouponCollection({
           opacity: 0.8;
         }
 
+        /*
+          FOOTER
+        */
+
         footer {
           min-height: 100px;
 
@@ -812,16 +1054,26 @@ export default function CouponCollection({
 
           border-top:
             1px solid
-            rgba(80, 9, 20, 0.17);
+            rgba(
+              80,
+              9,
+              20,
+              0.17
+            );
 
           display: flex;
-          justify-content: space-between;
+          justify-content:
+            space-between;
           align-items: center;
 
           font-size: 7px;
           font-weight: 700;
           letter-spacing: 0.17em;
         }
+
+        /*
+          MODAL
+        */
 
         .modalBackdrop {
           position: fixed;
@@ -875,7 +1127,10 @@ export default function CouponCollection({
           text-align: center;
 
           animation:
-            appear 0.35s ease both;
+            appear
+            0.35s
+            ease
+            both;
         }
 
         .close {
@@ -914,8 +1169,15 @@ export default function CouponCollection({
           letter-spacing: 0.2em;
         }
 
+        /*
+          Enlarged ticket uses the
+          same vintage silhouette.
+        */
+
         .bigTicket {
           min-height: 270px;
+
+          position: relative;
 
           display: grid;
 
@@ -924,6 +1186,8 @@ export default function CouponCollection({
 
           border:
             1px solid #63101c;
+
+          border-radius: 17px;
 
           background: #f6d8d4;
 
@@ -940,11 +1204,77 @@ export default function CouponCollection({
 
           transform:
             rotate(-1deg);
+
+          overflow: visible;
+
+          isolation: isolate;
+        }
+
+        .bigTicketFrame {
+          position: absolute;
+
+          z-index: 4;
+
+          inset: 7px;
+
+          border:
+            1px solid
+            rgba(
+              99,
+              16,
+              28,
+              0.28
+            );
+
+          border-radius: 11px;
+
+          pointer-events: none;
+        }
+
+        .bigNotch {
+          position: absolute;
+
+          z-index: 8;
+
+          top: 50%;
+
+          width: 24px;
+          height: 24px;
+
+          border-radius: 50%;
+
+          background: #f0c7c4;
+
+          box-shadow:
+            0 0 0 1px
+            rgba(
+              99,
+              16,
+              28,
+              0.6
+            );
+
+          transform:
+            translateY(-50%);
+
+          pointer-events: none;
+        }
+
+        .bigNotchLeft {
+          left: -13px;
+        }
+
+        .bigNotchRight {
+          right: -13px;
         }
 
         .bigTicketMain {
           position: relative;
+
           padding: 30px;
+
+          border-radius:
+            16px 0 0 16px;
         }
 
         .bigLogo {
@@ -959,7 +1289,8 @@ export default function CouponCollection({
           right: 30px;
           top: 30px;
 
-          font-family: Georgia, serif;
+          font-family:
+            Georgia, serif;
           font-size: 38px;
         }
 
@@ -969,7 +1300,8 @@ export default function CouponCollection({
           margin:
             58px 0 10px;
 
-          font-family: Georgia, serif;
+          font-family:
+            Georgia, serif;
           font-style: italic;
 
           font-size:
@@ -986,7 +1318,8 @@ export default function CouponCollection({
         .bigTicket p {
           margin: 0;
 
-          font-family: Georgia, serif;
+          font-family:
+            Georgia, serif;
           font-size: 13px;
         }
 
@@ -998,7 +1331,8 @@ export default function CouponCollection({
           bottom: 24px;
 
           display: flex;
-          justify-content: space-between;
+          justify-content:
+            space-between;
 
           font-size: 6px;
           font-weight: 700;
@@ -1006,15 +1340,62 @@ export default function CouponCollection({
         }
 
         .bigStub {
+          position: relative;
+
           border-left:
             1px dashed #64101c;
+
+          border-radius:
+            0 16px 16px 0;
 
           display: flex;
           flex-direction: column;
           align-items: center;
-          justify-content: space-around;
+          justify-content:
+            space-around;
 
           padding: 25px 0;
+        }
+
+        /*
+          Big tear-line cut-outs
+        */
+
+        .bigStub::before,
+        .bigStub::after {
+          content: "";
+
+          position: absolute;
+
+          z-index: 8;
+
+          left: -13px;
+
+          width: 24px;
+          height: 24px;
+
+          border-radius: 50%;
+
+          background: #f0c7c4;
+
+          box-shadow:
+            0 0 0 1px
+            rgba(
+              99,
+              16,
+              28,
+              0.55
+            );
+
+          pointer-events: none;
+        }
+
+        .bigStub::before {
+          top: -13px;
+        }
+
+        .bigStub::after {
+          bottom: -13px;
         }
 
         .bigStub small {
@@ -1027,7 +1408,8 @@ export default function CouponCollection({
         }
 
         .verticalBarcode {
-          writing-mode: vertical-rl;
+          writing-mode:
+            vertical-rl;
 
           font-size: 12px;
 
@@ -1038,7 +1420,8 @@ export default function CouponCollection({
           margin:
             30px 0 18px;
 
-          font-family: Georgia, serif;
+          font-family:
+            Georgia, serif;
           font-size: 17px;
           font-style: italic;
         }
@@ -1110,6 +1493,10 @@ export default function CouponCollection({
           }
         }
 
+        /*
+          TABLET
+        */
+
         @media (
           max-width: 760px
         ) {
@@ -1157,6 +1544,10 @@ export default function CouponCollection({
           }
         }
 
+        /*
+          PHONE
+        */
+
         @media (
           max-width: 450px
         ) {
@@ -1182,6 +1573,8 @@ export default function CouponCollection({
           .ticket {
             grid-template-columns:
               1fr 70px;
+
+            border-radius: 13px;
           }
 
           .ticketMain {
@@ -1199,6 +1592,39 @@ export default function CouponCollection({
             right: 18px;
           }
 
+          .outerNotch {
+            width: 18px;
+            height: 18px;
+          }
+
+          .outerNotchLeft {
+            left: -10px;
+          }
+
+          .outerNotchRight {
+            right: -10px;
+          }
+
+          .ticketStub::before,
+          .ticketStub::after {
+            width: 18px;
+            height: 18px;
+
+            left: -10px;
+          }
+
+          .ticketStub::before {
+            top: -10px;
+          }
+
+          .ticketStub::after {
+            bottom: -10px;
+          }
+
+          .ticketInnerFrame {
+            inset: 5px;
+          }
+
           .redeemedStamp {
             right: 14px;
             top: 88px;
@@ -1213,6 +1639,35 @@ export default function CouponCollection({
           .bigTicketFor
             span:last-child {
             display: none;
+          }
+
+          .bigNotch {
+            width: 20px;
+            height: 20px;
+          }
+
+          .bigNotchLeft {
+            left: -11px;
+          }
+
+          .bigNotchRight {
+            right: -11px;
+          }
+
+          .bigStub::before,
+          .bigStub::after {
+            width: 20px;
+            height: 20px;
+
+            left: -11px;
+          }
+
+          .bigStub::before {
+            top: -11px;
+          }
+
+          .bigStub::after {
+            bottom: -11px;
           }
         }
       `}</style>
