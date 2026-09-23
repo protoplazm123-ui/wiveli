@@ -70,10 +70,18 @@ export default function LoveCouponsGift() {
     );
   }
 
-  const selectedCoupons =
+  const readyMadeCoupons =
     couponIdeas.filter((coupon) =>
       gift.couponIds?.includes(coupon.id)
     );
+
+  const customCoupons =
+    gift.customCoupons || [];
+
+  const selectedCoupons = [
+    ...readyMadeCoupons,
+    ...customCoupons,
+  ];
 
   function handleRedeem(coupon) {
     const result =
