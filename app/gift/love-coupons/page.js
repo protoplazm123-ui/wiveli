@@ -1,17 +1,55 @@
 "use client";
-
+import TicketPrinter from "./TicketPrinter";
+import { couponIdeas } from "../../experiences/love-coupons/coupons";
 import { useEffect, useState } from "react";
 import { loadLoveCouponsGift } from "../../experiences/love-coupons/storage";
 
 export default function LoveCouponsGift() {
   const [gift, setGift] = useState(null);
   const [ready, setReady] = useState(false);
-
+const [screen, setScreen] = useState("intro");
   useEffect(() => {
     setGift(loadLoveCouponsGift());
     setReady(true);
   }, []);
+const selectedCoupons = couponIdeas.filter((coupon) =>
+  gift.couponIds.includes(coupon.id)
+);
 
+if (screen === "printer") {
+  return (
+    <TicketPrinter
+      coupons={selectedCoupons}
+      senderName={gift.senderName}
+      recipientName={gift.recipientName}
+      onFinished={() => setScreen("collection")}
+    />
+  );
+}
+
+if (screen === "collection") {
+  return (
+    <main
+      style={{
+        minHeight: "100vh",
+        display: "grid",
+        placeItems: "center",
+        background: "#f3cbc8",
+        color: "#4d0711",
+        fontFamily: "Georgia, serif",
+        textAlign: "center",
+      }}
+    >
+      <div>
+        <div style={{ fontSize: "18px" }}>WI♡ELI</div>
+        <h1 style={{ fontSize: "52px", marginBottom: "10px" }}>
+          Your Love Coupons ♡
+        </h1>
+        <p>{selectedCoupons.length} coupons are waiting for you.</p>
+      </div>
+    </main>
+  );
+}
   if (!ready) {
     return null;
   }
@@ -75,10 +113,13 @@ export default function LoveCouponsGift() {
           There's a little gift waiting inside.
         </p>
 
-        <button type="button">
-          OPEN YOUR GIFT
-          <span>→</span>
-        </button>
+       <button
+  type="button"
+  onClick={() => setScreen("printer")}
+>
+  OPEN YOUR GIFT
+  <span>→</span>
+</button>
 
         <div className="mini">
           <span>♡</span>
