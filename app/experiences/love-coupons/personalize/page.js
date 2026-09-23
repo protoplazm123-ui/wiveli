@@ -6,7 +6,9 @@ import {
   createLoveCouponsGift,
   saveLoveCouponsGift,
 } from "../storage";
+
 import GiftReview from "./GiftReview";
+import GiftDelivery from "./GiftDelivery";
 
 export default function LoveCouponsPersonalize() {
   const [senderName, setSenderName] = useState("");
@@ -28,6 +30,7 @@ export default function LoveCouponsPersonalize() {
   const [customSubtitle, setCustomSubtitle] = useState("");
 
   const [showReview, setShowReview] = useState(false);
+  const [showDelivery, setShowDelivery] = useState(false);
 
   const totalSelected =
     selected.length + customCoupons.length;
@@ -168,8 +171,35 @@ export default function LoveCouponsPersonalize() {
 
     saveLoveCouponsGift(gift);
 
-    window.location.href =
-      "/gift/love-coupons";
+    setShowReview(false);
+    setShowDelivery(true);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "instant",
+    });
+  }
+
+  function sendForMe() {
+    alert(
+      "Next we'll add the recipient's SMS or email ♡"
+    );
+  }
+
+  function sendMyself() {
+    alert(
+      "Next we'll create the private gift link ♡"
+    );
+  }
+
+  if (showDelivery) {
+    return (
+      <GiftDelivery
+        recipientName={recipientName}
+        onSendForMe={sendForMe}
+        onSendMyself={sendMyself}
+      />
+    );
   }
 
   if (showReview) {
