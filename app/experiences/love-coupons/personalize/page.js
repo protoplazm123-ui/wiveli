@@ -2,7 +2,10 @@
 
 import { useMemo, useState } from "react";
 import { couponIdeas, couponCategories } from "../coupons";
-
+import {
+  createLoveCouponsGift,
+  saveLoveCouponsGift,
+} from "../storage";
 export default function LoveCouponsPersonalize() {
   const [senderName, setSenderName] = useState("");
   const [recipientName, setRecipientName] = useState("");
@@ -47,7 +50,20 @@ export default function LoveCouponsPersonalize() {
       current.slice(0, nextCount)
     );
   }
+function createGift() {
+  const gift = createLoveCouponsGift({
+    senderName,
+    recipientName,
+    selectedCouponIds: selected,
+    contactType,
+    contact,
+    dailyLimit,
+  });
 
+  saveLoveCouponsGift(gift);
+
+  window.location.href = "/gift/love-coupons";
+}
   const remaining = couponCount - selected.length;
 
   return (
@@ -324,6 +340,10 @@ export default function LoveCouponsPersonalize() {
         <button
           type="button"
           className="continue"
+<button
+  type="button"
+  className="continue"
+  onClick={createGift}
           disabled={
             selected.length !== couponCount ||
             !senderName ||
