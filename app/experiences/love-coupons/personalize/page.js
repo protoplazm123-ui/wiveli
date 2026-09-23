@@ -6,6 +6,7 @@ import {
   createLoveCouponsGift,
   saveLoveCouponsGift,
 } from "../storage";
+import GiftReview from "./GiftReview";
 
 export default function LoveCouponsPersonalize() {
   const [senderName, setSenderName] = useState("");
@@ -26,6 +27,8 @@ export default function LoveCouponsPersonalize() {
   const [customTitle, setCustomTitle] = useState("");
   const [customSubtitle, setCustomSubtitle] = useState("");
 
+  const [showReview, setShowReview] = useState(false);
+
   const totalSelected =
     selected.length + customCoupons.length;
 
@@ -38,17 +41,22 @@ export default function LoveCouponsPersonalize() {
     }
 
     return couponIdeas.filter(
-      (coupon) =>
-        coupon.category === category
+      (coupon) => coupon.category === category
     );
   }, [category]);
+
+  const reviewCoupons = [
+    ...couponIdeas.filter((coupon) =>
+      selected.includes(coupon.id)
+    ),
+    ...customCoupons,
+  ];
 
   function toggleCoupon(id) {
     if (selected.includes(id)) {
       setSelected((current) =>
         current.filter(
-          (couponId) =>
-            couponId !== id
+          (couponId) => couponId !== id
         )
       );
 
@@ -66,8 +74,7 @@ export default function LoveCouponsPersonalize() {
   }
 
   function changeCouponCount(value) {
-    const nextCount =
-      Number(value);
+    const nextCount = Number(value);
 
     setCouponCount(nextCount);
 
@@ -163,6 +170,23 @@ export default function LoveCouponsPersonalize() {
 
     window.location.href =
       "/gift/love-coupons";
+  }
+
+  if (showReview) {
+    return (
+      <GiftReview
+        senderName={senderName}
+        recipientName={recipientName}
+        coupons={reviewCoupons}
+        dailyLimit={dailyLimit}
+        contactType={contactType}
+        contact={contact}
+        onBack={() =>
+          setShowReview(false)
+        }
+        onCreate={createGift}
+      />
+    );
   }
 
   return (
@@ -620,7 +644,9 @@ export default function LoveCouponsPersonalize() {
         <button
           type="button"
           className="continue"
-          onClick={createGift}
+          onClick={() =>
+            setShowReview(true)
+          }
           disabled={
             totalSelected !==
               couponCount ||
@@ -690,9 +716,7 @@ export default function LoveCouponsPersonalize() {
               />
 
               <small className="characterCount">
-                {
-                  customTitle.length
-                }
+                {customTitle.length}
                 /40
               </small>
             </label>
@@ -715,9 +739,7 @@ export default function LoveCouponsPersonalize() {
               />
 
               <small className="characterCount">
-                {
-                  customSubtitle.length
-                }
+                {customSubtitle.length}
                 /80
               </small>
             </label>
@@ -1213,7 +1235,9 @@ export default function LoveCouponsPersonalize() {
         .personalTicket {
           min-height: 130px;
           margin-bottom: 10px;
-          padding: 22px 70px 22px 24px;
+          padding:
+            22px 70px
+            22px 24px;
           position: relative;
           border:
             1px solid #68101b;
