@@ -337,9 +337,7 @@ function createGift() {
           </div>
         </div>
 
-        <button
-          type="button"
-          className="continue"
+        
 <button
   type="button"
   className="continue"
