@@ -122,8 +122,6 @@ export default function CouponCollection({
                   }
                 }}
               >
-                <span className="outerNotch outerNotchLeft" />
-                <span className="outerNotch outerNotchRight" />
                 <span className="ticketInnerFrame" />
 
                 <div className="ticketMain">
@@ -222,8 +220,6 @@ export default function CouponCollection({
             </p>
 
             <div className="bigTicket">
-              <span className="bigNotch bigNotchLeft" />
-              <span className="bigNotch bigNotchRight" />
               <span className="bigTicketFrame" />
 
               <div className="bigTicketMain">
@@ -314,6 +310,7 @@ export default function CouponCollection({
 
         .collection {
           min-height: 100svh;
+
           background:
             radial-gradient(
               circle at 50% 0%,
@@ -321,16 +318,20 @@ export default function CouponCollection({
               #efcbc7 43%,
               #e3b6b4 100%
             );
+
           color: #500914;
         }
 
         header {
           height: 76px;
           padding: 0 5vw;
+
           display: flex;
           align-items: center;
           justify-content: space-between;
-          border-bottom: 1px solid rgba(80, 9, 20, 0.15);
+
+          border-bottom:
+            1px solid rgba(80, 9, 20, 0.15);
         }
 
         .logo {
@@ -344,6 +345,7 @@ export default function CouponCollection({
           display: flex;
           align-items: center;
           gap: 18px;
+
           font-size: 8px;
           font-weight: 700;
           letter-spacing: 0.2em;
@@ -357,16 +359,20 @@ export default function CouponCollection({
 
         .hero {
           min-height: 510px;
+
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
+
           text-align: center;
+
           padding: 65px 20px;
         }
 
         .eyebrow {
           margin: 0 0 20px;
+
           font-size: 8px;
           font-weight: 800;
           letter-spacing: 0.23em;
@@ -374,8 +380,11 @@ export default function CouponCollection({
 
         .hero h1 {
           margin: 0;
+
           font-family: Georgia, serif;
+
           font-size: clamp(65px, 9vw, 125px);
+
           line-height: 0.77;
           letter-spacing: -0.07em;
         }
@@ -386,6 +395,7 @@ export default function CouponCollection({
 
         .description {
           margin: 30px 0 0;
+
           font-family: Georgia, serif;
           font-size: 15px;
           line-height: 1.6;
@@ -393,24 +403,36 @@ export default function CouponCollection({
 
         .availability {
           margin-top: 35px;
+
           min-width: 245px;
+
           padding: 15px 22px;
-          border: 1px solid rgba(80, 9, 20, 0.22);
+
+          border:
+            1px solid rgba(80, 9, 20, 0.22);
+
           border-radius: 100px;
+
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 13px;
-          background: rgba(255, 240, 236, 0.35);
+
+          background:
+            rgba(255, 240, 236, 0.35);
+
           backdrop-filter: blur(8px);
         }
 
         .availabilityHeart {
           width: 33px;
           height: 33px;
+
           border-radius: 50%;
+
           display: grid;
           place-items: center;
+
           background: #5b0a16;
           color: #f4cfcb;
         }
@@ -433,16 +455,26 @@ export default function CouponCollection({
         }
 
         .ticketsSection {
-          width: min(1180px, calc(100% - 40px));
+          width:
+            min(
+              1180px,
+              calc(100% - 40px)
+            );
+
           margin: 0 auto;
+
           padding: 0 0 100px;
         }
 
         .sectionTop {
           padding: 20px 2px;
+
           display: flex;
           justify-content: space-between;
-          border-top: 1px solid rgba(80, 9, 20, 0.2);
+
+          border-top:
+            1px solid rgba(80, 9, 20, 0.2);
+
           font-size: 7px;
           font-weight: 700;
           letter-spacing: 0.18em;
@@ -450,21 +482,42 @@ export default function CouponCollection({
 
         .tickets {
           display: grid;
-          grid-template-columns: repeat(2, 1fr);
+
+          grid-template-columns:
+            repeat(2, 1fr);
+
           gap: 20px;
         }
 
+        /*
+          REAL CUT-OUT TICKET
+        */
+
         .ticket {
+          --stub-width: 92px;
+          --notch-size: 11px;
+
           position: relative;
+
           min-height: 220px;
+
           padding: 0;
-          border: 1px solid #67111d;
+
+          border:
+            1px solid #67111d;
+
           border-radius: 15px;
+
           background: #f3cfcb;
           color: #570c17;
+
           display: grid;
-          grid-template-columns: 1fr 92px;
+
+          grid-template-columns:
+            1fr var(--stub-width);
+
           text-align: left;
+
           cursor: pointer;
 
           transition:
@@ -477,8 +530,64 @@ export default function CouponCollection({
             0 13px 25px
             rgba(78, 8, 18, 0.08);
 
-          overflow: visible;
-          isolation: isolate;
+          /*
+            Two real transparent holes:
+            one from the top,
+            one from the bottom,
+            exactly on the tear line.
+          */
+
+          -webkit-mask-image:
+            radial-gradient(
+              circle var(--notch-size)
+                at calc(100% - var(--stub-width)) 0,
+              transparent 0 calc(var(--notch-size) - 1px),
+              #000 var(--notch-size)
+            ),
+            radial-gradient(
+              circle var(--notch-size)
+                at calc(100% - var(--stub-width)) 100%,
+              transparent 0 calc(var(--notch-size) - 1px),
+              #000 var(--notch-size)
+            );
+
+          -webkit-mask-size:
+            100% 51%,
+            100% 51%;
+
+          -webkit-mask-position:
+            top left,
+            bottom left;
+
+          -webkit-mask-repeat:
+            no-repeat,
+            no-repeat;
+
+          mask-image:
+            radial-gradient(
+              circle var(--notch-size)
+                at calc(100% - var(--stub-width)) 0,
+              transparent 0 calc(var(--notch-size) - 1px),
+              #000 var(--notch-size)
+            ),
+            radial-gradient(
+              circle var(--notch-size)
+                at calc(100% - var(--stub-width)) 100%,
+              transparent 0 calc(var(--notch-size) - 1px),
+              #000 var(--notch-size)
+            );
+
+          mask-size:
+            100% 51%,
+            100% 51%;
+
+          mask-position:
+            top left,
+            bottom left;
+
+          mask-repeat:
+            no-repeat,
+            no-repeat;
         }
 
         .ticket:hover:not(:disabled) {
@@ -496,50 +605,18 @@ export default function CouponCollection({
         }
 
         /*
-          SIDE CUT-OUTS
-          No border / no shadow.
-          They visually remove a piece
-          of the ticket instead of looking
-          like attached circles.
-        */
-
-        .outerNotch {
-          position: absolute;
-          z-index: 10;
-          top: 50%;
-
-          width: 18px;
-          height: 18px;
-
-          border-radius: 50%;
-
-          background: #e3b6b4;
-
-          pointer-events: none;
-
-          transform: translateY(-50%);
-        }
-
-        .outerNotchLeft {
-          left: -9px;
-        }
-
-        .outerNotchRight {
-          right: -9px;
-        }
-
-        /*
-          INNER DOUBLE BORDER
+          DOUBLE VINTAGE BORDER
         */
 
         .ticketInnerFrame {
           position: absolute;
+
           z-index: 3;
+
           inset: 6px;
 
           border:
-            1px solid
-            rgba(103, 17, 29, 0.28);
+            1px solid rgba(103, 17, 29, 0.28);
 
           border-radius: 10px;
 
@@ -547,14 +624,16 @@ export default function CouponCollection({
         }
 
         .ticketMain {
-          padding: 26px 28px 24px;
+          padding:
+            26px 28px 24px;
+
           position: relative;
-          border-radius: 14px 0 0 14px;
         }
 
         .ticketMeta {
           display: flex;
           justify-content: space-between;
+
           font-size: 6px;
           font-weight: 800;
           letter-spacing: 0.15em;
@@ -562,35 +641,50 @@ export default function CouponCollection({
 
         .ticketHeart {
           position: absolute;
+
           right: 25px;
           top: 57px;
+
           font-family: Georgia, serif;
           font-size: 32px;
         }
 
         .ticket h2 {
           max-width: 75%;
+
           margin: 37px 0 7px;
+
           font-family: Georgia, serif;
           font-style: italic;
-          font-size: clamp(25px, 3vw, 39px);
+
+          font-size:
+            clamp(
+              25px,
+              3vw,
+              39px
+            );
+
           line-height: 0.9;
           letter-spacing: -0.04em;
         }
 
         .ticket p {
           margin: 0;
+
           font-family: Georgia, serif;
           font-size: 12px;
         }
 
         .ticketBottom {
           position: absolute;
+
           left: 28px;
           right: 28px;
           bottom: 21px;
+
           display: flex;
           justify-content: space-between;
+
           font-size: 6px;
           font-weight: 700;
           letter-spacing: 0.12em;
@@ -601,45 +695,17 @@ export default function CouponCollection({
         */
 
         .ticketStub {
-          border-left: 1px dashed #68111d;
+          border-left:
+            1px dashed #68111d;
+
           position: relative;
+
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
+
           gap: 8px;
-          border-radius: 0 14px 14px 0;
-        }
-
-        /*
-          TOP + BOTTOM CUT-OUTS
-          No outlines.
-        */
-
-        .ticketStub::before,
-        .ticketStub::after {
-          content: "";
-          position: absolute;
-          z-index: 8;
-
-          width: 18px;
-          height: 18px;
-
-          border-radius: 50%;
-
-          left: -9px;
-
-          background: #e3b6b4;
-
-          pointer-events: none;
-        }
-
-        .ticketStub::before {
-          top: -9px;
-        }
-
-        .ticketStub::after {
-          bottom: -9px;
         }
 
         .ticketStub small {
@@ -659,14 +725,18 @@ export default function CouponCollection({
 
         .barcode {
           height: 30px;
+
           display: flex;
           align-items: stretch;
+
           gap: 2px;
         }
 
         .barcode i {
           display: block;
+
           width: 2px;
+
           background: #5b0a16;
         }
 
@@ -677,27 +747,23 @@ export default function CouponCollection({
         }
 
         /*
-          SPECIAL BURGUNDY COUPON
+          SPECIAL COUPON
         */
 
         .special {
           background: #5a0a16;
           color: #f2cbc7;
+
           border-color: #39030a;
         }
 
         .special .ticketInnerFrame {
-          border-color: rgba(242, 203, 199, 0.25);
+          border-color:
+            rgba(242, 203, 199, 0.25);
         }
 
         .special .ticketStub {
           border-color: #e2aaa8;
-        }
-
-        .special .outerNotch,
-        .special .ticketStub::before,
-        .special .ticketStub::after {
-          background: #e3b6b4;
         }
 
         .special .barcode i {
@@ -720,26 +786,42 @@ export default function CouponCollection({
 
         .redeemedStamp {
           position: absolute;
+
           z-index: 6;
+
           right: 24px;
           top: 88px;
+
           padding: 8px 14px;
-          border: 3px solid currentColor;
+
+          border:
+            3px solid currentColor;
+
           border-radius: 4px;
+
           font-size: 11px;
           font-weight: 900;
+
           letter-spacing: 0.13em;
-          transform: rotate(-9deg);
+
+          transform:
+            rotate(-9deg);
+
           opacity: 0.8;
         }
 
         footer {
           min-height: 100px;
+
           padding: 0 5vw;
-          border-top: 1px solid rgba(80, 9, 20, 0.17);
+
+          border-top:
+            1px solid rgba(80, 9, 20, 0.17);
+
           display: flex;
           justify-content: space-between;
           align-items: center;
+
           font-size: 7px;
           font-weight: 700;
           letter-spacing: 0.17em;
@@ -752,23 +834,36 @@ export default function CouponCollection({
         .modalBackdrop {
           position: fixed;
           inset: 0;
+
           z-index: 100;
+
           padding: 25px;
+
           display: grid;
           place-items: center;
 
           background:
             rgba(45, 2, 9, 0.72);
 
-          backdrop-filter: blur(14px);
+          backdrop-filter:
+            blur(14px);
         }
 
         .modal {
           position: relative;
-          width: min(680px, 100%);
-          padding: 55px 45px 40px;
+
+          width:
+            min(
+              680px,
+              100%
+            );
+
+          padding:
+            55px 45px 40px;
+
           background: #f0c7c4;
           color: #510a15;
+
           border-radius: 25px;
 
           box-shadow:
@@ -786,20 +881,29 @@ export default function CouponCollection({
 
         .close {
           position: absolute;
+
           right: 18px;
           top: 15px;
+
           width: 38px;
           height: 38px;
-          border: 1px solid rgba(81, 10, 21, 0.22);
+
+          border:
+            1px solid rgba(81, 10, 21, 0.22);
+
           border-radius: 50%;
+
           background: transparent;
           color: #510a15;
+
           font-size: 25px;
+
           cursor: pointer;
         }
 
         .modalEyebrow {
           margin: 0 0 23px;
+
           font-size: 7px;
           font-weight: 800;
           letter-spacing: 0.2em;
@@ -807,74 +911,110 @@ export default function CouponCollection({
 
         /*
           BIG TICKET
+          Same real cut-out shape.
         */
 
         .bigTicket {
+          --big-stub-width: 95px;
+          --big-notch-size: 13px;
+
           min-height: 270px;
+
           position: relative;
+
           display: grid;
-          grid-template-columns: 1fr 95px;
-          border: 1px solid #63101c;
+
+          grid-template-columns:
+            1fr var(--big-stub-width);
+
+          border:
+            1px solid #63101c;
+
           border-radius: 17px;
+
           background: #f6d8d4;
+
           text-align: left;
 
           box-shadow:
             0 20px 40px
             rgba(69, 7, 16, 0.12);
 
-          transform: rotate(-1deg);
+          transform:
+            rotate(-1deg);
 
-          overflow: visible;
-          isolation: isolate;
+          -webkit-mask-image:
+            radial-gradient(
+              circle var(--big-notch-size)
+                at calc(100% - var(--big-stub-width)) 0,
+              transparent 0 calc(var(--big-notch-size) - 1px),
+              #000 var(--big-notch-size)
+            ),
+            radial-gradient(
+              circle var(--big-notch-size)
+                at calc(100% - var(--big-stub-width)) 100%,
+              transparent 0 calc(var(--big-notch-size) - 1px),
+              #000 var(--big-notch-size)
+            );
+
+          -webkit-mask-size:
+            100% 51%,
+            100% 51%;
+
+          -webkit-mask-position:
+            top left,
+            bottom left;
+
+          -webkit-mask-repeat:
+            no-repeat,
+            no-repeat;
+
+          mask-image:
+            radial-gradient(
+              circle var(--big-notch-size)
+                at calc(100% - var(--big-stub-width)) 0,
+              transparent 0 calc(var(--big-notch-size) - 1px),
+              #000 var(--big-notch-size)
+            ),
+            radial-gradient(
+              circle var(--big-notch-size)
+                at calc(100% - var(--big-stub-width)) 100%,
+              transparent 0 calc(var(--big-notch-size) - 1px),
+              #000 var(--big-notch-size)
+            );
+
+          mask-size:
+            100% 51%,
+            100% 51%;
+
+          mask-position:
+            top left,
+            bottom left;
+
+          mask-repeat:
+            no-repeat,
+            no-repeat;
         }
 
         .bigTicketFrame {
           position: absolute;
+
           z-index: 4;
+
           inset: 7px;
 
           border:
-            1px solid
-            rgba(99, 16, 28, 0.28);
+            1px solid rgba(99, 16, 28, 0.28);
 
           border-radius: 11px;
-          pointer-events: none;
-        }
-
-        /*
-          BIG SIDE CUT-OUTS
-        */
-
-        .bigNotch {
-          position: absolute;
-          z-index: 8;
-          top: 50%;
-
-          width: 20px;
-          height: 20px;
-
-          border-radius: 50%;
-
-          background: #f0c7c4;
-
-          transform: translateY(-50%);
 
           pointer-events: none;
-        }
-
-        .bigNotchLeft {
-          left: -10px;
-        }
-
-        .bigNotchRight {
-          right: -10px;
         }
 
         .bigTicketMain {
           position: relative;
+
           padding: 30px;
-          border-radius: 16px 0 0 16px;
         }
 
         .bigLogo {
@@ -885,35 +1025,51 @@ export default function CouponCollection({
 
         .bigHeart {
           position: absolute;
+
           right: 30px;
           top: 30px;
+
           font-family: Georgia, serif;
           font-size: 38px;
         }
 
         .bigTicket h2 {
           max-width: 80%;
-          margin: 58px 0 10px;
+
+          margin:
+            58px 0 10px;
+
           font-family: Georgia, serif;
           font-style: italic;
-          font-size: clamp(31px, 5vw, 48px);
+
+          font-size:
+            clamp(
+              31px,
+              5vw,
+              48px
+            );
+
           line-height: 0.88;
           letter-spacing: -0.045em;
         }
 
         .bigTicket p {
           margin: 0;
+
           font-family: Georgia, serif;
           font-size: 13px;
         }
 
         .bigTicketFor {
           position: absolute;
+
           left: 30px;
           right: 30px;
           bottom: 24px;
+
           display: flex;
           justify-content: space-between;
+
           font-size: 6px;
           font-weight: 700;
           letter-spacing: 0.12em;
@@ -921,42 +1077,16 @@ export default function CouponCollection({
 
         .bigStub {
           position: relative;
-          border-left: 1px dashed #64101c;
-          border-radius: 0 16px 16px 0;
+
+          border-left:
+            1px dashed #64101c;
+
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: space-around;
+
           padding: 25px 0;
-        }
-
-        /*
-          BIG TEAR-LINE CUT-OUTS
-        */
-
-        .bigStub::before,
-        .bigStub::after {
-          content: "";
-          position: absolute;
-          z-index: 8;
-          left: -10px;
-
-          width: 20px;
-          height: 20px;
-
-          border-radius: 50%;
-
-          background: #f0c7c4;
-
-          pointer-events: none;
-        }
-
-        .bigStub::before {
-          top: -10px;
-        }
-
-        .bigStub::after {
-          bottom: -10px;
         }
 
         .bigStub small {
@@ -970,12 +1100,16 @@ export default function CouponCollection({
 
         .verticalBarcode {
           writing-mode: vertical-rl;
+
           font-size: 12px;
+
           letter-spacing: -2px;
         }
 
         .question {
-          margin: 30px 0 18px;
+          margin:
+            30px 0 18px;
+
           font-family: Georgia, serif;
           font-size: 17px;
           font-style: italic;
@@ -983,15 +1117,24 @@ export default function CouponCollection({
 
         .redeemButton,
         .locked {
-          width: min(360px, 100%);
+          width:
+            min(
+              360px,
+              100%
+            );
+
           height: 57px;
+
           border: none;
           border-radius: 100px;
+
           background: #570a16;
           color: #f5d3cf;
+
           font-size: 9px;
           font-weight: 800;
           letter-spacing: 0.12em;
+
           cursor: pointer;
         }
 
@@ -1005,13 +1148,19 @@ export default function CouponCollection({
 
         .notYet {
           display: block;
-          margin: 17px auto 0;
+
+          margin:
+            17px auto 0;
+
           border: none;
+
           background: none;
           color: #570a16;
+
           font-size: 7px;
           font-weight: 800;
           letter-spacing: 0.14em;
+
           cursor: pointer;
         }
 
@@ -1051,11 +1200,16 @@ export default function CouponCollection({
           }
 
           .modal {
-            padding: 52px 18px 30px;
+            padding:
+              52px 18px 30px;
           }
 
           .bigTicket {
-            grid-template-columns: 1fr 65px;
+            --big-stub-width: 65px;
+
+            grid-template-columns:
+              1fr var(--big-stub-width);
+
             min-height: 245px;
           }
 
@@ -1088,16 +1242,25 @@ export default function CouponCollection({
           }
 
           .ticketsSection {
-            width: calc(100% - 24px);
+            width:
+              calc(
+                100% - 24px
+              );
           }
 
           .ticket {
-            grid-template-columns: 1fr 70px;
+            --stub-width: 70px;
+            --notch-size: 9px;
+
+            grid-template-columns:
+              1fr var(--stub-width);
+
             border-radius: 13px;
           }
 
           .ticketMain {
-            padding: 23px 18px;
+            padding:
+              23px 18px;
           }
 
           .ticket h2 {
@@ -1108,34 +1271,6 @@ export default function CouponCollection({
           .ticketBottom {
             left: 18px;
             right: 18px;
-          }
-
-          .outerNotch {
-            width: 16px;
-            height: 16px;
-          }
-
-          .outerNotchLeft {
-            left: -8px;
-          }
-
-          .outerNotchRight {
-            right: -8px;
-          }
-
-          .ticketStub::before,
-          .ticketStub::after {
-            width: 16px;
-            height: 16px;
-            left: -8px;
-          }
-
-          .ticketStub::before {
-            top: -8px;
-          }
-
-          .ticketStub::after {
-            bottom: -8px;
           }
 
           .ticketInnerFrame {
@@ -1149,39 +1284,15 @@ export default function CouponCollection({
           }
 
           .bigTicket {
-            grid-template-columns: 1fr 55px;
+            --big-stub-width: 55px;
+            --big-notch-size: 10px;
+
+            grid-template-columns:
+              1fr var(--big-stub-width);
           }
 
           .bigTicketFor span:last-child {
             display: none;
-          }
-
-          .bigNotch {
-            width: 18px;
-            height: 18px;
-          }
-
-          .bigNotchLeft {
-            left: -9px;
-          }
-
-          .bigNotchRight {
-            right: -9px;
-          }
-
-          .bigStub::before,
-          .bigStub::after {
-            width: 18px;
-            height: 18px;
-            left: -9px;
-          }
-
-          .bigStub::before {
-            top: -9px;
-          }
-
-          .bigStub::after {
-            bottom: -9px;
           }
         }
       `}</style>
