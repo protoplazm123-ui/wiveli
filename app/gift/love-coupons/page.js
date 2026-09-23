@@ -13,7 +13,7 @@ const [screen, setScreen] = useState("intro");
     setReady(true);
   }, []);
 const selectedCoupons = couponIdeas.filter((coupon) =>
-  gift.couponIds.includes(coupon.id)
+  gift?.couponIds?.includes(coupon.id)
 );
 
 if (screen === "printer") {
