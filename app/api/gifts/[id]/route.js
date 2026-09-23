@@ -52,11 +52,25 @@ export async function GET(request, { params }) {
       );
     }
 
+    const storedGift = rows[0].gift_data || {};
+
+    // Only data the recipient is allowed to see.
+    // Sender contact details and delivery information stay private.
+    const publicGift = {
+      senderName: storedGift.senderName || "",
+      recipientName: storedGift.recipientName || "",
+      couponIds: storedGift.couponIds || [],
+      customCoupons: storedGift.customCoupons || [],
+      dailyLimit: storedGift.dailyLimit ?? 3,
+      redemptions: storedGift.redemptions || [],
+      createdAt: storedGift.createdAt || null,
+    };
+
     return NextResponse.json({
       success: true,
       id: rows[0].id,
       giftType: rows[0].gift_type,
-      giftData: rows[0].gift_data,
+      giftData: publicGift,
     });
   } catch (error) {
     console.error("Gift loading failed:", error);
