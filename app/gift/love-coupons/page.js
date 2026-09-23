@@ -1,4 +1,5 @@
 "use client";
+import CouponCollection from "./CouponCollection";
 import TicketPrinter from "./TicketPrinter";
 import { couponIdeas } from "../../experiences/love-coupons/coupons";
 import { useEffect, useState } from "react";
@@ -26,30 +27,15 @@ if (screen === "printer") {
     />
   );
 }
-
 if (screen === "collection") {
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        display: "grid",
-        placeItems: "center",
-        background: "#f3cbc8",
-        color: "#4d0711",
-        fontFamily: "Georgia, serif",
-        textAlign: "center",
-      }}
-    >
-      <div>
-        <div style={{ fontSize: "18px" }}>WI♡ELI</div>
-        <h1 style={{ fontSize: "52px", marginBottom: "10px" }}>
-          Your Love Coupons ♡
-        </h1>
-        <p>{selectedCoupons.length} coupons are waiting for you.</p>
-      </div>
-    </main>
+    <CouponCollection
+      coupons={selectedCoupons}
+      gift={gift}
+    />
   );
 }
+
   if (!ready) {
     return null;
   }
