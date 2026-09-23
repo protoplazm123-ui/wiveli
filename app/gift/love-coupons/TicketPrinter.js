@@ -1,6 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 export default function TicketPrinter({
   coupons = [],
@@ -11,12 +16,279 @@ export default function TicketPrinter({
   const [printed, setPrinted] = useState(0);
   const [started, setStarted] = useState(false);
   const [finished, setFinished] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(false);
+
+  const audioContextRef = useRef(null);
+  const printerSoundRef = useRef(null);
+  const soundEnabledRef = useRef(false);
+
+  const getAudioContext = useCallback(() => {
+    if (typeof window === "undefined") return null;
+
+    if (!audioContextRef.current) {
+      const AudioContext =
+        window.AudioContext || window.webkitAudioContext;
+
+      if (!AudioContext) return null;
+
+      audioContextRef.current = new AudioContext();
+    }
+
+    return audioContextRef.current;
+  }, []);
+
+  const stopPrinterSound = useCallback(() => {
+    const active = printerSoundRef.current;
+
+    if (!active) return;
+
+    try {
+      active.noise.stop();
+    } catch {}
+
+    try {
+      active.motor.stop();
+    } catch {}
+
+    try {
+      active.master.disconnect();
+    } catch {}
+
+    printerSoundRef.current = null;
+  }, []);
+
+  const playMechanicalClick = useCallback(() => {
+    if (!soundEnabledRef.current) return;
+
+    const ctx = getAudioContext();
+    if (!ctx || ctx.state !== "running") return;
+
+    const now = ctx.currentTime;
+
+    const oscillator = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    oscillator.type = "square";
+    oscillator.frequency.setValueAtTime(180, now);
+    oscillator.frequency.exponentialRampToValueAtTime(
+      70,
+      now + 0.045
+    );
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(
+      0.055,
+      now + 0.004
+    );
+    gain.gain.exponentialRampToValueAtTime(
+      0.0001,
+      now + 0.055
+    );
+
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+
+    oscillator.start(now);
+    oscillator.stop(now + 0.06);
+  }, [getAudioContext]);
+
+  const playPaperFeed = useCallback(() => {
+    if (!soundEnabledRef.current) return;
+
+    const ctx = getAudioContext();
+    if (!ctx || ctx.state !== "running") return;
+
+    const duration = 0.13;
+    const buffer = ctx.createBuffer(
+      1,
+      Math.floor(ctx.sampleRate * duration),
+      ctx.sampleRate
+    );
+
+    const data = buffer.getChannelData(0);
+
+    for (let i = 0; i < data.length; i += 1) {
+      const envelope = 1 - i / data.length;
+      data[i] =
+        (Math.random() * 2 - 1) *
+        envelope *
+        0.55;
+    }
+
+    const source = ctx.createBufferSource();
+    const filter = ctx.createBiquadFilter();
+    const gain = ctx.createGain();
+
+    source.buffer = buffer;
+
+    filter.type = "bandpass";
+    filter.frequency.value = 1450;
+    filter.Q.value = 0.8;
+
+    gain.gain.value = 0.035;
+
+    source.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+
+    source.start();
+  }, [getAudioContext]);
+
+  const startPrinterSound = useCallback(async () => {
+    if (
+      !soundEnabledRef.current ||
+      printerSoundRef.current
+    ) {
+      return;
+    }
+
+    const ctx = getAudioContext();
+    if (!ctx) return;
+
+    if (ctx.state === "suspended") {
+      try {
+        await ctx.resume();
+      } catch {
+        return;
+      }
+    }
+
+    const noiseBuffer = ctx.createBuffer(
+      1,
+      ctx.sampleRate * 2,
+      ctx.sampleRate
+    );
+
+    const noiseData = noiseBuffer.getChannelData(0);
+
+    for (let i = 0; i < noiseData.length; i += 1) {
+      noiseData[i] = Math.random() * 2 - 1;
+    }
+
+    const noise = ctx.createBufferSource();
+    const noiseFilter = ctx.createBiquadFilter();
+    const noiseGain = ctx.createGain();
+
+    noise.buffer = noiseBuffer;
+    noise.loop = true;
+
+    noiseFilter.type = "bandpass";
+    noiseFilter.frequency.value = 1100;
+    noiseFilter.Q.value = 0.55;
+
+    noiseGain.gain.value = 0.018;
+
+    const motor = ctx.createOscillator();
+    const motorFilter = ctx.createBiquadFilter();
+    const motorGain = ctx.createGain();
+
+    motor.type = "sawtooth";
+    motor.frequency.value = 86;
+
+    motorFilter.type = "lowpass";
+    motorFilter.frequency.value = 310;
+
+    motorGain.gain.value = 0.012;
+
+    const master = ctx.createGain();
+    master.gain.value = 0.75;
+
+    noise.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(master);
+
+    motor.connect(motorFilter);
+    motorFilter.connect(motorGain);
+    motorGain.connect(master);
+
+    master.connect(ctx.destination);
+
+    noise.start();
+    motor.start();
+
+    printerSoundRef.current = {
+      noise,
+      motor,
+      master,
+    };
+  }, [getAudioContext]);
+
+  const toggleSound = useCallback(async () => {
+    if (soundEnabledRef.current) {
+      soundEnabledRef.current = false;
+      setSoundEnabled(false);
+      stopPrinterSound();
+      return;
+    }
+
+    const ctx = getAudioContext();
+
+    if (!ctx) {
+      return;
+    }
+
+    try {
+      if (ctx.state === "suspended") {
+        await ctx.resume();
+      }
+    } catch {
+      return;
+    }
+
+    soundEnabledRef.current = true;
+    setSoundEnabled(true);
+
+    const now = ctx.currentTime;
+
+    const oscillator = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(520, now);
+    oscillator.frequency.setValueAtTime(
+      660,
+      now + 0.06
+    );
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(
+      0.045,
+      now + 0.01
+    );
+    gain.gain.exponentialRampToValueAtTime(
+      0.0001,
+      now + 0.14
+    );
+
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+
+    oscillator.start(now);
+    oscillator.stop(now + 0.15);
+
+    if (started && !finished) {
+      startPrinterSound();
+    }
+  }, [
+    finished,
+    getAudioContext,
+    startPrinterSound,
+    started,
+    stopPrinterSound,
+  ]);
 
   useEffect(() => {
-    if (!started || finished || coupons.length === 0) return;
+    if (
+      !started ||
+      finished ||
+      coupons.length === 0
+    ) {
+      return;
+    }
 
     if (printed >= coupons.length) {
       const doneTimer = setTimeout(() => {
+        stopPrinterSound();
         setFinished(true);
       }, 1100);
 
@@ -25,13 +297,43 @@ export default function TicketPrinter({
 
     const timer = setTimeout(() => {
       setPrinted((value) => value + 1);
+
+      playPaperFeed();
+
+      setTimeout(() => {
+        playMechanicalClick();
+      }, 90);
     }, 720);
 
     return () => clearTimeout(timer);
-  }, [started, printed, finished, coupons.length]);
+  }, [
+    started,
+    printed,
+    finished,
+    coupons.length,
+    playMechanicalClick,
+    playPaperFeed,
+    stopPrinterSound,
+  ]);
 
-  function startPrinting() {
+  useEffect(() => {
+    return () => {
+      stopPrinterSound();
+
+      if (audioContextRef.current) {
+        audioContextRef.current.close().catch(() => {});
+      }
+    };
+  }, [stopPrinterSound]);
+
+  async function startPrinting() {
     if (coupons.length === 0) return;
+
+    if (soundEnabledRef.current) {
+      await startPrinterSound();
+      playPaperFeed();
+      playMechanicalClick();
+    }
 
     setPrinted(1);
     setFinished(false);
@@ -39,16 +341,13 @@ export default function TicketPrinter({
   }
 
   function finishPrinting() {
+    stopPrinterSound();
+
     if (onFinished) {
       onFinished();
     }
   }
 
-  /*
-    Newest coupon is closest to the printer slot.
-    Older coupons stay physically attached underneath it,
-    creating one continuous printed strip.
-  */
   const printedCoupons = coupons
     .slice(0, printed)
     .map((coupon, index) => ({
@@ -59,6 +358,27 @@ export default function TicketPrinter({
 
   return (
     <section className="printerScene">
+      <button
+        type="button"
+        className={`soundSign ${
+          soundEnabled ? "soundOn" : ""
+        }`}
+        onClick={toggleSound}
+        aria-pressed={soundEnabled}
+      >
+        <span className="soundIcon">
+          {soundEnabled ? "♫" : "♪"}
+        </span>
+
+        <span>
+          {soundEnabled
+            ? "SOUND ON"
+            : "TURN SOUND ON"}
+        </span>
+
+        <i className="soundDot" />
+      </button>
+
       <div className="ambient ambientOne">♡</div>
       <div className="ambient ambientTwo">✦</div>
       <div className="ambient ambientThree">♥</div>
@@ -112,7 +432,11 @@ export default function TicketPrinter({
       </div>
 
       <div className="printerArea">
-        <div className={`machine ${started ? "working" : ""}`}>
+        <div
+          className={`machine ${
+            started && !finished ? "working" : ""
+          }`}
+        >
           <div className="machineTop">
             <div className="machineLogo">
               <span>WI♡ELI</span>
@@ -131,8 +455,13 @@ export default function TicketPrinter({
           </div>
 
           <div className="machineFace">
-            <div className="decorHeart leftHeart">♡</div>
-            <div className="decorHeart rightHeart">♡</div>
+            <div className="decorHeart leftHeart">
+              ♡
+            </div>
+
+            <div className="decorHeart rightHeart">
+              ♡
+            </div>
 
             <div className="machineMessage">
               <small>MADE WITH LOVE FOR</small>
@@ -149,68 +478,69 @@ export default function TicketPrinter({
                 <div className="slotInner" />
               </div>
 
-              {started && printedCoupons.length > 0 && (
-                <div className="paperViewport">
-                  <div className="continuousStrip">
-                    {printedCoupons.map(
-                      (coupon, index) => (
-                        <div
-                          className={`couponSegment ${
-                            index === 0
-                              ? "newestSegment"
-                              : ""
-                          }`}
-                          key={`${coupon.id}-${coupon.originalNumber}`}
-                        >
-                          <div className="ticketBody">
-                            <small>
-                              WIVELI · LOVE COUPON
-                            </small>
+              {started &&
+                printedCoupons.length > 0 && (
+                  <div className="paperViewport">
+                    <div className="continuousStrip">
+                      {printedCoupons.map(
+                        (coupon, index) => (
+                          <div
+                            className={`couponSegment ${
+                              index === 0
+                                ? "newestSegment"
+                                : ""
+                            }`}
+                            key={`${coupon.id}-${coupon.originalNumber}`}
+                          >
+                            <div className="ticketBody">
+                              <small>
+                                WIVELI · LOVE COUPON
+                              </small>
 
-                            <strong>
-                              {coupon.title}
-                            </strong>
+                              <strong>
+                                {coupon.title}
+                              </strong>
 
-                            <p>
-                              {coupon.subtitle}
-                            </p>
+                              <p>
+                                {coupon.subtitle}
+                              </p>
 
-                            <span className="ticketHeart">
-                              ♡
-                            </span>
-                          </div>
+                              <span className="ticketHeart">
+                                ♡
+                              </span>
+                            </div>
 
-                          <div className="ticketStub">
-                            <small>NO.</small>
+                            <div className="ticketStub">
+                              <small>NO.</small>
 
-                            <b>
-                              {String(
-                                coupon.originalNumber
-                              ).padStart(2, "0")}
-                            </b>
+                              <b>
+                                {String(
+                                  coupon.originalNumber
+                                ).padStart(2, "0")}
+                              </b>
 
-                            <div className="barcode">
-                              <i />
-                              <i />
-                              <i />
-                              <i />
-                              <i />
-                              <i />
-                              <i />
-                              <i />
-                              <i />
+                              <div className="barcode">
+                                <i />
+                                <i />
+                                <i />
+                                <i />
+                                <i />
+                                <i />
+                                <i />
+                                <i />
+                                <i />
+                              </div>
+                            </div>
+
+                            <div className="perforation">
+                              <span>✂</span>
                             </div>
                           </div>
-
-                          <div className="perforation">
-                            <span>✂</span>
-                          </div>
-                        </div>
-                      )
-                    )}
+                        )
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
 
             <div className="machineBottom">
@@ -219,15 +549,17 @@ export default function TicketPrinter({
 
                 <strong>
                   {String(
-                    Math.min(printed, coupons.length)
+                    Math.min(
+                      printed,
+                      coupons.length
+                    )
                   ).padStart(2, "0")}
 
                   <span>
                     /
-                    {String(coupons.length).padStart(
-                      2,
-                      "0"
-                    )}
+                    {String(
+                      coupons.length
+                    ).padStart(2, "0")}
                   </span>
                 </strong>
               </div>
@@ -264,7 +596,9 @@ export default function TicketPrinter({
 
         {started && (
           <div className="rollHint">
-            <span>ONE CONTINUOUS LOVE COUPON ROLL ♡</span>
+            <span>
+              ONE CONTINUOUS LOVE COUPON ROLL ♡
+            </span>
           </div>
         )}
       </div>
@@ -288,6 +622,7 @@ export default function TicketPrinter({
           min-height: 100svh;
           position: relative;
           overflow: hidden;
+
           background:
             radial-gradient(
               circle at 50% 20%,
@@ -295,18 +630,144 @@ export default function TicketPrinter({
               #edc4c2 47%,
               #dba9aa 100%
             );
+
           color: #4b0710;
 
           display: grid;
+
           grid-template-columns:
             minmax(280px, 0.8fr)
             minmax(430px, 1.2fr);
 
           align-items: center;
+
           gap: 6vw;
 
-          padding: 70px 8vw;
+          padding: 90px 8vw 70px;
         }
+
+        /*
+          SOUND SIGN
+        */
+
+        .soundSign {
+          position: absolute;
+
+          z-index: 30;
+
+          top: 26px;
+          left: 50%;
+
+          transform: translateX(-50%)
+            rotate(-1.5deg);
+
+          min-width: 174px;
+
+          border: 1px solid
+            rgba(83, 8, 18, 0.38);
+
+          border-radius: 3px;
+
+          padding: 11px 15px;
+
+          background: #f5d8d3;
+          color: #5b0a15;
+
+          box-shadow:
+            0 7px 18px
+              rgba(79, 7, 16, 0.12),
+            inset 0 0 0 3px
+              rgba(255, 255, 255, 0.22);
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          gap: 8px;
+
+          font-size: 8px;
+          font-weight: 800;
+
+          letter-spacing: 0.14em;
+
+          cursor: pointer;
+
+          transition:
+            transform 0.2s ease,
+            background 0.2s ease,
+            color 0.2s ease;
+        }
+
+        .soundSign::before,
+        .soundSign::after {
+          content: "";
+
+          position: absolute;
+
+          top: -16px;
+
+          width: 1px;
+          height: 17px;
+
+          background:
+            rgba(83, 8, 18, 0.35);
+        }
+
+        .soundSign::before {
+          left: 28px;
+
+          transform: rotate(12deg);
+        }
+
+        .soundSign::after {
+          right: 28px;
+
+          transform: rotate(-12deg);
+        }
+
+        .soundSign:hover {
+          transform:
+            translateX(-50%)
+            rotate(0deg)
+            translateY(-2px);
+        }
+
+        .soundSign.soundOn {
+          background: #650c18;
+          color: #f7d9d4;
+        }
+
+        .soundIcon {
+          font-family: Georgia, serif;
+          font-size: 15px;
+        }
+
+        .soundDot {
+          width: 6px;
+          height: 6px;
+
+          border-radius: 50%;
+
+          background: currentColor;
+
+          opacity: 0.35;
+        }
+
+        .soundOn .soundDot {
+          opacity: 1;
+
+          box-shadow:
+            0 0 9px
+            rgba(255, 221, 215, 0.75);
+
+          animation:
+            soundPulse 1.2s
+            ease-in-out infinite;
+        }
+
+        /*
+          LEFT COPY
+        */
 
         .sceneCopy {
           position: relative;
@@ -315,8 +776,10 @@ export default function TicketPrinter({
 
         .sceneCopy > p {
           margin: 0 0 20px;
+
           font-size: 9px;
           font-weight: 800;
+
           letter-spacing: 0.22em;
         }
 
@@ -324,13 +787,12 @@ export default function TicketPrinter({
           margin: 0;
 
           font-family: Georgia, serif;
-          font-size: clamp(
-            55px,
-            6.5vw,
-            100px
-          );
+
+          font-size:
+            clamp(55px, 6.5vw, 100px);
 
           line-height: 0.78;
+
           letter-spacing: -0.065em;
         }
 
@@ -344,19 +806,28 @@ export default function TicketPrinter({
           margin-top: 30px;
 
           font-family: Georgia, serif;
+
           font-size: 15px;
           line-height: 1.6;
         }
 
+        /*
+          MACHINE
+        */
+
         .printerArea {
           width: min(100%, 590px);
+
           justify-self: center;
+
           position: relative;
+
           z-index: 4;
         }
 
         .machine {
           width: 100%;
+
           position: relative;
 
           filter:
@@ -369,7 +840,8 @@ export default function TicketPrinter({
         .machineTop {
           min-height: 78px;
 
-          border-radius: 28px 28px 8px 8px;
+          border-radius:
+            28px 28px 8px 8px;
 
           background: #5b0915;
           color: #f6d4cf;
@@ -377,37 +849,47 @@ export default function TicketPrinter({
           padding: 20px 25px;
 
           display: flex;
+
           justify-content: space-between;
           align-items: center;
 
           border-bottom:
-            1px solid rgba(255, 255, 255, 0.13);
+            1px solid
+            rgba(255, 255, 255, 0.13);
         }
 
         .machineLogo {
           display: flex;
+
           flex-direction: column;
+
           gap: 4px;
         }
 
         .machineLogo span {
           font-family: Georgia, serif;
+
           font-size: 23px;
           font-weight: 700;
         }
 
         .machineLogo small {
           font-size: 6px;
+
           letter-spacing: 0.2em;
+
           opacity: 0.7;
         }
 
         .machineLight {
           display: flex;
+
           align-items: center;
+
           gap: 7px;
 
           font-size: 7px;
+
           letter-spacing: 0.15em;
         }
 
@@ -424,7 +906,8 @@ export default function TicketPrinter({
         }
 
         .working .machineLight i {
-          animation: blink 0.6s infinite;
+          animation:
+            blink 0.6s infinite;
         }
 
         .machineFace {
@@ -432,9 +915,11 @@ export default function TicketPrinter({
 
           min-height: 560px;
 
-          border-radius: 8px 8px 24px 24px;
+          border-radius:
+            8px 8px 24px 24px;
 
-          padding: 43px 45px 32px;
+          padding:
+            43px 45px 32px;
 
           background:
             linear-gradient(
@@ -444,7 +929,8 @@ export default function TicketPrinter({
             );
 
           border:
-            1px solid rgba(44, 0, 6, 0.35);
+            1px solid
+            rgba(44, 0, 6, 0.35);
 
           box-shadow:
             inset 0 1px 0
@@ -455,6 +941,7 @@ export default function TicketPrinter({
 
         .machineMessage {
           text-align: center;
+
           color: #f5d1cd;
         }
 
@@ -462,6 +949,7 @@ export default function TicketPrinter({
           display: block;
 
           font-size: 7px;
+
           letter-spacing: 0.22em;
         }
 
@@ -471,17 +959,22 @@ export default function TicketPrinter({
           margin-top: 6px;
 
           font-family: Georgia, serif;
+
           font-size: 31px;
+
           font-style: italic;
+
           font-weight: 400;
         }
 
         .decorHeart {
           position: absolute;
 
-          color: rgba(247, 213, 208, 0.15);
+          color:
+            rgba(247, 213, 208, 0.15);
 
           font-family: Georgia, serif;
+
           font-size: 48px;
         }
 
@@ -590,6 +1083,7 @@ export default function TicketPrinter({
           width: 100%;
 
           display: flex;
+
           flex-direction: column;
 
           filter:
@@ -599,18 +1093,15 @@ export default function TicketPrinter({
             );
         }
 
-        /*
-          EACH COUPON IS PART OF THE SAME PAPER STRIP.
-          THERE IS NO GAP BETWEEN THEM.
-        */
-
         .couponSegment {
           position: relative;
 
           flex: 0 0 138px;
+
           min-height: 138px;
 
           display: grid;
+
           grid-template-columns:
             minmax(0, 1fr)
             76px;
@@ -625,26 +1116,25 @@ export default function TicketPrinter({
           color: #520a14;
 
           border-left:
-            1px solid rgba(91, 11, 22, 0.8);
+            1px solid
+            rgba(91, 11, 22, 0.8);
 
           border-right:
-            1px solid rgba(91, 11, 22, 0.8);
+            1px solid
+            rgba(91, 11, 22, 0.8);
         }
 
         .couponSegment:first-child {
           border-top:
-            1px solid rgba(91, 11, 22, 0.8);
+            1px solid
+            rgba(91, 11, 22, 0.8);
         }
 
         .couponSegment:last-child {
           border-bottom:
-            1px solid rgba(91, 11, 22, 0.8);
+            1px solid
+            rgba(91, 11, 22, 0.8);
         }
-
-        /*
-          Newly printed coupon feeds directly
-          from inside the slot.
-        */
 
         .newestSegment {
           animation:
@@ -660,7 +1150,8 @@ export default function TicketPrinter({
         .ticketBody {
           position: relative;
 
-          padding: 22px 22px 20px;
+          padding:
+            22px 22px 20px;
         }
 
         .ticketBody small {
@@ -668,6 +1159,7 @@ export default function TicketPrinter({
 
           font-size: 6px;
           font-weight: 700;
+
           letter-spacing: 0.17em;
         }
 
@@ -680,20 +1172,20 @@ export default function TicketPrinter({
 
           font-family: Georgia, serif;
 
-          font-size: clamp(
-            19px,
-            2vw,
-            27px
-          );
+          font-size:
+            clamp(19px, 2vw, 27px);
 
           font-style: italic;
+
           line-height: 0.92;
         }
 
         .ticketBody p {
-          margin: 9px 35px 0 0;
+          margin:
+            9px 35px 0 0;
 
           font-family: Georgia, serif;
+
           font-size: 8px;
 
           line-height: 1.3;
@@ -708,6 +1200,7 @@ export default function TicketPrinter({
           bottom: 14px;
 
           font-family: Georgia, serif;
+
           font-size: 23px;
         }
 
@@ -718,9 +1211,11 @@ export default function TicketPrinter({
             1px dashed #690f1b;
 
           display: flex;
+
           flex-direction: column;
 
           align-items: center;
+
           justify-content: center;
 
           gap: 5px;
@@ -728,18 +1223,15 @@ export default function TicketPrinter({
 
         .ticketStub small {
           font-size: 6px;
+
           letter-spacing: 0.08em;
         }
 
         .ticketStub b {
           font-family: Georgia, serif;
+
           font-size: 22px;
         }
-
-        /*
-          Small semicircular cuts around the
-          perforated ticket stub.
-        */
 
         .ticketStub::before,
         .ticketStub::after {
@@ -769,6 +1261,7 @@ export default function TicketPrinter({
           height: 17px;
 
           display: flex;
+
           align-items: stretch;
 
           gap: 2px;
@@ -793,11 +1286,6 @@ export default function TicketPrinter({
           height: 75%;
         }
 
-        /*
-          Perforation physically joins one
-          coupon to the next.
-        */
-
         .perforation {
           position: absolute;
 
@@ -810,12 +1298,8 @@ export default function TicketPrinter({
           height: 1px;
 
           border-bottom:
-            1px dashed rgba(
-              91,
-              11,
-              22,
-              0.65
-            );
+            1px dashed
+            rgba(91, 11, 22, 0.65);
         }
 
         .perforation span {
@@ -832,11 +1316,12 @@ export default function TicketPrinter({
           background: #f1c5c2;
 
           font-size: 9px;
+
           line-height: 1;
         }
 
         /*
-          Bottom controls
+          BOTTOM CONTROLS
         */
 
         .machineBottom {
@@ -857,6 +1342,7 @@ export default function TicketPrinter({
           display: flex;
 
           justify-content: space-between;
+
           align-items: center;
 
           color: #f5d1cd;
@@ -868,16 +1354,19 @@ export default function TicketPrinter({
           display: block;
 
           font-size: 6px;
+
           letter-spacing: 0.18em;
         }
 
         .counter strong {
           font-family: Georgia, serif;
+
           font-size: 27px;
         }
 
         .counter strong span {
           opacity: 0.45;
+
           font-size: 13px;
         }
 
@@ -885,15 +1374,19 @@ export default function TicketPrinter({
           border: none;
 
           min-width: 190px;
+
           height: 47px;
 
           border-radius: 100px;
 
           background: #f2c7c4;
+
           color: #4d0711;
 
           font-size: 8px;
+
           font-weight: 800;
+
           letter-spacing: 0.1em;
 
           cursor: pointer;
@@ -919,11 +1412,13 @@ export default function TicketPrinter({
 
         .printingStatus {
           display: flex;
+
           align-items: center;
 
           gap: 9px;
 
           font-size: 7px;
+
           letter-spacing: 0.16em;
         }
 
@@ -962,16 +1457,18 @@ export default function TicketPrinter({
 
           text-align: center;
 
-          color: rgba(75, 7, 16, 0.62);
+          color:
+            rgba(75, 7, 16, 0.62);
 
           font-size: 7px;
+
           font-weight: 800;
 
           letter-spacing: 0.18em;
         }
 
         /*
-          Decorative background
+          BACKGROUND DETAILS
         */
 
         .ambient {
@@ -1063,8 +1560,7 @@ export default function TicketPrinter({
         }
 
         /*
-          The new ticket begins hidden inside
-          the printer and slides downward.
+          ANIMATIONS
         */
 
         @keyframes feedPaper {
@@ -1090,6 +1586,17 @@ export default function TicketPrinter({
           }
         }
 
+        @keyframes soundPulse {
+          0%,
+          100% {
+            transform: scale(1);
+          }
+
+          50% {
+            transform: scale(1.45);
+          }
+        }
+
         @keyframes floatBit {
           from {
             transform:
@@ -1104,6 +1611,10 @@ export default function TicketPrinter({
           }
         }
 
+        /*
+          TABLET
+        */
+
         @media (max-width: 900px) {
           .printerScene {
             grid-template-columns: 1fr;
@@ -1111,7 +1622,7 @@ export default function TicketPrinter({
             gap: 45px;
 
             padding:
-              55px 20px 70px;
+              100px 20px 70px;
           }
 
           .sceneCopy {
@@ -1127,10 +1638,23 @@ export default function TicketPrinter({
           }
         }
 
+        /*
+          PHONE
+        */
+
         @media (max-width: 520px) {
           .printerScene {
             padding:
-              42px 14px 60px;
+              95px 14px 60px;
+          }
+
+          .soundSign {
+            top: 24px;
+
+            min-width: 165px;
+
+            padding:
+              10px 13px;
           }
 
           .sceneCopy h1 {
@@ -1169,17 +1693,21 @@ export default function TicketPrinter({
 
           .paperViewport {
             left: 3%;
+
             width: 94%;
+
             height: 263px;
           }
 
           .slot {
             left: 2%;
+
             width: 96%;
           }
 
           .couponSegment {
             flex-basis: 132px;
+
             min-height: 132px;
 
             grid-template-columns:
@@ -1215,8 +1743,7 @@ export default function TicketPrinter({
           .machineBottom button {
             min-width: 150px;
 
-            padding:
-              0 12px;
+            padding: 0 12px;
 
             font-size: 7px;
           }
