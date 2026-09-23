@@ -710,14 +710,6 @@ export default function CouponCollection({
           transform:
             translateY(-50%);
 
-          box-shadow:
-            0 0 0 1px
-            rgba(
-              103,
-              17,
-              29,
-              0.65
-            );
         }
 
         .outerNotchLeft {
@@ -872,14 +864,7 @@ export default function CouponCollection({
 
           background: #e8bdbc;
 
-          box-shadow:
-            0 0 0 1px
-            rgba(
-              103,
-              17,
-              29,
-              0.5
-            );
+         
 
           pointer-events: none;
         }
@@ -974,29 +959,33 @@ export default function CouponCollection({
           .ticketStub::after {
           background: #e8bdbc;
 
-          box-shadow:
-            0 0 0 1px
-            rgba(
-              57,
-              3,
-              10,
-              0.7
-            );
         }
 
         .special
-          .outerNotch {
-          background: #e8bdbc;
+         .outerNotch {
+  position: absolute;
+  z-index: 10;
+  top: 50%;
 
-          box-shadow:
-            0 0 0 1px
-            rgba(
-              57,
-              3,
-              10,
-              0.7
-            );
-        }
+  width: 18px;
+  height: 18px;
+
+  border-radius: 50%;
+
+  background: #e9c1bf;
+
+  pointer-events: none;
+
+  transform: translateY(-50%);
+}
+
+.outerNotchLeft {
+  left: -9px;
+}
+
+.outerNotchRight {
+  right: -9px;
+}
 
         .special .barcode i {
           background: #f2cbc7;
@@ -1605,22 +1594,32 @@ export default function CouponCollection({
             right: -10px;
           }
 
-          .ticketStub::before,
-          .ticketStub::after {
-            width: 18px;
-            height: 18px;
+         .ticketStub::before,
+.ticketStub::after {
+  content: "";
 
-            left: -10px;
-          }
+  position: absolute;
+  z-index: 8;
 
-          .ticketStub::before {
-            top: -10px;
-          }
+  width: 18px;
+  height: 18px;
 
-          .ticketStub::after {
-            bottom: -10px;
-          }
+  border-radius: 50%;
 
+  left: -9px;
+
+  background: #e9c1bf;
+
+  pointer-events: none;
+}
+
+.ticketStub::before {
+  top: -9px;
+}
+
+.ticketStub::after {
+  bottom: -9px;
+}
           .ticketInnerFrame {
             inset: 5px;
           }
