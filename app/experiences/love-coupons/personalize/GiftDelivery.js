@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import SendForMe from "./SendForMe";
 
 export default function GiftDelivery({
   recipientName = "them",
@@ -8,6 +9,21 @@ export default function GiftDelivery({
   onSendMyself,
 }) {
   const [choice, setChoice] = useState(null);
+  const [showSendForMe, setShowSendForMe] = useState(false);
+
+if (showSendForMe) {
+  return (
+    <SendForMe
+      recipientName={recipientName}
+      onBack={() => setShowSendForMe(false)}
+      onContinue={(details) => {
+        if (onSendForMe) {
+          onSendForMe(details);
+        }
+      }}
+    />
+  );
+}
 
   return (
     <main className="delivery">
@@ -149,9 +165,9 @@ export default function GiftDelivery({
           className="continue"
           disabled={!choice}
           onClick={() => {
-            if (choice === "wiveli" && onSendForMe) {
-              onSendForMe();
-            }
+            if (choice === "wiveli") {
+  setShowSendForMe(true);
+}
 
             if (choice === "myself" && onSendMyself) {
               onSendMyself();
