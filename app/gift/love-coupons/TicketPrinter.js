@@ -39,16 +39,6 @@ export default function TicketPrinter({
     return audioContextRef.current;
   }, []);
 
-  /*
-    REALISTIC TICKET MACHINE SOUND
-
-    Instead of one constant motor hum,
-    every ticket gets its own short burst:
-
-    motor + rapid mechanical chatter +
-    paper friction + final click.
-  */
-
   const playTicketPrintSound =
     useCallback(() => {
       if (!soundEnabledRef.current) return;
@@ -122,7 +112,7 @@ export default function TicketPrinter({
       motorGain.connect(master);
 
       /*
-        RAPID TICKET / GEAR CHATTER
+        RAPID MECHANICAL CHATTER
       */
 
       const sampleLength = Math.floor(
@@ -223,10 +213,6 @@ export default function TicketPrinter({
 
       rattleGain.connect(master);
 
-      /*
-        START EVERYTHING
-      */
-
       motor.start(now);
       chatter.start(now);
       rattle.start(now);
@@ -236,8 +222,7 @@ export default function TicketPrinter({
       rattle.stop(now + duration);
 
       /*
-        LITTLE MECHANICAL CLICK
-        AT THE END OF EACH TICKET
+        CLICK AT THE END
       */
 
       const click =
@@ -310,10 +295,6 @@ export default function TicketPrinter({
       soundEnabledRef.current = true;
       setSoundEnabled(true);
 
-      /*
-        tiny physical button click
-      */
-
       const now = ctx.currentTime;
 
       const click =
@@ -356,7 +337,7 @@ export default function TicketPrinter({
     }, [getAudioContext]);
 
   /*
-    PRINT ONE TICKET AT A TIME
+    PRINTING
   */
 
   useEffect(() => {
@@ -408,7 +389,12 @@ export default function TicketPrinter({
   }, []);
 
   function startPrinting() {
-    if (coupons.length === 0) return;
+    if (
+      coupons.length === 0 ||
+      started
+    ) {
+      return;
+    }
 
     setPrinted(0);
     setFinished(false);
@@ -416,17 +402,12 @@ export default function TicketPrinter({
   }
 
   function finishPrinting() {
+    if (!finished) return;
+
     if (onFinished) {
       onFinished();
     }
   }
-
-  /*
-    Newest ticket goes at the top.
-
-    This means every new ticket physically
-    pushes all previous tickets downward.
-  */
 
   const printedCoupons = coupons
     .slice(0, printed)
@@ -435,14 +416,6 @@ export default function TicketPrinter({
       originalNumber: index + 1,
     }))
     .reverse();
-
-  /*
-    Approximate physical length of
-    the printed strip.
-
-    This gives the page room to grow
-    while 12 tickets come out.
-  */
 
   const stripExtra =
     printed * 260;
@@ -608,29 +581,51 @@ export default function TicketPrinter({
                 </strong>
               </div>
 
-              {!started ? (
+              <div className="machineActions">
                 <button
                   type="button"
+                  className={`printButton ${
+                    started
+                      ? "printButtonDone"
+                      : ""
+                  }`}
                   onClick={startPrinting}
+                  disabled={started}
                 >
-                  <span>♥</span>
-                  PRINT MY COUPONS
+                  {!started ? (
+                    <>
+                      <span>♥</span>
+                      PRINT MY COUPONS
+                    </>
+                  ) : !finished ? (
+                    <>
+                      <span className="miniPulse">
+                        •
+                      </span>
+                      PRINTING...
+                    </>
+                  ) : (
+                    <>
+                      <span>✓</span>
+                      PRINTED
+                    </>
+                  )}
                 </button>
-              ) : !finished ? (
-                <div className="printingStatus">
-                  <i />
-                  <span>
-                    PRINTING...
-                  </span>
-                </div>
-              ) : (
-                <div className="printingStatus readyStatus">
-                  <i />
-                  <span>
-                    COMPLETE
-                  </span>
-                </div>
-              )}
+
+                <button
+                  type="button"
+                  className={`seeButton ${
+                    finished
+                      ? "seeButtonReady"
+                      : ""
+                  }`}
+                  onClick={finishPrinting}
+                  disabled={!finished}
+                >
+                  SEE MY COUPONS
+                  <span>→</span>
+                </button>
+              </div>
             </div>
 
             <div className="printerOutput">
@@ -744,16 +739,6 @@ export default function TicketPrinter({
               ONE CONTINUOUS LOVE COUPON
               ROLL ♡
             </span>
-
-            {finished && (
-              <button
-                type="button"
-                className="seeCouponsButton"
-                onClick={finishPrinting}
-              >
-                SEE MY COUPONS →
-              </button>
-            )}
           </div>
         )}
       </div>
@@ -1121,7 +1106,7 @@ export default function TicketPrinter({
             8px 8px 24px 24px;
 
           padding:
-            42px 45px 55px;
+            42px 35px 55px;
 
           background:
             linear-gradient(
@@ -1241,7 +1226,13 @@ export default function TicketPrinter({
 
           align-items: center;
 
+          gap: 18px;
+
           color: #f5d1cd;
+        }
+
+        .counter {
+          flex: 0 0 auto;
         }
 
         .counter small {
@@ -1264,77 +1255,266 @@ export default function TicketPrinter({
           font-size: 13px;
         }
 
-        .machineBottom button {
-          border: none;
+        /*
+          TWO MACHINE BUTTONS
+        */
 
-          min-width: 190px;
+        .machineActions {
+          flex: 1;
+
+          display: flex;
+
+          justify-content: flex-end;
+
+          align-items: center;
+
+          gap: 9px;
+        }
+
+        .machineActions button {
+          border: 1px solid
+            rgba(
+              247,
+              211,
+              206,
+              0.32
+            );
+
+          min-width: 150px;
 
           height: 47px;
 
           border-radius: 100px;
 
-          background: #f2c7c4;
-          color: #4d0711;
+          padding: 0 16px;
 
-          font-size: 8px;
+          font-size: 7px;
           font-weight: 800;
 
-          letter-spacing: 0.1em;
+          letter-spacing: 0.09em;
 
           cursor: pointer;
 
-          padding: 0 20px;
+          white-space: nowrap;
 
           transition:
-            transform 0.2s ease,
-            box-shadow 0.2s ease;
+            transform 0.25s ease,
+            opacity 0.25s ease,
+            background 0.35s ease,
+            color 0.35s ease,
+            border-color 0.35s ease,
+            box-shadow 0.35s ease;
         }
 
-        .machineBottom button:hover {
-          transform: scale(1.03);
+        .machineActions button span {
+          margin-right: 5px;
+        }
+
+        /*
+          PRINT BUTTON
+        */
+
+        .printButton {
+          background: #f2c7c4;
+
+          color: #4d0711;
 
           box-shadow:
-            0 8px 20px
+            0 7px 16px
             rgba(
               0,
               0,
               0,
-              0.12
+              0.1
             );
         }
 
-        .machineBottom button span {
-          margin-right: 7px;
+        .printButton:not(:disabled):hover {
+          transform:
+            translateY(-2px)
+            scale(1.02);
+
+          box-shadow:
+            0 10px 22px
+            rgba(
+              0,
+              0,
+              0,
+              0.15
+            );
         }
 
-        .printingStatus {
-          display: flex;
+        .printButtonDone {
+          background:
+            rgba(
+              242,
+              199,
+              196,
+              0.12
+            );
 
-          align-items: center;
+          color:
+            rgba(
+              245,
+              209,
+              205,
+              0.55
+            );
 
-          gap: 9px;
+          border-color:
+            rgba(
+              245,
+              209,
+              205,
+              0.14
+            );
 
-          font-size: 7px;
-
-          letter-spacing: 0.16em;
+          box-shadow: none;
         }
 
-        .printingStatus i {
-          width: 8px;
-          height: 8px;
+        .printButton:disabled {
+          cursor: default;
+        }
 
-          border-radius: 50%;
+        /*
+          SEE MY COUPONS
+
+          It stays dark until every ticket
+          has finished printing.
+        */
+
+        .seeButton {
+          background:
+            rgba(
+              27,
+              0,
+              5,
+              0.22
+            );
+
+          color:
+            rgba(
+              245,
+              209,
+              205,
+              0.28
+            );
+
+          border-color:
+            rgba(
+              245,
+              209,
+              205,
+              0.1
+            );
+
+          box-shadow:
+            inset 0 2px 8px
+            rgba(
+              0,
+              0,
+              0,
+              0.14
+            );
+
+          opacity: 0.7;
+
+          cursor: default;
+        }
+
+        .seeButton span {
+          margin-left: 5px;
+          margin-right: 0;
+        }
+
+        /*
+          Button lights up after printing
+        */
+
+        .seeButtonReady {
+          opacity: 1;
+
+          cursor: pointer;
 
           background: #f2c7c4;
 
+          color: #4d0711;
+
+          border-color: #f2c7c4;
+
+          box-shadow:
+            0 0 0 1px
+              rgba(
+                255,
+                229,
+                225,
+                0.2
+              ),
+            0 0 22px
+              rgba(
+                247,
+                198,
+                195,
+                0.5
+              ),
+            0 10px 24px
+              rgba(
+                24,
+                0,
+                4,
+                0.22
+              );
+
           animation:
-            blink
-            0.45s
+            couponButtonGlow
+            1.8s
+            ease-in-out
             infinite;
         }
 
-        .readyStatus i {
-          animation: none;
+        .seeButtonReady:hover {
+          transform:
+            translateY(-2px)
+            scale(1.03);
+
+          box-shadow:
+            0 0 0 1px
+              rgba(
+                255,
+                229,
+                225,
+                0.25
+              ),
+            0 0 30px
+              rgba(
+                247,
+                198,
+                195,
+                0.7
+              ),
+            0 13px 27px
+              rgba(
+                24,
+                0,
+                4,
+                0.25
+              );
+        }
+
+        .miniPulse {
+          display: inline-block;
+
+          font-size: 17px;
+
+          line-height: 0;
+
+          vertical-align: middle;
+
+          animation:
+            miniPulse
+            0.55s
+            ease-in-out
+            infinite alternate;
         }
 
         /*
@@ -1436,7 +1616,7 @@ export default function TicketPrinter({
         }
 
         /*
-          THE LONG PAPER STRIP
+          LONG PAPER STRIP
         */
 
         .paperViewport {
@@ -1485,7 +1665,7 @@ export default function TicketPrinter({
         }
 
         /*
-          VERTICAL / PORTRAIT COUPON
+          VERTICAL COUPON
         */
 
         .couponSegment {
@@ -1784,10 +1964,7 @@ export default function TicketPrinter({
         }
 
         /*
-          END OF THE LONG STRIP
-
-          This moves downward as more
-          tickets are printed.
+          END OF ROLL
         */
 
         .rollEnd {
@@ -1801,14 +1978,6 @@ export default function TicketPrinter({
             );
 
           text-align: center;
-
-          display: flex;
-
-          flex-direction: column;
-
-          align-items: center;
-
-          gap: 22px;
 
           color:
             rgba(
@@ -1827,45 +1996,6 @@ export default function TicketPrinter({
           transition:
             margin-top
             0.6s ease;
-        }
-
-        .seeCouponsButton {
-          border: none;
-
-          min-width: 230px;
-
-          min-height: 52px;
-
-          padding: 0 28px;
-
-          border-radius: 100px;
-
-          background: #650c18;
-          color: #f8dad6;
-
-          font-size: 8px;
-          font-weight: 800;
-
-          letter-spacing: 0.12em;
-
-          cursor: pointer;
-
-          box-shadow:
-            0 14px 28px
-            rgba(
-              85,
-              7,
-              18,
-              0.18
-            );
-
-          transition:
-            transform
-            0.2s ease;
-        }
-
-        .seeCouponsButton:hover {
-          transform: scale(1.04);
         }
 
         /*
@@ -1996,6 +2126,69 @@ export default function TicketPrinter({
           }
         }
 
+        @keyframes miniPulse {
+          from {
+            opacity: 0.25;
+          }
+
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes couponButtonGlow {
+          0%,
+          100% {
+            box-shadow:
+              0 0 0 1px
+                rgba(
+                  255,
+                  229,
+                  225,
+                  0.2
+                ),
+              0 0 16px
+                rgba(
+                  247,
+                  198,
+                  195,
+                  0.35
+                ),
+              0 10px 24px
+                rgba(
+                  24,
+                  0,
+                  4,
+                  0.2
+                );
+          }
+
+          50% {
+            box-shadow:
+              0 0 0 1px
+                rgba(
+                  255,
+                  229,
+                  225,
+                  0.3
+                ),
+              0 0 30px
+                rgba(
+                  247,
+                  198,
+                  195,
+                  0.68
+                ),
+              0 10px 28px
+                rgba(
+                  24,
+                  0,
+                  4,
+                  0.24
+                );
+          }
+        }
+
         @keyframes floatBit {
           from {
             transform:
@@ -2083,7 +2276,7 @@ export default function TicketPrinter({
           }
 
           .machineFace {
-            min-height: 330px;
+            min-height: 390px;
 
             padding:
               35px 18px 48px;
@@ -2093,16 +2286,43 @@ export default function TicketPrinter({
             font-size: 25px;
           }
 
+          /*
+            Counter goes above the two buttons,
+            but the buttons remain side by side.
+          */
+
           .machineBottom {
-            margin-top: 62px;
+            margin-top: 58px;
+
+            flex-wrap: wrap;
+
+            gap: 10px;
           }
 
-          .machineBottom button {
-            min-width: 150px;
+          .counter {
+            width: 100%;
+          }
 
-            padding: 0 12px;
+          .machineActions {
+            width: 100%;
 
-            font-size: 7px;
+            flex: 0 0 100%;
+
+            gap: 7px;
+          }
+
+          .machineActions button {
+            flex: 1;
+
+            min-width: 0;
+
+            height: 44px;
+
+            padding: 0 8px;
+
+            font-size: 6px;
+
+            letter-spacing: 0.055em;
           }
 
           .decorHeart {
