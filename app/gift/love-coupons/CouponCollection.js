@@ -9,10 +9,37 @@ export default function CouponCollection({
 }) {
   const [selectedCoupon, setSelectedCoupon] = useState(null);
 
-  const limit =
-    gift?.dailyLimit === "unlimited"
-      ? "UNLIMITED"
-      : gift?.dailyLimit || 3;
+  const redemptions = gift?.redemptions || [];
+
+  const redeemedIds = new Set(
+    redemptions.map((item) => item.couponId)
+  );
+
+  function getTodayKey() {
+    const now = new Date();
+
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  }
+
+  const todayKey = getTodayKey();
+
+  const usedToday = redemptions.filter(
+    (item) => item.dayKey === todayKey
+  ).length;
+
+  const unlimited = gift?.dailyLimit === "unlimited";
+
+  const dailyLimit = unlimited
+    ? null
+    : Number(gift?.dailyLimit || 3);
+
+  const leftToday = unlimited
+    ? null
+    : Math.max(0, dailyLimit - usedToday);
 
   return (
     <main className="collection">
@@ -27,7 +54,8 @@ export default function CouponCollection({
 
       <section className="hero">
         <p className="eyebrow">
-          MADE FOR {gift?.recipientName?.toUpperCase() || "YOU"}
+          MADE FOR{" "}
+          {gift?.recipientName?.toUpperCase() || "YOU"}
         </p>
 
         <h1>
@@ -43,15 +71,29 @@ export default function CouponCollection({
         </p>
 
         <div className="availability">
-          <div className="availabilityHeart">♥</div>
+          <div className="availabilityHeart">
+            ♥
+          </div>
 
           <div>
-            <small>AVAILABLE TODAY</small>
+            <small>
+              {unlimited
+                ? "AVAILABLE TODAY"
+                : usedToday > 0
+                ? `${usedToday} USED TODAY`
+                : "AVAILABLE TODAY"}
+            </small>
 
             <strong>
-              {limit === "UNLIMITED"
+              {unlimited
                 ? "UNLIMITED"
-                : `${limit} COUPONS`}
+                : leftToday === 0
+                ? "COME BACK TOMORROW ♡"
+                : `${leftToday} ${
+                    leftToday === 1
+                      ? "COUPON"
+                      : "COUPONS"
+                  } LEFT`}
             </strong>
           </div>
         </div>
@@ -63,84 +105,134 @@ export default function CouponCollection({
             {String(coupons.length).padStart(2, "0")} LITTLE PROMISES
           </span>
 
-          <span>CHOOSE ONE ↓</span>
+          <span>
+            {redemptions.length} REDEEMED
+          </span>
         </div>
 
         <div className="tickets">
-          {coupons.map((coupon, index) => (
-            <button
-              type="button"
-              className={`ticket ${
-                coupon.special ? "special" : ""
-              }`}
-              key={coupon.id}
-              onClick={() => setSelectedCoupon(coupon)}
-            >
-              <div className="ticketMain">
-                <div className="ticketMeta">
-                  <span>WI♡ELI</span>
-                  <span>LOVE COUPON</span>
+          {coupons.map((coupon, index) => {
+            const isRedeemed =
+              redeemedIds.has(coupon.id);
+
+            return (
+              <button
+                type="button"
+                className={`ticket ${
+                  coupon.special ? "special" : ""
+                } ${
+                  isRedeemed ? "redeemed" : ""
+                }`}
+                key={coupon.id}
+                disabled={isRedeemed}
+                onClick={() => {
+                  if (!isRedeemed) {
+                    setSelectedCoupon(coupon);
+                  }
+                }}
+              >
+                <div className="ticketMain">
+                  <div className="ticketMeta">
+                    <span>WI♡ELI</span>
+
+                    <span>
+                      {isRedeemed
+                        ? "PROMISE KEPT"
+                        : "LOVE COUPON"}
+                    </span>
+                  </div>
+
+                  <div className="ticketHeart">
+                    ♡
+                  </div>
+
+                  <h2>{coupon.title}</h2>
+
+                  <p>{coupon.subtitle}</p>
+
+                  {isRedeemed && (
+                    <div className="redeemedStamp">
+                      REDEEMED
+                    </div>
+                  )}
+
+                  <div className="ticketBottom">
+                    <span>
+                      FOR{" "}
+                      {gift?.recipientName?.toUpperCase() ||
+                        "YOU"}
+                    </span>
+
+                    <span>
+                      {isRedeemed
+                        ? "USED WITH LOVE ♡"
+                        : "WITH LOVE ♡"}
+                    </span>
+                  </div>
                 </div>
 
-                <div className="ticketHeart">♡</div>
+                <div className="ticketStub">
+                  <small>
+                    {isRedeemed ? "USED" : "NO."}
+                  </small>
 
-                <h2>{coupon.title}</h2>
+                  <strong>
+                    {String(index + 1).padStart(
+                      2,
+                      "0"
+                    )}
+                  </strong>
 
-                <p>{coupon.subtitle}</p>
+                  <div className="barcode">
+                    <i />
+                    <i />
+                    <i />
+                    <i />
+                    <i />
+                    <i />
+                    <i />
+                    <i />
+                    <i />
+                  </div>
 
-                <div className="ticketBottom">
                   <span>
-                    FOR {gift?.recipientName?.toUpperCase() || "YOU"}
+                    {isRedeemed ? "♥" : "♡"}
                   </span>
-
-                  <span>WITH LOVE ♡</span>
                 </div>
-              </div>
-
-              <div className="ticketStub">
-                <small>NO.</small>
-
-                <strong>
-                  {String(index + 1).padStart(2, "0")}
-                </strong>
-
-                <div className="barcode">
-                  <i />
-                  <i />
-                  <i />
-                  <i />
-                  <i />
-                  <i />
-                  <i />
-                  <i />
-                  <i />
-                </div>
-
-                <span>♡</span>
-              </div>
-            </button>
-          ))}
+              </button>
+            );
+          })}
         </div>
       </section>
 
       <footer>
-        <span>MADE WITH LOVE BY {gift?.senderName?.toUpperCase()}</span>
+        <span>
+          MADE WITH LOVE BY{" "}
+          {gift?.senderName?.toUpperCase()}
+        </span>
+
         <span>WI♡ELI</span>
       </footer>
 
       {selectedCoupon && (
         <div
           className="modalBackdrop"
-          onClick={() => setSelectedCoupon(null)}
+          onClick={() =>
+            setSelectedCoupon(null)
+          }
         >
           <div
             className="modal"
-            onClick={(event) => event.stopPropagation()}
+            onClick={(event) =>
+              event.stopPropagation()
+            }
           >
             <button
               type="button"
               className="close"
-              onClick={() => setSelectedCoupon(null)}
+              onClick={() =>
+                setSelectedCoupon(null)
+              }
               aria-label="Close"
             >
               ×
@@ -156,19 +248,27 @@ export default function CouponCollection({
                   WI♡ELI · LOVE COUPON
                 </span>
 
-                <div className="bigHeart">♡</div>
+                <div className="bigHeart">
+                  ♡
+                </div>
 
-                <h2>{selectedCoupon.title}</h2>
+                <h2>
+                  {selectedCoupon.title}
+                </h2>
 
-                <p>{selectedCoupon.subtitle}</p>
+                <p>
+                  {selectedCoupon.subtitle}
+                </p>
 
                 <div className="bigTicketFor">
                   <span>
-                    FOR {gift?.recipientName?.toUpperCase()}
+                    FOR{" "}
+                    {gift?.recipientName?.toUpperCase()}
                   </span>
 
                   <span>
-                    FROM {gift?.senderName?.toUpperCase()}
+                    FROM{" "}
+                    {gift?.senderName?.toUpperCase()}
                   </span>
                 </div>
               </div>
@@ -184,30 +284,55 @@ export default function CouponCollection({
               </div>
             </div>
 
-            <p className="question">
-              Want to use this one today?
-            </p>
+            {leftToday === 0 && !unlimited ? (
+              <>
+                <p className="question">
+                  You've used all your coupons
+                  for today ♡
+                </p>
 
-            <button
-              type="button"
-              className="redeem"
-              onClick={() => {
-                if (onRedeem) {
-                  onRedeem(selectedCoupon);
-                }
-              }}
-            >
-              USE THIS COUPON
-              <span>♥</span>
-            </button>
+                <button
+                  type="button"
+                  className="locked"
+                  onClick={() =>
+                    setSelectedCoupon(null)
+                  }
+                >
+                  COME BACK TOMORROW
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="question">
+                  Want to use this one today?
+                </p>
 
-            <button
-              type="button"
-              className="notYet"
-              onClick={() => setSelectedCoupon(null)}
-            >
-              NOT YET
-            </button>
+                <button
+                  type="button"
+                  className="redeemButton"
+                  onClick={() => {
+                    if (onRedeem) {
+                      onRedeem(
+                        selectedCoupon
+                      );
+                    }
+                  }}
+                >
+                  USE THIS COUPON
+                  <span>♥</span>
+                </button>
+
+                <button
+                  type="button"
+                  className="notYet"
+                  onClick={() =>
+                    setSelectedCoupon(null)
+                  }
+                >
+                  NOT YET
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -219,6 +344,7 @@ export default function CouponCollection({
 
         .collection {
           min-height: 100svh;
+
           background:
             radial-gradient(
               circle at 50% 0%,
@@ -226,16 +352,21 @@ export default function CouponCollection({
               #efcbc7 43%,
               #e3b6b4 100%
             );
+
           color: #500914;
         }
 
         header {
           height: 76px;
           padding: 0 5vw;
+
           display: flex;
           align-items: center;
           justify-content: space-between;
-          border-bottom: 1px solid rgba(80, 9, 20, 0.15);
+
+          border-bottom:
+            1px solid
+            rgba(80, 9, 20, 0.15);
         }
 
         .logo {
@@ -249,6 +380,7 @@ export default function CouponCollection({
           display: flex;
           align-items: center;
           gap: 18px;
+
           font-size: 8px;
           font-weight: 700;
           letter-spacing: 0.2em;
@@ -262,17 +394,20 @@ export default function CouponCollection({
 
         .hero {
           min-height: 510px;
+
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
+
           text-align: center;
+
           padding: 65px 20px;
-          position: relative;
         }
 
         .eyebrow {
           margin: 0 0 20px;
+
           font-size: 8px;
           font-weight: 800;
           letter-spacing: 0.23em;
@@ -280,8 +415,16 @@ export default function CouponCollection({
 
         .hero h1 {
           margin: 0;
+
           font-family: Georgia, serif;
-          font-size: clamp(65px, 9vw, 125px);
+
+          font-size:
+            clamp(
+              65px,
+              9vw,
+              125px
+            );
+
           line-height: 0.77;
           letter-spacing: -0.07em;
         }
@@ -292,6 +435,7 @@ export default function CouponCollection({
 
         .description {
           margin: 30px 0 0;
+
           font-family: Georgia, serif;
           font-size: 15px;
           line-height: 1.6;
@@ -299,24 +443,42 @@ export default function CouponCollection({
 
         .availability {
           margin-top: 35px;
-          min-width: 230px;
+
+          min-width: 245px;
+
           padding: 15px 22px;
-          border: 1px solid rgba(80, 9, 20, 0.22);
+
+          border:
+            1px solid
+            rgba(80, 9, 20, 0.22);
+
           border-radius: 100px;
+
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 13px;
-          background: rgba(255, 240, 236, 0.35);
+
+          background:
+            rgba(
+              255,
+              240,
+              236,
+              0.35
+            );
+
           backdrop-filter: blur(8px);
         }
 
         .availabilityHeart {
           width: 33px;
           height: 33px;
+
           border-radius: 50%;
+
           display: grid;
           place-items: center;
+
           background: #5b0a16;
           color: #f4cfcb;
         }
@@ -339,16 +501,27 @@ export default function CouponCollection({
         }
 
         .ticketsSection {
-          width: min(1180px, calc(100% - 40px));
+          width:
+            min(
+              1180px,
+              calc(100% - 40px)
+            );
+
           margin: 0 auto;
+
           padding: 0 0 100px;
         }
 
         .sectionTop {
           padding: 20px 2px;
+
           display: flex;
           justify-content: space-between;
-          border-top: 1px solid rgba(80, 9, 20, 0.2);
+
+          border-top:
+            1px solid
+            rgba(80, 9, 20, 0.2);
+
           font-size: 7px;
           font-weight: 700;
           letter-spacing: 0.18em;
@@ -356,41 +529,74 @@ export default function CouponCollection({
 
         .tickets {
           display: grid;
-          grid-template-columns: repeat(2, 1fr);
+
+          grid-template-columns:
+            repeat(2, 1fr);
+
           gap: 20px;
         }
 
         .ticket {
           position: relative;
+
           min-height: 220px;
+
           padding: 0;
+
           border: 1px solid #67111d;
+
           background: #f3cfcb;
           color: #570c17;
+
           display: grid;
-          grid-template-columns: 1fr 92px;
+
+          grid-template-columns:
+            1fr 92px;
+
           text-align: left;
+
           cursor: pointer;
+
           transition:
             transform 0.25s ease,
-            box-shadow 0.25s ease;
-          box-shadow: 0 13px 25px rgba(78, 8, 18, 0.08);
+            box-shadow 0.25s ease,
+            opacity 0.25s ease,
+            filter 0.25s ease;
+
+          box-shadow:
+            0 13px 25px
+            rgba(78, 8, 18, 0.08);
+
           overflow: hidden;
         }
 
-        .ticket:hover {
-          transform: translateY(-5px) rotate(-0.4deg);
-          box-shadow: 0 20px 35px rgba(78, 8, 18, 0.16);
+        .ticket:hover:not(
+            :disabled
+          ) {
+          transform:
+            translateY(-5px)
+            rotate(-0.4deg);
+
+          box-shadow:
+            0 20px 35px
+            rgba(78, 8, 18, 0.16);
+        }
+
+        .ticket:disabled {
+          cursor: default;
         }
 
         .ticketMain {
-          padding: 26px 28px 24px;
+          padding:
+            26px 28px 24px;
+
           position: relative;
         }
 
         .ticketMeta {
           display: flex;
           justify-content: space-between;
+
           font-size: 6px;
           font-weight: 800;
           letter-spacing: 0.15em;
@@ -398,58 +604,82 @@ export default function CouponCollection({
 
         .ticketHeart {
           position: absolute;
+
           right: 25px;
           top: 57px;
+
           font-family: Georgia, serif;
           font-size: 32px;
         }
 
         .ticket h2 {
           max-width: 75%;
+
           margin: 37px 0 7px;
+
           font-family: Georgia, serif;
           font-style: italic;
-          font-size: clamp(25px, 3vw, 39px);
+
+          font-size:
+            clamp(
+              25px,
+              3vw,
+              39px
+            );
+
           line-height: 0.9;
           letter-spacing: -0.04em;
         }
 
         .ticket p {
           margin: 0;
+
           font-family: Georgia, serif;
           font-size: 12px;
         }
 
         .ticketBottom {
           position: absolute;
+
           left: 28px;
           right: 28px;
           bottom: 21px;
+
           display: flex;
           justify-content: space-between;
+
           font-size: 6px;
           font-weight: 700;
           letter-spacing: 0.12em;
         }
 
         .ticketStub {
-          border-left: 1px dashed #68111d;
+          border-left:
+            1px dashed #68111d;
+
           position: relative;
+
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
+
           gap: 8px;
         }
 
         .ticketStub::before,
         .ticketStub::after {
           content: "";
+
           position: absolute;
+
           width: 17px;
           height: 17px;
+
           border-radius: 50%;
+
           left: -9px;
+
           background: #e9bebc;
         }
 
@@ -478,14 +708,18 @@ export default function CouponCollection({
 
         .barcode {
           height: 30px;
+
           display: flex;
           align-items: stretch;
+
           gap: 2px;
         }
 
         .barcode i {
           display: block;
+
           width: 2px;
+
           background: #5b0a16;
         }
 
@@ -498,6 +732,7 @@ export default function CouponCollection({
         .special {
           background: #5a0a16;
           color: #f2cbc7;
+
           border-color: #39030a;
         }
 
@@ -505,8 +740,10 @@ export default function CouponCollection({
           border-color: #e2aaa8;
         }
 
-        .special .ticketStub::before,
-        .special .ticketStub::after {
+        .special
+          .ticketStub::before,
+        .special
+          .ticketStub::after {
           background: #e7b9b7;
         }
 
@@ -514,13 +751,73 @@ export default function CouponCollection({
           background: #f2cbc7;
         }
 
+        .redeemed {
+          opacity: 0.58;
+
+          filter:
+            saturate(0.55)
+            contrast(0.9);
+
+          transform: none;
+        }
+
+        .redeemed::after {
+          content: "";
+
+          position: absolute;
+          inset: 0;
+
+          background:
+            rgba(
+              255,
+              240,
+              236,
+              0.08
+            );
+
+          pointer-events: none;
+        }
+
+        .redeemedStamp {
+          position: absolute;
+
+          z-index: 3;
+
+          right: 24px;
+          top: 88px;
+
+          padding: 8px 14px;
+
+          border:
+            3px solid
+            currentColor;
+
+          border-radius: 4px;
+
+          font-size: 11px;
+          font-weight: 900;
+
+          letter-spacing: 0.13em;
+
+          transform:
+            rotate(-9deg);
+
+          opacity: 0.8;
+        }
+
         footer {
           min-height: 100px;
+
           padding: 0 5vw;
-          border-top: 1px solid rgba(80, 9, 20, 0.17);
+
+          border-top:
+            1px solid
+            rgba(80, 9, 20, 0.17);
+
           display: flex;
           justify-content: space-between;
           align-items: center;
+
           font-size: 7px;
           font-weight: 700;
           letter-spacing: 0.17em;
@@ -529,42 +826,89 @@ export default function CouponCollection({
         .modalBackdrop {
           position: fixed;
           inset: 0;
+
           z-index: 100;
+
           padding: 25px;
+
           display: grid;
           place-items: center;
-          background: rgba(45, 2, 9, 0.72);
-          backdrop-filter: blur(14px);
+
+          background:
+            rgba(
+              45,
+              2,
+              9,
+              0.72
+            );
+
+          backdrop-filter:
+            blur(14px);
         }
 
         .modal {
           position: relative;
-          width: min(680px, 100%);
-          padding: 55px 45px 40px;
+
+          width:
+            min(
+              680px,
+              100%
+            );
+
+          padding:
+            55px 45px 40px;
+
           background: #f0c7c4;
           color: #510a15;
+
           border-radius: 25px;
-          box-shadow: 0 35px 100px rgba(28, 0, 5, 0.38);
+
+          box-shadow:
+            0 35px 100px
+            rgba(
+              28,
+              0,
+              5,
+              0.38
+            );
+
           text-align: center;
-          animation: appear 0.35s ease both;
+
+          animation:
+            appear 0.35s ease both;
         }
 
         .close {
           position: absolute;
+
           right: 18px;
           top: 15px;
+
           width: 38px;
           height: 38px;
-          border: 1px solid rgba(81, 10, 21, 0.22);
+
+          border:
+            1px solid
+            rgba(
+              81,
+              10,
+              21,
+              0.22
+            );
+
           border-radius: 50%;
+
           background: transparent;
           color: #510a15;
+
           font-size: 25px;
+
           cursor: pointer;
         }
 
         .modalEyebrow {
           margin: 0 0 23px;
+
           font-size: 7px;
           font-weight: 800;
           letter-spacing: 0.2em;
@@ -572,13 +916,30 @@ export default function CouponCollection({
 
         .bigTicket {
           min-height: 270px;
+
           display: grid;
-          grid-template-columns: 1fr 95px;
-          border: 1px solid #63101c;
+
+          grid-template-columns:
+            1fr 95px;
+
+          border:
+            1px solid #63101c;
+
           background: #f6d8d4;
+
           text-align: left;
-          box-shadow: 0 20px 40px rgba(69, 7, 16, 0.12);
-          transform: rotate(-1deg);
+
+          box-shadow:
+            0 20px 40px
+            rgba(
+              69,
+              7,
+              16,
+              0.12
+            );
+
+          transform:
+            rotate(-1deg);
         }
 
         .bigTicketMain {
@@ -594,46 +955,65 @@ export default function CouponCollection({
 
         .bigHeart {
           position: absolute;
+
           right: 30px;
           top: 30px;
+
           font-family: Georgia, serif;
           font-size: 38px;
         }
 
         .bigTicket h2 {
           max-width: 80%;
-          margin: 58px 0 10px;
+
+          margin:
+            58px 0 10px;
+
           font-family: Georgia, serif;
           font-style: italic;
-          font-size: clamp(31px, 5vw, 48px);
+
+          font-size:
+            clamp(
+              31px,
+              5vw,
+              48px
+            );
+
           line-height: 0.88;
           letter-spacing: -0.045em;
         }
 
         .bigTicket p {
           margin: 0;
+
           font-family: Georgia, serif;
           font-size: 13px;
         }
 
         .bigTicketFor {
           position: absolute;
+
           left: 30px;
           right: 30px;
           bottom: 24px;
+
           display: flex;
           justify-content: space-between;
+
           font-size: 6px;
           font-weight: 700;
           letter-spacing: 0.12em;
         }
 
         .bigStub {
-          border-left: 1px dashed #64101c;
+          border-left:
+            1px dashed #64101c;
+
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: space-around;
+
           padding: 25px 0;
         }
 
@@ -648,59 +1028,91 @@ export default function CouponCollection({
 
         .verticalBarcode {
           writing-mode: vertical-rl;
+
           font-size: 12px;
+
           letter-spacing: -2px;
         }
 
         .question {
-          margin: 30px 0 18px;
+          margin:
+            30px 0 18px;
+
           font-family: Georgia, serif;
           font-size: 17px;
           font-style: italic;
         }
 
-        .redeem {
-          width: min(360px, 100%);
+        .redeemButton,
+        .locked {
+          width:
+            min(
+              360px,
+              100%
+            );
+
           height: 57px;
+
           border: none;
           border-radius: 100px;
+
           background: #570a16;
           color: #f5d3cf;
+
           font-size: 9px;
           font-weight: 800;
           letter-spacing: 0.12em;
+
           cursor: pointer;
         }
 
-        .redeem span {
+        .redeemButton span {
           margin-left: 12px;
+        }
+
+        .locked {
+          opacity: 0.65;
         }
 
         .notYet {
           display: block;
-          margin: 17px auto 0;
+
+          margin:
+            17px auto 0;
+
           border: none;
+
           background: none;
           color: #570a16;
+
           font-size: 7px;
           font-weight: 800;
           letter-spacing: 0.14em;
+
           cursor: pointer;
         }
 
         @keyframes appear {
           from {
             opacity: 0;
-            transform: translateY(25px) scale(0.96);
+
+            transform:
+              translateY(25px)
+              scale(0.96);
           }
 
           to {
             opacity: 1;
-            transform: translateY(0) scale(1);
+
+            transform:
+              translateY(0)
+              scale(1);
           }
         }
 
-        @media (max-width: 760px) {
+        @media (
+          max-width: 760px
+        ) {
           .hero {
             min-height: 460px;
           }
@@ -710,7 +1122,8 @@ export default function CouponCollection({
           }
 
           .tickets {
-            grid-template-columns: 1fr;
+            grid-template-columns:
+              1fr;
           }
 
           .ticket {
@@ -718,11 +1131,14 @@ export default function CouponCollection({
           }
 
           .modal {
-            padding: 52px 18px 30px;
+            padding:
+              52px 18px 30px;
           }
 
           .bigTicket {
-            grid-template-columns: 1fr 65px;
+            grid-template-columns:
+              1fr 65px;
+
             min-height: 245px;
           }
 
@@ -741,7 +1157,9 @@ export default function CouponCollection({
           }
         }
 
-        @media (max-width: 450px) {
+        @media (
+          max-width: 450px
+        ) {
           header {
             padding: 0 18px;
           }
@@ -755,15 +1173,20 @@ export default function CouponCollection({
           }
 
           .ticketsSection {
-            width: calc(100% - 24px);
+            width:
+              calc(
+                100% - 24px
+              );
           }
 
           .ticket {
-            grid-template-columns: 1fr 70px;
+            grid-template-columns:
+              1fr 70px;
           }
 
           .ticketMain {
-            padding: 23px 18px;
+            padding:
+              23px 18px;
           }
 
           .ticket h2 {
@@ -776,11 +1199,19 @@ export default function CouponCollection({
             right: 18px;
           }
 
-          .bigTicket {
-            grid-template-columns: 1fr 55px;
+          .redeemedStamp {
+            right: 14px;
+            top: 88px;
+            font-size: 9px;
           }
 
-          .bigTicketFor span:last-child {
+          .bigTicket {
+            grid-template-columns:
+              1fr 55px;
+          }
+
+          .bigTicketFor
+            span:last-child {
             display: none;
           }
         }
