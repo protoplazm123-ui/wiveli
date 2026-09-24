@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function RedemptionResult({
   coupon,
@@ -9,6 +9,13 @@ export default function RedemptionResult({
   onBack,
 }) {
   const [shareStatus, setShareStatus] = useState("");
+  useEffect(() => {
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: "instant",
+  });
+}, []);
 
   if (!coupon || !redemption) return null;
 
