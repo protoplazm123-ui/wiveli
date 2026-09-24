@@ -1,51 +1,95 @@
 "use client";
 
+import { useState } from "react";
+
 export default function RedemptionResult({
   coupon,
   redemption,
   senderName,
   onBack,
 }) {
+  const [shareStatus, setShareStatus] = useState("");
+
   if (!coupon || !redemption) return null;
+
+  async function handleTellSender() {
+    const message =
+      `I just redeemed "${coupon.title}" on WIVELI ♡\n` +
+      `Redemption code: ${redemption.code}`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: "WIVELI Love Coupon",
+          text: message,
+        });
+
+        setShareStatus("READY TO SEND ♡");
+        return;
+      }
+
+      await navigator.clipboard.writeText(message);
+      setShareStatus("MESSAGE COPIED ✓");
+    } catch (error) {
+      if (error?.name !== "AbortError") {
+        try {
+          await navigator.clipboard.writeText(message);
+          setShareStatus("MESSAGE COPIED ✓");
+        } catch {
+          setShareStatus("COPY THE CODE ABOVE ♡");
+        }
+      }
+    }
+  }
 
   return (
     <main className="page">
-      <div className="decor heartOne">♡</div>
-      <div className="decor heartTwo">♥</div>
-      <div className="decor star">✦</div>
+      <div className="decor decorHeart">♡</div>
+      <div className="decor decorStar">✦</div>
+      <div className="decor decorTinyHeart">♥</div>
 
       <header>
         <span className="logo">WI♡ELI</span>
-        <span className="headerText">LOVE COUPONS</span>
+
+        <div className="headerRight">
+          <span>LOVE COUPONS</span>
+          <i>♡</i>
+        </div>
       </header>
 
       <section className="content">
-        <div className="successIcon">
+        <div className="successSeal">
           <span>♥</span>
         </div>
 
-        <p className="eyebrow">COUPON REDEEMED</p>
+        <p className="eyebrow">
+          COUPON REDEEMED
+        </p>
 
         <h1>
-          IT'S
+          IT&apos;S
           <br />
           <em>OFFICIAL.</em>
         </h1>
 
         <p className="intro">
-          This little promise has officially
+          One little promise has officially
           <br />
-          been claimed ♡
+          become yours ♡
         </p>
 
         <div className="ticket">
+          <span className="ticketInnerFrame" />
+
           <div className="ticketMain">
             <div className="ticketTop">
               <span>WI♡ELI</span>
               <span>LOVE COUPON</span>
             </div>
 
-            <div className="ticketHeart">♡</div>
+            <div className="ticketHeart">
+              ♡
+            </div>
 
             <h2>{coupon.title}</h2>
 
@@ -57,38 +101,49 @@ export default function RedemptionResult({
 
             <div className="ticketBottom">
               <span>A LITTLE PROMISE</span>
-              <span>WITH LOVE ♡</span>
+              <span>CLAIMED WITH LOVE ♡</span>
             </div>
           </div>
 
           <div className="stub">
-            <small>CODE</small>
+            <small>USED</small>
 
-            <div className="verticalCode">
-              {redemption.code}
+            <strong>♥</strong>
+
+            <div className="miniBarcode">
+              <i />
+              <i />
+              <i />
+              <i />
+              <i />
+              <i />
+              <i />
             </div>
 
-            <span>♥</span>
+            <span>♡</span>
           </div>
         </div>
 
         <div className="codeCard">
-          <small>YOUR REDEMPTION CODE</small>
+          <div className="codeLabel">
+            <span>YOUR REDEMPTION CODE</span>
+            <i>♡</i>
+          </div>
 
           <strong>{redemption.code}</strong>
 
           <p>
-            Keep this code — it belongs to this
-            coupon only.
+            Keep this code with your coupon.
+            It belongs to this promise only.
           </p>
         </div>
 
-        <div className="notification">
-          <div className="notificationHeart">
+        <div className="nextStep">
+          <div className="nextStepIcon">
             ♡
           </div>
 
-          <div>
+          <div className="nextStepCopy">
             <small>NEXT STEP</small>
 
             <strong>
@@ -96,19 +151,37 @@ export default function RedemptionResult({
             </strong>
 
             <p>
-              Automatic notifications will be
-              connected later.
+              Share the good news — this promise
+              has officially been claimed.
             </p>
           </div>
+
+          <button
+            type="button"
+            className="tellButton"
+            onClick={handleTellSender}
+          >
+            TELL{" "}
+            {senderName
+              ? senderName.toUpperCase()
+              : "THEM"}{" "}
+            ♡
+          </button>
         </div>
+
+        {shareStatus && (
+          <p className="shareStatus">
+            {shareStatus}
+          </p>
+        )}
 
         <button
           type="button"
           className="back"
           onClick={onBack}
         >
-          BACK TO MY COUPONS
-          <span>→</span>
+          <span>BACK TO MY COUPONS</span>
+          <i>→</i>
         </button>
 
         <p className="footerNote">
@@ -123,83 +196,159 @@ export default function RedemptionResult({
 
         .page {
           min-height: 100svh;
+
           position: relative;
+
           overflow: hidden;
+
           background:
             radial-gradient(
-              circle at 50% 10%,
-              #f8dfdb 0%,
-              #efc7c4 48%,
-              #dfaead 100%
+              circle at 50% 8%,
+              #f9e4df 0%,
+              #f0ccc8 45%,
+              #e2b5b3 100%
             );
+
           color: #520914;
         }
 
         header {
           height: 76px;
+
           padding: 0 5vw;
+
           display: flex;
           align-items: center;
           justify-content: space-between;
+
           border-bottom:
-            1px solid rgba(82, 9, 20, 0.14);
+            1px solid
+            rgba(82, 9, 20, 0.14);
+
           position: relative;
-          z-index: 2;
+          z-index: 5;
         }
 
         .logo {
           font-family: Georgia, serif;
+
           font-size: 22px;
           font-weight: 700;
+
           letter-spacing: 0.04em;
         }
 
-        .headerText {
+        .headerRight {
+          display: flex;
+          align-items: center;
+
+          gap: 18px;
+
           font-size: 8px;
           font-weight: 800;
+
           letter-spacing: 0.2em;
         }
 
-        .content {
-          width: min(650px, calc(100% - 32px));
-          margin: 0 auto;
-          padding: 65px 0 80px;
-          text-align: center;
-          position: relative;
-          z-index: 2;
+        .headerRight i {
+          font-family: Georgia, serif;
+
+          font-size: 19px;
+          font-style: normal;
         }
 
-        .successIcon {
-          width: 54px;
-          height: 54px;
-          margin: 0 auto 27px;
+        .content {
+          width:
+            min(
+              680px,
+              calc(100% - 32px)
+            );
+
+          margin: 0 auto;
+
+          padding:
+            64px 0 85px;
+
+          position: relative;
+          z-index: 2;
+
+          text-align: center;
+        }
+
+        .successSeal {
+          width: 56px;
+          height: 56px;
+
+          margin:
+            0 auto 26px;
+
           display: grid;
           place-items: center;
+
           border-radius: 50%;
+
           background: #570a16;
-          color: #f2c8c5;
+          color: #f3cfcb;
+
           box-shadow:
             0 15px 35px
             rgba(75, 6, 16, 0.18);
+
+          animation:
+            sealAppear
+            0.55s
+            cubic-bezier(
+              0.2,
+              0.8,
+              0.2,
+              1
+            )
+            both;
         }
 
-        .successIcon span {
+        .successSeal span {
           font-size: 18px;
         }
 
         .eyebrow {
-          margin: 0 0 18px;
+          margin:
+            0 0 18px;
+
           font-size: 8px;
           font-weight: 800;
+
           letter-spacing: 0.23em;
+
+          animation:
+            rise
+            0.55s
+            0.1s
+            ease
+            both;
         }
 
         h1 {
           margin: 0;
+
           font-family: Georgia, serif;
-          font-size: clamp(68px, 10vw, 105px);
+
+          font-size:
+            clamp(
+              68px,
+              10vw,
+              108px
+            );
+
           line-height: 0.76;
+
           letter-spacing: -0.07em;
+
+          animation:
+            rise
+            0.65s
+            0.16s
+            ease
+            both;
         }
 
         h1 em {
@@ -207,272 +356,894 @@ export default function RedemptionResult({
         }
 
         .intro {
-          margin: 28px 0 38px;
+          margin:
+            29px 0 42px;
+
           font-family: Georgia, serif;
+
           font-size: 15px;
           line-height: 1.55;
+
+          animation:
+            rise
+            0.6s
+            0.24s
+            ease
+            both;
         }
 
+        /*
+          SAME PHYSICAL TICKET SHAPE
+          AS THE COLLECTION
+        */
+
         .ticket {
+          --stub-width: 95px;
+          --notch-size: 13px;
+
           width: 100%;
-          min-height: 265px;
+
+          min-height: 270px;
+
+          position: relative;
+
           display: grid;
-          grid-template-columns: 1fr 95px;
+
+          grid-template-columns:
+            1fr var(--stub-width);
+
+          border:
+            1px solid #65101c;
+
+          border-radius: 17px;
+
           background: #f6d4d0;
-          border: 1px solid #65101c;
           color: #570a16;
+
           text-align: left;
+
           box-shadow:
             0 25px 55px
             rgba(70, 7, 16, 0.15);
-          transform: rotate(-1deg);
+
+          transform:
+            rotate(-1deg);
+
+          animation:
+            ticketArrive
+            0.75s
+            0.32s
+            cubic-bezier(
+              0.16,
+              1,
+              0.3,
+              1
+            )
+            both;
+
+          -webkit-mask-image:
+            radial-gradient(
+              circle var(--notch-size)
+                at calc(
+                  100% -
+                  var(--stub-width)
+                )
+                0,
+              transparent
+                0
+                calc(
+                  var(--notch-size) -
+                  1px
+                ),
+              #000
+                var(--notch-size)
+            ),
+            radial-gradient(
+              circle var(--notch-size)
+                at calc(
+                  100% -
+                  var(--stub-width)
+                )
+                100%,
+              transparent
+                0
+                calc(
+                  var(--notch-size) -
+                  1px
+                ),
+              #000
+                var(--notch-size)
+            );
+
+          -webkit-mask-size:
+            100% 51%,
+            100% 51%;
+
+          -webkit-mask-position:
+            top left,
+            bottom left;
+
+          -webkit-mask-repeat:
+            no-repeat,
+            no-repeat;
+
+          mask-image:
+            radial-gradient(
+              circle var(--notch-size)
+                at calc(
+                  100% -
+                  var(--stub-width)
+                )
+                0,
+              transparent
+                0
+                calc(
+                  var(--notch-size) -
+                  1px
+                ),
+              #000
+                var(--notch-size)
+            ),
+            radial-gradient(
+              circle var(--notch-size)
+                at calc(
+                  100% -
+                  var(--stub-width)
+                )
+                100%,
+              transparent
+                0
+                calc(
+                  var(--notch-size) -
+                  1px
+                ),
+              #000
+                var(--notch-size)
+            );
+
+          mask-size:
+            100% 51%,
+            100% 51%;
+
+          mask-position:
+            top left,
+            bottom left;
+
+          mask-repeat:
+            no-repeat,
+            no-repeat;
+        }
+
+        .ticketInnerFrame {
+          position: absolute;
+
+          z-index: 3;
+
+          inset: 7px;
+
+          border:
+            1px solid
+            rgba(
+              101,
+              16,
+              28,
+              0.26
+            );
+
+          border-radius: 11px;
+
+          pointer-events: none;
         }
 
         .ticketMain {
           position: relative;
-          padding: 29px 30px;
-          overflow: hidden;
+
+          padding:
+            30px 31px;
         }
 
         .ticketTop {
           display: flex;
-          justify-content: space-between;
+
+          justify-content:
+            space-between;
+
           font-size: 6px;
           font-weight: 800;
+
           letter-spacing: 0.16em;
         }
 
         .ticketHeart {
           position: absolute;
-          right: 29px;
-          top: 58px;
+
+          right: 30px;
+          top: 60px;
+
           font-family: Georgia, serif;
-          font-size: 37px;
+
+          font-size: 38px;
         }
 
         .ticket h2 {
-          max-width: 78%;
-          margin: 51px 0 8px;
+          max-width: 77%;
+
+          margin:
+            53px 0 8px;
+
           font-family: Georgia, serif;
-          font-size: clamp(32px, 6vw, 47px);
+
+          font-size:
+            clamp(
+              32px,
+              6vw,
+              48px
+            );
+
           font-style: italic;
+
           line-height: 0.88;
+
           letter-spacing: -0.045em;
         }
 
         .ticketMain > p {
           margin: 0;
+
           font-family: Georgia, serif;
+
           font-size: 12px;
         }
 
+        /*
+          THE STAMP LANDS
+          AFTER THE TICKET ARRIVES
+        */
+
         .redeemedStamp {
           position: absolute;
-          right: 20px;
-          bottom: 43px;
-          padding: 7px 13px;
-          border: 2px solid #68111d;
+
+          z-index: 6;
+
+          right: 22px;
+          bottom: 47px;
+
+          padding:
+            8px 14px;
+
+          border:
+            3px solid
+            #68111d;
+
           border-radius: 4px;
+
           font-size: 10px;
           font-weight: 900;
+
           letter-spacing: 0.13em;
-          transform: rotate(-8deg);
-          opacity: 0.78;
+
+          transform:
+            rotate(-9deg);
+
+          opacity: 0;
+
+          animation:
+            stampIn
+            0.5s
+            0.95s
+            cubic-bezier(
+              0.16,
+              1,
+              0.3,
+              1
+            )
+            forwards;
         }
 
         .ticketBottom {
           position: absolute;
-          left: 30px;
-          right: 30px;
-          bottom: 21px;
+
+          left: 31px;
+          right: 31px;
+          bottom: 22px;
+
           display: flex;
-          justify-content: space-between;
+
+          justify-content:
+            space-between;
+
           font-size: 6px;
           font-weight: 800;
+
           letter-spacing: 0.12em;
         }
 
         .stub {
-          border-left: 1px dashed #68111d;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: space-around;
-          padding: 22px 0;
           position: relative;
-        }
 
-        .stub::before,
-        .stub::after {
-          content: "";
-          position: absolute;
-          width: 18px;
-          height: 18px;
-          border-radius: 50%;
-          left: -10px;
-          background: #edc4c1;
-        }
+          border-left:
+            1px dashed #68111d;
 
-        .stub::before {
-          top: -10px;
-        }
+          display: flex;
 
-        .stub::after {
-          bottom: -10px;
+          flex-direction: column;
+
+          align-items: center;
+          justify-content:
+            space-around;
+
+          padding:
+            23px 0;
         }
 
         .stub small {
           font-size: 6px;
           font-weight: 800;
+
           letter-spacing: 0.17em;
         }
 
-        .verticalCode {
-          writing-mode: vertical-rl;
-          transform: rotate(180deg);
+        .stub strong {
           font-family: Georgia, serif;
-          font-size: 13px;
-          font-weight: 700;
-          letter-spacing: 0.08em;
+
+          font-size: 24px;
+
+          font-weight: 400;
         }
 
         .stub > span {
+          font-family: Georgia, serif;
+
           font-size: 21px;
         }
 
-        .codeCard {
-          margin-top: 28px;
-          padding: 26px 20px;
-          border:
-            1px solid rgba(82, 9, 20, 0.2);
-          background:
-            rgba(255, 240, 237, 0.38);
-          backdrop-filter: blur(10px);
+        .miniBarcode {
+          height: 42px;
+
+          display: flex;
+          align-items: stretch;
+
+          gap: 2px;
         }
 
-        .codeCard small {
+        .miniBarcode i {
           display: block;
+
+          width: 2px;
+
+          background: #570a16;
+        }
+
+        .miniBarcode
+          i:nth-child(2),
+        .miniBarcode
+          i:nth-child(5) {
+          width: 4px;
+        }
+
+        /*
+          REDEMPTION CODE
+        */
+
+        .codeCard {
+          margin-top: 30px;
+
+          padding:
+            29px 24px 27px;
+
+          position: relative;
+
+          border:
+            1px solid
+            rgba(
+              82,
+              9,
+              20,
+              0.2
+            );
+
+          border-radius: 18px;
+
+          background:
+            rgba(
+              255,
+              240,
+              237,
+              0.38
+            );
+
+          backdrop-filter:
+            blur(10px);
+
+          animation:
+            rise
+            0.6s
+            1.05s
+            ease
+            both;
+        }
+
+        .codeLabel {
+          display: flex;
+
+          align-items: center;
+          justify-content: center;
+
+          gap: 10px;
+
           font-size: 7px;
           font-weight: 800;
+
           letter-spacing: 0.19em;
+        }
+
+        .codeLabel i {
+          font-family: Georgia, serif;
+
+          font-size: 15px;
+          font-style: normal;
         }
 
         .codeCard strong {
           display: block;
-          margin-top: 8px;
+
+          margin-top: 10px;
+
           font-family: Georgia, serif;
-          font-size: 37px;
-          letter-spacing: 0.03em;
+
+          font-size:
+            clamp(
+              32px,
+              6vw,
+              42px
+            );
+
+          letter-spacing: 0.035em;
         }
 
         .codeCard p {
-          margin: 8px 0 0;
+          margin:
+            9px 0 0;
+
           font-family: Georgia, serif;
+
           font-size: 11px;
-          opacity: 0.7;
+
+          line-height: 1.45;
+
+          opacity: 0.68;
         }
 
-        .notification {
-          margin: 16px 0 25px;
-          padding: 19px 22px;
+        /*
+          TELL THE SENDER
+        */
+
+        .nextStep {
+          margin-top: 16px;
+
+          padding:
+            20px 20px;
+
           border:
-            1px solid rgba(82, 9, 20, 0.16);
-          display: flex;
+            1px solid
+            rgba(
+              82,
+              9,
+              20,
+              0.16
+            );
+
+          border-radius: 18px;
+
+          display: grid;
+
+          grid-template-columns:
+            44px 1fr auto;
+
           align-items: center;
+
           gap: 15px;
+
           text-align: left;
+
+          background:
+            rgba(
+              255,
+              237,
+              234,
+              0.2
+            );
+
+          animation:
+            rise
+            0.6s
+            1.16s
+            ease
+            both;
         }
 
-        .notificationHeart {
-          flex: 0 0 auto;
-          width: 40px;
-          height: 40px;
+        .nextStepIcon {
+          width: 44px;
+          height: 44px;
+
           border-radius: 50%;
+
           display: grid;
           place-items: center;
+
           background: #570a16;
           color: #f2c8c5;
+
           font-family: Georgia, serif;
-          font-size: 19px;
+
+          font-size: 20px;
         }
 
-        .notification small {
+        .nextStepCopy small {
           display: block;
+
           margin-bottom: 4px;
+
           font-size: 6px;
           font-weight: 800;
+
           letter-spacing: 0.16em;
         }
 
-        .notification strong {
+        .nextStepCopy strong {
           display: block;
+
           font-family: Georgia, serif;
+
           font-size: 16px;
         }
 
-        .notification p {
-          margin: 3px 0 0;
+        .nextStepCopy p {
+          max-width: 270px;
+
+          margin:
+            4px 0 0;
+
           font-size: 9px;
+
+          line-height: 1.4;
+
           opacity: 0.65;
         }
 
-        .back {
-          width: min(370px, 100%);
-          height: 58px;
-          border: none;
+        .tellButton {
+          min-width: 142px;
+
+          min-height: 46px;
+
+          padding:
+            0 17px;
+
+          border:
+            1px solid #570a16;
+
           border-radius: 100px;
-          background: #570a16;
-          color: #f4cfcb;
-          padding: 0 24px;
-          display: inline-flex;
-          justify-content: space-between;
-          align-items: center;
-          font-size: 8px;
+
+          background: transparent;
+
+          color: #570a16;
+
+          font-size: 7px;
           font-weight: 800;
+
           letter-spacing: 0.12em;
+
           cursor: pointer;
+
+          transition:
+            background 0.2s ease,
+            color 0.2s ease,
+            transform 0.2s ease;
         }
 
-        .back span {
+        .tellButton:hover {
+          background: #570a16;
+
+          color: #f4cfcb;
+
+          transform:
+            translateY(-2px);
+        }
+
+        .shareStatus {
+          margin:
+            12px 0 0;
+
+          font-size: 7px;
+          font-weight: 800;
+
+          letter-spacing: 0.15em;
+
+          animation:
+            rise
+            0.3s
+            ease
+            both;
+        }
+
+        /*
+          BACK
+        */
+
+        .back {
+          width:
+            min(
+              370px,
+              100%
+            );
+
+          height: 58px;
+
+          margin-top: 27px;
+
+          border: none;
+
+          border-radius: 100px;
+
+          background: #570a16;
+
+          color: #f4cfcb;
+
+          padding:
+            0 25px;
+
+          display: inline-flex;
+
+          justify-content:
+            space-between;
+
+          align-items: center;
+
+          font-size: 8px;
+          font-weight: 800;
+
+          letter-spacing: 0.12em;
+
+          cursor: pointer;
+
+          transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+
+          animation:
+            rise
+            0.6s
+            1.27s
+            ease
+            both;
+        }
+
+        .back:hover {
+          transform:
+            translateY(-2px);
+
+          box-shadow:
+            0 14px 30px
+            rgba(
+              82,
+              9,
+              20,
+              0.16
+            );
+        }
+
+        .back i {
           font-size: 18px;
+
+          font-style: normal;
         }
 
         .footerNote {
-          margin: 28px 0 0;
+          margin:
+            29px 0 0;
+
           font-size: 6px;
           font-weight: 800;
+
           letter-spacing: 0.18em;
-          opacity: 0.55;
+
+          opacity: 0.52;
+
+          animation:
+            rise
+            0.6s
+            1.34s
+            ease
+            both;
         }
+
+        /*
+          BACKGROUND DETAILS
+        */
 
         .decor {
           position: absolute;
+
           pointer-events: none;
-          color: rgba(82, 9, 20, 0.1);
+
+          color:
+            rgba(
+              82,
+              9,
+              20,
+              0.075
+            );
+
           font-family: Georgia, serif;
+
+          user-select: none;
         }
 
-        .heartOne {
+        .decorHeart {
           left: 5%;
-          top: 22%;
-          font-size: 100px;
-          transform: rotate(-15deg);
+          top: 24%;
+
+          font-size: 120px;
+
+          transform:
+            rotate(-14deg);
+
+          animation:
+            floatOne
+            8s
+            ease-in-out
+            infinite;
         }
 
-        .heartTwo {
+        .decorTinyHeart {
           right: 7%;
-          top: 38%;
-          font-size: 55px;
-          transform: rotate(14deg);
+          top: 42%;
+
+          font-size: 54px;
+
+          transform:
+            rotate(13deg);
+
+          animation:
+            floatTwo
+            7s
+            ease-in-out
+            infinite;
         }
 
-        .star {
-          right: 13%;
-          bottom: 9%;
-          font-size: 65px;
+        .decorStar {
+          right: 12%;
+          bottom: 10%;
+
+          font-size: 70px;
+
+          animation:
+            floatOne
+            9s
+            ease-in-out
+            infinite
+            reverse;
         }
 
-        @media (max-width: 600px) {
+        /*
+          ANIMATIONS
+        */
+
+        @keyframes sealAppear {
+          from {
+            opacity: 0;
+
+            transform:
+              scale(0.6)
+              rotate(-15deg);
+          }
+
+          to {
+            opacity: 1;
+
+            transform:
+              scale(1)
+              rotate(0);
+          }
+        }
+
+        @keyframes rise {
+          from {
+            opacity: 0;
+
+            transform:
+              translateY(18px);
+          }
+
+          to {
+            opacity: 1;
+
+            transform:
+              translateY(0);
+          }
+        }
+
+        @keyframes ticketArrive {
+          from {
+            opacity: 0;
+
+            transform:
+              translateY(45px)
+              rotate(-4deg)
+              scale(0.94);
+          }
+
+          to {
+            opacity: 1;
+
+            transform:
+              translateY(0)
+              rotate(-1deg)
+              scale(1);
+          }
+        }
+
+        @keyframes stampIn {
+          0% {
+            opacity: 0;
+
+            transform:
+              rotate(-9deg)
+              scale(1.8);
+          }
+
+          70% {
+            opacity: 0.85;
+
+            transform:
+              rotate(-9deg)
+              scale(0.92);
+          }
+
+          100% {
+            opacity: 0.78;
+
+            transform:
+              rotate(-9deg)
+              scale(1);
+          }
+        }
+
+        @keyframes floatOne {
+          0%,
+          100% {
+            transform:
+              translateY(0)
+              rotate(-14deg);
+          }
+
+          50% {
+            transform:
+              translateY(-12px)
+              rotate(-10deg);
+          }
+        }
+
+        @keyframes floatTwo {
+          0%,
+          100% {
+            transform:
+              translateY(0)
+              rotate(13deg);
+          }
+
+          50% {
+            transform:
+              translateY(10px)
+              rotate(17deg);
+          }
+        }
+
+        /*
+          TABLET / MOBILE
+        */
+
+        @media (max-width: 700px) {
           header {
             padding: 0 19px;
           }
@@ -486,44 +1257,186 @@ export default function RedemptionResult({
           }
 
           .ticket {
-            min-height: 235px;
-            grid-template-columns: 1fr 66px;
+            --stub-width: 68px;
+            --notch-size: 10px;
+
+            min-height: 240px;
+
+            grid-template-columns:
+              1fr var(--stub-width);
           }
 
           .ticketMain {
-            padding: 23px 19px;
+            padding:
+              23px 20px;
           }
 
           .ticket h2 {
-            margin-top: 45px;
+            margin-top: 47px;
+
             font-size: 34px;
           }
 
           .ticketHeart {
-            right: 18px;
+            right: 19px;
+            top: 55px;
+
+            font-size: 31px;
           }
 
           .ticketBottom {
-            left: 19px;
-            right: 19px;
+            left: 20px;
+            right: 20px;
           }
 
-          .ticketBottom span:last-child {
+          .ticketBottom
+            span:last-child {
             display: none;
           }
 
           .redeemedStamp {
-            right: 13px;
-            bottom: 42px;
+            right: 14px;
+            bottom: 44px;
+
             font-size: 8px;
+
+            padding:
+              6px 9px;
           }
 
-          .codeCard strong {
-            font-size: 31px;
+          .nextStep {
+            grid-template-columns:
+              44px 1fr;
+
+            padding:
+              18px;
+          }
+
+          .tellButton {
+            grid-column:
+              1 / -1;
+
+            width: 100%;
           }
 
           .decor {
             display: none;
+          }
+        }
+
+        @media (max-width: 430px) {
+          .headerRight span {
+            display: none;
+          }
+
+          .content {
+            width:
+              calc(
+                100% - 24px
+              );
+          }
+
+          .successSeal {
+            width: 50px;
+            height: 50px;
+          }
+
+          h1 {
+            font-size: 60px;
+          }
+
+          .intro {
+            font-size: 14px;
+          }
+
+          .ticket {
+            --stub-width: 58px;
+            --notch-size: 9px;
+
+            min-height: 225px;
+          }
+
+          .ticketMain {
+            padding:
+              21px 17px;
+          }
+
+          .ticketTop {
+            font-size: 5px;
+          }
+
+          .ticketHeart {
+            right: 15px;
+
+            font-size: 28px;
+          }
+
+          .ticket h2 {
+            max-width: 79%;
+
+            margin-top: 45px;
+
+            font-size: 30px;
+          }
+
+          .ticketMain > p {
+            font-size: 11px;
+          }
+
+          .ticketBottom {
+            left: 17px;
+            right: 17px;
+
+            font-size: 5px;
+          }
+
+          .redeemedStamp {
+            right: 11px;
+
+            border-width: 2px;
+
+            font-size: 7px;
+          }
+
+          .stub strong {
+            font-size: 19px;
+          }
+
+          .miniBarcode {
+            height: 35px;
+          }
+
+          .codeCard {
+            padding:
+              25px 15px;
+          }
+
+          .codeCard strong {
+            font-size: 30px;
+
+            overflow-wrap: anywhere;
+          }
+
+          .nextStepCopy strong {
+            font-size: 15px;
+          }
+        }
+
+        @media (
+          prefers-reduced-motion:
+            reduce
+        ) {
+          *,
+          *::before,
+          *::after {
+            animation-duration:
+              0.01ms !important;
+
+            animation-iteration-count:
+              1 !important;
+
+            transition-duration:
+              0.01ms !important;
           }
         }
       `}</style>
