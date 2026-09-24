@@ -1,11 +1,17 @@
 import { NextResponse } from "next/server";
 
-export async function GET(request, { params }) {
+export async function GET(
+  request,
+  { params }
+) {
   try {
     const { id } = await params;
 
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const secretKey = process.env.SUPABASE_SECRET_KEY;
+    const supabaseUrl =
+      process.env.SUPABASE_URL;
+
+    const secretKey =
+      process.env.SUPABASE_SECRET_KEY;
 
     if (!supabaseUrl || !secretKey) {
       return NextResponse.json(
@@ -14,19 +20,11 @@ export async function GET(request, { params }) {
       );
     }
 
-    if (!id) {
-      return NextResponse.json(
-        { error: "Gift ID is required." },
-        { status: 400 }
-      );
-    }
-
     const response = await fetch(
       `${supabaseUrl}/rest/v1/gifts?id=eq.${encodeURIComponent(
         id
-      )}&gift_type=eq.love-coupons&select=id,gift_type,gift_data&limit=1`,
+      )}&select=id,gift_type,gift_data&limit=1`,
       {
-        method: "GET",
         headers: {
           apikey: secretKey,
         },
@@ -35,15 +33,14 @@ export async function GET(request, { params }) {
     );
 
     if (!response.ok) {
-      console.error("Supabase gift fetch failed:", response.status);
-
       return NextResponse.json(
         { error: "Could not load gift." },
         { status: 500 }
       );
     }
 
-    const rows = await response.json();
+    const rows =
+      await response.json();
 
     if (!rows.length) {
       return NextResponse.json(
@@ -52,28 +49,76 @@ export async function GET(request, { params }) {
       );
     }
 
-    const storedGift = rows[0].gift_data || {};
+    const row = rows[0];
+    const stored =
+      row.gift_data || {};
 
-    // Only data the recipient is allowed to see.
-    // Sender contact details and delivery information stay private.
-    const publicGift = {
-      senderName: storedGift.senderName || "",
-      recipientName: storedGift.recipientName || "",
-      couponIds: storedGift.couponIds || [],
-      customCoupons: storedGift.customCoupons || [],
-      dailyLimit: storedGift.dailyLimit ?? 3,
-      redemptions: storedGift.redemptions || [],
-      createdAt: storedGift.createdAt || null,
-    };
+    let publicGift;
+
+    if (
+      row.gift_type ===
+      "love-coupons"
+    ) {
+      publicGift = {
+        senderName:
+          stored.senderName || "",
+
+        recipientName:
+          stored.recipientName || "",
+
+        couponIds:
+          stored.couponIds || [],
+
+        customCoupons:
+          stored.customCoupons || [],
+
+        dailyLimit:
+          stored.dailyLimit ?? 3,
+
+        redemptions:
+          stored.redemptions || [],
+
+        createdAt:
+          stored.createdAt || null,
+      };
+    } else if (
+      row.gift_type ===
+      "memory-box"
+    ) {
+      publicGift = {
+        senderName:
+          stored.senderName || "",
+
+        recipientName:
+          stored.recipientName || "",
+
+        memories:
+          stored.memories || [],
+
+        finalMessage:
+          stored.finalMessage || "",
+
+        createdAt:
+          stored.createdAt || null,
+      };
+    } else {
+      return NextResponse.json(
+        { error: "Unsupported gift." },
+        { status: 400 }
+      );
+    }
 
     return NextResponse.json({
       success: true,
-      id: rows[0].id,
-      giftType: rows[0].gift_type,
+      id: row.id,
+      giftType: row.gift_type,
       giftData: publicGift,
     });
   } catch (error) {
-    console.error("Gift loading failed:", error);
+    console.error(
+      "Gift loading failed:",
+      error
+    );
 
     return NextResponse.json(
       { error: "Could not load gift." },
