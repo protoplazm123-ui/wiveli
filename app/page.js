@@ -1,6 +1,8 @@
 "use client";
 
-import { useRef } from "react";const categories = [
+import { useRef } from "react";
+
+const categories = [
   {
     title: "For Someone Special",
     text: "Love notes, stories, memories and more",
@@ -69,13 +71,13 @@ const experiences = [
     symbol: "□",
     href: "/experiences/memory-box",
   },
- {
-  title: "How Well Do You Know Me?",
-  tag: "PLAY · LAUGH · DISCOVER",
-  text: "A personalized quiz made for couples, friends and favorite people.",
-  symbol: "?",
-  href: "/experiences/how-well-do-you-know-me",
-},
+  {
+    title: "The Gift",
+    tag: "ANSWER · UNLOCK · REVEAL",
+    text: "Answer personal questions and unlock photos, letters, videos and real surprises.",
+    symbol: "✦",
+    href: "/experiences/the-gift/personalize",
+  },
 ];
 
 export default function Home() {
@@ -83,6 +85,7 @@ export default function Home() {
 
   const handleHeroMove = (event) => {
     const hero = heroRef.current;
+
     if (!hero) return;
 
     const rect = hero.getBoundingClientRect();
@@ -96,10 +99,14 @@ export default function Home() {
     hero
       .querySelectorAll("[data-depth]")
       .forEach((object) => {
-        const depth = Number(object.dataset.depth) || 1;
+        const depth =
+          Number(object.dataset.depth) || 1;
 
-        const moveX = x * depth * 22;
-        const moveY = y * depth * 18;
+        const moveX =
+          x * depth * 22;
+
+        const moveY =
+          y * depth * 18;
 
         object.style.setProperty(
           "--mouse-x",
@@ -115,175 +122,261 @@ export default function Home() {
 
   const resetHero = () => {
     const hero = heroRef.current;
+
     if (!hero) return;
 
     hero
       .querySelectorAll("[data-depth]")
       .forEach((object) => {
-        object.style.setProperty("--mouse-x", "0px");
-        object.style.setProperty("--mouse-y", "0px");
+        object.style.setProperty(
+          "--mouse-x",
+          "0px"
+        );
+
+        object.style.setProperty(
+          "--mouse-y",
+          "0px"
+        );
       });
   };
 
-  return (    <main>
+  return (
+    <main>
       <header className="header">
-        <a className="logo" href="/">
+        <a
+          className="logo"
+          href="/"
+        >
           WI<span>♥</span>ELI
         </a>
 
         <nav>
-          <a href="#gifts">Gifts</a>
-          <a href="#how">How It Works</a>
-          <a href="#ideas">Ideas</a>
-          <a href="#about">About</a>
+          <a href="#gifts">
+            Gifts
+          </a>
+
+          <a href="#how">
+            How It Works
+          </a>
+
+          <a href="#ideas">
+            Ideas
+          </a>
+
+          <a href="#about">
+            About
+          </a>
         </nav>
 
         <div className="headerActions">
-          <button className="login">Log in</button>
-          <button className="primary small">Create a Gift →</button>
+          <button className="login">
+            Log in
+          </button>
+
+          <button className="primary small">
+            Create a Gift →
+          </button>
         </div>
       </header>
-<section
-  ref={heroRef}
-  className="wiveliMotionHero"
-  onPointerMove={handleHeroMove}
-  onPointerLeave={resetHero}
->
-    <div className="motionAura motionAuraPink" />
-  <div className="motionAura motionAuraSage" />
 
-  <div className="motionTop">
-    <span>DIGITAL GIFTS · REAL FEELINGS</span>
-    <span>WISH + LOVE + LIFE</span>
-  </div>
+      <section
+        ref={heroRef}
+        className="wiveliMotionHero"
+        onPointerMove={
+          handleHeroMove
+        }
+        onPointerLeave={
+          resetHero
+        }
+      >
+        <div className="motionAura motionAuraPink" />
+        <div className="motionAura motionAuraSage" />
 
-  <div className="motionScene">
-    <div className="motionCenter">
-      <p className="motionMini">
-        SOMETHING MADE JUST FOR THEM
-      </p>
+        <div className="motionTop">
+          <span>
+            DIGITAL GIFTS · REAL FEELINGS
+          </span>
 
-      <h1>
-        MAKE IT
-        <br />
-        <em>PERSONAL.</em>
-      </h1>
-
-      <p className="motionDescription">
-        Turn a feeling into something
-        they can actually experience.
-      </p>
-
-      <a href="#ideas" className="motionButton">
-        CREATE A GIFT
-        <span>↗</span>
-      </a>
-    </div>
-
-    <div
-      className="motionObject motionObjectHeart"
-      data-depth="1"
-      aria-hidden="true"
-    >
-      ♡
-    </div>
-
-    <div
-      className="motionObject motionObjectGlass"
-      data-depth="2"
-      aria-hidden="true"
-    >
-      ♥
-    </div>
-
-    <div
-      className="motionObject motionObjectOrb"
-      data-depth="3"
-      aria-hidden="true"
-    />
-
-    <div
-      className="motionObject motionObjectRibbon"
-      data-depth="2"
-      aria-hidden="true"
-    >
-      ∿
-    </div>
-
-    <div
-      className="motionObject motionObjectFlower"
-      data-depth="1"
-      aria-hidden="true"
-    >
-      ✿
-    </div>
-
-    <div
-      className="motionObject motionObjectPolaroid"
-      data-depth="3"
-      aria-hidden="true"
-    >
-      <div />
-      <span>little moments ♡</span>
-    </div>
-
-    <div
-      className="motionObject motionObjectNote"
-      data-depth="2"
-      aria-hidden="true"
-    >
-      <small>FOR SOMEONE SPECIAL</small>
-      <strong>
-        made with
-        <br />
-        feeling ♡
-      </strong>
-    </div>
-
-    <img
-      className="motionAssetSheet"
-      src="/assets/home/547AE97E-FC4B-40ED-9C1C-183411186401.png"
-      alt=""
-      aria-hidden="true"
-    />
-  </div>
-
-  <div className="motionBottom">
-    <span>PERSONALIZED DIGITAL EXPERIENCES</span>
-    <a href="#gifts">EXPLORE ↓</a>
-    <span>MADE WITH ♡</span>
-  </div>
-</section>      <section className="categories" id="gifts">
-        <div className="sectionTop">
-          <div>
-            <p className="eyebrow">FIND THE PERFECT WAY</p>
-            <h2>What will you create?</h2>
-          </div>
-
-          <a href="#ideas">See all experiences →</a>
+          <span>
+            WISH + LOVE + LIFE
+          </span>
         </div>
 
-        <div className="categoryGrid">
-          {categories.map((category) => (
-            <article className="categoryCard" key={category.title}>
-              <span className="categorySymbol">
-                {category.symbol}
-              </span>
+        <div className="motionScene">
+          <div className="motionCenter">
+            <p className="motionMini">
+              SOMETHING MADE JUST FOR THEM
+            </p>
 
-              <div>
-                <h3>{category.title}</h3>
-                <p>{category.text}</p>
-              </div>
+            <h1>
+              MAKE IT
+              <br />
+              <em>
+                PERSONAL.
+              </em>
+            </h1>
 
-              <span className="arrow">↗</span>
-            </article>
-          ))}
+            <p className="motionDescription">
+              Turn a feeling into something
+              they can actually experience.
+            </p>
+
+            <a
+              href="#ideas"
+              className="motionButton"
+            >
+              CREATE A GIFT
+              <span>↗</span>
+            </a>
+          </div>
+
+          <div
+            className="motionObject motionObjectHeart"
+            data-depth="1"
+            aria-hidden="true"
+          >
+            ♡
+          </div>
+
+          <div
+            className="motionObject motionObjectGlass"
+            data-depth="2"
+            aria-hidden="true"
+          >
+            ♥
+          </div>
+
+          <div
+            className="motionObject motionObjectOrb"
+            data-depth="3"
+            aria-hidden="true"
+          />
+
+          <div
+            className="motionObject motionObjectRibbon"
+            data-depth="2"
+            aria-hidden="true"
+          >
+            ∿
+          </div>
+
+          <div
+            className="motionObject motionObjectFlower"
+            data-depth="1"
+            aria-hidden="true"
+          >
+            ✿
+          </div>
+
+          <div
+            className="motionObject motionObjectPolaroid"
+            data-depth="3"
+            aria-hidden="true"
+          >
+            <div />
+
+            <span>
+              little moments ♡
+            </span>
+          </div>
+
+          <div
+            className="motionObject motionObjectNote"
+            data-depth="2"
+            aria-hidden="true"
+          >
+            <small>
+              FOR SOMEONE SPECIAL
+            </small>
+
+            <strong>
+              made with
+              <br />
+              feeling ♡
+            </strong>
+          </div>
+
+          <img
+            className="motionAssetSheet"
+            src="/assets/home/547AE97E-FC4B-40ED-9C1C-183411186401.png"
+            alt=""
+            aria-hidden="true"
+          />
+        </div>
+
+        <div className="motionBottom">
+          <span>
+            PERSONALIZED DIGITAL EXPERIENCES
+          </span>
+
+          <a href="#gifts">
+            EXPLORE ↓
+          </a>
+
+          <span>
+            MADE WITH ♡
+          </span>
         </div>
       </section>
 
-      <section className="experiences" id="ideas">
+      <section
+        className="categories"
+        id="gifts"
+      >
+        <div className="sectionTop">
+          <div>
+            <p className="eyebrow">
+              FIND THE PERFECT WAY
+            </p>
+
+            <h2>
+              What will you create?
+            </h2>
+          </div>
+
+          <a href="#ideas">
+            See all experiences →
+          </a>
+        </div>
+
+        <div className="categoryGrid">
+          {categories.map(
+            (category) => (
+              <article
+                className="categoryCard"
+                key={category.title}
+              >
+                <span className="categorySymbol">
+                  {category.symbol}
+                </span>
+
+                <div>
+                  <h3>
+                    {category.title}
+                  </h3>
+
+                  <p>
+                    {category.text}
+                  </p>
+                </div>
+
+                <span className="arrow">
+                  ↗
+                </span>
+              </article>
+            )
+          )}
+        </div>
+      </section>
+
+      <section
+        className="experiences"
+        id="ideas"
+      >
         <div className="experienceHeading">
-          <p className="eyebrow">WIVELI EXPERIENCES</p>
+          <p className="eyebrow">
+            WIVELI EXPERIENCES
+          </p>
 
           <h2>
             PICK A FEELING.
@@ -292,77 +385,108 @@ export default function Home() {
           </h2>
 
           <p className="experienceIntro">
-            Start with an experience, personalize it with your story,
-            and turn it into a gift made for one person only.
+            Start with an experience,
+            personalize it with your story,
+            and turn it into a gift made
+            for one person only.
           </p>
         </div>
 
         <div className="experienceGrid">
-          {experiences.map((experience, index) => (
-            <article
-              className="experienceCard"
-              key={experience.title}
-            >
-              <div className="experienceVisual">
-                <span className="experienceNumber">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
+          {experiences.map(
+            (experience, index) => (
+              <article
+                className="experienceCard"
+                key={experience.title}
+              >
+                <div className="experienceVisual">
+                  <span className="experienceNumber">
+                    {String(
+                      index + 1
+                    ).padStart(
+                      2,
+                      "0"
+                    )}
+                  </span>
 
-                <span className="experienceIcon">
-                  {experience.symbol}
-                </span>
-              </div>
+                  <span className="experienceIcon">
+                    {experience.symbol}
+                  </span>
+                </div>
 
-              <div className="experienceContent">
-                <p>{experience.tag}</p>
+                <div className="experienceContent">
+                  <p>
+                    {experience.tag}
+                  </p>
 
-                <h3>{experience.title}</h3>
+                  <h3>
+                    {experience.title}
+                  </h3>
 
-                <span>{experience.text}</span>
+                  <span>
+                    {experience.text}
+                  </span>
 
-                <a
-                  className="experienceExplore"
-                  href={experience.href}
-                >
-                  Explore →
-                </a>
-              </div>
-            </article>
-          ))}
+                  <a
+                    className="experienceExplore"
+                    href={
+                      experience.href
+                    }
+                  >
+                    Explore →
+                  </a>
+                </div>
+              </article>
+            )
+          )}
         </div>
       </section>
 
-      <section className="meaning" id="about">
+      <section
+        className="meaning"
+        id="about"
+      >
         <div className="meaningCopy">
-          <p className="eyebrow">A MORE MEANINGFUL WAY</p>
+          <p className="eyebrow">
+            A MORE MEANINGFUL WAY
+          </p>
 
           <h2>
             MORE THAN
             <br />
             A GIFT.
             <br />
-            <span>A FEELING.</span>
+            <span>
+              A FEELING.
+            </span>
           </h2>
 
           <p>
-            WIVELI helps you turn your thoughts, memories and emotions
-            into interactive digital experiences — made for the people
+            WIVELI helps you turn your
+            thoughts, memories and emotions
+            into interactive digital
+            experiences — made for the people
             who matter most.
           </p>
 
-          <a className="primary" href="#ideas">
+          <a
+            className="primary"
+            href="#ideas"
+          >
             Create Your Gift →
           </a>
         </div>
 
         <div className="phone">
-          <div className="phoneTop"></div>
+          <div className="phoneTop" />
 
           <p className="phoneMini">
             FOR SOMEONE SPECIAL
           </p>
 
-          <div className="phoneHeart">♥</div>
+          <div className="phoneHeart">
+            ♥
+          </div>
 
           <h3>
             A little world
@@ -370,42 +494,76 @@ export default function Home() {
             made for you.
           </h3>
 
-          <button>OPEN YOUR GIFT</button>
+          <button>
+            OPEN YOUR GIFT
+          </button>
         </div>
 
         <div className="features">
           <div>
-            <span>01</span>
-            <h3>Personal & Unique</h3>
-            <p>Every gift is made around your story.</p>
+            <span>
+              01
+            </span>
+
+            <h3>
+              Personal & Unique
+            </h3>
+
+            <p>
+              Every gift is made
+              around your story.
+            </p>
           </div>
 
           <div>
-            <span>02</span>
-            <h3>Quick & Easy</h3>
+            <span>
+              02
+            </span>
+
+            <h3>
+              Quick & Easy
+            </h3>
+
             <p>
-              Create something meaningful without designing from
+              Create something meaningful
+              without designing from
               scratch.
             </p>
           </div>
 
           <div>
-            <span>03</span>
-            <h3>Perfect for Any Occasion</h3>
+            <span>
+              03
+            </span>
+
+            <h3>
+              Perfect for Any Occasion
+            </h3>
+
             <p>
-              Birthdays, anniversaries, friendship or no reason at all.
+              Birthdays, anniversaries,
+              friendship or no reason
+              at all.
             </p>
           </div>
         </div>
       </section>
 
       <footer>
-        <a className="logo" href="/">
+        <a
+          className="logo"
+          href="/"
+        >
           WI<span>♥</span>ELI
         </a>
 
-        <p>Wish + loVE + LIfe</p>
-        <p>© 2026 WIVELI</p>
+        <p>
+          Wish + loVE + LIfe
+        </p>
+
+        <p>
+          © 2026 WIVELI
+        </p>
       </footer>
     </main>
   );
