@@ -69,13 +69,13 @@ const experiences = [
     symbol: "□",
     href: "/experiences/memory-box",
   },
-  {
-    title: "How Well Do You Know Me?",
-    tag: "PLAY · LAUGH · DISCOVER",
-    text: "A personalized quiz made for couples, friends and favorite people.",
-    symbol: "?",
-    href: "/experiences/how-well-do-you-know-me",
-  },
+ {
+  title: "How Well Do You Know Me?",
+  tag: "PLAY · LAUGH · DISCOVER",
+  text: "A personalized quiz made for couples, friends and favorite people.",
+  symbol: "?",
+  href: "/experiences/how-well-do-you-know-me",
+},
 ];
 
 export default function Home() {
