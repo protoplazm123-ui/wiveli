@@ -1,9 +1,17 @@
 import { NextResponse } from "next/server";
 
+const ALLOWED_GIFT_TYPES = [
+  "love-coupons",
+  "memory-box",
+];
+
 export async function POST(request) {
   try {
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const secretKey = process.env.SUPABASE_SECRET_KEY;
+    const supabaseUrl =
+      process.env.SUPABASE_URL;
+
+    const secretKey =
+      process.env.SUPABASE_SECRET_KEY;
 
     if (!supabaseUrl || !secretKey) {
       return NextResponse.json(
@@ -13,10 +21,14 @@ export async function POST(request) {
     }
 
     const body = await request.json();
-    const { giftType, giftData } = body;
+
+    const {
+      giftType,
+      giftData,
+    } = body;
 
     if (
-      giftType !== "love-coupons" ||
+      !ALLOWED_GIFT_TYPES.includes(giftType) ||
       !giftData ||
       typeof giftData !== "object"
     ) {
@@ -30,39 +42,41 @@ export async function POST(request) {
       `${supabaseUrl}/rest/v1/gifts`,
       {
         method: "POST",
+
         headers: {
           apikey: secretKey,
           "Content-Type": "application/json",
           Prefer: "return=representation",
         },
+
         body: JSON.stringify({
           gift_type: giftType,
           gift_data: giftData,
         }),
+
         cache: "no-store",
       }
     );
 
     if (!response.ok) {
-      console.error(
-        "Supabase gift insert failed:",
-        response.status
-      );
-
       return NextResponse.json(
         { error: "Could not save gift." },
         { status: 500 }
       );
     }
 
-    const rows = await response.json();
+    const rows =
+      await response.json();
 
     return NextResponse.json({
       success: true,
       id: rows[0].id,
     });
   } catch (error) {
-    console.error("Gift creation failed:", error);
+    console.error(
+      "Gift creation failed:",
+      error
+    );
 
     return NextResponse.json(
       { error: "Could not create gift." },
