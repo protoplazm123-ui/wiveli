@@ -1,10 +1,116 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
+import {
+  loadLoveCouponsGift,
+} from "../storage";
+
 export default function SendMyself({
   recipientName = "them",
   onBack,
-  onPreview,
 }) {
+  const [privateLink, setPrivateLink] =
+    useState("");
+
+  const [copied, setCopied] =
+    useState(false);
+
+  useEffect(() => {
+    const gift =
+      loadLoveCouponsGift();
+
+    if (!gift?.serverId) {
+      return;
+    }
+
+    const link =
+      `${window.location.origin}` +
+      `/gift/love-coupons/` +
+      `${gift.serverId}`;
+
+    setPrivateLink(link);
+  }, []);
+
+  async function copyLink() {
+    if (!privateLink) return;
+
+    try {
+      await navigator.clipboard.writeText(
+        privateLink
+      );
+
+      setCopied(true);
+
+      window.setTimeout(() => {
+        setCopied(false);
+      }, 2200);
+    } catch (error) {
+      console.error(
+        "Could not copy link:",
+        error
+      );
+
+      alert(
+        "We couldn't copy the link automatically. Please copy it manually ♡"
+      );
+    }
+  }
+
+  async function shareGift() {
+    if (!privateLink) return;
+
+    const shareText =
+      `I made a little something for you ♡\n` +
+      `Open it when you have a minute.`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "A WIVELI gift for you ♡",
+          text: shareText,
+          url: privateLink,
+        });
+
+        return;
+      } catch (error) {
+        if (
+          error?.name ===
+          "AbortError"
+        ) {
+          return;
+        }
+
+        console.error(
+          "Share failed:",
+          error
+        );
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(
+        `${shareText}\n${privateLink}`
+      );
+
+      alert(
+        "Gift message and private link copied ♡"
+      );
+    } catch (error) {
+      console.error(
+        "Could not share gift:",
+        error
+      );
+    }
+  }
+
+  function previewGift() {
+    if (!privateLink) return;
+
+    window.location.href =
+      privateLink;
+  }
+
   return (
     <main className="page">
       <header className="topbar">
@@ -41,10 +147,11 @@ export default function SendMyself({
         </h1>
 
         <p className="description">
-          We'll create a private link
-          for {recipientName}'s gift.
+          Your private gift link for{" "}
+          {recipientName} is ready.
           <br />
-          You choose when and where to send it.
+          You choose when and where
+          to send it.
         </p>
       </section>
 
@@ -68,33 +175,53 @@ export default function SendMyself({
         </div>
 
         <div className="linkBox">
-          <div>
+          <div className="linkText">
             <small>
               PRIVATE LINK
             </small>
 
             <span>
-              wiveli.com/gift/••••••••
+              {privateLink ||
+                "Creating your private link…"}
             </span>
           </div>
 
           <button
             type="button"
-            disabled
+            disabled={!privateLink}
+            onClick={copyLink}
           >
-            COPY LINK
+            {copied
+              ? "COPIED ✓"
+              : "COPY PRIVATE LINK"}
           </button>
         </div>
 
-        <div className="comingSoon">
+        <div className="readyNotice">
           <span>♡</span>
 
           <p>
-            Your real private link will
-            be generated when cloud gift
-            storage is connected.
+            This link is unique to
+            {recipientName}&apos;s gift.
+            Anyone with the link can open
+            the experience, so share it
+            only with the person you made
+            it for.
           </p>
         </div>
+
+        <button
+          type="button"
+          className="shareButton"
+          disabled={!privateLink}
+          onClick={shareGift}
+        >
+          <span>
+            SHARE GIFT
+          </span>
+
+          <b>↗</b>
+        </button>
       </section>
 
       <section className="shareCard">
@@ -109,8 +236,10 @@ export default function SendMyself({
         </h2>
 
         <p className="shareText">
-          Once your private link is ready,
-          you can send it however feels right.
+          Send the private link however
+          feels right — the experience
+          stays the same wherever you
+          share it.
         </p>
 
         <div className="ways">
@@ -165,8 +294,10 @@ export default function SendMyself({
             a minute.
           </span>
 
-          <div className="fakeLink">
-            YOUR WIVELI LINK →
+          <div className="realLink">
+            {privateLink
+              ? "YOUR WIVELI GIFT →"
+              : "CREATING YOUR LINK…"}
           </div>
         </div>
       </section>
@@ -174,19 +305,20 @@ export default function SendMyself({
       <section className="bottom">
         <div>
           <p>
-            Want to see what
+            Want to see what{" "}
             {recipientName} will see?
           </p>
 
           <span>
-            Preview the recipient experience
-            on this device.
+            Open the real recipient
+            experience before you send it.
           </span>
         </div>
 
         <button
           type="button"
-          onClick={onPreview}
+          disabled={!privateLink}
+          onClick={previewGift}
         >
           PREVIEW GIFT
           <b>→</b>
@@ -218,11 +350,19 @@ export default function SendMyself({
           padding: 0 5vw;
 
           display: grid;
-          grid-template-columns: 1fr auto 1fr;
+          grid-template-columns:
+            1fr auto 1fr;
+
           align-items: center;
 
           border-bottom:
-            1px solid rgba(78, 9, 20, 0.16);
+            1px solid
+            rgba(
+              78,
+              9,
+              20,
+              0.16
+            );
         }
 
         .back {
@@ -242,7 +382,10 @@ export default function SendMyself({
         }
 
         .logo {
-          font-family: Georgia, serif;
+          font-family:
+            Georgia,
+            serif;
+
           font-size: 22px;
           font-weight: 700;
         }
@@ -256,7 +399,10 @@ export default function SendMyself({
         }
 
         .hero {
-          padding: 70px 20px 55px;
+          padding:
+            70px 20px
+            55px;
+
           text-align: center;
         }
 
@@ -264,15 +410,27 @@ export default function SendMyself({
           width: 48px;
           height: 48px;
 
-          margin: 0 auto 27px;
+          margin:
+            0 auto 27px;
 
           display: grid;
           place-items: center;
 
-          border: 1px solid rgba(78, 9, 20, 0.25);
+          border:
+            1px solid
+            rgba(
+              78,
+              9,
+              20,
+              0.25
+            );
+
           border-radius: 50%;
 
-          font-family: Georgia, serif;
+          font-family:
+            Georgia,
+            serif;
+
           font-size: 23px;
         }
 
@@ -284,13 +442,16 @@ export default function SendMyself({
         }
 
         .eyebrow {
-          margin: 0 0 17px;
+          margin:
+            0 0 17px;
         }
 
         .hero h1 {
           margin: 0;
 
-          font-family: Georgia, serif;
+          font-family:
+            Georgia,
+            serif;
 
           font-size:
             clamp(
@@ -300,7 +461,8 @@ export default function SendMyself({
             );
 
           line-height: 0.8;
-          letter-spacing: -0.06em;
+          letter-spacing:
+            -0.06em;
         }
 
         .hero h1 em,
@@ -310,9 +472,13 @@ export default function SendMyself({
         }
 
         .description {
-          margin: 27px 0 0;
+          margin:
+            27px 0 0;
 
-          font-family: Georgia, serif;
+          font-family:
+            Georgia,
+            serif;
+
           font-size: 15px;
           line-height: 1.55;
         }
@@ -324,7 +490,9 @@ export default function SendMyself({
           width:
             min(
               900px,
-              calc(100% - 40px)
+              calc(
+                100% - 40px
+              )
             );
 
           margin-left: auto;
@@ -334,28 +502,48 @@ export default function SendMyself({
         .linkCard {
           padding: 35px;
 
-          border: 1px solid rgba(78, 9, 20, 0.27);
+          border:
+            1px solid
+            rgba(
+              78,
+              9,
+              20,
+              0.27
+            );
+
           border-radius: 26px;
 
-          background: rgba(255, 237, 232, 0.5);
+          background:
+            rgba(
+              255,
+              237,
+              232,
+              0.5
+            );
         }
 
         .cardTop {
           display: flex;
-          justify-content: space-between;
+
+          justify-content:
+            space-between;
+
           gap: 30px;
 
           margin-bottom: 30px;
         }
 
         .smallLabel {
-          margin: 0 0 10px;
+          margin:
+            0 0 10px;
         }
 
         .cardTop h2 {
           margin: 0;
 
-          font-family: Georgia, serif;
+          font-family:
+            Georgia,
+            serif;
 
           font-size:
             clamp(
@@ -365,7 +553,9 @@ export default function SendMyself({
             );
 
           line-height: 0.95;
-          letter-spacing: -0.035em;
+
+          letter-spacing:
+            -0.035em;
         }
 
         .number {
@@ -377,26 +567,50 @@ export default function SendMyself({
           display: grid;
           place-items: center;
 
-          border: 1px solid rgba(78, 9, 20, 0.25);
+          border:
+            1px solid
+            rgba(
+              78,
+              9,
+              20,
+              0.25
+            );
+
           border-radius: 50%;
 
-          font-family: Georgia, serif;
+          font-family:
+            Georgia,
+            serif;
+
           font-size: 11px;
         }
 
         .linkBox {
           min-height: 82px;
-          padding: 13px 13px 13px 20px;
+
+          padding:
+            13px
+            13px
+            13px
+            20px;
 
           display: flex;
+
           align-items: center;
-          justify-content: space-between;
+
+          justify-content:
+            space-between;
+
           gap: 20px;
 
           border-radius: 16px;
 
           background: #570a16;
           color: #f6d2ce;
+        }
+
+        .linkText {
+          min-width: 0;
         }
 
         .linkBox small {
@@ -406,23 +620,50 @@ export default function SendMyself({
 
           font-size: 6px;
           font-weight: 800;
-          letter-spacing: 0.17em;
+
+          letter-spacing:
+            0.17em;
 
           opacity: 0.6;
         }
 
         .linkBox span {
-          font-family: Georgia, serif;
-          font-size: 15px;
+          display: block;
+
+          max-width: 540px;
+
+          overflow: hidden;
+
+          text-overflow:
+            ellipsis;
+
+          white-space: nowrap;
+
+          font-family:
+            Georgia,
+            serif;
+
+          font-size: 14px;
         }
 
         .linkBox button {
+          min-width: 165px;
           height: 48px;
-          padding: 0 20px;
+
+          padding:
+            0 20px;
 
           flex: 0 0 auto;
 
-          border: 1px solid rgba(246, 210, 206, 0.3);
+          border:
+            1px solid
+            rgba(
+              246,
+              210,
+              206,
+              0.3
+            );
+
           border-radius: 100px;
 
           background: #f5d1cc;
@@ -430,32 +671,56 @@ export default function SendMyself({
 
           font-size: 7px;
           font-weight: 800;
-          letter-spacing: 0.14em;
+
+          letter-spacing:
+            0.12em;
+
+          cursor: pointer;
         }
 
         .linkBox button:disabled {
           opacity: 0.45;
-          cursor: not-allowed;
+
+          cursor:
+            not-allowed;
         }
 
-        .comingSoon {
+        .readyNotice {
           margin-top: 15px;
-          padding: 14px 16px;
+
+          padding:
+            14px 16px;
 
           display: flex;
-          align-items: center;
+
+          align-items:
+            center;
+
           gap: 10px;
 
-          border: 1px dashed rgba(78, 9, 20, 0.22);
+          border:
+            1px dashed
+            rgba(
+              78,
+              9,
+              20,
+              0.22
+            );
+
           border-radius: 13px;
         }
 
-        .comingSoon span {
-          font-family: Georgia, serif;
+        .readyNotice span {
+          flex: 0 0 auto;
+
+          font-family:
+            Georgia,
+            serif;
+
           font-size: 18px;
         }
 
-        .comingSoon p {
+        .readyNotice p {
           margin: 0;
 
           font-size: 8px;
@@ -464,8 +729,52 @@ export default function SendMyself({
           opacity: 0.65;
         }
 
+        .shareButton {
+          width: 100%;
+          height: 57px;
+
+          margin-top: 14px;
+
+          padding:
+            0 22px;
+
+          border: none;
+
+          border-radius: 100px;
+
+          background: #570a16;
+          color: #f6d2ce;
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content:
+            space-between;
+
+          font-size: 8px;
+          font-weight: 800;
+
+          letter-spacing:
+            0.14em;
+
+          cursor: pointer;
+        }
+
+        .shareButton b {
+          font-size: 18px;
+        }
+
+        .shareButton:disabled {
+          opacity: 0.4;
+
+          cursor:
+            not-allowed;
+        }
+
         .shareCard {
           margin-top: 20px;
+
           padding: 38px;
 
           border-radius: 26px;
@@ -478,7 +787,9 @@ export default function SendMyself({
         .messageCard h2 {
           margin: 0;
 
-          font-family: Georgia, serif;
+          font-family:
+            Georgia,
+            serif;
 
           font-size:
             clamp(
@@ -488,61 +799,111 @@ export default function SendMyself({
             );
 
           line-height: 0.83;
-          letter-spacing: -0.055em;
+
+          letter-spacing:
+            -0.055em;
         }
 
         .shareText {
           max-width: 430px;
 
-          margin: 22px 0 30px;
+          margin:
+            22px 0 30px;
 
-          font-family: Georgia, serif;
+          font-family:
+            Georgia,
+            serif;
+
           font-size: 13px;
           line-height: 1.5;
         }
 
         .ways {
           display: grid;
-          grid-template-columns: repeat(5, 1fr);
+
+          grid-template-columns:
+            repeat(
+              5,
+              1fr
+            );
+
           gap: 8px;
         }
 
         .ways div {
           min-height: 95px;
+
           padding: 13px;
 
           display: flex;
-          flex-direction: column;
-          justify-content: space-between;
 
-          border: 1px solid rgba(246, 210, 206, 0.25);
+          flex-direction:
+            column;
+
+          justify-content:
+            space-between;
+
+          border:
+            1px solid
+            rgba(
+              246,
+              210,
+              206,
+              0.25
+            );
+
           border-radius: 13px;
         }
 
         .ways span {
-          font-family: Georgia, serif;
+          font-family:
+            Georgia,
+            serif;
+
           font-size: 10px;
+
           opacity: 0.6;
         }
 
         .ways strong {
           font-size: 7px;
-          letter-spacing: 0.11em;
+
+          letter-spacing:
+            0.11em;
         }
 
         .messageCard {
           margin-top: 20px;
+
           padding: 38px;
 
           display: grid;
-          grid-template-columns: 1fr 1fr;
+
+          grid-template-columns:
+            1fr 1fr;
+
           gap: 40px;
+
           align-items: center;
 
-          border: 1px solid rgba(78, 9, 20, 0.25);
+          border:
+            1px solid
+            rgba(
+              78,
+              9,
+              20,
+              0.25
+            );
+
           border-radius: 26px;
 
-          background: rgba(255, 237, 232, 0.45);
+          background:
+            rgba(
+              255,
+              237,
+              232,
+              0.45
+            );
         }
 
         .message {
@@ -553,25 +914,41 @@ export default function SendMyself({
           background: #f8dad5;
 
           box-shadow:
-            0 18px 45px rgba(65, 4, 14, 0.1);
+            0 18px 45px
+            rgba(
+              65,
+              4,
+              14,
+              0.1
+            );
         }
 
         .message p {
-          margin: 0 0 8px;
+          margin:
+            0 0 8px;
 
-          font-family: Georgia, serif;
+          font-family:
+            Georgia,
+            serif;
+
           font-size: 20px;
+
           line-height: 1.1;
+
           font-style: italic;
         }
 
         .message > span {
-          font-family: Georgia, serif;
+          font-family:
+            Georgia,
+            serif;
+
           font-size: 11px;
         }
 
-        .fakeLink {
+        .realLink {
           margin-top: 22px;
+
           padding: 13px;
 
           border-radius: 100px;
@@ -583,49 +960,83 @@ export default function SendMyself({
 
           font-size: 7px;
           font-weight: 800;
-          letter-spacing: 0.13em;
+
+          letter-spacing:
+            0.13em;
         }
 
         .bottom {
           margin-top: 20px;
-          padding: 22px 26px;
+
+          padding:
+            22px 26px;
 
           display: flex;
+
           align-items: center;
-          justify-content: space-between;
+
+          justify-content:
+            space-between;
+
           gap: 30px;
 
-          border: 1px solid rgba(78, 9, 20, 0.22);
+          border:
+            1px solid
+            rgba(
+              78,
+              9,
+              20,
+              0.22
+            );
+
           border-radius: 20px;
 
-          background: rgba(255, 237, 232, 0.45);
+          background:
+            rgba(
+              255,
+              237,
+              232,
+              0.45
+            );
         }
 
         .bottom p {
-          margin: 0 0 5px;
+          margin:
+            0 0 5px;
 
-          font-family: Georgia, serif;
+          font-family:
+            Georgia,
+            serif;
+
           font-size: 15px;
+
           font-style: italic;
         }
 
         .bottom span {
           font-size: 8px;
+
           opacity: 0.6;
         }
 
         .bottom button {
           width: 230px;
           height: 55px;
-          padding: 0 20px;
+
+          padding:
+            0 20px;
 
           flex: 0 0 auto;
 
           display: flex;
+
           align-items: center;
-          justify-content: space-between;
+
+          justify-content:
+            space-between;
 
           border: none;
+
           border-radius: 100px;
 
           background: #570a16;
@@ -633,7 +1044,9 @@ export default function SendMyself({
 
           font-size: 8px;
           font-weight: 800;
-          letter-spacing: 0.14em;
+
+          letter-spacing:
+            0.14em;
 
           cursor: pointer;
         }
@@ -642,13 +1055,25 @@ export default function SendMyself({
           font-size: 18px;
         }
 
-        @media (max-width: 700px) {
+        .bottom button:disabled {
+          opacity: 0.4;
+
+          cursor:
+            not-allowed;
+        }
+
+        @media (
+          max-width: 700px
+        ) {
           .topbar {
-            padding: 0 17px;
+            padding:
+              0 17px;
           }
 
           .hero {
-            padding: 52px 17px 42px;
+            padding:
+              52px 17px
+              42px;
           }
 
           .hero h1 {
@@ -659,7 +1084,10 @@ export default function SendMyself({
           .shareCard,
           .messageCard,
           .bottom {
-            width: calc(100% - 24px);
+            width:
+              calc(
+                100% - 24px
+              );
           }
 
           .linkCard,
@@ -669,8 +1097,18 @@ export default function SendMyself({
           }
 
           .linkBox {
-            align-items: stretch;
-            flex-direction: column;
+            align-items:
+              stretch;
+
+            flex-direction:
+              column;
+          }
+
+          .linkBox span {
+            white-space: normal;
+
+            overflow-wrap:
+              anywhere;
           }
 
           .linkBox button {
@@ -678,16 +1116,24 @@ export default function SendMyself({
           }
 
           .ways {
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns:
+              repeat(
+                2,
+                1fr
+              );
           }
 
           .messageCard {
-            grid-template-columns: 1fr;
+            grid-template-columns:
+              1fr;
           }
 
           .bottom {
-            flex-direction: column;
-            align-items: stretch;
+            flex-direction:
+              column;
+
+            align-items:
+              stretch;
           }
 
           .bottom button {
@@ -695,7 +1141,9 @@ export default function SendMyself({
           }
         }
 
-        @media (max-width: 430px) {
+        @media (
+          max-width: 430px
+        ) {
           .step {
             display: none;
           }
