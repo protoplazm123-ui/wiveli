@@ -58,7 +58,9 @@ export default function MemoryBox() {
 
       <section className="productHero memoryHero">
         <div className="productHeroCopy">
-          <p className="eyebrow">KEEP THE GOOD STUFF</p>
+          <p className="eyebrow">
+            KEEP THE GOOD STUFF
+          </p>
 
           <h1>
             MEMORY
@@ -72,9 +74,12 @@ export default function MemoryBox() {
           </p>
 
           <div className="productActions">
-            <button className="primary">
+            <a
+              className="primary"
+              href="/experiences/memory-box/personalize"
+            >
               Personalize This Gift →
-            </button>
+            </a>
 
             <a
               href="#memory-collection"
@@ -94,11 +99,13 @@ export default function MemoryBox() {
           <div className="memoryBoxShape">
             <div className="memoryBoxLabel">
               <p>MEMORY BOX</p>
+
               <h2>
                 the good
                 <br />
                 stuff.
               </h2>
+
               <span>♡</span>
             </div>
           </div>
@@ -116,7 +123,9 @@ export default function MemoryBox() {
       </section>
 
       <section className="productStory">
-        <p className="eyebrow">A PLACE FOR THE LITTLE THINGS</p>
+        <p className="eyebrow">
+          A PLACE FOR THE LITTLE THINGS
+        </p>
 
         <h2>
           SOME MOMENTS
@@ -139,7 +148,9 @@ export default function MemoryBox() {
       >
         <div className="memoryHeading">
           <div>
-            <p className="eyebrow">INSIDE THE BOX</p>
+            <p className="eyebrow">
+              INSIDE THE BOX
+            </p>
 
             <h2>
               KEEP MORE
@@ -157,7 +168,10 @@ export default function MemoryBox() {
 
         <div className="memoryGrid">
           {memories.map((memory) => (
-            <article className="memoryCard" key={memory.number}>
+            <article
+              className="memoryCard"
+              key={memory.number}
+            >
               <div className="memoryCardTop">
                 <span>{memory.number}</span>
                 <i>{memory.symbol}</i>
@@ -167,11 +181,15 @@ export default function MemoryBox() {
                 <span>{memory.type}</span>
               </div>
 
-              <p className="memoryType">{memory.type}</p>
+              <p className="memoryType">
+                {memory.type}
+              </p>
 
               <h3>{memory.title}</h3>
 
-              <p className="memoryText">{memory.text}</p>
+              <p className="memoryText">
+                {memory.text}
+              </p>
             </article>
           ))}
         </div>
@@ -179,7 +197,7 @@ export default function MemoryBox() {
 
       <section className="memoryFeature">
         <div className="memoryPhone">
-          <div className="memoryPhoneTop"></div>
+          <div className="memoryPhoneTop" />
 
           <p>OUR MEMORY BOX ♡</p>
 
@@ -195,11 +213,15 @@ export default function MemoryBox() {
             I never want to forget.
           </h3>
 
-          <button>OPEN NEXT MEMORY →</button>
+          <button>
+            OPEN NEXT MEMORY →
+          </button>
         </div>
 
         <div className="memoryFeatureCopy">
-          <p className="eyebrow">OPEN IT AGAIN AND AGAIN</p>
+          <p className="eyebrow">
+            OPEN IT AGAIN AND AGAIN
+          </p>
 
           <h2>
             A LITTLE
@@ -218,7 +240,9 @@ export default function MemoryBox() {
       </section>
 
       <section className="howWorks">
-        <p className="eyebrow">HOW IT WORKS</p>
+        <p className="eyebrow">
+          HOW IT WORKS
+        </p>
 
         <h2>
           COLLECT.
@@ -241,7 +265,9 @@ export default function MemoryBox() {
           <article>
             <span>02</span>
 
-            <h3>Make it feel like yours</h3>
+            <h3>
+              Make it feel like yours
+            </h3>
 
             <p>
               Add captions, dates and little details that give every
@@ -271,9 +297,12 @@ export default function MemoryBox() {
           WITH YOUR STORY.
         </h2>
 
-        <button className="primary">
+        <a
+          className="primary"
+          href="/experiences/memory-box/personalize"
+        >
           Create Memory Box →
-        </button>
+        </a>
       </section>
 
       <footer>
