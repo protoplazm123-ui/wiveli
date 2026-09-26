@@ -14707,3 +14707,22 @@ main {
 .wiveliCreateGlow {
   opacity: 0.45;
 }
+.wiveliHero::after {
+  content: "";
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: -180px;
+
+  height: 360px;
+
+  background: radial-gradient(
+    ellipse at center,
+    rgba(104, 45, 160, 0.18),
+    transparent 70%
+  );
+
+  pointer-events: none;
+  z-index: 0;
+}
