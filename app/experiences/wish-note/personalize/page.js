@@ -11,6 +11,7 @@ const defaultCategories = [
   "Something Special",
 ];
 
+const categorySymbols = ["♡", "✦", "♥", "☺", "∞", "✉"];
 const wishOptions = [12, 24, 52, 100, 365];
 
 export default function WishNotePersonalize() {
@@ -25,9 +26,7 @@ export default function WishNotePersonalize() {
   const [customWishCount, setCustomWishCount] = useState("");
   const [isCustom, setIsCustom] = useState(false);
 
-  const [categories, setCategories] = useState(
-    defaultCategories
-  );
+  const [categories, setCategories] = useState(defaultCategories);
 
   const finalWishCount =
     isCustom && customWishCount
@@ -47,106 +46,150 @@ export default function WishNotePersonalize() {
   };
 
   return (
-    <main className="personalizePage">
-      <header className="personalizeHeader">
-        <a className="logo" href="/">
+    <main className="wnPersonalizePage">
+      {/* BACKGROUND */}
+      <div className="wnPersonalizeGlow wnPersonalizeGlowOne" />
+      <div className="wnPersonalizeGlow wnPersonalizeGlowTwo" />
+
+      {/* HEADER */}
+      <header className="wnPersonalizeHeader">
+        <a className="wnPersonalizeLogo" href="/">
           WI<span>♥</span>ELI
         </a>
 
-        <div className="personalizeHeaderCenter">
+        <div className="wnPersonalizeHeaderCenter">
           WISH NOTE / PERSONALIZE
         </div>
 
         <a
-          className="personalizeExit"
+          className="wnPersonalizeExit"
           href="/experiences/wish-note"
         >
           Save & Exit
         </a>
       </header>
 
-      <section className="personalizeLayout">
-        <div className="personalizeEditor">
-          <div className="editorIntro">
-            <p className="eyebrow">
-              MAKE IT THEIRS
-            </p>
+      {/* PAGE INTRO */}
+      <section className="wnPersonalizeIntro">
+        <p>MAKE IT THEIRS ♡</p>
 
-            <h1>
-              PERSONALIZE
-              <br />
-              <span>WISH NOTE.</span>
-            </h1>
+        <h1>
+          MAKE IT
+          <br />
+          <span>PERSONAL.</span>
+        </h1>
 
-            <p>
-              Create a little world for their
-              wishes, dreams and all the moments
-              you still have ahead of you.
-            </p>
-          </div>
+        <div className="wnPersonalizeIntroText">
+          Turn Wish Note into something that feels like it
+          was made for one person only.
+        </div>
+      </section>
 
-          {/* 01 — NAMES */}
+      {/* PROGRESS */}
+      <div className="wnPersonalizeProgress">
+        <div>
+          <span>01</span>
+          <strong>FOR WHO</strong>
+        </div>
 
-          <div className="editorSection">
-            <div className="editorSectionTitle">
-              <span>01</span>
+        <div>
+          <span>02</span>
+          <strong>MESSAGE</strong>
+        </div>
+
+        <div>
+          <span>03</span>
+          <strong>WISHES</strong>
+        </div>
+
+        <div>
+          <span>04</span>
+          <strong>CATEGORIES</strong>
+        </div>
+      </div>
+
+      {/* MAIN EDITOR */}
+      <section className="wnPersonalizeLayout">
+        <div className="wnPersonalizeEditor">
+
+          {/* 01 */}
+          <section className="wnEditorSection">
+            <div className="wnEditorSectionHead">
+              <span className="wnEditorNumber">01</span>
 
               <div>
-                <h2>Who is it for?</h2>
+                <p className="wnEditorEyebrow">
+                  START WITH THEM
+                </p>
 
-                <p>
-                  Add the names that will appear
-                  inside the gift.
+                <h2>
+                  Who is it
+                  <br />
+                  <span>for?</span>
+                </h2>
+
+                <p className="wnEditorDescription">
+                  Add the names that will appear inside
+                  their Wish Note.
                 </p>
               </div>
             </div>
 
-            <label className="editorField">
-              <span>RECIPIENT'S NAME</span>
+            <div className="wnEditorFieldsTwo">
+              <label className="wnEditorField">
+                <span>RECIPIENT&apos;S NAME</span>
 
-              <input
-                type="text"
-                value={recipient}
-                maxLength={30}
-                onChange={(event) =>
-                  setRecipient(event.target.value)
-                }
-                placeholder="Their name"
-              />
-            </label>
+                <input
+                  type="text"
+                  value={recipient}
+                  maxLength={30}
+                  onChange={(event) =>
+                    setRecipient(event.target.value)
+                  }
+                  placeholder="Their name"
+                />
+              </label>
 
-            <label className="editorField">
-              <span>YOUR NAME</span>
+              <label className="wnEditorField">
+                <span>YOUR NAME</span>
 
-              <input
-                type="text"
-                value={sender}
-                maxLength={30}
-                onChange={(event) =>
-                  setSender(event.target.value)
-                }
-                placeholder="Your name"
-              />
-            </label>
-          </div>
+                <input
+                  type="text"
+                  value={sender}
+                  maxLength={30}
+                  onChange={(event) =>
+                    setSender(event.target.value)
+                  }
+                  placeholder="Your name"
+                />
+              </label>
+            </div>
+          </section>
 
-          {/* 02 — MESSAGE */}
-
-          <div className="editorSection">
-            <div className="editorSectionTitle">
-              <span>02</span>
+          {/* 02 */}
+          <section className="wnEditorSection">
+            <div className="wnEditorSectionHead">
+              <span className="wnEditorNumber">02</span>
 
               <div>
-                <h2>Your message</h2>
+                <p className="wnEditorEyebrow">
+                  SAY SOMETHING REAL
+                </p>
 
-                <p>
-                  Write the first thing they will
-                  read when they open their gift.
+                <h2>
+                  Your
+                  <br />
+                  <span>message.</span>
+                </h2>
+
+                <p className="wnEditorDescription">
+                  The first words they&apos;ll see when
+                  they open their gift.
                 </p>
               </div>
             </div>
 
-            <label className="editorField">
+            <label className="wnEditorField wnMessageField">
               <span>PERSONAL MESSAGE</span>
 
               <textarea
@@ -159,45 +202,48 @@ export default function WishNotePersonalize() {
                 placeholder="Write something personal..."
               />
 
-              <small>
-                {message.length}/280
-              </small>
+              <small>{message.length}/280</small>
             </label>
-          </div>
+          </section>
 
-          {/* 03 — WISH COUNT */}
-
-          <div className="editorSection">
-            <div className="editorSectionTitle">
-              <span>03</span>
+          {/* 03 */}
+          <section className="wnEditorSection">
+            <div className="wnEditorSectionHead">
+              <span className="wnEditorNumber">03</span>
 
               <div>
-                <h2>How many wishes?</h2>
+                <p className="wnEditorEyebrow">
+                  THEIR LITTLE WORLD
+                </p>
 
-                <p>
-                  Choose how many wishes they can
-                  make inside their Wish Note.
+                <h2>
+                  How many
+                  <br />
+                  <span>wishes?</span>
+                </h2>
+
+                <p className="wnEditorDescription">
+                  Choose how many wishes their personal
+                  space can hold.
                 </p>
               </div>
             </div>
 
-            <div className="wishCountGrid">
+            <div className="wnWishCountGrid">
               {wishOptions.map((count) => (
                 <button
                   type="button"
                   key={count}
                   className={
-                    !isCustom &&
-                    wishCount === count
-                      ? "wishCountOption active"
-                      : "wishCountOption"
+                    !isCustom && wishCount === count
+                      ? "wnWishCountOption active"
+                      : "wnWishCountOption"
                   }
-                  onClick={() =>
-                    selectWishCount(count)
-                  }
+                  onClick={() => selectWishCount(count)}
                 >
                   <strong>{count}</strong>
                   <span>WISHES</span>
+                  <i>♡</i>
                 </button>
               ))}
 
@@ -205,20 +251,19 @@ export default function WishNotePersonalize() {
                 type="button"
                 className={
                   isCustom
-                    ? "wishCountOption active"
-                    : "wishCountOption"
+                    ? "wnWishCountOption active"
+                    : "wnWishCountOption"
                 }
-                onClick={() =>
-                  setIsCustom(true)
-                }
+                onClick={() => setIsCustom(true)}
               >
                 <strong>+</strong>
                 <span>CUSTOM</span>
+                <i>✦</i>
               </button>
             </div>
 
             {isCustom && (
-              <label className="editorField customWishField">
+              <label className="wnEditorField wnCustomWishField">
                 <span>NUMBER OF WISHES</span>
 
                 <input
@@ -227,181 +272,192 @@ export default function WishNotePersonalize() {
                   max="999"
                   value={customWishCount}
                   onChange={(event) =>
-                    setCustomWishCount(
-                      event.target.value
-                    )
+                    setCustomWishCount(event.target.value)
                   }
                   placeholder="Enter a number"
                 />
               </label>
             )}
-          </div>
+          </section>
 
-          {/* 04 — CATEGORIES */}
-
-          <div className="editorSection">
-            <div className="editorSectionTitle">
-              <span>04</span>
+          {/* 04 */}
+          <section className="wnEditorSection wnCategoriesSection">
+            <div className="wnEditorSectionHead">
+              <span className="wnEditorNumber">04</span>
 
               <div>
-                <h2>Wish categories</h2>
+                <p className="wnEditorEyebrow">
+                  MAKE IT YOURS
+                </p>
 
-                <p>
-                  We've prepared six categories.
-                  Keep them as they are or make
-                  the names more personal.
+                <h2>
+                  Wish
+                  <br />
+                  <span>categories.</span>
+                </h2>
+
+                <p className="wnEditorDescription">
+                  Keep our six categories or rename them
+                  to make the gift even more personal.
                 </p>
               </div>
             </div>
 
-            <div className="categoryEditor">
-              {categories.map(
-                (category, index) => (
-                  <label
-                    className="categoryEditorRow"
-                    key={index}
-                  >
-                    <span>
-                      {String(
-                        index + 1
-                      ).padStart(2, "0")}
-                    </span>
+            <div className="wnCategoryEditor">
+              {categories.map((category, index) => (
+                <label
+                  className="wnCategoryRow"
+                  key={index}
+                >
+                  <span className="wnCategoryNumber">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
 
-                    <input
-                      type="text"
-                      value={category}
-                      maxLength={35}
-                      onChange={(event) =>
-                        updateCategory(
-                          index,
-                          event.target.value
-                        )
-                      }
-                    />
-                  </label>
-                )
-              )}
+                  <span className="wnCategorySymbol">
+                    {categorySymbols[index]}
+                  </span>
+
+                  <input
+                    type="text"
+                    value={category}
+                    maxLength={35}
+                    onChange={(event) =>
+                      updateCategory(
+                        index,
+                        event.target.value
+                      )
+                    }
+                  />
+
+                  <span className="wnCategoryEdit">
+                    EDIT
+                  </span>
+                </label>
+              ))}
             </div>
 
             <button
               type="button"
-              className="resetCategories"
+              className="wnResetCategories"
               onClick={() =>
-                setCategories([
-                  ...defaultCategories,
-                ])
+                setCategories([...defaultCategories])
               }
             >
-              Reset to WIVELI categories
+              ↻ Reset to WIVELI categories
             </button>
-          </div>
+          </section>
 
           {/* CONTINUE */}
-
-          <div className="editorContinue">
+          <section className="wnEditorContinue">
             <div>
-              <p>
-                THE BASICS ARE READY ♡
-              </p>
+              <p>THE BASICS ARE READY ♡</p>
+
+              <h2>
+                Now let&apos;s make
+                <br />
+                it beautiful.
+              </h2>
 
               <span>
-                Next we'll choose how the gift
-                looks and prepare the surprise
-                for delivery.
+                Next you&apos;ll choose the visual style
+                and prepare the surprise.
               </span>
             </div>
 
             <a
-              className="primary"
+              className="wnContinueButton"
               href="/experiences/wish-note/design"
             >
-              Continue →
+              Continue
+              <span>→</span>
             </a>
-          </div>
+          </section>
         </div>
 
         {/* LIVE PREVIEW */}
+        <aside className="wnPreviewColumn">
+          <div className="wnPreviewSticky">
+            <div className="wnPreviewHeader">
+              <div>
+                <span className="wnLiveDot" />
+                LIVE PREVIEW
+              </div>
 
-        <aside className="personalizePreview">
-          <div className="previewSticky">
-            <div className="previewLabel">
-              <span>LIVE PREVIEW</span>
-              <span>●</span>
+              <span>WISH NOTE ♡</span>
             </div>
 
-            <div className="giftPhone">
-              <div className="giftPhoneTop"></div>
-
-              <div className="giftScreen">
-                <p className="giftBrand">
-                  WISH NOTE ♡
-                </p>
-
-                <div className="giftHeart">
-                  ♥
+            <div className="wnGiftDevice">
+              <div className="wnGiftScreen">
+                <div className="wnGiftTop">
+                  <span>WISH NOTE</span>
+                  <span>♡</span>
                 </div>
 
-                <p className="giftFor">
-                  A LITTLE WORLD MADE FOR
-                </p>
+                <div className="wnGiftHero">
+                  <div className="wnGiftHeart">
+                    ♡
+                  </div>
 
-                <h2>
-                  {recipient ||
-                    "Someone Special"}
-                </h2>
+                  <p>A LITTLE WORLD MADE FOR</p>
 
-                <p className="giftMessage">
-                  {message ||
-                    "Your personal message will appear here."}
-                </p>
+                  <h2>
+                    {recipient || "Someone Special"}
+                  </h2>
 
-                <div className="giftDivider"></div>
+                  <p className="wnGiftMessage">
+                    {message ||
+                      "Your personal message will appear here."}
+                  </p>
+                </div>
 
-                <div className="giftYear">
-                  <strong>365</strong>
+                <div className="wnGiftCount">
+                  <strong>
+                    {finalWishCount || "—"}
+                  </strong>
 
                   <div>
-                    <span>DAYS OF</span>
-                    <span>HAPPINESS ♡</span>
+                    <span>WISHES</span>
+                    <span>WAITING FOR YOU</span>
                   </div>
                 </div>
 
-                <p className="giftWishCount">
-                  {finalWishCount || "—"} wishes
-                  waiting for you
-                </p>
+                <div className="wnGiftCategories">
+                  {categories.map((category, index) => (
+                    <div key={index}>
+                      <span>
+                        {String(index + 1).padStart(
+                          2,
+                          "0"
+                        )}
+                      </span>
 
-                <div className="giftCategoryPreview">
-                  {categories.map(
-                    (category, index) => (
-                      <div key={index}>
-                        <span>
-                          {String(
-                            index + 1
-                          ).padStart(2, "0")}
-                        </span>
+                      <i>
+                        {categorySymbols[index]}
+                      </i>
 
-                        <p>
-                          {category ||
-                            `Category ${
-                              index + 1
-                            }`}
-                        </p>
-                      </div>
-                    )
-                  )}
+                      <p>
+                        {category ||
+                          `Category ${index + 1}`}
+                      </p>
+                    </div>
+                  ))}
                 </div>
 
-                <p className="giftFrom">
-                  made with ♡ by{" "}
-                  {sender || "you"}
-                </p>
+                <div className="wnGiftFooter">
+                  <span>
+                    MADE WITH ♡ BY{" "}
+                    {sender || "YOU"}
+                  </span>
+
+                  <span>
+                    WIVELI
+                  </span>
+                </div>
               </div>
             </div>
 
-            <p className="previewHint">
-              This is what they'll see when they
-              open their gift.
+            <p className="wnPreviewHint">
+              Everything you change updates here instantly.
             </p>
           </div>
         </aside>
