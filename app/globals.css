@@ -25353,3 +25353,124 @@ main {
     animation:none!important;
   }
 }
+/* OUR STORY — JOURNEY QUICK POLISH */
+
+/* Убираем огромный заголовок */
+.osgJourneyIntro{
+  top:112px;
+}
+
+.osgJourneyIntro > p{
+  display:none;
+}
+
+.osgJourneyIntro h1{
+  display:none;
+}
+
+.osgJourneyIntro > span{
+  margin:0;
+  color:rgba(221,194,255,.55);
+  font-family:"Helvetica Neue","Inter",Arial,sans-serif;
+  font-size:8px;
+  font-style:normal;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+}
+
+.osgJourneyIntro > span::before{
+  content:"FOLLOW OUR STORY  →";
+  font-size:8px;
+}
+
+.osgJourneyIntro > span{
+  font-size:0;
+}
+
+/* Путь заметнее и живее */
+.osgPath{
+  z-index:2;
+}
+
+.osgPath path:first-child{
+  stroke:rgba(211,169,255,.28);
+  stroke-width:2;
+  stroke-dasharray:3 10;
+}
+
+.osgPathGlow{
+  stroke:rgba(215,177,255,.72);
+  stroke-width:1.4;
+  filter:
+    drop-shadow(0 0 5px rgba(197,139,255,.55))
+    drop-shadow(0 0 15px rgba(155,82,221,.22));
+}
+
+/* Сами воспоминания чуть сильнее */
+.osgStarButton{
+  width:92px;
+  height:92px;
+}
+
+.osgStarButton strong{
+  inset:17px;
+  box-shadow:
+    0 0 16px rgba(255,255,255,.45),
+    0 0 38px rgba(198,139,255,.42),
+    0 0 75px rgba(142,69,207,.2);
+}
+
+/* Неоткрытые — немного загадочнее */
+.osgMemoryPoint:not(.visited) .osgStarButton{
+  opacity:.72;
+}
+
+.osgMemoryPoint:not(.visited) .osgStarMeta{
+  opacity:.62;
+}
+
+/* Открытые остаются яркими */
+.osgMemoryPoint.visited .osgStarButton{
+  opacity:1;
+}
+
+.osgMemoryPoint.visited .osgStarMeta{
+  opacity:1;
+}
+
+.osgMemoryPoint.visited .osgStarButton strong{
+  transform:scale(1.08);
+  box-shadow:
+    0 0 14px rgba(255,255,255,.75),
+    0 0 40px rgba(211,165,255,.65),
+    0 0 85px rgba(159,86,226,.28);
+}
+
+/* Дата + место читаются лучше */
+.osgStarMeta{
+  top:138px;
+}
+
+.osgStarMeta h3{
+  margin:6px 0 9px;
+  font-size:12px;
+}
+
+.osgStarMeta p{
+  color:#d5b0ff;
+}
+
+.osgStarMeta span{
+  color:rgba(255,255,255,.42);
+}
+
+/* Подсказка снизу */
+.osgJourneyHint{
+  padding:9px 15px;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:999px;
+  background:rgba(8,6,13,.5);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  color:rgba(255,255,255,.32);
+}
