@@ -6,26 +6,44 @@ import { useState } from "react";
 export default function WishNoteCard() {
   const [flipped, setFlipped] = useState(false);
 
+  const toggleCard = () => {
+    setFlipped((current) => !current);
+  };
+
   return (
     <div className="wishFlipExperience">
       <motion.button
         type="button"
         className="wishFlipCard"
-        onClick={() => setFlipped((value) => !value)}
+        onClick={toggleCard}
+        initial={false}
         animate={{
           rotateY: flipped ? 180 : 0,
         }}
         transition={{
           type: "spring",
-          stiffness: 85,
-          damping: 15,
+          stiffness: 90,
+          damping: 17,
+          mass: 0.9,
         }}
-        whileHover={{
-          y: -8,
+        style={{
+          transformStyle: "preserve-3d",
+          WebkitTransformStyle: "preserve-3d",
         }}
-        aria-label="Flip Wish Note"
+        aria-label={
+          flipped
+            ? "Flip Wish Note to front"
+            : "Flip Wish Note to back"
+        }
       >
-        <div className="wishFlipFace wishFlipFront">
+        {/* FRONT */}
+        <div
+          className="wishFlipFace wishFlipFront"
+          style={{
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+          }}
+        >
           <p>WISH NOTE ♡</p>
 
           <h2>
@@ -41,7 +59,14 @@ export default function WishNoteCard() {
           <i>01 / 02</i>
         </div>
 
-        <div className="wishFlipFace wishFlipBack">
+        {/* BACK */}
+        <div
+          className="wishFlipFace wishFlipBack"
+          style={{
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+          }}
+        >
           <p>JUST FOR YOU ♡</p>
 
           <h3>
@@ -66,9 +91,10 @@ export default function WishNoteCard() {
       <button
         type="button"
         className="wishFlipHint"
-        onClick={() => setFlipped((value) => !value)}
+        onClick={toggleCard}
       >
         <span>↻</span>
+
         {flipped ? "Flip back" : "Tap to flip"}
       </button>
     </div>
