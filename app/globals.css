@@ -26662,3 +26662,746 @@ main {
     animation:none;
   }
 }
+/* =========================================================
+   OPEN WHEN — RECIPIENT EXPERIENCE
+   ========================================================= */
+
+.owgPage{
+  min-height:100vh;
+  overflow:hidden;
+  background:#09070d;
+  color:#fff;
+  font-family:"Helvetica Neue",Arial,sans-serif;
+}
+
+.owgIntro{
+  position:relative;
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 48%,rgba(131,70,181,.2),transparent 25%),
+    radial-gradient(circle at 50% 50%,rgba(67,33,95,.18),transparent 48%),
+    #09070d;
+}
+
+.owgIntro::before,
+.owgWorld::before,
+.owgExperienceBg::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.32;
+  background-image:
+    radial-gradient(circle at 12% 22%,#fff 0 1px,transparent 1.4px),
+    radial-gradient(circle at 77% 18%,#fff 0 1px,transparent 1.3px),
+    radial-gradient(circle at 34% 72%,#fff 0 1px,transparent 1.3px),
+    radial-gradient(circle at 86% 65%,#fff 0 1px,transparent 1.4px),
+    radial-gradient(circle at 58% 35%,#fff 0 1px,transparent 1.3px);
+  background-size:
+    260px 260px,
+    310px 310px,
+    350px 350px,
+    280px 280px,
+    390px 390px;
+}
+
+.owgIntroContent{
+  position:relative;
+  z-index:2;
+  width:min(700px,90%);
+  text-align:center;
+  animation:owgEnter 1.2s cubic-bezier(.2,.8,.2,1);
+}
+
+.owgTiny{
+  color:#b784e0;
+  font-size:7px;
+  letter-spacing:.28em;
+}
+
+.owgIntroOrb{
+  position:relative;
+  width:130px;
+  height:130px;
+  display:grid;
+  place-items:center;
+  margin:32px auto;
+  border:1px solid rgba(213,174,246,.12);
+  border-radius:50%;
+}
+
+.owgIntroOrb>span{
+  color:#d0a3f3;
+  font-family:Georgia,serif;
+  font-size:32px;
+  animation:owgHeart 3s ease-in-out infinite;
+}
+
+.owgOrbRing{
+  position:absolute;
+  border:1px solid rgba(196,144,237,.1);
+  border-radius:50%;
+}
+
+.owgOrbRing1{
+  inset:-25px;
+}
+
+.owgOrbRing2{
+  inset:-52px;
+}
+
+.owgIntroContent>p:not(.owgIntroText){
+  margin:42px 0 13px;
+  color:rgba(255,255,255,.35);
+  font-size:7px;
+  letter-spacing:.25em;
+}
+
+.owgIntro h1{
+  margin:0;
+  font-family:Georgia,serif;
+  font-size:50px;
+  font-weight:400;
+  line-height:.93;
+  letter-spacing:-.045em;
+}
+
+.owgIntro h1 em{
+  color:#c79aeb;
+  font-weight:400;
+}
+
+.owgIntroText{
+  margin:25px 0 30px;
+  color:rgba(255,255,255,.42);
+  font-family:Georgia,serif;
+  font-size:12px;
+  font-style:italic;
+  line-height:1.7;
+}
+
+.owgIntroContent>button{
+  min-width:145px;
+  height:43px;
+  border:1px solid rgba(204,159,242,.35);
+  background:rgba(190,134,232,.07);
+  color:#d3acf1;
+  cursor:pointer;
+  font-size:7px;
+  letter-spacing:.2em;
+  transition:.3s ease;
+}
+
+.owgIntroContent>button:hover{
+  background:#c392e8;
+  color:#110c17;
+}
+
+/* WORLD */
+
+.owgWorld{
+  position:relative;
+  min-height:100vh;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 70% 43%,rgba(126,61,175,.16),transparent 29%),
+    radial-gradient(circle at 20% 80%,rgba(77,35,111,.12),transparent 30%),
+    #09070d;
+}
+
+.owgWorldHeader{
+  position:relative;
+  z-index:5;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  padding:70px 7%;
+}
+
+.owgWorldHeader>div:first-child>span{
+  color:#b984e2;
+  font-size:7px;
+  letter-spacing:.25em;
+}
+
+.owgWorldHeader h1{
+  margin:13px 0 0;
+  font-family:Georgia,serif;
+  font-size:40px;
+  font-weight:400;
+  line-height:.94;
+}
+
+.owgWorldHeader h1 em{
+  color:#c99ced;
+  font-weight:400;
+}
+
+.owgProgress{
+  text-align:right;
+}
+
+.owgProgress strong{
+  display:block;
+  color:#c99bed;
+  font-family:Georgia,serif;
+  font-size:27px;
+  font-weight:400;
+}
+
+.owgProgress span{
+  color:rgba(255,255,255,.24);
+  font-size:6px;
+  letter-spacing:.18em;
+}
+
+.owgConstellation{
+  position:relative;
+  z-index:3;
+  width:min(1050px,92%);
+  height:600px;
+  margin:-80px auto 0;
+}
+
+.owgMoment{
+  position:absolute;
+  width:175px;
+  height:175px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  border:1px solid rgba(212,170,247,.14);
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 50% 40%,rgba(132,74,181,.18),rgba(17,12,23,.82) 70%);
+  color:#fff;
+  cursor:pointer;
+  backdrop-filter:blur(12px);
+  animation:owgFloat 7s ease-in-out infinite alternate;
+  transition:
+    transform .4s cubic-bezier(.2,.8,.2,1),
+    border-color .4s ease,
+    opacity .4s ease;
+}
+
+.owgMoment:hover{
+  transform:scale(1.08);
+  border-color:rgba(211,165,247,.5);
+}
+
+.owgMoment small{
+  position:absolute;
+  top:20px;
+  color:rgba(255,255,255,.2);
+  font-size:6px;
+}
+
+.owgMoment>span{
+  margin-bottom:7px;
+  color:#b783df;
+  font-size:6px;
+  letter-spacing:.18em;
+}
+
+.owgMoment strong{
+  max-width:120px;
+  font-family:Georgia,serif;
+  font-size:14px;
+  font-weight:400;
+  line-height:1.05;
+}
+
+.owgMoment i{
+  margin-top:10px;
+  color:#cb9ded;
+  font-family:Georgia,serif;
+  font-size:17px;
+  font-style:normal;
+}
+
+.owgMoment b{
+  position:absolute;
+  bottom:-25px;
+  opacity:0;
+  color:rgba(255,255,255,.27);
+  font-size:5px;
+  font-weight:400;
+  letter-spacing:.14em;
+  transition:.3s ease;
+}
+
+.owgMoment:hover b{
+  opacity:1;
+}
+
+.owgMoment.isOpened{
+  opacity:.58;
+  border-color:rgba(208,164,242,.25);
+}
+
+.owgMomentGlow{
+  position:absolute;
+  inset:-30px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(169,101,218,.08),transparent 65%);
+  pointer-events:none;
+}
+
+.owgMoment1{left:4%;top:31%}
+.owgMoment2{left:27%;top:4%;animation-delay:-2s}
+.owgMoment3{left:52%;top:27%;animation-delay:-4s}
+.owgMoment4{left:76%;top:1%;animation-delay:-1s}
+.owgMoment5{left:15%;top:64%;animation-delay:-5s}
+.owgMoment6{left:45%;top:68%;animation-delay:-3s}
+.owgMoment7{left:75%;top:57%;animation-delay:-6s}
+
+.owgLine{
+  position:absolute;
+  height:1px;
+  transform-origin:left center;
+  background:linear-gradient(90deg,transparent,rgba(198,151,235,.12),transparent);
+  pointer-events:none;
+}
+
+.owgLine1{
+  width:400px;
+  left:17%;
+  top:43%;
+  transform:rotate(-16deg);
+}
+
+.owgLine2{
+  width:390px;
+  left:40%;
+  top:25%;
+  transform:rotate(12deg);
+}
+
+.owgLine3{
+  width:430px;
+  left:34%;
+  top:64%;
+  transform:rotate(-8deg);
+}
+
+.owgWorldFooter{
+  position:absolute;
+  z-index:5;
+  left:50%;
+  bottom:24px;
+  display:flex;
+  align-items:center;
+  gap:17px;
+  transform:translateX(-50%);
+  white-space:nowrap;
+  color:rgba(255,255,255,.22);
+  font-family:Georgia,serif;
+  font-size:9px;
+  font-style:italic;
+}
+
+.owgWorldFooter i{
+  color:#9f6bc8;
+  font-style:normal;
+}
+
+/* INDIVIDUAL EXPERIENCE */
+
+.owgExperience{
+  position:relative;
+  min-height:100vh;
+  overflow:hidden;
+  background:#09070d;
+}
+
+.owgExperienceBg{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 50% 48%,rgba(123,63,169,.19),transparent 29%),
+    #09070d;
+}
+
+.owgExperienceHeader{
+  position:relative;
+  z-index:10;
+  display:flex;
+  justify-content:space-between;
+  padding:35px 5%;
+}
+
+.owgExperienceHeader button{
+  border:0;
+  background:transparent;
+  color:rgba(255,255,255,.36);
+  cursor:pointer;
+  font-size:7px;
+  letter-spacing:.15em;
+}
+
+.owgExperienceHeader>span{
+  color:rgba(255,255,255,.22);
+  font-size:7px;
+  letter-spacing:.15em;
+}
+
+.owgExperienceTitle{
+  position:relative;
+  z-index:4;
+  margin-top:5px;
+  text-align:center;
+}
+
+.owgExperienceTitle>span{
+  color:#b884df;
+  font-size:6px;
+  letter-spacing:.24em;
+}
+
+.owgExperienceTitle h1{
+  margin:7px 0 0;
+  font-family:Georgia,serif;
+  font-size:35px;
+  font-weight:400;
+}
+
+.owgReveal{
+  position:relative;
+  z-index:5;
+  width:min(650px,88vw);
+  min-height:430px;
+  display:grid;
+  place-items:center;
+  margin:25px auto 0;
+  animation:owgRevealIn .7s cubic-bezier(.2,.8,.2,1);
+}
+
+.owgMessageReveal{
+  position:relative;
+  width:min(440px,100%);
+  min-height:300px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:55px;
+  border:1px solid rgba(255,255,255,.09);
+  background:
+    linear-gradient(145deg,rgba(31,23,40,.86),rgba(14,10,20,.88));
+  transform:rotate(-1.2deg);
+  box-shadow:0 35px 100px rgba(0,0,0,.28);
+}
+
+.owgMessageReveal>span{
+  color:#b985df;
+  font-size:6px;
+  letter-spacing:.22em;
+}
+
+.owgMessageReveal p{
+  margin:25px 0;
+  color:rgba(255,255,255,.82);
+  font-family:Georgia,serif;
+  font-size:20px;
+  font-style:italic;
+  line-height:1.55;
+}
+
+.owgMessageReveal i{
+  color:#c596e9;
+  font-family:Georgia,serif;
+  font-size:22px;
+  font-style:normal;
+}
+
+.owgPhotoReveal{
+  text-align:center;
+}
+
+.owgPhoto{
+  width:330px;
+  padding:10px 10px 22px;
+  background:#e9e2e8;
+  transform:rotate(-3deg);
+  box-shadow:0 35px 90px rgba(0,0,0,.35);
+}
+
+.owgPhoto img{
+  width:100%;
+  height:340px;
+  display:block;
+  object-fit:cover;
+}
+
+.owgPhoto p{
+  margin:15px 0 0;
+  color:#2c2630;
+  font-family:Georgia,serif;
+  font-size:10px;
+  font-style:italic;
+}
+
+.owgPhotoReveal>span{
+  display:block;
+  margin-top:34px;
+  color:rgba(255,255,255,.23);
+  font-size:6px;
+  letter-spacing:.2em;
+}
+
+.owgVoiceReveal{
+  width:430px;
+  max-width:100%;
+  text-align:center;
+}
+
+.owgVoiceHeart{
+  width:90px;
+  height:90px;
+  display:grid;
+  place-items:center;
+  margin:0 auto 25px;
+  border:1px solid rgba(203,156,239,.2);
+  border-radius:50%;
+  color:#ca9ced;
+  font-family:Georgia,serif;
+  font-size:28px;
+}
+
+.owgVoiceReveal>span{
+  color:#a975d1;
+  font-size:6px;
+  letter-spacing:.2em;
+}
+
+.owgVoiceReveal h2{
+  margin:14px 0 28px;
+  font-family:Georgia,serif;
+  font-size:30px;
+  font-weight:400;
+  font-style:italic;
+}
+
+.owgVoiceReveal audio{
+  width:100%;
+  opacity:.75;
+}
+
+.owgVoiceReveal p,
+.owgVideoReveal p{
+  margin-top:20px;
+  color:rgba(255,255,255,.25);
+  font-size:6px;
+  letter-spacing:.18em;
+}
+
+.owgVideoReveal{
+  width:520px;
+  max-width:100%;
+  text-align:center;
+}
+
+.owgVideoReveal video{
+  width:100%;
+  max-height:360px;
+  border:1px solid rgba(255,255,255,.1);
+  object-fit:contain;
+  box-shadow:0 30px 90px rgba(0,0,0,.3);
+}
+
+.owgEmptyReveal{
+  text-align:center;
+  color:rgba(255,255,255,.35);
+}
+
+.owgEmptyReveal span{
+  display:block;
+  margin-bottom:20px;
+  color:#bd8be4;
+  font-family:Georgia,serif;
+  font-size:45px;
+}
+
+.owgEmptyReveal p{
+  font-family:Georgia,serif;
+  font-size:13px;
+  font-style:italic;
+}
+
+.owgExperienceNav{
+  position:relative;
+  z-index:10;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:25px;
+  margin-top:4px;
+}
+
+.owgExperienceNav>button{
+  width:44px;
+  height:44px;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:50%;
+  background:rgba(255,255,255,.02);
+  color:#d0a4ef;
+  cursor:pointer;
+}
+
+.owgExperienceNav>button:disabled{
+  opacity:.2;
+  cursor:default;
+}
+
+.owgDots{
+  display:flex;
+  gap:7px;
+}
+
+.owgDots span{
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:rgba(255,255,255,.15);
+}
+
+.owgDots span.active{
+  background:#c493e8;
+  box-shadow:0 0 10px rgba(196,147,232,.6);
+}
+
+.owgTapHint{
+  position:relative;
+  z-index:5;
+  display:block;
+  margin-top:20px;
+  color:rgba(255,255,255,.16);
+  text-align:center;
+  font-size:5px;
+  letter-spacing:.18em;
+}
+
+@keyframes owgFloat{
+  from{margin-top:-8px}
+  to{margin-top:10px}
+}
+
+@keyframes owgHeart{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.13)}
+}
+
+@keyframes owgEnter{
+  from{
+    opacity:0;
+    transform:translateY(18px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+@keyframes owgRevealIn{
+  from{
+    opacity:0;
+    transform:translateY(20px) scale(.97);
+    filter:blur(5px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    filter:blur(0);
+  }
+}
+
+@media(max-width:700px){
+  .owgIntro h1{
+    font-size:37px;
+  }
+
+  .owgWorld{
+    min-height:1100px;
+  }
+
+  .owgWorldHeader{
+    padding:45px 24px;
+  }
+
+  .owgWorldHeader h1{
+    font-size:31px;
+  }
+
+  .owgProgress{
+    display:none;
+  }
+
+  .owgConstellation{
+    height:850px;
+    margin:-10px auto 0;
+  }
+
+  .owgMoment{
+    width:140px;
+    height:140px;
+  }
+
+  .owgMoment1{left:3%;top:2%}
+  .owgMoment2{left:53%;top:7%}
+  .owgMoment3{left:8%;top:25%}
+  .owgMoment4{left:55%;top:31%}
+  .owgMoment5{left:4%;top:50%}
+  .owgMoment6{left:54%;top:57%}
+  .owgMoment7{left:25%;top:76%}
+
+  .owgLine{
+    display:none;
+  }
+
+  .owgWorldFooter{
+    bottom:20px;
+    width:100%;
+    justify-content:center;
+  }
+
+  .owgWorldFooter span:last-child{
+    display:none;
+  }
+
+  .owgExperienceTitle h1{
+    padding:0 20px;
+    font-size:27px;
+  }
+
+  .owgReveal{
+    min-height:450px;
+  }
+
+  .owgMessageReveal{
+    padding:40px 30px;
+  }
+
+  .owgMessageReveal p{
+    font-size:18px;
+  }
+
+  .owgPhoto{
+    width:280px;
+  }
+
+  .owgPhoto img{
+    height:300px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .owgMoment,
+  .owgIntroOrb>span{
+    animation:none;
+  }
+}
