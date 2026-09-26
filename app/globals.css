@@ -17327,3 +17327,1025 @@ main {
       #a969dc 100%
     ) !important;
 }
+/* =========================================================
+   WISH NOTE — PERSONALIZE / NEW WIVELI UI
+   ========================================================= */
+
+.wnPersonalizePage {
+  --wn-bg: #0d0a13;
+  --wn-bg-soft: #13101c;
+  --wn-purple: #c79aff;
+  --wn-purple-2: #9f61ef;
+  --wn-text: #ffffff;
+  --wn-muted: rgba(255, 255, 255, 0.48);
+  --wn-line: rgba(255, 255, 255, 0.11);
+
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  color: var(--wn-text);
+
+  background:
+    radial-gradient(
+      circle at 78% 12%,
+      rgba(155, 75, 235, 0.20),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 13% 42%,
+      rgba(106, 46, 167, 0.12),
+      transparent 30%
+    ),
+    linear-gradient(
+      180deg,
+      #110d19 0%,
+      #0d0a13 42%,
+      #09070e 100%
+    );
+}
+
+.wnPersonalizeGlow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(130px);
+  pointer-events: none;
+}
+
+.wnPersonalizeGlowOne {
+  width: 520px;
+  height: 520px;
+  right: -220px;
+  top: 24%;
+  background: rgba(176, 91, 255, 0.13);
+}
+
+.wnPersonalizeGlowTwo {
+  width: 400px;
+  height: 400px;
+  left: -180px;
+  top: 58%;
+  background: rgba(122, 62, 204, 0.08);
+}
+
+/* HEADER */
+
+.wnPersonalizeHeader {
+  position: relative;
+  z-index: 20;
+
+  height: 86px;
+  padding: 0 5vw;
+
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+
+  border-bottom: 1px solid var(--wn-line);
+}
+
+.wnPersonalizeLogo {
+  justify-self: start;
+  color: white;
+  text-decoration: none;
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: -0.07em;
+}
+
+.wnPersonalizeLogo span {
+  color: var(--wn-purple);
+}
+
+.wnPersonalizeHeaderCenter {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.wnPersonalizeExit {
+  justify-self: end;
+
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+
+  transition: color 0.25s ease;
+}
+
+.wnPersonalizeExit:hover {
+  color: var(--wn-purple);
+}
+
+/* INTRO */
+
+.wnPersonalizeIntro {
+  position: relative;
+  z-index: 2;
+
+  padding: 105px 5vw 90px;
+
+  display: grid;
+  grid-template-columns: 1.45fr 0.55fr;
+  align-items: end;
+}
+
+.wnPersonalizeIntro > p {
+  grid-column: 1 / -1;
+
+  margin: 0 0 22px;
+
+  color: var(--wn-purple);
+
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.31em;
+}
+
+.wnPersonalizeIntro h1 {
+  margin: 0;
+
+  font-family: "Anton", sans-serif;
+  font-size: clamp(78px, 8vw, 145px);
+  font-weight: 400;
+  line-height: 0.83;
+  letter-spacing: -0.035em;
+
+  color: white;
+}
+
+.wnPersonalizeIntro h1 span {
+  color: var(--wn-purple);
+}
+
+.wnPersonalizeIntroText {
+  max-width: 330px;
+  margin: 0 0 8px auto;
+
+  font-size: 15px;
+  line-height: 1.7;
+
+  color: var(--wn-muted);
+}
+
+/* PROGRESS */
+
+.wnPersonalizeProgress {
+  position: relative;
+  z-index: 3;
+
+  margin: 0 5vw;
+  padding: 0 0 25px;
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+
+  border-bottom: 1px solid var(--wn-line);
+}
+
+.wnPersonalizeProgress div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wnPersonalizeProgress span {
+  color: var(--wn-purple);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+}
+
+.wnPersonalizeProgress strong {
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+}
+
+/* LAYOUT */
+
+.wnPersonalizeLayout {
+  position: relative;
+  z-index: 2;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1.22fr) minmax(400px, 0.78fr);
+
+  padding: 0 5vw 130px;
+}
+
+.wnPersonalizeEditor {
+  padding-right: 5vw;
+  border-right: 1px solid var(--wn-line);
+}
+
+/* SECTIONS */
+
+.wnEditorSection {
+  padding: 105px 0;
+
+  border-bottom: 1px solid var(--wn-line);
+}
+
+.wnEditorSectionHead {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+
+  margin-bottom: 55px;
+}
+
+.wnEditorNumber {
+  width: 42px;
+  height: 42px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid rgba(199, 154, 255, 0.38);
+  border-radius: 50%;
+
+  color: var(--wn-purple);
+
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.wnEditorEyebrow {
+  margin: 0 0 17px;
+
+  color: var(--wn-purple) !important;
+
+  font-size: 9px !important;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+}
+
+.wnEditorSectionHead h2 {
+  margin: 0;
+
+  font-family: "Anton", sans-serif;
+  font-size: clamp(52px, 5vw, 82px);
+  font-weight: 400;
+  line-height: 0.88;
+  letter-spacing: -0.025em;
+
+  color: white;
+}
+
+.wnEditorSectionHead h2 span {
+  color: var(--wn-purple);
+}
+
+.wnEditorDescription {
+  max-width: 430px;
+
+  margin: 24px 0 0 !important;
+
+  color: var(--wn-muted) !important;
+
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+}
+
+/* INPUTS */
+
+.wnEditorFieldsTwo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.wnEditorField {
+  position: relative;
+  display: block;
+}
+
+.wnEditorField > span {
+  display: block;
+
+  margin-bottom: 10px;
+
+  color: rgba(255, 255, 255, 0.42);
+
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.17em;
+}
+
+.wnEditorField input,
+.wnEditorField textarea {
+  box-sizing: border-box;
+  width: 100%;
+
+  padding: 20px 21px;
+
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 15px;
+
+  outline: none;
+
+  background: rgba(255, 255, 255, 0.035);
+
+  color: white;
+
+  font: inherit;
+  font-size: 15px;
+
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.wnEditorField textarea {
+  min-height: 180px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.wnEditorField input:focus,
+.wnEditorField textarea:focus {
+  border-color: rgba(199, 154, 255, 0.62);
+
+  background: rgba(199, 154, 255, 0.055);
+
+  box-shadow:
+    0 0 0 3px rgba(199, 154, 255, 0.05);
+}
+
+.wnEditorField input::placeholder,
+.wnEditorField textarea::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.wnEditorField small {
+  position: absolute;
+  right: 15px;
+  bottom: 12px;
+
+  color: rgba(255, 255, 255, 0.28);
+
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+
+/* WISH COUNT */
+
+.wnWishCountGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.wnWishCountOption {
+  position: relative;
+
+  min-height: 135px;
+  padding: 21px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 17px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.055),
+      rgba(255, 255, 255, 0.018)
+    );
+
+  color: white;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+
+.wnWishCountOption:hover {
+  transform: translateY(-3px);
+
+  border-color: rgba(199, 154, 255, 0.38);
+}
+
+.wnWishCountOption strong {
+  font-family: "Anton", sans-serif;
+  font-size: 40px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.wnWishCountOption > span {
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.43);
+}
+
+.wnWishCountOption i {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+
+  color: rgba(255, 255, 255, 0.25);
+
+  font-style: normal;
+}
+
+.wnWishCountOption.active {
+  border-color: rgba(208, 172, 255, 0.75);
+
+  background:
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(255, 255, 255, 0.16),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(174, 101, 255, 0.33),
+      rgba(113, 54, 175, 0.18)
+    );
+
+  box-shadow:
+    0 18px 55px rgba(88, 34, 148, 0.18);
+}
+
+.wnWishCountOption.active i,
+.wnWishCountOption.active > span {
+  color: var(--wn-purple);
+}
+
+.wnCustomWishField {
+  margin-top: 20px;
+}
+
+/* CATEGORIES */
+
+.wnCategoryEditor {
+  border-top: 1px solid var(--wn-line);
+}
+
+.wnCategoryRow {
+  min-height: 82px;
+
+  display: grid;
+  grid-template-columns: 55px 45px 1fr auto;
+  align-items: center;
+
+  border-bottom: 1px solid var(--wn-line);
+
+  transition: background 0.25s ease;
+}
+
+.wnCategoryRow:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.wnCategoryNumber {
+  color: var(--wn-purple);
+
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+
+.wnCategorySymbol {
+  color: rgba(255, 255, 255, 0.75);
+
+  font-size: 19px;
+}
+
+.wnCategoryRow input {
+  width: 100%;
+
+  padding: 20px 10px;
+
+  border: 0;
+  outline: 0;
+
+  background: transparent;
+
+  color: white;
+
+  font: inherit;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.wnCategoryEdit {
+  padding-right: 10px;
+
+  color: rgba(255, 255, 255, 0.25);
+
+  font-size: 8px;
+  letter-spacing: 0.17em;
+}
+
+.wnResetCategories {
+  margin-top: 20px;
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  color: rgba(255, 255, 255, 0.43);
+
+  font-size: 10px;
+  letter-spacing: 0.08em;
+
+  cursor: pointer;
+
+  transition: color 0.25s ease;
+}
+
+.wnResetCategories:hover {
+  color: var(--wn-purple);
+}
+
+/* CONTINUE */
+
+.wnEditorContinue {
+  padding: 110px 0 10px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.wnEditorContinue p {
+  margin: 0 0 16px;
+
+  color: var(--wn-purple);
+
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+}
+
+.wnEditorContinue h2 {
+  margin: 0 0 20px;
+
+  font-family: "Anton", sans-serif;
+  font-size: clamp(46px, 4.5vw, 72px);
+  font-weight: 400;
+  line-height: 0.9;
+
+  color: white;
+}
+
+.wnEditorContinue > div > span {
+  display: block;
+
+  max-width: 360px;
+
+  color: var(--wn-muted);
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.wnContinueButton {
+  flex: 0 0 auto;
+
+  min-width: 180px;
+  height: 58px;
+  padding: 0 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-radius: 100px;
+
+  background: white;
+
+  color: #100c17;
+
+  text-decoration: none;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.wnContinueButton:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.25);
+}
+
+/* =========================================================
+   LIVE PREVIEW
+   ========================================================= */
+
+.wnPreviewColumn {
+  position: relative;
+}
+
+.wnPreviewSticky {
+  position: sticky;
+  top: 25px;
+
+  min-height: 100vh;
+  padding: 65px 0 60px 5vw;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.wnPreviewHeader {
+  margin-bottom: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  color: rgba(255, 255, 255, 0.4);
+
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+}
+
+.wnPreviewHeader > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wnLiveDot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: var(--wn-purple);
+
+  box-shadow:
+    0 0 15px rgba(199, 154, 255, 0.8);
+}
+
+/* DEVICE */
+
+.wnGiftDevice {
+  width: min(100%, 430px);
+  margin: 0 auto;
+
+  padding: 11px;
+
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 36px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0.025)
+    );
+
+  box-shadow:
+    0 35px 100px rgba(0, 0, 0, 0.34),
+    0 0 70px rgba(139, 67, 209, 0.08);
+}
+
+.wnGiftScreen {
+  min-height: 690px;
+  padding: 30px 27px 24px;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  border-radius: 27px;
+
+  background:
+    radial-gradient(
+      circle at 85% 5%,
+      rgba(204, 164, 255, 0.22),
+      transparent 30%
+    ),
+    linear-gradient(
+      160deg,
+      #f7f1ff 0%,
+      #eee3fb 48%,
+      #e3d4f4 100%
+    );
+
+  color: #1b1323;
+}
+
+.wnGiftTop {
+  display: flex;
+  justify-content: space-between;
+
+  color: rgba(48, 25, 65, 0.45);
+
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+}
+
+.wnGiftHero {
+  padding: 48px 0 34px;
+
+  text-align: center;
+}
+
+.wnGiftHeart {
+  width: 56px;
+  height: 56px;
+
+  margin: 0 auto 26px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  background: #a966e9;
+
+  color: white;
+
+  font-size: 25px;
+
+  box-shadow:
+    0 15px 30px rgba(110, 53, 164, 0.22);
+}
+
+.wnGiftHero > p:first-of-type {
+  margin: 0 0 10px;
+
+  color: rgba(41, 23, 52, 0.45);
+
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+}
+
+.wnGiftHero h2 {
+  margin: 0;
+
+  font-family: "Cinzel", serif;
+  font-size: clamp(30px, 3vw, 43px);
+  font-weight: 400;
+  line-height: 1;
+
+  color: #1c1323;
+}
+
+.wnGiftMessage {
+  max-width: 290px;
+  margin: 23px auto 0 !important;
+
+  color: rgba(32, 20, 39, 0.6) !important;
+
+  font-family: Georgia, serif;
+  font-size: 13px !important;
+  font-style: italic;
+  line-height: 1.55 !important;
+}
+
+.wnGiftCount {
+  padding: 25px 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+
+  border-top: 1px solid rgba(50, 25, 65, 0.13);
+  border-bottom: 1px solid rgba(50, 25, 65, 0.13);
+}
+
+.wnGiftCount strong {
+  font-family: "Anton", sans-serif;
+  font-size: 58px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.wnGiftCount div {
+  display: flex;
+  flex-direction: column;
+
+  text-align: left;
+}
+
+.wnGiftCount span {
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+}
+
+.wnGiftCount span:last-child {
+  color: #9551d6;
+}
+
+/* PREVIEW CATEGORIES */
+
+.wnGiftCategories {
+  margin-top: 22px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  border-top: 1px solid rgba(50, 25, 65, 0.13);
+  border-left: 1px solid rgba(50, 25, 65, 0.13);
+}
+
+.wnGiftCategories > div {
+  position: relative;
+
+  min-height: 78px;
+  padding: 13px 12px;
+
+  border-right: 1px solid rgba(50, 25, 65, 0.13);
+  border-bottom: 1px solid rgba(50, 25, 65, 0.13);
+}
+
+.wnGiftCategories span {
+  display: block;
+
+  margin-bottom: 13px;
+
+  color: #9a55d9;
+
+  font-size: 7px;
+  font-weight: 700;
+}
+
+.wnGiftCategories i {
+  position: absolute;
+  top: 10px;
+  right: 11px;
+
+  color: rgba(94, 49, 122, 0.34);
+
+  font-size: 11px;
+  font-style: normal;
+}
+
+.wnGiftCategories p {
+  margin: 0 !important;
+
+  color: #24172d !important;
+
+  font-size: 9px !important;
+  font-weight: 700;
+  line-height: 1.25 !important;
+}
+
+.wnGiftFooter {
+  margin-top: auto;
+  padding-top: 22px;
+
+  display: flex;
+  justify-content: space-between;
+
+  color: rgba(49, 27, 61, 0.42);
+
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.wnPreviewHint {
+  margin: 17px auto 0 !important;
+
+  color: rgba(255, 255, 255, 0.28) !important;
+
+  font-size: 9px !important;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 1000px) {
+  .wnPersonalizeIntro {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .wnPersonalizeIntroText {
+    margin-left: 0;
+  }
+
+  .wnPersonalizeLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .wnPersonalizeEditor {
+    padding-right: 0;
+    border-right: 0;
+  }
+
+  .wnPreviewColumn {
+    order: -1;
+
+    border-bottom: 1px solid var(--wn-line);
+  }
+
+  .wnPreviewSticky {
+    position: relative;
+    top: auto;
+
+    min-height: auto;
+    padding: 60px 0 80px;
+  }
+
+  .wnGiftDevice {
+    width: min(430px, 100%);
+  }
+}
+
+@media (max-width: 700px) {
+  .wnPersonalizeHeader {
+    padding: 0 22px;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .wnPersonalizeHeaderCenter {
+    display: none;
+  }
+
+  .wnPersonalizeIntro {
+    padding:
+      75px 22px
+      65px;
+  }
+
+  .wnPersonalizeIntro h1 {
+    font-size: clamp(65px, 19vw, 95px);
+  }
+
+  .wnPersonalizeProgress {
+    margin: 0 22px;
+
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 10px;
+  }
+
+  .wnPersonalizeLayout {
+    padding: 0 22px 90px;
+  }
+
+  .wnEditorSection {
+    padding: 75px 0;
+  }
+
+  .wnEditorSectionHead {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  .wnEditorSectionHead h2 {
+    font-size: 58px;
+  }
+
+  .wnEditorFieldsTwo {
+    grid-template-columns: 1fr;
+  }
+
+  .wnWishCountGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .wnCategoryRow {
+    grid-template-columns: 38px 35px 1fr;
+  }
+
+  .wnCategoryEdit {
+    display: none;
+  }
+
+  .wnEditorContinue {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .wnContinueButton {
+    width: 100%;
+  }
+
+  .wnGiftScreen {
+    min-height: 640px;
+  }
+}
