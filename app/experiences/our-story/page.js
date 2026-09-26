@@ -1,236 +1,304 @@
+"use client";
+
+import { useMemo, useState } from "react";
+
+const memories = [
+  {
+    id: 1,
+    date: "SEPTEMBER 18, 2023",
+    eyebrow: "WHERE IT ALL BEGAN",
+    title: "The day we met",
+    text: "Some days look ordinary at first. Then somehow they become the beginning of everything.",
+    symbol: "♡",
+    position: { left: "16%", top: "64%" },
+  },
+  {
+    id: 2,
+    date: "DECEMBER 02, 2023",
+    eyebrow: "OUR FIRST ADVENTURE",
+    title: "A day I still remember",
+    text: "One of those moments I wish I could put in my pocket and keep forever.",
+    symbol: "✦",
+    position: { left: "34%", top: "37%" },
+  },
+  {
+    id: 3,
+    date: "APRIL 21, 2024",
+    eyebrow: "SOMEWHERE SPECIAL",
+    title: "Our place",
+    text: "It was never really about the place. It became special because we were there together.",
+    symbol: "♥",
+    position: { left: "54%", top: "59%" },
+  },
+  {
+    id: 4,
+    date: "AUGUST 14, 2025",
+    eyebrow: "ONE OF MY FAVORITES",
+    title: "Just us",
+    text: "Nothing extraordinary had to happen. Being there with you was already enough.",
+    symbol: "∞",
+    position: { left: "73%", top: "32%" },
+  },
+  {
+    id: 5,
+    date: "RIGHT NOW",
+    eyebrow: "AND HERE WE ARE",
+    title: "Still writing our story",
+    text: "We made it all the way here. And somehow this still feels like only the beginning.",
+    symbol: "♡",
+    position: { left: "88%", top: "57%" },
+  },
+];
+
 export default function OurStory() {
-  const moments = [
-    {
-      number: "01",
-      date: "THE BEGINNING",
-      title: "How We Met",
-      text: "The moment everything started.",
-      symbol: "♡",
-    },
-    {
-      number: "02",
-      date: "A FAVORITE DAY",
-      title: "That One Memory",
-      text: "A day you would happily live all over again.",
-      symbol: "✦",
-    },
-    {
-      number: "03",
-      date: "OUR PLACE",
-      title: "Somewhere Special",
-      text: "A place that means more because you were there together.",
-      symbol: "♥",
-    },
-    {
-      number: "04",
-      date: "RIGHT NOW",
-      title: "Where We Are",
-      text: "Another chapter of a story that is still being written.",
-      symbol: "∞",
-    },
-  ];
+  const [started, setStarted] = useState(false);
+  const [activeMemory, setActiveMemory] = useState(null);
+
+  const stars = useMemo(
+    () =>
+      Array.from({ length: 90 }, (_, index) => ({
+        id: index,
+        left: `${(index * 37 + 11) % 100}%`,
+        top: `${(index * 61 + 7) % 100}%`,
+        size: 1 + ((index * 13) % 3),
+        delay: `${((index * 17) % 40) / 10}s`,
+        opacity: 0.2 + (((index * 19) % 60) / 100),
+      })),
+    []
+  );
 
   return (
-    <main className="storyPage">
-      <header className="productHeader">
-        <a className="logo" href="/">
-          WI<span>♥</span>ELI
-        </a>
+    <main className={`ourStoryExperience ${started ? "journeyStarted" : ""}`}>
+      <div className="storySpaceBackground" aria-hidden="true">
+        {stars.map((star) => (
+          <i
+            key={star.id}
+            className="storySpaceStar"
+            style={{
+              left: star.left,
+              top: star.top,
+              width: star.size,
+              height: star.size,
+              animationDelay: star.delay,
+              opacity: star.opacity,
+            }}
+          />
+        ))}
 
-        <a className="backLink" href="/#ideas">
-          ← All Experiences
-        </a>
-      </header>
+        <div className="storyNebula storyNebulaOne" />
+        <div className="storyNebula storyNebulaTwo" />
+        <div className="storyNebula storyNebulaThree" />
+      </div>
 
-      <section className="storyHero">
-        <div className="storyHeroCopy">
-          <p className="eyebrow">YOUR STORY · YOUR MOMENTS</p>
+      {!started ? (
+        <section className="storyOpening">
+          <header className="storyExperienceHeader">
+            <a className="storyExperienceLogo" href="/">
+              WI<span>♥</span>ELI
+            </a>
 
-          <h1>
-            OUR
-            <br />
-            <span>STORY.</span>
-          </h1>
+            <span>OUR STORY</span>
+          </header>
 
-          <p className="storyLead">
-            Turn the moments that made you into an interactive story
-            they can experience again and again.
-          </p>
+          <div className="storyOpeningContent">
+            <p className="storyOpeningFor">A LITTLE JOURNEY FOR YOU ♡</p>
 
-          <div className="productActions">
-            <button className="primary">
-              Personalize This Gift →
+            <div className="storyOpeningCard">
+              <div className="storyOpeningGlow" />
+
+              <div className="storyOpeningPhoto">
+                <span>YOUR PHOTO</span>
+              </div>
+
+              <p className="storyOpeningTiny">OUR STORY · 2023 — FOREVER</p>
+
+              <h1>
+                LET'S REMEMBER
+                <br />
+                <em>OUR STORY.</em>
+              </h1>
+
+              <p className="storyOpeningMessage">
+                Let&apos;s remember our wonderful journey together —
+                the little moments, the unforgettable ones, and
+                everything that brought us here.
+              </p>
+
+              <button
+                type="button"
+                className="storyBeginButton"
+                onClick={() => setStarted(true)}
+              >
+                BEGIN OUR JOURNEY <span>→</span>
+              </button>
+            </div>
+
+            <p className="storyOpeningFrom">MADE WITH LOVE · JUST FOR YOU</p>
+          </div>
+        </section>
+      ) : (
+        <section className="storyUniverse">
+          <header className="storyUniverseHeader">
+            <button
+              type="button"
+              onClick={() => {
+                setStarted(false);
+                setActiveMemory(null);
+              }}
+            >
+              ← CLOSE
             </button>
 
-            <a
-              href="#story-experience"
-              className="secondary productSecondary"
+            <div className="storyExperienceLogo">
+              WI<span>♥</span>ELI
+            </div>
+
+            <span>OUR STORY</span>
+          </header>
+
+          <div className="storyJourneyIntro">
+            <p>THIS IS WHERE OUR STORY BEGAN</p>
+
+            <h1>
+              EVERY STAR
+              <br />
+              <em>HOLDS A MEMORY.</em>
+            </h1>
+
+            <span>Follow our journey →</span>
+          </div>
+
+          <div className="storyJourney">
+            <svg
+              className="storyJourneyLine"
+              viewBox="0 0 1600 620"
+              preserveAspectRatio="none"
+              aria-hidden="true"
             >
-              See the Experience
-            </a>
+              <path
+                d="M60 420 C220 500 300 150 520 235 C700 305 720 500 910 365 C1080 245 1110 125 1280 205 C1400 260 1460 380 1560 345"
+                fill="none"
+                stroke="rgba(210,174,255,.17)"
+                strokeWidth="1.5"
+                strokeDasharray="4 12"
+              />
+
+              <path
+                className="storyJourneyLineGlow"
+                d="M60 420 C220 500 300 150 520 235 C700 305 720 500 910 365 C1080 245 1110 125 1280 205 C1400 260 1460 380 1560 345"
+                fill="none"
+                stroke="rgba(207,163,255,.45)"
+                strokeWidth="1"
+              />
+            </svg>
+
+            {memories.map((memory, index) => (
+              <div
+                className="memoryStarInteractionLayer"
+                key={memory.id}
+                style={{
+                  left: memory.position.left,
+                  top: memory.position.top,
+                }}
+              >
+                <button
+                  type="button"
+                  className="memoryStarButton"
+                  onClick={() => setActiveMemory(memory)}
+                  aria-label={`Open memory: ${memory.title}`}
+                >
+                  <span className="memoryStarHalo" />
+                  <span className="memoryStarCore">{memory.symbol}</span>
+                  <span className="memoryStarPulse" />
+                </button>
+
+                <div className="memoryStarLabel">
+                  <small>{String(index + 1).padStart(2, "0")}</small>
+                  <strong>{memory.eyebrow}</strong>
+                  <span>{memory.date}</span>
+                </div>
+              </div>
+            ))}
           </div>
 
-          <p className="productHint">
-            ♡ Your photos &nbsp; · &nbsp; Your dates &nbsp; · &nbsp;
-            Your story
+          <div className="storyFuture">
+            <div className="storyFutureOrbit storyFutureOrbitOne" />
+            <div className="storyFutureOrbit storyFutureOrbitTwo" />
+
+            <div className="storyFutureGlow" />
+
+            <p>AND HERE WE ARE ♡</p>
+
+            <h2>
+              THE REST IS
+              <br />
+              <em>STILL UNWRITTEN.</em>
+            </h2>
+
+            <span>
+              There&apos;s still so much of our universe left to discover.
+            </span>
+
+            <div className="storyFutureInfinity">∞</div>
+          </div>
+
+          <p className="storyUniverseHint">
+            CLICK A STAR TO OPEN A MEMORY
           </p>
-        </div>
+        </section>
+      )}
 
-        <div className="storyPreview">
-          <div className="storyPhoto storyPhotoOne">
-            <div className="storyPhotoImage">YOUR PHOTO</div>
-            <p>where it all began ♡</p>
-          </div>
+      {activeMemory && (
+        <div
+          className="storyMemoryOverlay"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              setActiveMemory(null);
+            }
+          }}
+        >
+          <article className="storyMemoryModal">
+            <button
+              type="button"
+              className="storyMemoryClose"
+              onClick={() => setActiveMemory(null)}
+              aria-label="Close memory"
+            >
+              ×
+            </button>
 
-          <div className="storyPhoto storyPhotoTwo">
-            <div className="storyPhotoImage">YOUR MEMORY</div>
-            <p>one of our favorites.</p>
-          </div>
+            <div className="storyMemoryVisual">
+              <div className="storyMemoryVisualGlow" />
+              <span>YOUR MEMORY</span>
+            </div>
 
-          <div className="storyHeart">♥</div>
-        </div>
-      </section>
+            <div className="storyMemoryContent">
+              <p>{activeMemory.eyebrow}</p>
 
-      <section className="storyIntro">
-        <p className="eyebrow">EVERY STORY STARTS SOMEWHERE</p>
+              <span className="storyMemoryDate">
+                {activeMemory.date}
+              </span>
 
-        <h2>
-          YOUR FAVORITE
-          <br />
-          MOMENTS.
-          <br />
-          <span>ALL IN ONE PLACE.</span>
-        </h2>
+              <h2>{activeMemory.title}</h2>
 
-        <p className="storyIntroText">
-          Our Story turns photos, dates, messages and little memories
-          into a personal digital journey made for the two of you.
-        </p>
-      </section>
-
-      <section className="storyTimeline" id="story-experience">
-        <div className="storyTimelineHeading">
-          <p className="eyebrow">THE EXPERIENCE</p>
-
-          <h2>
-            FROM THEN
-            <br />
-            TO NOW.
-          </h2>
-
-          <p>
-            Build a timeline of the moments that matter. Add photos,
-            dates and personal notes to every chapter.
-          </p>
-        </div>
-
-        <div className="storyMoments">
-          {moments.map((moment) => (
-            <article className="storyMoment" key={moment.number}>
-              <div className="storyMomentTop">
-                <span>{moment.number}</span>
-                <span>{moment.symbol}</span>
+              <div className="storyMemoryDivider">
+                <span>{activeMemory.symbol}</span>
               </div>
 
-              <div className="storyMomentVisual">
-                <span>ADD PHOTO</span>
-              </div>
+              <blockquote>
+                “{activeMemory.text}”
+              </blockquote>
 
-              <p className="storyMomentDate">{moment.date}</p>
-              <h3>{moment.title}</h3>
-              <p className="storyMomentText">{moment.text}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="storyMessage">
-        <div>
-          <p className="eyebrow">A MESSAGE FROM YOU</p>
-
-          <h2>
-            SOME THINGS
-            <br />
-            DESERVE MORE
-            <br />
-            THAN A TEXT.
-          </h2>
-        </div>
-
-        <div className="storyLetter">
-          <p>FOR YOU ♡</p>
-
-          <h3>
-            “I wanted to make something that feels like us.”
-          </h3>
-
-          <span>
-            Add your own message, memory or little note for them to
-            discover.
-          </span>
-        </div>
-      </section>
-
-      <section className="howWorks storyHow">
-        <p className="eyebrow">HOW IT WORKS</p>
-
-        <h2>
-          YOUR MEMORIES.
-          <br />
-          YOUR WAY.
-        </h2>
-
-        <div className="steps">
-          <article>
-            <span>01</span>
-            <h3>Add your moments</h3>
-            <p>
-              Choose your favorite photos, important dates and memories.
-            </p>
-          </article>
-
-          <article>
-            <span>02</span>
-            <h3>Tell your story</h3>
-            <p>
-              Add captions, messages and little details only the two of
-              you understand.
-            </p>
-          </article>
-
-          <article>
-            <span>03</span>
-            <h3>Share the surprise</h3>
-            <p>
-              Send their private WIVELI link and let them experience the
-              story for themselves.
-            </p>
+              <button
+                type="button"
+                onClick={() => setActiveMemory(null)}
+              >
+                CONTINUE OUR JOURNEY →
+              </button>
+            </div>
           </article>
         </div>
-      </section>
-
-      <section className="productCTA storyCTA">
-        <p>EVERY MEMORY DESERVES A PLACE.</p>
-
-        <h2>
-          TURN YOUR STORY
-          <br />
-          INTO A GIFT.
-        </h2>
-
-        <button className="primary">
-          Personalize Our Story →
-        </button>
-      </section>
-
-      <footer>
-        <a className="logo" href="/">
-          WI<span>♥</span>ELI
-        </a>
-
-        <p>Wish + loVE + LIfe</p>
-        <p>© 2026 WIVELI</p>
-      </footer>
+      )}
     </main>
   );
 }
