@@ -22596,3 +22596,901 @@ main {
   }
 
 }
+/* =========================================================
+   OUR STORY — INTERACTIVE UNIVERSE
+   ========================================================= */
+
+.ourStoryExperience {
+  --os-bg: #08060d;
+  --os-purple: #cda3ff;
+  --os-purple-soft: #a968f4;
+  --os-text: #fff;
+  --os-muted: rgba(255,255,255,.46);
+
+  position: relative;
+  width: 100%;
+  min-height: 100svh;
+  overflow: hidden;
+  color: var(--os-text);
+  background:
+    radial-gradient(circle at 50% 45%, rgba(103,44,160,.18), transparent 35%),
+    linear-gradient(180deg,#0d0913 0%,#08060d 100%);
+}
+
+.storySpaceBackground {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 20%,rgba(126,65,190,.14),transparent 32%),
+    radial-gradient(circle at 75% 70%,rgba(87,37,145,.16),transparent 38%),
+    #08060d;
+}
+
+.storySpaceStar {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 7px rgba(222,194,255,.7);
+  animation: storyStarTwinkle 3.8s ease-in-out infinite alternate;
+}
+
+.storyNebula {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: .18;
+}
+
+.storyNebulaOne {
+  width: 500px;
+  height: 500px;
+  left: -160px;
+  top: 12%;
+  background: #8242c5;
+}
+
+.storyNebulaTwo {
+  width: 600px;
+  height: 600px;
+  right: -220px;
+  top: 30%;
+  background: #532d91;
+}
+
+.storyNebulaThree {
+  width: 420px;
+  height: 420px;
+  left: 40%;
+  bottom: -240px;
+  background: #a65cff;
+}
+
+.storyOpening {
+  position: relative;
+  z-index: 2;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.storyExperienceHeader,
+.storyUniverseHeader {
+  position: relative;
+  z-index: 100;
+  height: 82px;
+  margin: 0 5vw;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.storyExperienceHeader > span,
+.storyUniverseHeader > span {
+  justify-self: end;
+  font-size: 8px;
+  letter-spacing: .24em;
+  color: rgba(255,255,255,.35);
+}
+
+.storyExperienceLogo {
+  justify-self: start;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -.065em;
+  text-decoration: none;
+}
+
+.storyExperienceLogo span {
+  color: var(--os-purple);
+}
+
+.storyOpeningContent {
+  position: relative;
+  flex: 1;
+  min-height: 720px;
+  padding: 70px 24px 55px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.storyOpeningFor,
+.storyOpeningFrom {
+  margin: 0;
+  color: rgba(255,255,255,.35);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: .22em;
+}
+
+.storyOpeningFor {
+  margin-bottom: 28px;
+}
+
+.storyOpeningFrom {
+  margin-top: 28px;
+}
+
+.storyOpeningCard {
+  position: relative;
+  width: min(92vw, 560px);
+  min-height: 640px;
+  padding: 42px 46px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at 50% 15%,rgba(196,139,255,.14),transparent 30%),
+    linear-gradient(145deg,rgba(255,255,255,.065),rgba(255,255,255,.018));
+  backdrop-filter: blur(26px);
+  -webkit-backdrop-filter: blur(26px);
+  box-shadow:
+    0 40px 100px rgba(0,0,0,.4),
+    inset 0 1px 0 rgba(255,255,255,.12);
+}
+
+.storyOpeningGlow {
+  position: absolute;
+  width: 330px;
+  height: 330px;
+  top: -180px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: rgba(181,112,255,.25);
+  filter: blur(75px);
+  pointer-events: none;
+}
+
+.storyOpeningPhoto {
+  position: relative;
+  z-index: 2;
+  width: 112px;
+  height: 140px;
+  margin-bottom: 35px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 60px 60px 18px 18px;
+  background:
+    radial-gradient(circle at 50% 40%,rgba(204,161,255,.18),transparent 45%),
+    rgba(255,255,255,.035);
+}
+
+.storyOpeningPhoto span {
+  font-size: 7px;
+  letter-spacing: .16em;
+  color: rgba(255,255,255,.25);
+}
+
+.storyOpeningTiny {
+  margin: 0 0 18px;
+  font-size: 7px;
+  letter-spacing: .19em;
+  color: var(--os-purple);
+}
+
+.storyOpeningCard h1 {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  text-align: center;
+  font-family: "Helvetica Neue","Inter",Arial,sans-serif;
+  font-size: clamp(48px,5vw,72px);
+  font-weight: 300;
+  line-height: .9;
+  letter-spacing: -.065em;
+}
+
+.storyOpeningCard h1 em {
+  color: var(--os-purple);
+  font-family: Georgia,"Times New Roman",serif;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -.055em;
+}
+
+.storyOpeningMessage {
+  max-width: 390px;
+  margin: 28px auto 34px;
+  text-align: center;
+  color: rgba(255,255,255,.5);
+  font-family: Georgia,"Times New Roman",serif;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.storyBeginButton {
+  position: relative;
+  z-index: 50;
+  width: min(100%,310px);
+  min-height: 62px;
+  padding: 0 25px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  cursor: pointer;
+  pointer-events: auto;
+  border: 1px solid rgba(223,195,255,.36);
+  border-radius: 999px;
+  color: #fff;
+  background:
+    linear-gradient(135deg,rgba(190,126,255,.26),rgba(255,255,255,.06));
+  box-shadow:
+    0 12px 40px rgba(89,32,142,.25),
+    inset 0 1px 0 rgba(255,255,255,.15);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .17em;
+  transition:
+    transform .3s ease,
+    border-color .3s ease,
+    box-shadow .3s ease;
+}
+
+.storyBeginButton span {
+  font-size: 18px;
+  font-weight: 300;
+}
+
+.storyBeginButton:hover {
+  transform: translateY(-3px);
+  border-color: rgba(224,196,255,.7);
+  box-shadow:
+    0 18px 50px rgba(117,54,181,.36),
+    0 0 35px rgba(195,137,255,.12);
+}
+
+/* UNIVERSE */
+
+.storyUniverse {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  min-height: 100svh;
+  overflow-x: auto;
+  overflow-y: hidden;
+  animation: storyUniverseEnter 1.2s cubic-bezier(.16,1,.3,1) both;
+}
+
+.storyUniverseHeader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 500;
+}
+
+.storyUniverseHeader button {
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  color: rgba(255,255,255,.48);
+  background: transparent;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .17em;
+}
+
+.storyUniverseHeader .storyExperienceLogo {
+  justify-self: center;
+}
+
+.storyJourneyIntro {
+  position: absolute;
+  z-index: 20;
+  left: 6vw;
+  top: 145px;
+  pointer-events: none;
+}
+
+.storyJourneyIntro p {
+  margin: 0 0 15px;
+  color: var(--os-purple);
+  font-size: 7px;
+  letter-spacing: .2em;
+}
+
+.storyJourneyIntro h1 {
+  margin: 0;
+  font-family: "Helvetica Neue","Inter",Arial,sans-serif;
+  font-size: clamp(42px,4.6vw,70px);
+  font-weight: 300;
+  line-height: .9;
+  letter-spacing: -.06em;
+}
+
+.storyJourneyIntro h1 em {
+  color: var(--os-purple);
+  font-family: Georgia,serif;
+  font-weight: 400;
+}
+
+.storyJourneyIntro > span {
+  display: block;
+  margin-top: 18px;
+  color: rgba(255,255,255,.32);
+  font-size: 8px;
+  letter-spacing: .12em;
+}
+
+.storyJourney {
+  position: relative;
+  z-index: 10;
+  width: max(1800px,100vw);
+  height: 100svh;
+  min-height: 760px;
+}
+
+.storyJourneyLine {
+  position: absolute;
+  z-index: 1;
+  left: 4%;
+  top: 26%;
+  width: 88%;
+  height: 58%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.storyJourneyLineGlow {
+  filter: drop-shadow(0 0 8px rgba(205,163,255,.5));
+}
+
+.memoryStarInteractionLayer {
+  position: absolute;
+  z-index: 100;
+  width: 160px;
+  height: 160px;
+  transform: translate(-50%,-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.memoryStarButton {
+  position: relative;
+  z-index: 10;
+  width: 74px;
+  height: 74px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  pointer-events: auto;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  background: transparent;
+}
+
+.memoryStarCore {
+  position: relative;
+  z-index: 5;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(229,207,255,.55);
+  border-radius: 50%;
+  color: #fff;
+  background:
+    radial-gradient(circle,rgba(222,192,255,.55),rgba(151,87,215,.2) 42%,rgba(21,13,31,.72) 72%);
+  box-shadow:
+    0 0 16px rgba(209,164,255,.55),
+    0 0 42px rgba(178,111,246,.32);
+  font-family: Georgia,serif;
+  font-size: 18px;
+  transition: transform .35s ease,box-shadow .35s ease;
+}
+
+.memoryStarHalo,
+.memoryStarPulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.memoryStarHalo {
+  border: 1px solid rgba(208,166,255,.13);
+  animation: memoryOrbitPulse 3s ease-in-out infinite;
+}
+
+.memoryStarPulse {
+  inset: 17px;
+  background: rgba(201,149,255,.16);
+  filter: blur(10px);
+}
+
+.memoryStarButton:hover .memoryStarCore {
+  transform: scale(1.2);
+  box-shadow:
+    0 0 20px rgba(255,255,255,.75),
+    0 0 58px rgba(194,135,255,.55);
+}
+
+.memoryStarLabel {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 55px);
+  width: 180px;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.memoryStarLabel small {
+  display: block;
+  margin-bottom: 5px;
+  color: rgba(255,255,255,.22);
+  font-size: 6px;
+  letter-spacing: .18em;
+}
+
+.memoryStarLabel strong {
+  display: block;
+  color: rgba(255,255,255,.72);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: .12em;
+}
+
+.memoryStarLabel span {
+  display: block;
+  margin-top: 5px;
+  color: rgba(255,255,255,.25);
+  font-family: Georgia,serif;
+  font-size: 9px;
+  font-style: italic;
+}
+
+/* FUTURE */
+
+.storyFuture {
+  position: absolute;
+  z-index: 20;
+  left: 1600px;
+  top: 50%;
+  width: 520px;
+  transform: translateY(-50%);
+  text-align: center;
+  pointer-events: none;
+}
+
+.storyFutureGlow {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 50%;
+  width: 420px;
+  height: 420px;
+  transform: translate(-50%,-50%);
+  border-radius: 50%;
+  background: rgba(140,73,206,.15);
+  filter: blur(75px);
+}
+
+.storyFutureOrbit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border: 1px solid rgba(213,177,255,.08);
+  border-radius: 50%;
+  transform: translate(-50%,-50%);
+}
+
+.storyFutureOrbitOne {
+  width: 410px;
+  height: 410px;
+}
+
+.storyFutureOrbitTwo {
+  width: 540px;
+  height: 540px;
+}
+
+.storyFuture p {
+  margin: 0 0 17px;
+  color: var(--os-purple);
+  font-size: 8px;
+  letter-spacing: .22em;
+}
+
+.storyFuture h2 {
+  margin: 0;
+  font-family: "Helvetica Neue","Inter",Arial,sans-serif;
+  font-size: 58px;
+  font-weight: 300;
+  line-height: .9;
+  letter-spacing: -.065em;
+}
+
+.storyFuture h2 em {
+  color: var(--os-purple);
+  font-family: Georgia,serif;
+  font-weight: 400;
+}
+
+.storyFuture > span {
+  display: block;
+  max-width: 320px;
+  margin: 24px auto 0;
+  color: rgba(255,255,255,.37);
+  font-family: Georgia,serif;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.storyFutureInfinity {
+  margin-top: 24px;
+  color: rgba(218,183,255,.7);
+  font-family: Georgia,serif;
+  font-size: 38px;
+  text-shadow: 0 0 30px rgba(190,130,255,.5);
+}
+
+.storyUniverseHint {
+  position: fixed;
+  z-index: 200;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  margin: 0;
+  color: rgba(255,255,255,.24);
+  font-size: 6px;
+  letter-spacing: .2em;
+  pointer-events: none;
+}
+
+/* MEMORY MODAL */
+
+.storyMemoryOverlay {
+  position: fixed;
+  z-index: 2000;
+  inset: 0;
+  padding: 25px;
+  display: grid;
+  place-items: center;
+  background: rgba(5,3,9,.78);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  animation: storyOverlayIn .3s ease both;
+}
+
+.storyMemoryModal {
+  position: relative;
+  width: min(900px,94vw);
+  min-height: 560px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: .9fr 1.1fr;
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 20% 20%,rgba(160,87,230,.14),transparent 35%),
+    #0e0a15;
+  box-shadow: 0 40px 120px rgba(0,0,0,.6);
+  animation: storyMemoryIn .55s cubic-bezier(.16,1,.3,1) both;
+}
+
+.storyMemoryClose {
+  position: absolute;
+  z-index: 20;
+  right: 20px;
+  top: 18px;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 50%;
+  color: rgba(255,255,255,.55);
+  background: rgba(255,255,255,.04);
+  font-size: 20px;
+}
+
+.storyMemoryVisual {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-right: 1px solid rgba(255,255,255,.08);
+  background:
+    radial-gradient(circle at 50% 50%,rgba(183,116,248,.17),transparent 45%),
+    rgba(255,255,255,.018);
+}
+
+.storyMemoryVisualGlow {
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: rgba(177,104,244,.17);
+  filter: blur(50px);
+}
+
+.storyMemoryVisual > span {
+  position: relative;
+  color: rgba(255,255,255,.22);
+  font-size: 8px;
+  letter-spacing: .2em;
+}
+
+.storyMemoryContent {
+  padding: 80px 65px 55px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.storyMemoryContent > p {
+  margin: 0 0 8px;
+  color: var(--os-purple);
+  font-size: 8px;
+  letter-spacing: .19em;
+}
+
+.storyMemoryDate {
+  color: rgba(255,255,255,.25);
+  font-family: Georgia,serif;
+  font-size: 11px;
+  font-style: italic;
+}
+
+.storyMemoryContent h2 {
+  margin: 28px 0 0;
+  font-family: "Helvetica Neue","Inter",Arial,sans-serif;
+  font-size: clamp(38px,4vw,60px);
+  font-weight: 300;
+  line-height: .92;
+  letter-spacing: -.055em;
+}
+
+.storyMemoryDivider {
+  width: 100%;
+  margin: 30px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--os-purple);
+}
+
+.storyMemoryDivider::before,
+.storyMemoryDivider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,.08);
+}
+
+.storyMemoryDivider span {
+  font-family: Georgia,serif;
+  font-size: 13px;
+}
+
+.storyMemoryContent blockquote {
+  margin: 0;
+  color: rgba(255,255,255,.48);
+  font-family: Georgia,"Times New Roman",serif;
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1.7;
+}
+
+.storyMemoryContent > button {
+  align-self: flex-start;
+  margin-top: 35px;
+  padding: 0;
+  cursor: pointer;
+  border: 0;
+  color: rgba(218,187,255,.78);
+  background: transparent;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .16em;
+}
+
+/* ANIMATION */
+
+@keyframes storyStarTwinkle {
+  from { transform: scale(.7); opacity: .2; }
+  to { transform: scale(1.35); opacity: .85; }
+}
+
+@keyframes memoryOrbitPulse {
+  0%,100% { transform: scale(.78); opacity:.15; }
+  50% { transform: scale(1.2); opacity:.65; }
+}
+
+@keyframes storyUniverseEnter {
+  from { opacity:0; transform:scale(1.025); }
+  to { opacity:1; transform:scale(1); }
+}
+
+@keyframes storyOverlayIn {
+  from { opacity:0; }
+  to { opacity:1; }
+}
+
+@keyframes storyMemoryIn {
+  from {
+    opacity:0;
+    transform:translateY(24px) scale(.97);
+  }
+  to {
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+  .storyExperienceHeader,
+  .storyUniverseHeader {
+    height: 66px;
+    margin: 0 20px;
+  }
+
+  .storyExperienceHeader > span,
+  .storyUniverseHeader > span {
+    font-size: 6px;
+  }
+
+  .storyExperienceLogo {
+    font-size: 19px;
+  }
+
+  .storyOpeningContent {
+    min-height: 650px;
+    padding: 35px 16px 30px;
+  }
+
+  .storyOpeningFor {
+    margin-bottom: 18px;
+    font-size: 6px;
+  }
+
+  .storyOpeningFrom {
+    margin-top: 18px;
+    font-size: 6px;
+  }
+
+  .storyOpeningCard {
+    min-height: 570px;
+    padding: 30px 23px;
+    border-radius: 25px;
+  }
+
+  .storyOpeningPhoto {
+    width: 90px;
+    height: 112px;
+    margin-bottom: 28px;
+  }
+
+  .storyOpeningTiny {
+    font-size: 6px;
+  }
+
+  .storyOpeningCard h1 {
+    font-size: clamp(42px,12vw,58px);
+  }
+
+  .storyOpeningMessage {
+    margin: 24px auto 28px;
+    font-size: 13px;
+  }
+
+  .storyBeginButton {
+    min-height: 58px;
+    font-size: 8px;
+  }
+
+  .storyJourneyIntro {
+    left: 28px;
+    top: 105px;
+  }
+
+  .storyJourneyIntro h1 {
+    font-size: 42px;
+  }
+
+  .storyJourney {
+    width: 1650px;
+    min-height: 680px;
+  }
+
+  .memoryStarInteractionLayer {
+    width: 130px;
+    height: 130px;
+  }
+
+  .memoryStarButton {
+    width: 65px;
+    height: 65px;
+  }
+
+  .memoryStarCore {
+    width: 42px;
+    height: 42px;
+  }
+
+  .storyFuture {
+    left: 1430px;
+    width: 360px;
+  }
+
+  .storyFuture h2 {
+    font-size: 45px;
+  }
+
+  .storyMemoryModal {
+    width: min(94vw,500px);
+    min-height: 0;
+    max-height: 90svh;
+    overflow-y: auto;
+    grid-template-columns: 1fr;
+  }
+
+  .storyMemoryVisual {
+    min-height: 220px;
+    border-right: 0;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+
+  .storyMemoryContent {
+    padding: 40px 28px 35px;
+  }
+
+  .storyMemoryContent h2 {
+    font-size: 40px;
+  }
+
+  .storyUniverseHint {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .storySpaceStar,
+  .memoryStarHalo,
+  .storyUniverse,
+  .storyMemoryOverlay,
+  .storyMemoryModal {
+    animation: none !important;
+  }
+}
