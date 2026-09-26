@@ -25,60 +25,80 @@ const themes = [
     id: "custom",
     icon: "∞",
     name: "Your World",
-    text: "Upload your own background and build a path on it.",
+    text: "Upload your own background and build your own path.",
   },
 ];
 
-const initialMemories = [
-  {
-    id: 1,
-    title: "How We Met",
-    date: "2024-02-14",
-    place: "Kyiv",
-    text: "The moment everything started.",
-    media: [],
+const defaultLetter =
+  "I wanted to remind you of some of the best moments I remember with you. The little things, the places, and the days I never want to forget. So I put some of them here — just for us.";
+
+function createMemory(id = Date.now()) {
+  return {
+    id,
+    title: "",
+    date: "",
+    place: "",
+    text: "",
+    photo: null,
+    video: null,
     voice: null,
-  },
-];
+  };
+}
+
+function readAsDataURL(file, callback) {
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    callback(reader.result);
+  };
+
+  reader.readAsDataURL(file);
+}
 
 export default function OurStoryEditor() {
   const [step, setStep] = useState(1);
+
   const [recipient, setRecipient] = useState("Sophie");
   const [sender, setSender] = useState("Alex");
+  const [letter, setLetter] = useState(defaultLetter);
+  const [openingPhoto, setOpeningPhoto] = useState(null);
 
-  const [letter, setLetter] = useState(
-    "I wanted to remind you of some of the best moments I remember with you. The little things, the places, and the days I never want to forget."
-  );
+  const [memories, setMemories] = useState([
+    {
+      id: 1,
+      title: "How We Met",
+      date: "2024-02-14",
+      place: "Kyiv, Ukraine",
+      text: "The moment everything started.",
+      photo: null,
+      video: null,
+      voice: null,
+    },
+  ]);
 
   const [theme, setTheme] = useState("stars");
   const [customColor, setCustomColor] = useState("#5d347f");
   const [customBackground, setCustomBackground] = useState(null);
 
-  const [memories, setMemories] = useState(initialMemories);
-
   const [finalMessage, setFinalMessage] = useState(
-    "There are still so many moments waiting for us. The rest is ours to write."
+    "There are still so many places to see, things to do, and moments waiting for us. The rest is ours to write."
   );
 
   const addMemory = () => {
     setMemories((current) => [
       ...current,
-      {
-        id: Date.now(),
-        title: "",
-        date: "",
-        place: "",
-        text: "",
-        media: [],
-        voice: null,
-      },
+      createMemory(Date.now()),
     ]);
   };
 
   const updateMemory = (id, field, value) => {
     setMemories((current) =>
       current.map((memory) =>
-        memory.id === id ? { ...memory, [field]: value } : memory
+        memory.id === id
+          ? { ...memory, [field]: value }
+          : memory
       )
     );
   };
@@ -89,46 +109,84 @@ export default function OurStoryEditor() {
     );
   };
 
-  const handleMedia = (id, files) => {
-    const selected = Array.from(files);
+  const moveMemory = (index, direction) => {
+    const target = index + direction;
 
-    setMemories((current) =>
-      current.map((memory) =>
-        memory.id === id
-          ? {
-              ...memory,
-              media: selected.map((file) => ({
-                name: file.name,
-                type: file.type,
-                url: URL.createObjectURL(file),
-              })),
-            }
-          : memory
-      )
-    );
+    if (target < 0 || target >= memories.length) return;
+
+    const next = [...memories];
+    const [item] = next.splice(index, 1);
+
+    next.splice(target, 0, item);
+
+    setMemories(next);
+  };
+
+  const handleMemoryMedia = (id, files) => {
+    const list = Array.from(files || []);
+
+    list.forEach((file) => {
+      if (file.type.startsWith("image/")) {
+        readAsDataURL(file, (value) => {
+          updateMemory(id, "photo", value);
+        });
+      }
+
+      if (file.type.startsWith("video/")) {
+        /*
+          Video is previewed in this browser session.
+          Large videos should later go to cloud storage.
+        */
+        updateMemory(
+          id,
+          "video",
+          URL.createObjectURL(file)
+        );
+      }
+    });
   };
 
   const handleVoice = (id, file) => {
     if (!file) return;
 
-    setMemories((current) =>
-      current.map((memory) =>
-        memory.id === id
-          ? {
-              ...memory,
-              voice: {
-                name: file.name,
-                url: URL.createObjectURL(file),
-              },
-            }
-          : memory
-      )
+    updateMemory(
+      id,
+      "voice",
+      URL.createObjectURL(file)
     );
   };
 
-  const handleBackground = (file) => {
-    if (!file) return;
-    setCustomBackground(URL.createObjectURL(file));
+  const saveStory = () => {
+    const story = {
+      version: 1,
+      recipient: recipient.trim() || "You",
+      sender: sender.trim() || "Someone special",
+      openingLetter: letter.trim() || defaultLetter,
+      openingPhoto,
+      theme,
+      customColor,
+      customBackground,
+      finalMessage,
+      memories: memories.map((memory) => ({
+        ...memory,
+        title: memory.title.trim() || "A Memory",
+        place: memory.place.trim() || "Somewhere special",
+        text:
+          memory.text.trim() ||
+          "A moment worth remembering.",
+      })),
+    };
+
+    try {
+      localStorage.setItem(
+        "wiveli-our-story-v1",
+        JSON.stringify(story)
+      );
+    } catch (error) {
+      console.error("Could not save Our Story:", error);
+    }
+
+    window.location.href = "/gift/our-story";
   };
 
   return (
@@ -140,19 +198,26 @@ export default function OurStoryEditor() {
 
         <div className="oseProgress">
           <span>{String(step).padStart(2, "0")}</span>
+
           <div>
-            <i style={{ width: `${(step / 5) * 100}%` }} />
+            <i
+              style={{
+                width: `${(step / 5) * 100}%`,
+              }}
+            />
           </div>
+
           <span>05</span>
         </div>
 
-        <a href="/#ideas">← EXIT</a>
+        <a href="/">← EXIT</a>
       </header>
 
       {step === 1 && (
         <section className="oseStep">
           <div className="oseIntro">
             <p>OUR STORY · 01</p>
+
             <h1>
               START WITH
               <br />
@@ -160,8 +225,8 @@ export default function OurStoryEditor() {
             </h1>
 
             <span>
-              Before the journey begins, give them something personal
-              to open.
+              Before the journey begins, give them something
+              personal to open.
             </span>
           </div>
 
@@ -171,7 +236,9 @@ export default function OurStoryEditor() {
                 FOR
                 <input
                   value={recipient}
-                  onChange={(e) => setRecipient(e.target.value)}
+                  onChange={(e) =>
+                    setRecipient(e.target.value)
+                  }
                   placeholder="Their name"
                 />
               </label>
@@ -180,7 +247,9 @@ export default function OurStoryEditor() {
                 FROM
                 <input
                   value={sender}
-                  onChange={(e) => setSender(e.target.value)}
+                  onChange={(e) =>
+                    setSender(e.target.value)
+                  }
                   placeholder="Your name"
                 />
               </label>
@@ -189,24 +258,52 @@ export default function OurStoryEditor() {
                 YOUR OPENING LETTER
                 <textarea
                   value={letter}
-                  onChange={(e) => setLetter(e.target.value)}
+                  onChange={(e) =>
+                    setLetter(e.target.value)
+                  }
                   rows={8}
                 />
               </label>
 
               <label className="oseUpload">
-                <span>＋ ADD OPENING PHOTO</span>
-                <small>Optional · JPG, PNG</small>
-                <input type="file" accept="image/*" />
+                <span>
+                  {openingPhoto
+                    ? "✓ OPENING PHOTO ADDED"
+                    : "＋ ADD OPENING PHOTO"}
+                </span>
+
+                <small>JPG / PNG</small>
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) =>
+                    readAsDataURL(
+                      e.target.files?.[0],
+                      setOpeningPhoto
+                    )
+                  }
+                />
               </label>
             </div>
 
             <div className="oseLetterPreview">
-              <p>FOR {recipient.toUpperCase()} ♡</p>
+              <p>
+                FOR {recipient.toUpperCase()} ♡
+              </p>
 
-              <div className="osePreviewPhoto">
-                YOUR PHOTO
-              </div>
+              {openingPhoto ? (
+                <div
+                  className="osePreviewPhoto osePreviewPhotoReal"
+                  style={{
+                    backgroundImage: `url(${openingPhoto})`,
+                  }}
+                />
+              ) : (
+                <div className="osePreviewPhoto">
+                  YOUR PHOTO
+                </div>
+              )}
 
               <h2>
                 LET&apos;S REMEMBER
@@ -216,7 +313,9 @@ export default function OurStoryEditor() {
 
               <blockquote>“{letter}”</blockquote>
 
-              <span>FROM {sender.toUpperCase()}</span>
+              <span>
+                FROM {sender.toUpperCase()}
+              </span>
 
               <button type="button">
                 BEGIN OUR JOURNEY →
@@ -227,7 +326,7 @@ export default function OurStoryEditor() {
       )}
 
       {step === 2 && (
-        <section className="oseStep oseMemoriesStep">
+        <section className="oseStep">
           <div className="oseIntro">
             <p>OUR STORY · 02</p>
 
@@ -238,22 +337,51 @@ export default function OurStoryEditor() {
             </h1>
 
             <span>
-              Every memory will become a stop in your journey.
+              Every memory becomes a stop in your journey.
             </span>
           </div>
 
           <div className="oseMemoryList">
             {memories.map((memory, index) => (
-              <article className="oseMemoryEditor" key={memory.id}>
+              <article
+                className="oseMemoryEditor"
+                key={memory.id}
+              >
                 <div className="oseMemoryNumber">
                   <span>
                     {String(index + 1).padStart(2, "0")}
                   </span>
 
+                  <div className="oseMemoryMove">
+                    <button
+                      type="button"
+                      disabled={index === 0}
+                      onClick={() =>
+                        moveMemory(index, -1)
+                      }
+                    >
+                      ↑
+                    </button>
+
+                    <button
+                      type="button"
+                      disabled={
+                        index === memories.length - 1
+                      }
+                      onClick={() =>
+                        moveMemory(index, 1)
+                      }
+                    >
+                      ↓
+                    </button>
+                  </div>
+
                   {memories.length > 1 && (
                     <button
                       type="button"
-                      onClick={() => removeMemory(memory.id)}
+                      onClick={() =>
+                        removeMemory(memory.id)
+                      }
                     >
                       REMOVE
                     </button>
@@ -314,20 +442,24 @@ export default function OurStoryEditor() {
                         e.target.value
                       )
                     }
-                    placeholder="Tell them what you remember about this moment..."
+                    placeholder="What do you remember about this moment?"
                     rows={5}
                   />
 
                   <div className="oseMediaRow">
                     <label className="oseMiniUpload">
                       <strong>▣</strong>
-                      <span>PHOTO / VIDEO</span>
+                      <span>
+                        {memory.photo || memory.video
+                          ? "MEDIA ✓"
+                          : "PHOTO / VIDEO"}
+                      </span>
+
                       <input
                         type="file"
-                        multiple
                         accept="image/*,video/*"
                         onChange={(e) =>
-                          handleMedia(
+                          handleMemoryMedia(
                             memory.id,
                             e.target.files
                           )
@@ -337,7 +469,12 @@ export default function OurStoryEditor() {
 
                     <label className="oseMiniUpload">
                       <strong>◉</strong>
-                      <span>VOICE MEMORY</span>
+                      <span>
+                        {memory.voice
+                          ? "VOICE ✓"
+                          : "VOICE MEMORY"}
+                      </span>
+
                       <input
                         type="file"
                         accept="audio/*"
@@ -350,24 +487,6 @@ export default function OurStoryEditor() {
                       />
                     </label>
                   </div>
-
-                  {(memory.media.length > 0 ||
-                    memory.voice) && (
-                    <div className="oseAttached">
-                      {memory.media.map((item) => (
-                        <span key={item.url}>
-                          {item.type.startsWith("video/")
-                            ? "VIDEO"
-                            : "PHOTO"}{" "}
-                          ✓
-                        </span>
-                      ))}
-
-                      {memory.voice && (
-                        <span>VOICE ✓</span>
-                      )}
-                    </div>
-                  )}
                 </div>
               </article>
             ))}
@@ -396,8 +515,7 @@ export default function OurStoryEditor() {
             </h1>
 
             <span>
-              Your memories stay the same. You choose how the journey
-              feels.
+              Same memories. A completely different journey.
             </span>
           </div>
 
@@ -407,11 +525,15 @@ export default function OurStoryEditor() {
                 type="button"
                 key={item.id}
                 className={`oseTheme ${
-                  theme === item.id ? "selected" : ""
+                  theme === item.id
+                    ? "selected"
+                    : ""
                 }`}
                 onClick={() => setTheme(item.id)}
               >
-                <div className={`oseThemeVisual ${item.id}`}>
+                <div
+                  className={`oseThemeVisual ${item.id}`}
+                >
                   <span>{item.icon}</span>
                 </div>
 
@@ -421,7 +543,9 @@ export default function OurStoryEditor() {
                 </div>
 
                 <i>
-                  {theme === item.id ? "SELECTED" : "SELECT"}
+                  {theme === item.id
+                    ? "SELECTED"
+                    : "SELECT"}
                 </i>
               </button>
             ))}
@@ -445,16 +569,24 @@ export default function OurStoryEditor() {
           {theme === "custom" && (
             <div className="oseThemeOptions">
               <label className="oseUpload">
-                <span>＋ UPLOAD YOUR WORLD</span>
+                <span>
+                  {customBackground
+                    ? "✓ YOUR WORLD ADDED"
+                    : "＋ UPLOAD YOUR WORLD"}
+                </span>
+
                 <small>
-                  Map, photo, illustration or background
+                  Map, photo or illustration
                 </small>
 
                 <input
                   type="file"
                   accept="image/*"
                   onChange={(e) =>
-                    handleBackground(e.target.files?.[0])
+                    readAsDataURL(
+                      e.target.files?.[0],
+                      setCustomBackground
+                    )
                   }
                 />
               </label>
@@ -470,7 +602,10 @@ export default function OurStoryEditor() {
                   <span>02</span>
                   <span>03</span>
 
-                  <p>DRAG YOUR MEMORIES ONTO YOUR WORLD</p>
+                  <p>
+                    YOUR MEMORIES BECOME POINTS
+                    ON THIS WORLD
+                  </p>
                 </div>
               )}
             </div>
@@ -484,19 +619,19 @@ export default function OurStoryEditor() {
             <p>OUR STORY · 04</p>
 
             <h1>
-              HOW SHOULD IT
+              ONE LAST
               <br />
-              <em>END?</em>
+              <em>THING.</em>
             </h1>
 
             <span>
-              The memories end here. Your story doesn&apos;t.
+              The memories end. Your story doesn&apos;t.
             </span>
           </div>
 
           <div className="oseFinalEditor">
             <div>
-              <p>THE FINAL MOMENT</p>
+              <p>A NOTE FOR OUR FUTURE</p>
 
               <h2>
                 THE REST IS
@@ -513,23 +648,37 @@ export default function OurStoryEditor() {
               />
 
               <span>
-                This appears after they reach the end of your journey.
+                They&apos;ll see this after the last memory.
               </span>
             </div>
 
-            <div className={`oseEndingPreview ${theme}`}>
+            <div
+              className={`oseEndingPreview ${theme}`}
+              style={
+                theme === "color"
+                  ? {
+                      background: `radial-gradient(circle at 50% 40%, ${customColor}88, transparent 58%), #09070d`,
+                    }
+                  : theme === "custom" &&
+                    customBackground
+                  ? {
+                      backgroundImage: `linear-gradient(rgba(8,6,12,.4),rgba(8,6,12,.75)),url(${customBackground})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }
+                  : undefined
+              }
+            >
               <div className="osePastPath">
-                {memories.slice(-4).map((memory) => (
-                  <i key={memory.id}>✦</i>
-                ))}
-              </div>
-
-              <div className="oseFutureSpace">
-                <span>·</span>
-                <span>✦</span>
-                <span>·</span>
-                <span>✦</span>
-                <span>·</span>
+                {memories
+                  .slice(-4)
+                  .map((memory) => (
+                    <i key={memory.id}>
+                      {theme === "clouds"
+                        ? "☁"
+                        : "✦"}
+                    </i>
+                  ))}
               </div>
 
               <p>AND HERE WE ARE ♡</p>
@@ -540,7 +689,9 @@ export default function OurStoryEditor() {
                 A WHOLE WORLD AHEAD.
               </h3>
 
-              <blockquote>“{finalMessage}”</blockquote>
+              <blockquote>
+                “{finalMessage}”
+              </blockquote>
 
               <strong>∞</strong>
             </div>
@@ -560,11 +711,33 @@ export default function OurStoryEditor() {
 
           <span>
             {memories.length} memories ·{" "}
-            {themes.find((item) => item.id === theme)?.name}
+            {
+              themes.find(
+                (item) => item.id === theme
+              )?.name
+            }
           </span>
 
-          <div className={`oseReadyWorld ${theme}`}>
-            <p>FOR {recipient.toUpperCase()}</p>
+          <div
+            className={`oseReadyWorld ${theme}`}
+            style={
+              theme === "color"
+                ? {
+                    background: `radial-gradient(circle, ${customColor}aa, #09070d 70%)`,
+                  }
+                : theme === "custom" &&
+                  customBackground
+                ? {
+                    backgroundImage: `linear-gradient(rgba(8,6,12,.35),rgba(8,6,12,.65)),url(${customBackground})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }
+                : undefined
+            }
+          >
+            <p>
+              FOR {recipient.toUpperCase()}
+            </p>
 
             <h2>
               LET&apos;S REMEMBER
@@ -575,7 +748,10 @@ export default function OurStoryEditor() {
             <div>
               {memories.map((memory, index) => (
                 <i key={memory.id}>
-                  {theme === "clouds" ? "☁" : "✦"}
+                  {theme === "clouds"
+                    ? "☁"
+                    : "✦"}
+
                   <small>{index + 1}</small>
                 </i>
               ))}
@@ -583,10 +759,6 @@ export default function OurStoryEditor() {
 
             <strong>∞</strong>
           </div>
-
-          <p className="oseReadyHint">
-            Recipient experience preview
-          </p>
         </section>
       )}
 
@@ -595,7 +767,9 @@ export default function OurStoryEditor() {
           type="button"
           disabled={step === 1}
           onClick={() =>
-            setStep((current) => Math.max(1, current - 1))
+            setStep((current) =>
+              Math.max(1, current - 1)
+            )
           }
         >
           ← BACK
@@ -614,13 +788,19 @@ export default function OurStoryEditor() {
             type="button"
             className="oseContinue"
             onClick={() =>
-              setStep((current) => Math.min(5, current + 1))
+              setStep((current) =>
+                Math.min(5, current + 1)
+              )
             }
           >
             CONTINUE →
           </button>
         ) : (
-          <button type="button" className="oseContinue">
+          <button
+            type="button"
+            className="oseContinue"
+            onClick={saveStory}
+          >
             CREATE OUR STORY ♡
           </button>
         )}
