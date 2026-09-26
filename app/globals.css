@@ -22455,3 +22455,144 @@ main {
     font-size: 20px !important;
   }
 }
+/* =========================================================
+   WISH NOTE — COMPLETION SYSTEM FIX
+   ========================================================= */
+
+.wishLifeDayIcons span {
+  font-size: 27px !important;
+  font-weight: 500;
+  line-height: 1;
+
+  color: #d5afff;
+
+  text-shadow:
+    0 0 9px rgba(205,157,255,.8),
+    0 0 22px rgba(205,157,255,.38);
+
+  transition:
+    transform .25s ease,
+    color .25s ease;
+}
+
+.wishLifeDayIcons span.completed {
+  color: #fff;
+
+  text-shadow:
+    0 0 10px rgba(255,255,255,.8),
+    0 0 24px rgba(207,163,255,.75),
+    0 0 40px rgba(178,112,255,.35);
+}
+
+.wishLifeDay.hasCompletedWish {
+  border-color: rgba(222,194,255,.42);
+
+  background:
+    radial-gradient(
+      circle at 50% 65%,
+      rgba(191,125,255,.25),
+      transparent 60%
+    ),
+    rgba(255,255,255,.045);
+}
+
+
+/* CALENDAR STATS */
+
+.wishCalendarProgress {
+  margin: 22px 0 4px;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.wishCalendarProgress > div {
+  padding: 13px 14px;
+
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 14px;
+
+  background: rgba(255,255,255,.02);
+
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.wishCalendarProgress strong {
+  color: #dbbdff;
+  font-size: 20px;
+  font-weight: 300;
+}
+
+.wishCalendarProgress span {
+  color: rgba(255,255,255,.3);
+  font-size: 6px;
+  letter-spacing: .14em;
+}
+
+
+/* WISH BOOK PROGRESS */
+
+.wishBookProgress {
+  width: 100%;
+  height: 4px;
+
+  margin-top: -8px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: rgba(255,255,255,.06);
+}
+
+.wishBookProgress > div {
+  height: 100%;
+
+  border-radius: inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(177,112,255,.65),
+      rgba(229,205,255,.95)
+    );
+
+  box-shadow:
+    0 0 15px rgba(197,142,255,.55);
+
+  transition: width .7s cubic-bezier(.16,1,.3,1);
+}
+
+.wishBookProgressText {
+  margin: 9px 0 22px;
+
+  color: rgba(255,255,255,.3);
+
+  font-size: 8px;
+  letter-spacing: .1em;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+  .wishLifeDayIcons span {
+    font-size: 21px !important;
+  }
+
+  .wishCalendarProgress > div {
+    padding: 10px 8px;
+
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .wishCalendarProgress strong {
+    font-size: 17px;
+  }
+
+}
