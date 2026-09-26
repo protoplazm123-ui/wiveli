@@ -17243,3 +17243,87 @@ main {
   }
 
 }
+/* =========================================================
+   WISH NOTE FLIP CARD — 3D FIX
+   ========================================================= */
+
+.wishFlipExperience {
+  perspective: 1600px !important;
+}
+
+.wishFlipCard {
+  position: relative !important;
+
+  transform-style: preserve-3d !important;
+  -webkit-transform-style: preserve-3d !important;
+
+  perspective: none !important;
+
+  isolation: isolate;
+}
+
+/* Обе стороны физически лежат друг на друге */
+.wishFlipFace {
+  position: absolute !important;
+  inset: 0 !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+
+  transform-style: preserve-3d !important;
+  -webkit-transform-style: preserve-3d !important;
+
+  overflow: hidden !important;
+}
+
+/* Передняя сторона */
+.wishFlipFront {
+  transform: rotateY(0deg) translateZ(1px) !important;
+  -webkit-transform: rotateY(0deg) translateZ(1px) !important;
+
+  z-index: 2;
+}
+
+/* Задняя сторона */
+.wishFlipBack {
+  transform: rotateY(180deg) translateZ(1px) !important;
+  -webkit-transform: rotateY(180deg) translateZ(1px) !important;
+
+  z-index: 1;
+}
+
+/* Safari особенно любит просвечивать 3D-элементы —
+   отдельный слой сильно помогает */
+.wishFlipFront,
+.wishFlipBack {
+  will-change: transform;
+
+  -webkit-font-smoothing: antialiased;
+
+  background-clip: padding-box !important;
+}
+
+/* FRONT */
+.wishFlipFront {
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff 0%,
+      #f7f1fb 55%,
+      #eee2f8 100%
+    ) !important;
+}
+
+/* BACK */
+.wishFlipBack {
+  background:
+    linear-gradient(
+      145deg,
+      #dcbcff 0%,
+      #bd83ee 55%,
+      #a969dc 100%
+    ) !important;
+}
