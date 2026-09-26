@@ -21874,3 +21874,568 @@ main {
   }
 
 }
+/* =========================================================
+   WISH NOTE — CALENDAR / MEMORIES
+   ========================================================= */
+
+.wishLifeLauncher {
+  position: fixed;
+  z-index: 20;
+  right: 28px;
+  bottom: 28px;
+
+  display: flex;
+  gap: 10px;
+}
+
+.wishLifeLauncher > button {
+  width: 220px;
+  min-height: 72px;
+  padding: 14px 18px;
+
+  display: grid;
+  grid-template-columns: 32px 1fr 18px;
+  align-items: center;
+  gap: 10px;
+
+  border: 1px solid rgba(220,190,255,.18);
+  border-radius: 20px;
+
+  background: rgba(25,16,34,.72);
+  backdrop-filter: blur(24px);
+
+  color: white;
+  text-align: left;
+  cursor: pointer;
+}
+
+.wishLifeLauncher > button > span {
+  color: #d6b1ff;
+  font-size: 20px;
+}
+
+.wishLifeLauncher div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wishLifeLauncher small {
+  color: rgba(255,255,255,.35);
+  font-size: 7px;
+  letter-spacing: .16em;
+}
+
+.wishLifeLauncher strong {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.wishLifeLauncher b {
+  color: #c99cff;
+  font-weight: 400;
+}
+
+
+/* CALENDAR */
+
+.wishLifeCalendarModal {
+  width: min(760px, calc(100vw - 30px)) !important;
+}
+
+.wishLifeCalendar {
+  margin-top: 25px;
+  padding: 20px;
+
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 22px;
+
+  background: rgba(255,255,255,.025);
+}
+
+.wishLifeCalendarTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 20px;
+}
+
+.wishLifeCalendarTop h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: .08em;
+}
+
+.wishLifeCalendarTop button {
+  width: 34px;
+  height: 34px;
+
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 50%;
+
+  background: transparent;
+  color: white;
+
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.wishLifeWeek,
+.wishLifeDays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.wishLifeWeek {
+  margin-bottom: 7px;
+}
+
+.wishLifeWeek span {
+  text-align: center;
+
+  color: rgba(255,255,255,.28);
+  font-size: 7px;
+  letter-spacing: .12em;
+}
+
+.wishLifeDay {
+  position: relative;
+
+  aspect-ratio: 1;
+  margin: 3px;
+
+  border: 1px solid rgba(255,255,255,.05);
+  border-radius: 13px;
+
+  background: rgba(255,255,255,.018);
+  color: rgba(255,255,255,.55);
+
+  cursor: default;
+}
+
+.wishLifeDay.outside {
+  opacity: .18;
+}
+
+.wishLifeDay.hasWish {
+  border-color: rgba(207,163,255,.28);
+
+  background:
+    radial-gradient(
+      circle at 50% 80%,
+      rgba(190,121,255,.17),
+      transparent 55%
+    ),
+    rgba(255,255,255,.035);
+
+  cursor: pointer;
+}
+
+.wishLifeDay.hasWish:hover {
+  transform: translateY(-2px);
+  border-color: rgba(218,184,255,.5);
+}
+
+.wishLifeDay > small {
+  position: absolute;
+  top: 8px;
+  left: 9px;
+
+  font-size: 8px;
+}
+
+.wishLifeDayIcons {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+
+  padding-top: 9px;
+}
+
+.wishLifeDayIcons span {
+  color: #d5afff;
+  font-size: 16px;
+
+  text-shadow: 0 0 14px rgba(205,157,255,.5);
+}
+
+.wishCalendarLegend {
+  margin-top: 18px;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.wishCalendarLegend > span {
+  padding: 7px 10px;
+
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 999px;
+
+  color: rgba(255,255,255,.42);
+  font-size: 8px;
+}
+
+.wishCalendarLegend i {
+  margin-right: 6px;
+  color: #d1a7ff;
+  font-style: normal;
+}
+
+
+/* WISH DETAIL */
+
+.wishMemoryModal {
+  width: min(620px, calc(100vw - 30px)) !important;
+}
+
+.wishMemoryCategory {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #d5afff;
+  font-size: 10px;
+  letter-spacing: .1em;
+}
+
+.wishMemoryCategory span {
+  font-size: 19px;
+}
+
+.wishMemoryDate {
+  margin: 35px 0 12px;
+
+  color: rgba(255,255,255,.34);
+  font-size: 9px;
+  letter-spacing: .16em;
+}
+
+.wishMemoryWish {
+  margin: 0;
+
+  font-family: "Cinzel", serif;
+  font-size: clamp(25px,4vw,43px);
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.wishMemoryMeta {
+  margin: 35px 0;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.wishMemoryMeta > div {
+  padding: 16px;
+
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 14px;
+}
+
+.wishMemoryMeta small {
+  display: block;
+  margin-bottom: 7px;
+
+  color: rgba(255,255,255,.3);
+  font-size: 7px;
+  letter-spacing: .16em;
+}
+
+.wishMemoryMeta strong {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+
+/* MEMORY */
+
+.wishMemoryUpload {
+  margin: 25px 0 15px;
+  min-height: 150px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  border: 1px dashed rgba(213,174,255,.28);
+  border-radius: 20px;
+
+  background: rgba(207,160,255,.035);
+
+  cursor: pointer;
+}
+
+.wishMemoryUpload input {
+  display: none;
+}
+
+.wishMemoryUpload > span {
+  color: #d6b2ff;
+  font-size: 30px;
+  font-weight: 200;
+}
+
+.wishMemoryUpload strong {
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: .17em;
+}
+
+.wishMemoryUpload small {
+  color: rgba(255,255,255,.3);
+  font-size: 9px;
+}
+
+.wishMemoryStorageNotice {
+  margin: 14px 0 0;
+
+  color: rgba(255,255,255,.24);
+  font-size: 8px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.wishExistingMemory {
+  padding: 22px;
+
+  border: 1px solid rgba(211,174,255,.14);
+  border-radius: 18px;
+
+  background: rgba(200,150,255,.035);
+}
+
+.wishExistingMemory > p {
+  color: #d4acff;
+  font-size: 8px;
+  letter-spacing: .18em;
+}
+
+.wishExistingMemory blockquote {
+  margin: 18px 0;
+
+  color: rgba(255,255,255,.7);
+  font-family: "Cinzel", serif;
+  line-height: 1.6;
+}
+
+.wishExistingMemory > span {
+  display: block;
+
+  color: rgba(255,255,255,.3);
+  font-size: 9px;
+}
+
+.wishExistingMemory button {
+  margin-top: 20px;
+  padding: 11px 16px;
+
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 999px;
+
+  background: transparent;
+  color: white;
+
+  font-size: 8px;
+  letter-spacing: .14em;
+
+  cursor: pointer;
+}
+
+
+/* BOOK */
+
+.wishBookModal {
+  width: min(720px, calc(100vw - 30px)) !important;
+}
+
+.wishBookStats {
+  margin: 25px 0;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.wishBookStats > div {
+  padding: 20px;
+
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 16px;
+
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.wishBookStats strong {
+  color: #d9b8ff;
+  font-size: 30px;
+  font-weight: 300;
+}
+
+.wishBookStats span {
+  color: rgba(255,255,255,.3);
+  font-size: 7px;
+  letter-spacing: .16em;
+}
+
+.wishBookList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wishBookList > button {
+  width: 100%;
+  padding: 15px;
+
+  display: grid;
+  grid-template-columns: 28px 32px 1fr 20px;
+  align-items: center;
+  gap: 10px;
+
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 15px;
+
+  background: rgba(255,255,255,.025);
+  color: white;
+
+  text-align: left;
+  cursor: pointer;
+}
+
+.wishBookList > button > small {
+  color: rgba(255,255,255,.22);
+  font-size: 8px;
+}
+
+.wishBookList > button > span {
+  color: #d5adff;
+  font-size: 18px;
+}
+
+.wishBookList > button strong {
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.wishBookList > button p {
+  margin: 4px 0 0;
+
+  color: rgba(255,255,255,.3);
+  font-size: 8px;
+}
+
+.wishBookList > button b {
+  color: #d2a6ff;
+  font-weight: 400;
+}
+
+.wishBookEmpty {
+  padding: 55px 25px;
+
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 18px;
+
+  text-align: center;
+}
+
+.wishBookEmpty > span {
+  display: block;
+  margin-bottom: 15px;
+
+  color: #d3a9ff;
+  font-size: 30px;
+}
+
+.wishBookEmpty strong {
+  display: block;
+  font-family: "Cinzel", serif;
+  font-weight: 400;
+}
+
+.wishBookEmpty p {
+  max-width: 300px;
+  margin: 10px auto 0;
+
+  color: rgba(255,255,255,.35);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.wishSuccessSecondary {
+  margin-top: 9px !important;
+
+  border: 1px solid rgba(255,255,255,.08) !important;
+  background: transparent !important;
+  color: rgba(255,255,255,.5) !important;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+  .wishLifeLauncher {
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+
+    gap: 7px;
+  }
+
+  .wishLifeLauncher > button {
+    width: 50%;
+    min-height: 62px;
+    padding: 10px 12px;
+
+    grid-template-columns: 24px 1fr 12px;
+  }
+
+  .wishLifeLauncher > button > span {
+    font-size: 16px;
+  }
+
+  .wishLifeLauncher strong {
+    font-size: 10px;
+  }
+
+  .wishLifeDay {
+    margin: 2px;
+    border-radius: 9px;
+  }
+
+  .wishLifeDay > small {
+    top: 5px;
+    left: 6px;
+    font-size: 7px;
+  }
+
+  .wishLifeDayIcons span {
+    font-size: 12px;
+  }
+
+  .wishCalendarLegend {
+    display: none;
+  }
+
+  .wishMemoryMeta {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .wishBookStats {
+    margin-top: 18px;
+  }
+}
