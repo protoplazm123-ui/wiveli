@@ -25972,3 +25972,693 @@ main {
     animation:none;
   }
 }
+/* =========================================================
+   OPEN WHEN — INTERACTIVE CREATOR
+   ========================================================= */
+
+.owxPage{
+  min-height:100vh;
+  overflow:hidden;
+  color:#fff;
+  background:
+    radial-gradient(circle at 68% 40%,rgba(118,62,168,.18),transparent 32%),
+    radial-gradient(circle at 30% 80%,rgba(91,45,137,.13),transparent 35%),
+    #0b0910;
+  font-family:"Helvetica Neue",Arial,sans-serif;
+}
+
+.owxHeader{
+  position:relative;
+  z-index:50;
+  height:74px;
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  padding:0 42px;
+  border-bottom:1px solid rgba(255,255,255,.055);
+}
+
+.owxLogo{
+  color:#fff;
+  text-decoration:none;
+  font-family:Georgia,serif;
+  font-size:18px;
+  letter-spacing:.08em;
+}
+
+.owxLogo span{color:#c493ef}
+
+.owxHeader>p{
+  margin:0;
+  color:rgba(255,255,255,.3);
+  font-size:8px;
+  letter-spacing:.23em;
+}
+
+.owxHeader>button{
+  justify-self:end;
+  border:0;
+  background:transparent;
+  color:#d4b0f7;
+  cursor:pointer;
+  font-size:8px;
+  letter-spacing:.16em;
+}
+
+.owxUniverse{
+  position:relative;
+  min-height:calc(100vh - 74px);
+}
+
+.owxIntro{
+  position:absolute;
+  z-index:10;
+  left:7%;
+  top:16%;
+  width:360px;
+}
+
+.owxIntro>p,
+.owxSceneTitle>p,
+.owxPicker>p{
+  color:#b986e6;
+  font-size:7px;
+  letter-spacing:.24em;
+}
+
+.owxIntro h1,
+.owxPicker h2{
+  margin:16px 0 20px;
+  font-family:Georgia,serif;
+  font-size:46px;
+  font-weight:400;
+  line-height:.92;
+  letter-spacing:-.04em;
+}
+
+.owxIntro h1 em,
+.owxPicker h2 em{
+  color:#c9a0ed;
+  font-weight:400;
+}
+
+.owxIntro label{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin:26px 0 18px;
+  color:rgba(255,255,255,.35);
+  font-size:7px;
+  letter-spacing:.18em;
+}
+
+.owxIntro input{
+  width:170px;
+  padding:8px 0;
+  border:0;
+  border-bottom:1px solid rgba(255,255,255,.16);
+  outline:0;
+  background:transparent;
+  color:#fff;
+  font-family:Georgia,serif;
+  font-size:18px;
+}
+
+.owxIntro>span{
+  display:block;
+  max-width:280px;
+  color:rgba(255,255,255,.32);
+  font-family:Georgia,serif;
+  font-size:11px;
+  font-style:italic;
+  line-height:1.6;
+}
+
+.owxOrbit{
+  position:absolute;
+  border:1px solid rgba(197,149,239,.07);
+  border-radius:50%;
+  pointer-events:none;
+}
+
+.owxOrbitOne{
+  width:760px;
+  height:760px;
+  right:-100px;
+  top:-150px;
+}
+
+.owxOrbitTwo{
+  width:540px;
+  height:540px;
+  right:30px;
+  top:-40px;
+}
+
+.owxMomentField{
+  position:absolute;
+  inset:0 0 0 38%;
+}
+
+.owxBubble{
+  position:absolute;
+  width:180px;
+  height:180px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  border:1px solid rgba(220,186,255,.15);
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 45% 38%,rgba(132,77,179,.18),rgba(18,13,25,.74) 70%);
+  backdrop-filter:blur(12px);
+  color:#fff;
+  cursor:pointer;
+  animation:owxFloat 6s ease-in-out infinite alternate;
+  transition:.35s ease;
+}
+
+.owxBubble:hover{
+  transform:scale(1.07);
+  border-color:rgba(215,172,255,.45);
+  box-shadow:0 0 55px rgba(157,87,217,.15);
+}
+
+.owxBubble small{
+  position:absolute;
+  top:22px;
+  color:rgba(255,255,255,.23);
+  font-size:7px;
+}
+
+.owxBubble>span{
+  margin-bottom:7px;
+  color:#bc8ae7;
+  font-size:6px;
+  letter-spacing:.2em;
+}
+
+.owxBubble strong{
+  max-width:125px;
+  font-family:Georgia,serif;
+  font-size:15px;
+  font-weight:400;
+  line-height:1.05;
+}
+
+.owxBubble i{
+  margin-top:13px;
+  color:#c99df0;
+  font-family:Georgia,serif;
+  font-size:16px;
+  font-style:normal;
+}
+
+.owxBubble1{left:5%;top:14%}
+.owxBubble2{left:36%;top:7%;animation-delay:-2s}
+.owxBubble3{left:58%;top:42%;animation-delay:-4s}
+.owxBubble4{left:23%;top:52%;animation-delay:-1s}
+.owxBubble5{left:70%;top:12%;animation-delay:-3s}
+.owxBubble6{left:2%;top:61%;animation-delay:-5s}
+.owxBubble7{left:48%;top:68%;animation-delay:-2.5s}
+
+.owxAddBubble{
+  position:absolute;
+  left:72%;
+  top:68%;
+  width:120px;
+  height:120px;
+  border:1px dashed rgba(205,166,241,.22);
+  border-radius:50%;
+  background:rgba(255,255,255,.015);
+  color:rgba(222,194,246,.5);
+  cursor:pointer;
+}
+
+.owxAddBubble span{
+  display:block;
+  margin-bottom:8px;
+  font-size:20px;
+}
+
+.owxAddBubble{
+  font-size:6px;
+  letter-spacing:.15em;
+}
+
+.owxHint{
+  position:absolute;
+  left:50%;
+  bottom:24px;
+  color:rgba(255,255,255,.2);
+  font-size:6px;
+  letter-spacing:.18em;
+}
+
+/* EDITING SCENE */
+
+.owxScene{
+  position:relative;
+  min-height:calc(100vh - 74px);
+  padding:45px 6% 80px;
+}
+
+.owxBack{
+  border:0;
+  background:transparent;
+  color:rgba(255,255,255,.38);
+  cursor:pointer;
+  font-size:7px;
+  letter-spacing:.16em;
+}
+
+.owxSceneTitle{
+  margin:32px auto 0;
+  text-align:center;
+}
+
+.owxSceneTitle input{
+  display:block;
+  width:min(700px,90%);
+  margin:8px auto;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:#fff;
+  text-align:center;
+  font-family:Georgia,serif;
+  font-size:38px;
+}
+
+.owxSceneTitle>span{
+  color:rgba(255,255,255,.28);
+  font-family:Georgia,serif;
+  font-size:10px;
+  font-style:italic;
+}
+
+.owxDesk{
+  position:relative;
+  width:min(900px,92vw);
+  height:480px;
+  margin:25px auto 0;
+}
+
+.owxPhotoPiece,
+.owxNotePiece,
+.owxVoicePiece,
+.owxVideoPiece{
+  position:absolute;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(19,14,26,.84);
+  box-shadow:0 25px 70px rgba(0,0,0,.25);
+}
+
+.owxPhotoPiece{
+  left:5%;
+  top:45px;
+  width:250px;
+  padding:9px 9px 16px;
+  transform:rotate(-4deg);
+}
+
+.owxPhotoPiece label{
+  height:250px;
+  display:grid;
+  place-items:center;
+  align-content:center;
+  gap:8px;
+  background:rgba(255,255,255,.025);
+  cursor:pointer;
+}
+
+.owxPhotoPiece img{
+  width:100%;
+  height:250px;
+  object-fit:cover;
+}
+
+.owxPhotoPiece label strong{
+  color:#bd8ee7;
+  font-size:25px;
+  font-weight:300;
+}
+
+.owxPhotoPiece label span,
+.owxVideoPiece span{
+  color:rgba(255,255,255,.35);
+  font-size:6px;
+  letter-spacing:.17em;
+}
+
+.owxPhotoPiece small{
+  display:block;
+  padding:12px 5px 0;
+  font-family:Georgia,serif;
+  font-size:9px;
+  font-style:italic;
+}
+
+.owxNotePiece{
+  left:36%;
+  top:15px;
+  width:310px;
+  min-height:235px;
+  padding:28px;
+  transform:rotate(2deg);
+}
+
+.owxNotePiece>span{
+  color:#b887e4;
+  font-size:6px;
+  letter-spacing:.2em;
+}
+
+.owxNotePiece textarea{
+  width:100%;
+  height:130px;
+  margin-top:15px;
+  resize:none;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:#fff;
+  font-family:Georgia,serif;
+  font-size:15px;
+  font-style:italic;
+  line-height:1.5;
+}
+
+.owxNotePiece i{
+  color:#c493ed;
+  font-family:Georgia,serif;
+  font-style:normal;
+}
+
+.owxVoicePiece{
+  left:40%;
+  top:295px;
+  width:350px;
+  min-height:80px;
+  display:flex;
+  align-items:center;
+  gap:17px;
+  padding:17px;
+  cursor:pointer;
+  transform:rotate(-1deg);
+}
+
+.owxPlay{
+  width:45px;
+  height:45px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(207,164,245,.25);
+  border-radius:50%;
+  color:#c99bed;
+}
+
+.owxVoicePiece div{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.owxVoicePiece small{
+  color:#ad7bd8;
+  font-size:6px;
+  letter-spacing:.16em;
+}
+
+.owxVoicePiece strong{
+  font-family:Georgia,serif;
+  font-size:10px;
+  font-weight:400;
+  font-style:italic;
+}
+
+.owxVideoPiece{
+  right:2%;
+  top:100px;
+  width:200px;
+  height:230px;
+  display:grid;
+  place-items:center;
+  align-content:center;
+  gap:12px;
+  cursor:pointer;
+  transform:rotate(4deg);
+  overflow:hidden;
+}
+
+.owxVideoPiece strong{
+  width:55px;
+  height:55px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(209,168,244,.22);
+  border-radius:50%;
+  color:#c493ed;
+}
+
+.owxVideoPiece video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:.55;
+}
+
+.owxVideoPiece span{
+  position:relative;
+  z-index:2;
+}
+
+.owxPhotoPiece input,
+.owxVoicePiece input,
+.owxVideoPiece input{
+  display:none;
+}
+
+.owxSceneHeart{
+  position:absolute;
+  left:30%;
+  top:370px;
+  color:rgba(202,153,238,.25);
+  font-family:Georgia,serif;
+  font-size:50px;
+  transform:rotate(-10deg);
+}
+
+.owxSceneActions{
+  display:flex;
+  justify-content:center;
+  gap:15px;
+}
+
+.owxSceneActions button{
+  min-width:160px;
+  height:42px;
+  cursor:pointer;
+  font-size:7px;
+  letter-spacing:.15em;
+}
+
+.owxDelete{
+  border:1px solid rgba(255,255,255,.08);
+  background:transparent;
+  color:rgba(255,255,255,.3);
+}
+
+.owxDone{
+  border:1px solid #c291ec;
+  background:#c291ec;
+  color:#100b15;
+}
+
+/* PICKER */
+
+.owxPickerOverlay{
+  position:fixed;
+  z-index:100;
+  inset:0;
+  display:grid;
+  place-items:center;
+  padding:20px;
+  background:rgba(5,3,8,.75);
+  backdrop-filter:blur(14px);
+}
+
+.owxPicker{
+  position:relative;
+  width:min(600px,100%);
+  padding:45px;
+  border:1px solid rgba(255,255,255,.1);
+  background:#100c17;
+}
+
+.owxPickerClose{
+  position:absolute;
+  right:18px;
+  top:15px;
+  border:0;
+  background:transparent;
+  color:#fff;
+  cursor:pointer;
+  font-size:20px;
+}
+
+.owxIdeas{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+}
+
+.owxIdeas button{
+  min-height:52px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.025);
+  color:rgba(255,255,255,.65);
+  cursor:pointer;
+  font-family:Georgia,serif;
+  font-size:11px;
+}
+
+.owxIdeas button:hover{
+  border-color:rgba(199,151,238,.35);
+  color:#d0a6f3;
+}
+
+.owxOwn{
+  margin-top:28px;
+}
+
+.owxOwn>span{
+  color:rgba(255,255,255,.25);
+  font-size:6px;
+  letter-spacing:.18em;
+}
+
+.owxOwn>div{
+  display:flex;
+  margin-top:10px;
+}
+
+.owxOwn input{
+  flex:1;
+  min-width:0;
+  padding:14px;
+  border:1px solid rgba(255,255,255,.1);
+  outline:0;
+  background:transparent;
+  color:#fff;
+}
+
+.owxOwn button{
+  padding:0 25px;
+  border:0;
+  background:#c493ed;
+  color:#120c17;
+  cursor:pointer;
+  font-size:7px;
+  letter-spacing:.15em;
+}
+
+@keyframes owxFloat{
+  from{margin-top:-7px}
+  to{margin-top:10px}
+}
+
+@media(max-width:760px){
+  .owxHeader{
+    padding:0 18px;
+  }
+
+  .owxHeader>p{
+    display:none;
+  }
+
+  .owxUniverse{
+    min-height:1050px;
+  }
+
+  .owxIntro{
+    position:relative;
+    left:auto;
+    top:auto;
+    width:auto;
+    padding:55px 25px 20px;
+  }
+
+  .owxIntro h1{
+    font-size:38px;
+  }
+
+  .owxMomentField{
+    inset:310px 0 0;
+  }
+
+  .owxBubble{
+    width:140px;
+    height:140px;
+  }
+
+  .owxBubble1{left:8%;top:5%}
+  .owxBubble2{left:53%;top:1%}
+  .owxBubble3{left:15%;top:25%}
+  .owxBubble4{left:55%;top:27%}
+  .owxBubble5{left:8%;top:50%}
+  .owxBubble6{left:54%;top:52%}
+
+  .owxAddBubble{
+    left:32%;
+    top:73%;
+  }
+
+  .owxScene{
+    padding:30px 18px 70px;
+  }
+
+  .owxSceneTitle input{
+    font-size:27px;
+  }
+
+  .owxDesk{
+    height:auto;
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+    margin-top:35px;
+  }
+
+  .owxPhotoPiece,
+  .owxNotePiece,
+  .owxVoicePiece,
+  .owxVideoPiece{
+    position:relative;
+    inset:auto;
+    width:100%;
+    transform:none;
+  }
+
+  .owxVideoPiece{
+    height:220px;
+  }
+
+  .owxSceneHeart{
+    display:none;
+  }
+
+  .owxSceneActions{
+    margin-top:30px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .owxBubble{
+    animation:none;
+  }
+}
