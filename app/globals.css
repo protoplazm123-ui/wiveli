@@ -25680,3 +25680,295 @@ main {
     transform:scale(.7);
   }
 }
+/* =========================================================
+   OUR STORY — FLOATING MEMORY GALLERY
+   ========================================================= */
+
+.osgFloatingGallery{
+  position:absolute;
+  left:1380px;
+  top:0;
+  width:760px;
+  height:100%;
+  z-index:8;
+  pointer-events:none;
+}
+
+.osgFloatingMemory{
+  position:absolute;
+  width:220px;
+  padding:7px;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:4px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(31,24,42,.78),
+      rgba(11,8,16,.82)
+    );
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  box-shadow:
+    0 20px 55px rgba(0,0,0,.32),
+    0 0 35px rgba(176,112,232,.06);
+  color:white;
+  text-align:left;
+  cursor:pointer;
+  pointer-events:auto;
+  overflow:hidden;
+  transition:
+    transform .45s cubic-bezier(.2,.8,.2,1),
+    border-color .35s ease,
+    box-shadow .35s ease;
+  animation:
+    osgMemoryFloat 7s ease-in-out infinite alternate;
+}
+
+.osgFloatingMemory:hover{
+  z-index:30;
+  transform:
+    translateY(-8px)
+    scale(1.055)
+    rotate(0deg) !important;
+  border-color:rgba(216,177,255,.32);
+  box-shadow:
+    0 28px 80px rgba(0,0,0,.5),
+    0 0 50px rgba(181,111,244,.12);
+}
+
+.osgFloatingMedia{
+  position:relative;
+  width:100%;
+  aspect-ratio:4/3;
+  overflow:hidden;
+  border-radius:2px;
+  background:
+    radial-gradient(
+      circle at 50% 45%,
+      rgba(179,118,231,.2),
+      rgba(13,9,19,.95)
+    );
+}
+
+.osgFloatingMedia img,
+.osgFloatingMedia video{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+}
+
+.osgFloatingMedia::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(
+      180deg,
+      transparent 55%,
+      rgba(8,5,12,.35)
+    );
+  pointer-events:none;
+}
+
+.osgFloatingMedia>i{
+  position:absolute;
+  left:10px;
+  top:9px;
+  z-index:2;
+  display:grid;
+  place-items:center;
+  min-width:27px;
+  height:20px;
+  padding:0 6px;
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:20px;
+  background:rgba(5,4,8,.35);
+  backdrop-filter:blur(8px);
+  color:rgba(255,255,255,.7);
+  font-family:"Helvetica Neue",Arial,sans-serif;
+  font-size:7px;
+  font-style:normal;
+  letter-spacing:.14em;
+}
+
+.osgFloatingPlaceholder{
+  width:100%;
+  height:100%;
+  display:grid;
+  place-items:center;
+}
+
+.osgFloatingPlaceholder span{
+  font-family:Georgia,serif;
+  font-size:35px;
+  color:#d8b5ff;
+  text-shadow:
+    0 0 18px rgba(196,137,255,.6),
+    0 0 45px rgba(153,76,219,.28);
+}
+
+.osgFloatingInfo{
+  padding:13px 10px 12px;
+}
+
+.osgFloatingInfo p{
+  margin:0 0 6px;
+  color:#c79cf1;
+  font-family:"Helvetica Neue",Arial,sans-serif;
+  font-size:7px;
+  letter-spacing:.13em;
+}
+
+.osgFloatingInfo h3{
+  margin:0 0 6px;
+  font-family:"Helvetica Neue",Arial,sans-serif;
+  font-size:13px;
+  font-weight:400;
+  letter-spacing:.01em;
+}
+
+.osgFloatingInfo span{
+  color:rgba(255,255,255,.4);
+  font-family:"Helvetica Neue",Arial,sans-serif;
+  font-size:8px;
+  letter-spacing:.06em;
+}
+
+/* placement */
+
+.osgFloatingMemory1{
+  left:15px;
+  top:115px;
+  width:225px;
+  transform:rotate(-3deg);
+  animation-delay:-1s;
+}
+
+.osgFloatingMemory2{
+  left:300px;
+  top:60px;
+  width:245px;
+  transform:rotate(2deg);
+  animation-delay:-4s;
+}
+
+.osgFloatingMemory3{
+  left:520px;
+  top:290px;
+  width:205px;
+  transform:rotate(-2deg);
+  animation-delay:-2s;
+}
+
+.osgFloatingMemory4{
+  left:90px;
+  top:455px;
+  width:255px;
+  transform:rotate(2.5deg);
+  animation-delay:-5s;
+}
+
+.osgFloatingMemory5{
+  left:370px;
+  top:510px;
+  width:220px;
+  transform:rotate(-3deg);
+  animation-delay:-3s;
+}
+
+.osgFloatingMemory6{
+  left:560px;
+  top:90px;
+  width:190px;
+  transform:rotate(3deg);
+  animation-delay:-6s;
+}
+
+@keyframes osgMemoryFloat{
+  0%{
+    margin-top:-7px;
+  }
+
+  100%{
+    margin-top:11px;
+  }
+}
+
+/* Move final message farther right so gallery has room */
+
+.osgFuturePoint{
+  left:2200px !important;
+}
+
+/* Make world long enough for gallery + future */
+
+.osgWorld{
+  width:2850px !important;
+}
+
+/* gallery should feel more like floating memories in stars */
+
+.osgFloatingGallery::before{
+  content:"OUR MEMORIES";
+  position:absolute;
+  left:15px;
+  top:50px;
+  color:rgba(221,194,255,.35);
+  font-family:"Helvetica Neue",Arial,sans-serif;
+  font-size:7px;
+  letter-spacing:.24em;
+}
+
+/* Mobile — clean horizontal memory gallery */
+
+@media(max-width:700px){
+
+  .osgWorld{
+    width:2500px !important;
+  }
+
+  .osgFloatingGallery{
+    left:1250px;
+    top:0;
+    width:850px;
+    height:100%;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    padding:0 45px;
+    overflow:visible;
+  }
+
+  .osgFloatingGallery::before{
+    left:45px;
+    top:105px;
+  }
+
+  .osgFloatingMemory{
+    position:relative;
+    left:auto !important;
+    top:auto !important;
+    flex:0 0 230px;
+    width:230px !important;
+    transform:none !important;
+  }
+
+  .osgFloatingMemory:nth-child(even){
+    margin-top:80px;
+  }
+
+  .osgFloatingMemory:nth-child(odd){
+    margin-top:-60px;
+  }
+
+  .osgFuturePoint{
+    left:2150px !important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .osgFloatingMemory{
+    animation:none;
+  }
+}
