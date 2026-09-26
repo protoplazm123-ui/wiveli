@@ -16825,3 +16825,60 @@ main {
   }
 
 }
+/* WISH NOTE — envelope letter fix */
+
+.wishEnvelopeObject {
+  isolation: isolate;
+}
+
+.wishEnvelopeBack {
+  z-index: 1 !important;
+}
+
+.wishEnvelopeLetter {
+  z-index: 7 !important;
+
+  left: 9% !important;
+  right: 9% !important;
+  top: 15% !important;
+
+  height: 76% !important;
+
+  padding: 30px 34px !important;
+
+  border-radius: 12px !important;
+}
+
+.wishEnvelopeInside {
+  z-index: 10 !important;
+}
+
+.wishEnvelopeFront {
+  z-index: 20 !important;
+}
+
+.wishEnvelopeFlap {
+  z-index: 30;
+}
+
+.wishWaxButton {
+  z-index: 50 !important;
+}
+
+/* письмо не должно просвечивать сквозь конверт */
+.wishEnvelopeFront {
+  backface-visibility: hidden;
+}
+
+.wishEnvelopeLeftFold,
+.wishEnvelopeRightFold,
+.wishEnvelopeBottomFold {
+  opacity: 1 !important;
+}
+
+/* чуть аккуратнее само письмо после открытия */
+.wishEnvelopeExperience.isOpen .wishEnvelopeLetter {
+  box-shadow:
+    0 25px 70px rgba(0,0,0,.25),
+    0 0 35px rgba(200,156,255,.08) !important;
+}
