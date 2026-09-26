@@ -426,26 +426,11 @@ export default function OurStoryGift() {
             {gift.memories.map(
               (memory, index) => {
                 const positions = [
-                  {
-                    left: "13%",
-                    top: "69%",
-                  },
-                  {
-                    left: "31%",
-                    top: "39%",
-                  },
-                  {
-                    left: "50%",
-                    top: "63%",
-                  },
-                  {
-                    left: "69%",
-                    top: "34%",
-                  },
-                  {
-                    left: "86%",
-                    top: "58%",
-                  },
+                  { left: "13%", top: "69%" },
+                  { left: "31%", top: "39%" },
+                  { left: "50%", top: "63%" },
+                  { left: "69%", top: "34%" },
+                  { left: "86%", top: "58%" },
                 ];
 
                 const position =
@@ -557,6 +542,66 @@ export default function OurStoryGift() {
               >
                 ∞
               </button>
+            </div>
+
+            {/* FINAL MEMORY GALLERY */}
+
+            <div className="osgFloatingGallery">
+              {gift.memories.map(
+                (memory, index) => (
+                  <button
+                    type="button"
+                    key={`gallery-${memory.id}`}
+                    className={`osgFloatingMemory osgFloatingMemory${
+                      (index % 6) + 1
+                    }`}
+                    onClick={() =>
+                      openMemory(memory)
+                    }
+                  >
+                    <div className="osgFloatingMedia">
+                      {memory.photo ? (
+                        <img
+                          src={memory.photo}
+                          alt=""
+                        />
+                      ) : memory.video ? (
+                        <video
+                          src={memory.video}
+                          muted
+                          playsInline
+                        />
+                      ) : (
+                        <div className="osgFloatingPlaceholder">
+                          <span>♡</span>
+                        </div>
+                      )}
+
+                      <i>
+                        {String(
+                          index + 1
+                        ).padStart(2, "0")}
+                      </i>
+                    </div>
+
+                    <div className="osgFloatingInfo">
+                      <p>
+                        {formatDate(
+                          memory.date
+                        )}
+                      </p>
+
+                      <h3>
+                        {memory.title}
+                      </h3>
+
+                      <span>
+                        {memory.place}
+                      </span>
+                    </div>
+                  </button>
+                )
+              )}
             </div>
           </div>
 
