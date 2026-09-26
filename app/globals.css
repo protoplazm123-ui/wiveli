@@ -13779,3 +13779,198 @@ footer p {
 .logo {
   color: white !important;
 }
+/* =========================================================
+   WIVELI — HERO INTRO ANIMATION
+   glitch → hands → gift → details
+   ========================================================= */
+
+
+/* ---------- 1. TITLE GLITCH ---------- */
+
+.wiveliGlitchTitle {
+  opacity: 0;
+  animation: wiveliTitleIntro 0.65s steps(2, end) 0.12s forwards;
+}
+
+@keyframes wiveliTitleIntro {
+  0% {
+    opacity: 0;
+    transform: translate(-14px, 5px);
+    filter: blur(5px);
+  }
+
+  15% {
+    opacity: 1;
+    transform: translate(12px, -3px) skewX(5deg);
+    filter: blur(0);
+  }
+
+  28% {
+    transform: translate(-8px, 2px) skewX(-3deg);
+    clip-path: inset(18% 0 55% 0);
+  }
+
+  42% {
+    transform: translate(7px, -2px);
+    clip-path: inset(62% 0 8% 0);
+  }
+
+  58% {
+    transform: translate(-3px, 1px) skewX(1deg);
+    clip-path: inset(38% 0 31% 0);
+  }
+
+  72% {
+    transform: translate(2px, 0);
+    clip-path: inset(0 0 0 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(0, 0);
+    filter: none;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+
+/* ---------- 2. LEFT HAND ---------- */
+
+.wiveliHandEnterLeft {
+  opacity: 0;
+
+  animation:
+    wiveliLeftHandEnter 0.85s cubic-bezier(.16,.85,.25,1)
+    0.65s forwards;
+}
+
+@keyframes wiveliLeftHandEnter {
+  0% {
+    opacity: 0;
+    translate: -45vw 20px;
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  80% {
+    translate: 1.5vw 0;
+  }
+
+  100% {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+
+/* ---------- 3. RIGHT HAND ---------- */
+
+.wiveliHandEnterRight {
+  opacity: 0;
+
+  animation:
+    wiveliRightHandEnter 0.85s cubic-bezier(.16,.85,.25,1)
+    0.65s forwards;
+}
+
+@keyframes wiveliRightHandEnter {
+  0% {
+    opacity: 0;
+    translate: 45vw -10px;
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  80% {
+    translate: -1.5vw 0;
+  }
+
+  100% {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+
+/* ---------- 4. GIFT APPEARS ---------- */
+
+.wiveliGiftEnter {
+  opacity: 0;
+
+  animation:
+    wiveliGiftAppear 0.65s cubic-bezier(.2,1.35,.4,1)
+    1.35s forwards;
+}
+
+@keyframes wiveliGiftAppear {
+  0% {
+    opacity: 0;
+    scale: 0.35;
+    translate: 0 28px;
+    filter: blur(8px);
+  }
+
+  55% {
+    opacity: 1;
+    scale: 1.08;
+    translate: 0 -5px;
+    filter: blur(0);
+  }
+
+  75% {
+    scale: 0.97;
+  }
+
+  100% {
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+    filter: none;
+  }
+}
+
+
+/* ---------- 5. TEXT + BUTTONS ---------- */
+
+.wiveliIntroDetails {
+  opacity: 0;
+
+  animation:
+    wiveliDetailsAppear 0.7s ease
+    1.8s forwards;
+}
+
+@keyframes wiveliDetailsAppear {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+
+/* ---------- ACCESSIBILITY ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .wiveliGlitchTitle,
+  .wiveliHandEnterLeft,
+  .wiveliHandEnterRight,
+  .wiveliGiftEnter,
+  .wiveliIntroDetails {
+    animation: none !important;
+    opacity: 1 !important;
+    translate: none !important;
+    scale: 1 !important;
+    filter: none !important;
+    clip-path: none !important;
+  }
+}
