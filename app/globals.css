@@ -14726,3 +14726,414 @@ main {
   pointer-events: none;
   z-index: 0;
 }
+/* =========================================================
+   WIVELI — EXPERIENCES / STRICT DARK CATALOG
+   ========================================================= */
+
+.experiences {
+  position: relative;
+  z-index: 2;
+
+  padding: 150px 6vw 170px;
+
+  /* продолжаем общий фон */
+  background: transparent !important;
+  color: #fff;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   HEADING
+   ========================================================= */
+
+.experienceHeading {
+  display: grid;
+  grid-template-columns: 1.5fr 0.6fr;
+  align-items: end;
+
+  position: relative;
+
+  margin-bottom: 80px;
+}
+
+.experienceHeading .eyebrow {
+  position: absolute;
+  top: -35px;
+  left: 0;
+
+  margin: 0;
+
+  color: #c59aff;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  letter-spacing: 0.3em;
+}
+
+
+/* большой заголовок */
+
+.experienceHeading h2 {
+  margin: 0;
+
+  font-family: "Anton", sans-serif;
+  font-size: clamp(70px, 7vw, 125px);
+  font-weight: 400;
+
+  line-height: 0.84;
+  letter-spacing: -0.035em;
+
+  color: #fff;
+}
+
+
+/* описание справа */
+
+.experienceIntro {
+  max-width: 290px;
+
+  margin: 0 0 4px auto !important;
+
+  font-size: 14px;
+  line-height: 1.65;
+
+  color: rgba(255, 255, 255, 0.5);
+}
+
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+.experienceGrid {
+  display: grid !important;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 1px !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  background: rgba(255, 255, 255, 0.12);
+}
+
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.experienceCard {
+  position: relative;
+
+  display: flex !important;
+  flex-direction: column;
+
+  min-height: 390px;
+
+  padding: 0 !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,0.035),
+      rgba(255,255,255,0.012)
+    ) !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  overflow: hidden;
+
+  transition:
+    background 0.45s ease,
+    transform 0.45s cubic-bezier(.2,.8,.2,1);
+}
+
+
+/* лёгкое свечение при hover */
+
+.experienceCard::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at 50% 120%,
+      rgba(170, 91, 255, 0.17),
+      transparent 55%
+    );
+
+  opacity: 0;
+
+  transition: opacity 0.45s ease;
+
+  pointer-events: none;
+}
+
+
+/* верхняя часть карточки */
+
+.experienceVisual {
+  position: relative;
+
+  height: 165px !important;
+  min-height: 165px;
+
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+
+  padding: 25px 27px !important;
+
+  background: transparent !important;
+
+  border: 0 !important;
+}
+
+
+/* номер */
+
+.experienceNumber {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+
+  color: #c59aff !important;
+
+  font-size: 11px !important;
+  font-weight: 600;
+
+  letter-spacing: 0.18em;
+}
+
+
+/* маленький символ */
+
+.experienceIcon {
+  position: absolute !important;
+
+  top: 50% !important;
+  left: 50% !important;
+
+  transform: translate(-50%, -45%) !important;
+
+  width: auto !important;
+  height: auto !important;
+
+  display: block !important;
+
+  color: rgba(255,255,255,0.92) !important;
+
+  font-size: 54px !important;
+  font-weight: 300 !important;
+
+  line-height: 1 !important;
+
+  background: none !important;
+
+  border: 0 !important;
+  box-shadow: none !important;
+
+  transition:
+    transform 0.45s cubic-bezier(.2,.8,.2,1),
+    color 0.35s ease;
+}
+
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.experienceContent {
+  position: relative;
+  z-index: 2;
+
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 0 28px 28px !important;
+
+  background: transparent !important;
+}
+
+
+/* маленькая розовая подпись */
+
+.experienceContent > p {
+  margin: 0 0 13px !important;
+
+  color: #c59aff !important;
+
+  font-size: 9px !important;
+  font-weight: 600 !important;
+
+  letter-spacing: 0.16em !important;
+  line-height: 1.4;
+}
+
+
+/* название */
+
+.experienceContent h3 {
+  margin: 0 0 13px !important;
+
+  color: #fff !important;
+
+  font-family: inherit !important;
+
+  font-size: clamp(25px, 2vw, 34px) !important;
+  font-weight: 600 !important;
+
+  letter-spacing: -0.045em !important;
+  line-height: 1 !important;
+}
+
+
+/* описание */
+
+.experienceContent > span {
+  max-width: 310px;
+
+  color: rgba(255,255,255,0.48) !important;
+
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+
+
+/* =========================================================
+   EXPLORE
+   ========================================================= */
+
+.experienceExplore {
+  display: flex !important;
+  align-items: center;
+
+  width: 100%;
+
+  margin-top: auto !important;
+  padding-top: 28px;
+
+  color: rgba(255,255,255,0.82) !important;
+
+  font-size: 11px !important;
+  font-weight: 600;
+
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+
+  text-decoration: none !important;
+
+  border-top: 1px solid rgba(255,255,255,0.1);
+
+  transition:
+    color 0.3s ease,
+    padding-left 0.3s ease,
+    border-color 0.3s ease;
+}
+
+
+/* =========================================================
+   HOVER
+   ========================================================= */
+
+.experienceCard:hover {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(148,77,210,0.10),
+      rgba(255,255,255,0.025)
+    ) !important;
+}
+
+.experienceCard:hover::before {
+  opacity: 1;
+}
+
+.experienceCard:hover .experienceIcon {
+  transform:
+    translate(-50%, -52%)
+    scale(1.08)
+    rotate(-4deg) !important;
+
+  color: #d5b0ff !important;
+}
+
+.experienceCard:hover .experienceExplore {
+  padding-left: 8px;
+
+  color: #d5b0ff !important;
+
+  border-color: rgba(197,154,255,0.35);
+}
+
+
+/* =========================================================
+   THE GIFT — FEATURED LAST CARD
+   ========================================================= */
+
+/*
+   Последняя карточка немного отличается.
+   Не кричащая, просто чуть больше акцента.
+*/
+
+.experienceCard:last-child {
+  background:
+    radial-gradient(
+      circle at 75% 20%,
+      rgba(170,91,255,0.12),
+      transparent 50%
+    ),
+    rgba(255,255,255,0.025) !important;
+}
+
+.experienceCard:last-child .experienceNumber {
+  color: #e0c5ff !important;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .experiences {
+    padding:
+      110px 22px
+      100px;
+  }
+
+  .experienceHeading {
+    display: block;
+
+    margin-bottom: 55px;
+  }
+
+  .experienceHeading h2 {
+    font-size: clamp(60px, 16vw, 95px);
+  }
+
+  .experienceIntro {
+    margin:
+      30px 0 0 !important;
+
+    max-width: 340px;
+  }
+
+  .experienceGrid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .experienceCard {
+    min-height: 340px;
+  }
+
+}
