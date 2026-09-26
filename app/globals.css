@@ -14659,3 +14659,51 @@ footer p {
 .wiveliExperienceFloat p {
   font-size: 12px;
 }
+/* =========================================================
+   WIVELI — ONE CONTINUOUS BACKGROUND
+   ========================================================= */
+
+main {
+  position: relative;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 18%,
+      rgba(112, 45, 180, 0.30) 0%,
+      rgba(65, 27, 105, 0.18) 28%,
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse at 78% 48%,
+      rgba(122, 55, 175, 0.16) 0%,
+      transparent 45%
+    ),
+    linear-gradient(
+      180deg,
+      #100d18 0%,
+      #100d18 32%,
+      #0e0b15 68%,
+      #0b0910 100%
+    );
+}
+
+
+/* HERO больше не рисует отдельный фон */
+
+.wiveliHero {
+  background: transparent !important;
+}
+
+
+/* Вторая секция тоже прозрачная */
+
+.wiveliCreateSection {
+  background: transparent !important;
+}
+
+
+/* Убираем локальные пятна, которые создают ощущение нового экрана */
+
+.wiveliCreateGlow {
+  opacity: 0.45;
+}
