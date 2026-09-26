@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 const gift = {
   recipient: "Sophie",
@@ -79,6 +79,8 @@ export default function OurStoryGift() {
   const [visited, setVisited] = useState([]);
   const [futureOpen, setFutureOpen] = useState(false);
 
+  const journeyRef = useRef(null);
+
   const stars = useMemo(
     () =>
       Array.from({ length: 120 }, (_, index) => ({
@@ -104,6 +106,47 @@ export default function OurStoryGift() {
 
   const closeMemory = () => {
     setActiveMemory(null);
+  };
+
+  const goToNextMemory = () => {
+    if (!activeMemory) return;
+
+    const currentIndex = gift.memories.findIndex(
+      (memory) => memory.id === activeMemory.id
+    );
+
+    const nextIndex = currentIndex + 1;
+
+    setActiveMemory(null);
+
+    setTimeout(() => {
+      const container = journeyRef.current;
+
+      if (!container) return;
+
+      if (nextIndex < gift.memories.length) {
+        const nextPoint = container.querySelector(
+          `[data-memory-index="${nextIndex}"]`
+        );
+
+        if (nextPoint) {
+          const target =
+            nextPoint.offsetLeft -
+            window.innerWidth / 2 +
+            nextPoint.offsetWidth / 2;
+
+          container.scrollTo({
+            left: Math.max(0, target),
+            behavior: "smooth",
+          });
+        }
+      } else {
+        container.scrollTo({
+          left: container.scrollWidth,
+          behavior: "smooth",
+        });
+      }
+    }, 180);
   };
 
   return (
@@ -214,7 +257,10 @@ export default function OurStoryGift() {
       )}
 
       {stage === "journey" && (
-        <section className="osgJourneyScreen">
+        <section
+          ref={journeyRef}
+          className="osgJourneyScreen"
+        >
           <header className="osgJourneyHeader">
             <div className="osgLogo">
               WI<span>♥</span>ELI
@@ -285,6 +331,7 @@ export default function OurStoryGift() {
               return (
                 <div
                   key={memory.id}
+                  data-memory-index={index}
                   className={`osgMemoryPoint ${
                     wasVisited ? "visited" : ""
                   }`}
@@ -420,7 +467,7 @@ export default function OurStoryGift() {
               <button
                 type="button"
                 className="osgContinue"
-                onClick={closeMemory}
+                onClick={goToNextMemory}
               >
                 CONTINUE OUR JOURNEY →
               </button>
