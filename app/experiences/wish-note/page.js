@@ -1,4 +1,4 @@
-import WiveliWishEnvelope from "../../components/WiveliWishEnvelope";
+import WishNoteCard from "../../components/WishNoteCard";
 
 export default function WishNote() {
   const categories = [
