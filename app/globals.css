@@ -13534,3 +13534,70 @@ footer p {
 .wiveliHeroScroll {
   z-index: 10;
 }
+/* ===== HERO TITLE — MOVE UP ===== */
+
+.wiveliHeroContent {
+  position: absolute;
+  top: 21%;
+  left: 0;
+
+  width: 100%;
+  max-width: none;
+
+  transform: none;
+  text-align: center;
+}
+
+/* Маленькую надпись ставим над заголовком */
+.wiveliHeroEyebrow {
+  margin: 0 0 14px;
+  text-align: center;
+}
+
+/* Большой заголовок */
+.wiveliHeroTitle {
+  width: 100%;
+  margin: 0;
+
+  font-size: clamp(72px, 8vw, 145px);
+  line-height: 0.82;
+  letter-spacing: -0.07em;
+
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Оставляем весь заголовок одной строкой */
+.wiveliHeroTitle br {
+  display: none;
+}
+
+.wiveliHeroTitle span {
+  margin-left: 0.16em;
+}
+
+/* Описание возвращаем вниз независимо от заголовка */
+.wiveliHeroText {
+  position: fixed;
+  top: 68%;
+  left: 50%;
+
+  width: 540px;
+  max-width: 80vw;
+  margin: 0;
+
+  transform: translateX(-50%);
+
+  text-align: center;
+}
+
+/* Кнопки тоже остаются внизу */
+.wiveliHeroActions {
+  position: fixed;
+  top: 76%;
+  left: 50%;
+
+  margin: 0;
+
+  transform: translateX(-50%);
+}
