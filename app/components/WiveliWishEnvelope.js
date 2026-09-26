@@ -37,15 +37,27 @@ export default function WiveliWishEnvelope() {
           <div className="wishEnvelopeBack" />
 
           {/* LETTER — COMPLETELY HIDDEN WHEN CLOSED */}
-          <motion.div
-            className="wishEnvelopeLetter"
-            initial={false}
-            animate={{
-              y: open ? "-61%" : "23%",
-              scale: open ? 1 : 0.96,
-            }}
-            transition={letterTransition}
-          >
+         <motion.div
+  className="wishEnvelopeLetter"
+  initial={false}
+  animate={{
+    y: open ? "-58%" : "35%",
+    scale: open ? 1 : 0.94,
+    opacity: open ? 1 : 0,
+  }}
+  transition={
+    open
+      ? {
+          type: "spring",
+          stiffness: 95,
+          damping: 18,
+          delay: 0.42,
+        }
+      : {
+          duration: 0.22,
+        }
+  }
+>
             <p className="wishLetterEyebrow">WISH NOTE ♡</p>
 
             <h3>
