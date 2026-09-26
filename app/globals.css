@@ -13390,3 +13390,147 @@ footer p {
   top: 46%;
   width: clamp(180px, 15vw, 300px);
 }
+/* ===== WIVELI HERO — CENTERED GIFT / FULL WIDTH TITLE ===== */
+
+.wiveliHero {
+  justify-content: center;
+}
+
+/* Огромная надпись за подарком */
+.wiveliHeroContent {
+  position: relative;
+  z-index: 2;
+
+  width: 100%;
+  max-width: none;
+
+  text-align: center;
+}
+
+.wiveliHeroEyebrow {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.wiveliHeroTitle {
+  width: 100%;
+
+  font-size: clamp(80px, 9.5vw, 175px);
+  line-height: 0.78;
+  letter-spacing: -0.075em;
+
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Убираем принудительные переносы строк визуально */
+.wiveliHeroTitle br {
+  display: none;
+}
+
+.wiveliHeroTitle span {
+  margin-left: 0.18em;
+}
+
+/* Описание и кнопки ниже композиции */
+.wiveliHeroText {
+  position: absolute;
+  top: calc(100% + 55px);
+  left: 50%;
+
+  width: 520px;
+  max-width: 80vw;
+  margin: 0;
+
+  transform: translateX(-50%);
+
+  text-align: center;
+}
+
+.wiveliHeroActions {
+  position: absolute;
+  top: calc(100% + 125px);
+  left: 50%;
+
+  margin: 0;
+
+  transform: translateX(-50%);
+}
+
+
+/* Вся композиция рук */
+
+.wiveliGiftScene {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  transform: none;
+
+  z-index: 5;
+}
+
+
+/* Левая рука */
+
+.wiveliHandLeft {
+  width: 58vw;
+  max-width: none;
+
+  left: -14vw;
+  top: 56%;
+
+  transform:
+    translateY(-50%)
+    rotate(1deg);
+}
+
+
+/* Правая рука */
+
+.wiveliHandRight {
+  width: 55vw;
+  max-width: none;
+
+  right: -14vw;
+  top: 48%;
+
+  transform:
+    translateY(-50%)
+    rotate(-2deg);
+}
+
+
+/* Подарок — строго центр экрана */
+
+.wiveliGiftWrap {
+  left: 50%;
+  top: 50%;
+
+  width: clamp(190px, 15vw, 310px);
+
+  transform: translate(-50%, -50%);
+
+  z-index: 8;
+}
+
+
+/* Текст должен быть ЗА подарком и руками */
+
+.wiveliHeroContent {
+  z-index: 3;
+}
+
+.wiveliGiftScene {
+  z-index: 6;
+}
+
+
+/* EXPLORE */
+
+.wiveliHeroScroll {
+  z-index: 10;
+}
