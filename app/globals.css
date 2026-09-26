@@ -15137,3 +15137,405 @@ main {
   }
 
 }
+/* =========================================================
+   WISH NOTE — INTERACTIVE ENVELOPE
+   ========================================================= */
+
+.wishPreview {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 620px;
+  background: transparent !important;
+}
+
+.wiveliEnvelopeExperience {
+  position: relative;
+  z-index: 5;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 32px;
+
+  width: 100%;
+}
+
+.wiveliEnvelopeStage {
+  position: relative;
+
+  width: min(500px, 40vw);
+
+  perspective: 1600px;
+}
+
+.wiveliEnvelopeObject {
+  position: relative;
+
+  width: 100%;
+  aspect-ratio: 3 / 2;
+
+  transform-style: preserve-3d;
+}
+
+
+/* atmospheric purple light */
+
+.wiveliEnvelopeHalo {
+  position: absolute;
+
+  inset: -25%;
+
+  z-index: -1;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(193, 126, 255, .30) 0%,
+      rgba(138, 67, 205, .13) 38%,
+      transparent 70%
+    );
+
+  filter: blur(18px);
+
+  pointer-events: none;
+}
+
+
+/* LETTER */
+
+.wiveliEnvelopeLetter {
+  position: absolute;
+
+  left: 7%;
+  right: 7%;
+
+  top: 6%;
+
+  z-index: 10;
+
+  height: 88%;
+
+  padding: 30px 34px;
+
+  overflow: hidden;
+
+  transform-origin: bottom;
+
+  border-radius: 13px;
+
+  border:
+    1px solid
+    rgba(92, 52, 125, .12);
+
+  background:
+    linear-gradient(
+      155deg,
+      #ffffff 0%,
+      #f5effb 100%
+    );
+
+  box-shadow:
+    0 30px 65px
+    rgba(0, 0, 0, .26),
+    inset 0 1px 0
+    rgba(255,255,255,.8);
+}
+
+.wiveliLetterLine {
+  position: absolute;
+
+  left: 34px;
+  right: 34px;
+  top: 21px;
+
+  height: 1px;
+
+  background:
+    rgba(137, 76, 180, .17);
+}
+
+.wiveliLetterContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  height: 100%;
+}
+
+.wiveliLetterTiny {
+  margin: 0 0 13px;
+
+  color: #8e54bd;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: .23em;
+}
+
+.wiveliLetterContent h3 {
+  margin: 0;
+
+  color: #151019;
+
+  font-family: "Anton", sans-serif;
+
+  font-size: clamp(38px, 3.6vw, 58px);
+  font-weight: 400;
+
+  line-height: .9;
+  letter-spacing: -.025em;
+}
+
+.wiveliLetterContent span {
+  display: block;
+
+  margin-top: 18px;
+
+  color: rgba(30, 19, 36, .52);
+
+  font-size: 12px;
+  letter-spacing: .02em;
+}
+
+
+/* BACK OF ENVELOPE */
+
+.wiveliEnvelopeBack {
+  position: absolute;
+
+  inset: 0;
+
+  border-radius: 18px;
+
+  border:
+    1px solid
+    rgba(95, 51, 128, .14);
+
+  background:
+    linear-gradient(
+      150deg,
+      #eadff5,
+      #cbb3e3
+    );
+
+  box-shadow:
+    0 40px 90px
+    rgba(0,0,0,.32),
+    0 0 70px
+    rgba(176,100,240,.11);
+}
+
+
+/* FRONT POCKET */
+
+.wiveliEnvelopePocket {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 20;
+
+  overflow: hidden;
+
+  border-radius: 18px;
+
+  pointer-events: none;
+}
+
+.wiveliEnvelopePocket svg {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+}
+
+
+/* FLAP */
+
+.wiveliEnvelopeFlap {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  top: 0;
+
+  height: 59%;
+
+  transform-origin: top;
+
+  transform-style: preserve-3d;
+}
+
+.wiveliEnvelopeFlap svg {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  backface-visibility: hidden;
+}
+
+
+/* WAX BUTTON */
+
+.wiveliWaxButton {
+  position: absolute;
+
+  z-index: 40;
+
+  left: 50%;
+  top: 43%;
+
+  width: 78px;
+  height: 78px;
+
+  padding: 0;
+
+  display: grid;
+  place-items: center;
+
+  transform:
+    translate(-50%, -50%);
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background: transparent;
+
+  cursor: pointer;
+}
+
+.wiveliWaxSeal {
+  display: block;
+
+  width: 78px;
+  height: 78px;
+
+  filter:
+    drop-shadow(
+      0 10px 15px
+      rgba(100, 47, 145, .42)
+    );
+}
+
+.wiveliWaxSeal svg {
+  width: 100%;
+  height: 100%;
+}
+
+
+/* HEARTS */
+
+.wiveliEnvelopeHeart {
+  position: absolute;
+
+  z-index: 100;
+
+  left: 50%;
+  top: 28%;
+
+  pointer-events: none;
+
+  color: #d5a7ff;
+
+  font-size: 20px;
+
+  text-shadow:
+    0 0 20px
+    rgba(201, 145, 255, .6);
+}
+
+
+/* replay button */
+
+.wiveliEnvelopeReplay {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 11px 17px;
+
+  border:
+    1px solid
+    rgba(255,255,255,.13);
+
+  border-radius: 100px;
+
+  background:
+    rgba(255,255,255,.035);
+
+  backdrop-filter:
+    blur(12px);
+
+  color:
+    rgba(255,255,255,.55);
+
+  font-size: 11px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition:
+    color .25s ease,
+    border-color .25s ease,
+    background .25s ease;
+}
+
+.wiveliEnvelopeReplay:hover {
+  color: #fff;
+
+  border-color:
+    rgba(203,155,255,.34);
+
+  background:
+    rgba(195,133,255,.07);
+}
+
+.wiveliReplayIcon {
+  color: #c89cff;
+
+  font-size: 15px;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 900px) {
+
+  .wishPreview {
+    min-height: 500px;
+  }
+
+  .wiveliEnvelopeStage {
+    width:
+      min(88vw, 480px);
+  }
+
+  .wiveliEnvelopeLetter {
+    padding:
+      25px 27px;
+  }
+
+  .wiveliLetterContent h3 {
+    font-size:
+      clamp(36px, 11vw, 54px);
+  }
+
+  .wiveliWaxButton {
+    width: 68px;
+    height: 68px;
+  }
+
+  .wiveliWaxSeal {
+    width: 68px;
+    height: 68px;
+  }
+}
