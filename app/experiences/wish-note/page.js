@@ -56,9 +56,7 @@ export default function WishNote() {
       {/* HERO */}
       <section className="productHero">
         <div className="productHeroCopy">
-          <p className="eyebrow">
-            365 DAYS OF HAPPINESS ♡
-          </p>
+          <p className="eyebrow">365 DAYS OF HAPPINESS ♡</p>
 
           <h1>
             WISH
@@ -95,17 +93,15 @@ export default function WishNote() {
           </p>
         </div>
 
-        {/* NEW INTERACTIVE ENVELOPE */}
+        {/* FLIPPING WISH NOTE CARD */}
         <div className="wishPreview">
-          <WiveliWishEnvelope />
+          <WishNoteCard />
         </div>
       </section>
 
       {/* STORY */}
       <section className="productStory">
-        <p className="eyebrow">
-          MORE THAN A MESSAGE
-        </p>
+        <p className="eyebrow">MORE THAN A MESSAGE</p>
 
         <h2>
           A LITTLE WORLD
@@ -131,9 +127,7 @@ export default function WishNote() {
         <div className="demoPhone">
           <div className="demoPhoneTop" />
 
-          <p className="demoTiny">
-            WISH NOTE ♡
-          </p>
+          <p className="demoTiny">WISH NOTE ♡</p>
 
           <h3>
             What are you
@@ -144,50 +138,26 @@ export default function WishNote() {
           <div className="wishNewPreview">
             <div>
               <span>♡</span>
-
-              <strong>
-                Dream Together
-              </strong>
-
-              <small>
-                5 wishes
-              </small>
+              <strong>Dream Together</strong>
+              <small>5 wishes</small>
             </div>
 
             <div>
               <span>✦</span>
-
-              <strong>
-                Food & Places
-              </strong>
-
-              <small>
-                3 wishes
-              </small>
+              <strong>Food & Places</strong>
+              <small>3 wishes</small>
             </div>
 
             <div>
               <span>♥</span>
-
-              <strong>
-                Our Time
-              </strong>
-
-              <small>
-                4 wishes
-              </small>
+              <strong>Our Time</strong>
+              <small>4 wishes</small>
             </div>
 
             <div>
               <span>☺</span>
-
-              <strong>
-                Little Things
-              </strong>
-
-              <small>
-                2 wishes
-              </small>
+              <strong>Little Things</strong>
+              <small>2 wishes</small>
             </div>
           </div>
 
@@ -197,9 +167,7 @@ export default function WishNote() {
         </div>
 
         <div className="demoCopy">
-          <p className="eyebrow">
-            THE EXPERIENCE
-          </p>
+          <p className="eyebrow">THE EXPERIENCE</p>
 
           <h2>
             WISH IT.
@@ -218,18 +186,13 @@ export default function WishNote() {
           <div className="wishCategories">
             {categories.map((category) => (
               <div key={category.number}>
-                <span>
-                  {category.number}
-                </span>
+                <span>{category.number}</span>
 
                 <strong>
-                  {category.symbol}{" "}
-                  {category.name}
+                  {category.symbol} {category.name}
                 </strong>
 
-                <p>
-                  {category.text}
-                </p>
+                <p>{category.text}</p>
               </div>
             ))}
           </div>
@@ -238,9 +201,7 @@ export default function WishNote() {
 
       {/* FROM WISH TO MEMORY */}
       <section className="productStory">
-        <p className="eyebrow">
-          FROM WISH TO MEMORY
-        </p>
+        <p className="eyebrow">FROM WISH TO MEMORY</p>
 
         <h2>
           THE BEST PART
@@ -261,9 +222,7 @@ export default function WishNote() {
         className="howWorks"
         id="how-it-works"
       >
-        <p className="eyebrow">
-          HOW IT WORKS
-        </p>
+        <p className="eyebrow">HOW IT WORKS</p>
 
         <h2>
           FROM YOU.
@@ -275,9 +234,7 @@ export default function WishNote() {
           <article>
             <span>01</span>
 
-            <h3>
-              Make it personal
-            </h3>
+            <h3>Make it personal</h3>
 
             <p>
               Add their name, your message, choose how many
@@ -289,9 +246,7 @@ export default function WishNote() {
           <article>
             <span>02</span>
 
-            <h3>
-              Send the surprise
-            </h3>
+            <h3>Send the surprise</h3>
 
             <p>
               They receive a private invitation that opens
@@ -302,9 +257,7 @@ export default function WishNote() {
           <article>
             <span>03</span>
 
-            <h3>
-              Let the story grow
-            </h3>
+            <h3>Let the story grow</h3>
 
             <p>
               They add wishes and choose dates. When those
@@ -316,9 +269,7 @@ export default function WishNote() {
 
       {/* FINAL CTA */}
       <section className="productCTA">
-        <p>
-          MAKE SOMETHING ONLY THEY CAN OPEN.
-        </p>
+        <p>MAKE SOMETHING ONLY THEY CAN OPEN.</p>
 
         <h2>
           READY TO MAKE
@@ -340,13 +291,9 @@ export default function WishNote() {
           WI<span>♥</span>ELI
         </a>
 
-        <p>
-          Wish + loVE + LIfe
-        </p>
+        <p>Wish + loVE + LIfe</p>
 
-        <p>
-          © 2026 WIVELI
-        </p>
+        <p>© 2026 WIVELI</p>
       </footer>
     </main>
   );
