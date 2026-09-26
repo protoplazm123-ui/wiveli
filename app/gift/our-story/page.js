@@ -1,732 +1,472 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 
-const memories = [
-  {
-    number: "01",
-    label: "THE BEGINNING",
-    date: "SEPTEMBER 26 · 2024",
-    title: (
-      <>
-        THE DAY
-        <br />
-        IT ALL BEGAN.
-      </>
-    ),
-    text:
-      "I still remember this moment like it was yesterday. I didn't know yet how many beautiful memories would come after it.",
-    note: "My favorite beginning. ♡",
-  },
-  {
-    number: "02",
-    label: "OUR FIRST ADVENTURE",
-    date: "NOVEMBER 08 · 2024",
-    title: (
-      <>
-        OUR FIRST
-        <br />
-        ADVENTURE.
-      </>
-    ),
-    text:
-      "Somewhere along the way, an ordinary day became one of those memories I knew I would want to keep forever.",
-    note: "I'd go there with you all over again. ♡",
-  },
-  {
-    number: "03",
-    label: "ONE PERFECT DAY",
-    date: "FEBRUARY 14 · 2025",
-    title: (
-      <>
-        ONE OF THOSE
-        <br />
-        PERFECT DAYS.
-      </>
-    ),
-    text:
-      "Nothing extraordinary had to happen. Being there with you was enough to make the whole day feel special.",
-    note: "I wish I could live this day twice. ♡",
-  },
-  {
-    number: "04",
-    label: "OUR FAVORITE PLACE",
-    date: "MAY 24 · 2025",
-    title: (
-      <>
-        A PLACE THAT
-        <br />
-        BECAME OURS.
-      </>
-    ),
-    text:
-      "It was just another place on the map until we made memories there. Now I don't think I could ever see it without thinking of you.",
-    note: "Some places keep a piece of us. ♡",
-  },
-  {
-    number: "05",
-    label: "RIGHT HERE, RIGHT NOW",
-    date: "SEPTEMBER 26 · 2026",
-    title: (
-      <>
-        LOOK HOW FAR
-        <br />
-        WE&apos;VE COME.
-      </>
-    ),
-    text:
-      "All these little moments somehow became our story. And the best part is knowing there are still so many waiting for us.",
-    note: "This is only the beginning. ♡",
-  },
-];
+const gift = {
+  recipient: "Sophie",
+  sender: "Alex",
 
-const flightStars = [
-  ["12%", "18%", "2px", "0s"],
-  ["24%", "34%", "3px", ".3s"],
-  ["38%", "12%", "2px", ".7s"],
-  ["62%", "20%", "2px", ".2s"],
-  ["78%", "14%", "3px", ".9s"],
-  ["89%", "32%", "2px", ".5s"],
-  ["15%", "62%", "3px", ".8s"],
-  ["31%", "76%", "2px", ".1s"],
-  ["46%", "58%", "2px", ".6s"],
-  ["68%", "72%", "3px", ".4s"],
-  ["82%", "63%", "2px", "1s"],
-  ["92%", "79%", "2px", ".2s"],
-  ["7%", "43%", "2px", ".5s"],
-  ["55%", "87%", "2px", ".8s"],
-  ["72%", "45%", "2px", ".15s"],
-  ["35%", "91%", "3px", ".65s"],
-  ["96%", "51%", "2px", ".35s"],
-  ["51%", "31%", "2px", ".95s"],
-  ["19%", "88%", "2px", ".45s"],
-  ["84%", "91%", "3px", ".75s"],
-];
+  openingLetter:
+    "I wanted to remind you of some of the best moments I remember with you. The little things, the places, and the days I never want to forget. So I put some of them here — just for us.",
 
-const futureStars = Array.from({ length: 90 }, (_, index) => ({
-  left: `${(index * 37) % 100}%`,
-  top: `${(index * 61) % 100}%`,
-  size: `${1 + (index % 4)}px`,
-  delay: `${(index % 12) * 0.12}s`,
-}));
+  theme: "stars",
+
+  finalMessage:
+    "There are still so many places to see, things to do, and moments waiting for us. The rest is ours to write.",
+
+  memories: [
+    {
+      id: 1,
+      title: "How We Met",
+      date: "18 SEP 2023",
+      place: "Kyiv, Ukraine",
+      text: "Some days look ordinary at first. Then somehow they become the beginning of everything.",
+      symbol: "♡",
+      photo: null,
+      video: null,
+      voice: null,
+    },
+    {
+      id: 2,
+      title: "Our First Adventure",
+      date: "02 DEC 2023",
+      place: "Lviv, Ukraine",
+      text: "One of those days I would happily live all over again.",
+      symbol: "✦",
+      photo: null,
+      video: null,
+      voice: null,
+    },
+    {
+      id: 3,
+      title: "Our Place",
+      date: "21 APR 2024",
+      place: "Somewhere special",
+      text: "It was never really about the place. It became special because we were there together.",
+      symbol: "♥",
+      photo: null,
+      video: null,
+      voice: null,
+    },
+    {
+      id: 4,
+      title: "Just Us",
+      date: "14 AUG 2025",
+      place: "Home",
+      text: "Nothing extraordinary had to happen. Being there with you was already enough.",
+      symbol: "∞",
+      photo: null,
+      video: null,
+      voice: null,
+    },
+    {
+      id: 5,
+      title: "Here We Are",
+      date: "RIGHT NOW",
+      place: "Together",
+      text: "We made it all the way here. And somehow this still feels like only the beginning.",
+      symbol: "♡",
+      photo: null,
+      video: null,
+      voice: null,
+    },
+  ],
+};
 
 export default function OurStoryGift() {
-  const [opened, setOpened] = useState(false);
-  const [journeyStarted, setJourneyStarted] = useState(false);
-  const [flightStage, setFlightStage] = useState("idle");
-
-  const [currentMemory, setCurrentMemory] = useState(0);
-  const [memoryOpen, setMemoryOpen] = useState(false);
-  const [memoryLeaving, setMemoryLeaving] = useState(false);
-
-  const [travellingBetweenMemories, setTravellingBetweenMemories] =
-    useState(false);
-
+  const [stage, setStage] = useState("card");
+  const [activeMemory, setActiveMemory] = useState(null);
+  const [visited, setVisited] = useState([]);
   const [futureOpen, setFutureOpen] = useState(false);
-  const [collageOpen, setCollageOpen] = useState(false);
 
-  const memory = memories[currentMemory];
+  const stars = useMemo(
+    () =>
+      Array.from({ length: 120 }, (_, index) => ({
+        id: index,
+        left: `${(index * 37 + 11) % 100}%`,
+        top: `${(index * 61 + 7) % 100}%`,
+        size: 1 + ((index * 13) % 3),
+        delay: `${((index * 17) % 50) / 10}s`,
+        opacity: 0.18 + (((index * 19) % 65) / 100),
+      })),
+    []
+  );
 
-  const beginJourney = () => {
-    setJourneyStarted(true);
-    setFlightStage("launch");
+  const openMemory = (memory) => {
+    setActiveMemory(memory);
+
+    setVisited((current) =>
+      current.includes(memory.id)
+        ? current
+        : [...current, memory.id]
+    );
   };
 
-  const openMemory = () => {
-    setMemoryLeaving(false);
-    setMemoryOpen(true);
+  const closeMemory = () => {
+    setActiveMemory(null);
   };
-
-  const continueJourney = () => {
-    const hasNextMemory = currentMemory < memories.length - 1;
-
-    if (hasNextMemory) {
-      setMemoryLeaving(true);
-
-      setTimeout(() => {
-        setMemoryOpen(false);
-        setMemoryLeaving(false);
-        setCurrentMemory((previous) => previous + 1);
-        setTravellingBetweenMemories(true);
-        setFlightStage("launch");
-      }, 1100);
-
-      return;
-    }
-
-    setMemoryLeaving(true);
-
-    setTimeout(() => {
-      setMemoryOpen(false);
-      setMemoryLeaving(false);
-      setFutureOpen(true);
-    }, 1100);
-  };
-
-  const openCollage = () => {
-    setCollageOpen(true);
-  };
-
-  useEffect(() => {
-    if (flightStage !== "launch") return;
-
-    const flyingTimer = setTimeout(() => {
-      setFlightStage("flying");
-    }, 1400);
-
-    const arrivalTimer = setTimeout(() => {
-      setFlightStage("arrival");
-    }, 6500);
-
-    const landedTimer = setTimeout(() => {
-      setFlightStage("landed");
-      setTravellingBetweenMemories(false);
-    }, 9000);
-
-    return () => {
-      clearTimeout(flyingTimer);
-      clearTimeout(arrivalTimer);
-      clearTimeout(landedTimer);
-    };
-  }, [flightStage]);
 
   return (
-    <main
-      className={[
-        "ourStoryGift",
-        opened ? "isOpened" : "",
-        journeyStarted ? "journeyStarted" : "",
-        memoryOpen ? "memoryIsOpen" : "",
-        memoryLeaving ? "memoryIsLeaving" : "",
-        travellingBetweenMemories ? "betweenMemories" : "",
-        futureOpen ? "futureIsOpen" : "",
-        collageOpen ? "collageIsOpen" : "",
-        `flight-${flightStage}`,
-      ].join(" ")}
-    >
-      {/* OPENING VIDEO */}
-
-      <div className="ourStoryOpeningVideo" aria-hidden="true">
-        <video autoPlay muted loop playsInline preload="auto">
-          <source
-            src="/assets/our-story/334401%20(1).mp4"
-            type="video/mp4"
+    <main className={`osgPage osgTheme-${gift.theme}`}>
+      <div className="osgBackground" aria-hidden="true">
+        {stars.map((star) => (
+          <i
+            key={star.id}
+            className="osgBackgroundStar"
+            style={{
+              left: star.left,
+              top: star.top,
+              width: star.size,
+              height: star.size,
+              opacity: star.opacity,
+              animationDelay: star.delay,
+            }}
           />
-        </video>
+        ))}
 
-        <div className="ourStoryOpeningShade" />
+        <div className="osgNebula osgNebulaOne" />
+        <div className="osgNebula osgNebulaTwo" />
       </div>
 
-      {/* OPENING SPACE */}
+      {stage === "card" && (
+        <section className="osgOpening">
+          <div className="osgOpeningTop">
+            <div className="osgLogo">
+              WI<span>♥</span>ELI
+            </div>
 
-      <div className="ourStorySpace" aria-hidden="true">
-        <div className="ourStoryStars starsOne" />
-        <div className="ourStoryStars starsTwo" />
-        <div className="ourStoryStars starsThree" />
+            <span>OUR STORY</span>
+          </div>
 
-        <div className="ourStoryGlow glowOne" />
-        <div className="ourStoryGlow glowTwo" />
+          <div className="osgOpeningCenter">
+            <p className="osgTiny">
+              SOMETHING WAS MADE FOR YOU ♡
+            </p>
 
-        <span className="ourStoryStar starA">✦</span>
-        <span className="ourStoryStar starB">✦</span>
-        <span className="ourStoryStar starC">✦</span>
-      </div>
+            <div className="osgClosedCard">
+              <div className="osgClosedCardGlow" />
 
-      {/* ENVELOPE + LETTER */}
+              <div className="osgEnvelopeMark">♡</div>
 
-      <section className="ourStoryIntro">
-        <p className="ourStoryLabel">
-          SOMETHING WAS LEFT HERE FOR YOU
-        </p>
+              <p>FOR</p>
 
-        <div className="ourStoryEnvelopeScene">
-          <div className="ourStoryLetter">
-            <p className="letterSmall">FOR YOU ♡</p>
+              <h1>{gift.recipient}</h1>
+
+              <span>
+                A LITTLE COLLECTION OF MOMENTS I NEVER WANT TO
+                FORGET.
+              </span>
+
+              <button
+                type="button"
+                onClick={() => setStage("letter")}
+              >
+                OPEN ♡
+              </button>
+            </div>
+
+            <small>FROM {gift.sender.toUpperCase()}</small>
+          </div>
+        </section>
+      )}
+
+      {stage === "letter" && (
+        <section className="osgOpening">
+          <div className="osgOpeningTop">
+            <div className="osgLogo">
+              WI<span>♥</span>ELI
+            </div>
+
+            <span>OUR STORY</span>
+          </div>
+
+          <div className="osgLetterWrap">
+            <article className="osgLetter">
+              <p>FOR {gift.recipient.toUpperCase()} ♡</p>
+
+              <div className="osgLetterPhoto">
+                <span>OUR PHOTO</span>
+              </div>
+
+              <h1>
+                LET&apos;S REMEMBER
+                <br />
+                <em>OUR STORY.</em>
+              </h1>
+
+              <blockquote>
+                “{gift.openingLetter}”
+              </blockquote>
+
+              <span>
+                WITH LOVE · {gift.sender.toUpperCase()}
+              </span>
+
+              <button
+                type="button"
+                onClick={() => setStage("journey")}
+              >
+                BEGIN OUR JOURNEY <b>→</b>
+              </button>
+            </article>
+          </div>
+        </section>
+      )}
+
+      {stage === "journey" && (
+        <section className="osgJourneyScreen">
+          <header className="osgJourneyHeader">
+            <div className="osgLogo">
+              WI<span>♥</span>ELI
+            </div>
+
+            <p>
+              {visited.length} / {gift.memories.length} MEMORIES
+            </p>
+
+            <span>OUR STORY</span>
+          </header>
+
+          <div className="osgJourneyIntro">
+            <p>THIS IS WHERE OUR STORY BEGAN</p>
 
             <h1>
-              Let&apos;s remember
+              EVERY STAR
               <br />
-              our beautiful journey
-              <br />
-              together.
+              <em>HOLDS A MEMORY.</em>
             </h1>
 
-            <div className="letterLine" />
-
-            <p className="letterText">
-              I want to take you through some of the moments
-              that became the most important to me — the little
-              memories, the feelings, and all the things about
-              you I never want to forget.
-            </p>
-
-            <p className="letterEnding">
-              There&apos;s a whole universe
-              <br />
-              I want to show you.
-            </p>
-
-            <button
-              type="button"
-              className="beginJourney"
-              onClick={beginJourney}
-            >
-              BEGIN OUR JOURNEY
-              <span>→</span>
-            </button>
+            <span>
+              Follow the path. Tap a star to remember.
+            </span>
           </div>
 
-          <button
-            type="button"
-            className="ourStoryEnvelope"
-            onClick={() => setOpened(true)}
-            aria-label="Open your letter"
-          >
-            <div className="envelopeBack" />
-            <div className="envelopeInside" />
-
-            <div className="envelopeFront">
-              <div className="envelopeFrontLeft" />
-              <div className="envelopeFrontRight" />
-              <div className="envelopeFrontBottom" />
-            </div>
-
-            <div className="envelopeFlap">
-              <div className="envelopeFlapInner" />
-            </div>
-
-            <div className="envelopeSeal">
-              <span>♡</span>
-            </div>
-
-            <div className="envelopeName">
-              <span>FOR YOU</span>
-              <strong>♡</strong>
-            </div>
-          </button>
-        </div>
-
-        <button
-          type="button"
-          className="tapToOpen"
-          onClick={() => setOpened(true)}
-        >
-          {opened ? "YOUR LETTER ♡" : "TAP TO OPEN"}
-        </button>
-
-        <p className="ourStoryMade">
-          OUR STORY · MADE WITH WIVELI
-        </p>
-      </section>
-
-      {/* JOURNEY */}
-
-      <section className="journeyUniverse">
-        <video
-          className="journeyVideo journeyCalmVideo"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          aria-hidden="true"
-        >
-          <source
-            src="/assets/our-story/334401%20(1).mp4"
-            type="video/mp4"
-          />
-        </video>
-
-        <video
-          className="journeyVideo journeyFlightVideo"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          aria-hidden="true"
-        >
-          <source
-            src="/assets/our-story/15340202_1920_1080_24fps.mp4"
-            type="video/mp4"
-          />
-        </video>
-
-        <div className="journeyVideoOverlay" />
-        <div className="journeyLight" />
-
-        {/* FLIGHT STARS */}
-
-        <div className="flightStars" aria-hidden="true">
-          {flightStars.map(([left, top, size, delay], index) => (
-            <span
-              key={`${currentMemory}-${index}`}
-              style={{
-                "--star-left": left,
-                "--star-top": top,
-                "--star-size": size,
-                "--star-delay": delay,
-              }}
-            />
-          ))}
-        </div>
-
-        {/* DESTINATION STAR */}
-
-        <div className="destinationStar" aria-hidden="true">
-          <div className="destinationHalo haloOuter" />
-          <div className="destinationHalo haloMiddle" />
-          <div className="destinationHalo haloInner" />
-          <div className="destinationStarCore">✦</div>
-        </div>
-
-        {/* FLIGHT MESSAGE */}
-
-        <div className="flightMessage">
-          <p>
-            {currentMemory === 0
-              ? "OUR JOURNEY BEGINS"
-              : "THE JOURNEY CONTINUES"}
-          </p>
-
-          <span>
-            {currentMemory === 0
-              ? "FOLLOW THE LIGHT"
-              : `DESTINATION ${memory.number}`}
-          </span>
-        </div>
-
-        {/* CURRENT DESTINATION */}
-
-        <div
-          className="journeyBeginning"
-          key={`destination-${currentMemory}`}
-        >
-          <p>
-            {currentMemory === 0
-              ? "OUR STORY"
-              : `MEMORY ${memory.number}`}
-          </p>
-
-          <h2>
-            {currentMemory === 0 ? (
-              <>
-                EVERY UNIVERSE
-                <br />
-                HAS A BEGINNING.
-              </>
-            ) : (
-              <>
-                ANOTHER STAR
-                <br />
-                IN OUR STORY.
-              </>
-            )}
-          </h2>
-
-          <span>
-            {currentMemory === 0
-              ? "Let's go back to ours."
-              : "You found another memory."}
-          </span>
-
-          {/* CLEAR CLICK TARGET */}
-
-          <div className="memoryStarTarget">
-            <p className="memoryStarInstruction">
-              {currentMemory === 0
-                ? "TAP TO OPEN YOUR FIRST MEMORY"
-                : `TAP TO OPEN MEMORY ${memory.number}`}
-            </p>
-
-            <span
-              className="memoryStarArrow"
+          <div className="osgWorld">
+            <svg
+              className="osgPath"
+              viewBox="0 0 1800 700"
+              preserveAspectRatio="none"
               aria-hidden="true"
             >
-              ↓
-            </span>
-
-            <button
-              type="button"
-              className="memoryStarButton"
-              aria-label={`Open memory ${memory.number}`}
-              onClick={openMemory}
-            >
-              <span
-                className="memoryStarRing ringOne"
-                aria-hidden="true"
+              <path
+                d="M100 490 C260 590 360 220 570 285 C760 345 790 565 1000 405 C1170 275 1240 185 1400 260 C1510 310 1580 440 1700 390"
+                fill="none"
+                stroke="rgba(216,181,255,.16)"
+                strokeWidth="1.5"
+                strokeDasharray="5 12"
               />
 
-              <span
-                className="memoryStarRing ringTwo"
-                aria-hidden="true"
+              <path
+                d="M100 490 C260 590 360 220 570 285 C760 345 790 565 1000 405 C1170 275 1240 185 1400 260 C1510 310 1580 440 1700 390"
+                fill="none"
+                stroke="rgba(205,158,255,.42)"
+                strokeWidth="1"
+                className="osgPathGlow"
               />
+            </svg>
 
-              <span
-                className="memoryStarSymbol"
-                aria-hidden="true"
-              >
-                ✦
+            {gift.memories.map((memory, index) => {
+              const positions = [
+                { left: "13%", top: "69%" },
+                { left: "31%", top: "39%" },
+                { left: "50%", top: "63%" },
+                { left: "69%", top: "34%" },
+                { left: "86%", top: "58%" },
+              ];
+
+              const position =
+                positions[index] || {
+                  left: `${15 + index * 15}%`,
+                  top: `${index % 2 ? 40 : 65}%`,
+                };
+
+              const wasVisited = visited.includes(memory.id);
+
+              return (
+                <div
+                  key={memory.id}
+                  className={`osgMemoryPoint ${
+                    wasVisited ? "visited" : ""
+                  }`}
+                  style={position}
+                >
+                  <button
+                    type="button"
+                    className="osgStarButton"
+                    onClick={() => openMemory(memory)}
+                  >
+                    <i />
+                    <strong>{memory.symbol}</strong>
+                    <b />
+                  </button>
+
+                  <div className="osgStarMeta">
+                    <small>
+                      {String(index + 1).padStart(2, "0")}
+                    </small>
+
+                    <h3>{memory.title}</h3>
+
+                    <p>{memory.date}</p>
+
+                    <span>{memory.place}</span>
+                  </div>
+                </div>
+              );
+            })}
+
+            <div className="osgFuturePoint">
+              <div className="osgFutureRings">
+                <i />
+                <i />
+                <i />
+              </div>
+
+              <p>AND HERE WE ARE ♡</p>
+
+              <h2>
+                THE REST IS
+                <br />
+                <em>OURS TO WRITE.</em>
+              </h2>
+
+              <span>
+                {gift.memories.length} memories behind us.
+                <br />
+                A whole universe ahead.
               </span>
-            </button>
-          </div>
 
-          <small>
-            {memory.number} · {memory.label}
-          </small>
-        </div>
-
-        {/* POLAROID MEMORY */}
-
-        <section
-          className="storyMemory storyMemoryPolaroid"
-          key={`memory-${currentMemory}`}
-        >
-          <div
-            className="polaroidMemoryGlow"
-            aria-hidden="true"
-          />
-
-          <div className="polaroidMemoryHeader">
-            <p>
-              MEMORY {memory.number} /{" "}
-              {String(memories.length).padStart(2, "0")}
-            </p>
-
-            <h2>{memory.title}</h2>
-
-            <span>{memory.date}</span>
-          </div>
-
-          <div className="polaroidMemoryStage">
-            {/* PREVIOUS */}
-
-            {currentMemory > 0 && (
-              <div className="memoryPolaroid memoryPolaroidLeft">
-                <div className="memoryPolaroidNumber">
-                  {memories[currentMemory - 1].number}
-                </div>
-
-                <div className="memoryPolaroidPhoto">
-                  <span>♡</span>
-                </div>
-
-                <p>
-                  {memories[currentMemory - 1].label}
-                </p>
-              </div>
-            )}
-
-            {/* CURRENT */}
-
-            <article className="memoryPolaroid memoryPolaroidMain">
-              <div className="memoryPolaroidTop">
-                <span>{memory.number}</span>
-                <span>{memory.date}</span>
-              </div>
-
-              <div className="memoryPolaroidPhoto memoryPolaroidMainPhoto">
-                <div className="memoryPhotoPlaceholder">
-                  <span>♡</span>
-                  <small>YOUR PHOTO</small>
-                </div>
-              </div>
-
-              <p className="memoryPolaroidNote">
-                {memory.note}
-              </p>
-            </article>
-
-            {/* NEXT */}
-
-            {currentMemory < memories.length - 1 && (
-              <div className="memoryPolaroid memoryPolaroidRight">
-                <div className="memoryPolaroidNumber">
-                  {memories[currentMemory + 1].number}
-                </div>
-
-                <div className="memoryPolaroidPhoto">
-                  <span>♡</span>
-                </div>
-
-                <p>
-                  {memories[currentMemory + 1].label}
-                </p>
-              </div>
-            )}
-          </div>
-
-          <div className="polaroidMemoryStory">
-            <p>{memory.text}</p>
-
-            <div className="polaroidStoryLine" />
-
-            <button
-              type="button"
-              className="storyMemoryContinue polaroidContinue"
-              onClick={continueJourney}
-            >
-              {currentMemory < memories.length - 1
-                ? "CONTINUE THE JOURNEY"
-                : "SEE WHAT'S AHEAD"}
-
-              <span>→</span>
-            </button>
-          </div>
-
-          <p className="polaroidMemorySideNote polaroidNoteLeft">
-            ONE LITTLE MOMENT
-            <br />
-            ONE WHOLE UNIVERSE
-          </p>
-
-          <p className="polaroidMemorySideNote polaroidNoteRight">
-            LET&apos;S KEEP
-            <br />
-            EXPLORING TOGETHER ∞
-          </p>
-        </section>
-
-        {/* FUTURE INDICATOR */}
-
-        <div className="journeyFuture" aria-hidden="true">
-          <span>✦</span>
-          <span>·</span>
-          <span>✦</span>
-          <span>·</span>
-          <span>✦</span>
-        </div>
-
-        {/* FUTURE UNIVERSE */}
-
-        <section className="ourStoryFutureScene">
-          <div className="futureUniverse" aria-hidden="true">
-            {futureStars.map((star, index) => (
-              <span
-                key={index}
-                style={{
-                  "--future-x": star.left,
-                  "--future-y": star.top,
-                  "--future-size": star.size,
-                  "--future-delay": star.delay,
-                }}
-              />
-            ))}
-          </div>
-
-          <div className="futureUniverseGlow" />
-
-          <div className="futureMessage">
-            <p>THIS ISN&apos;T THE END.</p>
-
-            <h2>
-              AND THERE&apos;S STILL
-              <br />
-              SO MUCH MORE
-              <br />
-              TO DISCOVER.
-            </h2>
-
-            <span>
-              Every little light is a memory
-              <br />
-              we haven&apos;t made yet.
-            </span>
-
-            <button
-              type="button"
-              className="futureContinue"
-              onClick={openCollage}
-            >
-              LOOK BACK AT OUR JOURNEY
-              <strong>→</strong>
-            </button>
-          </div>
-
-          <p className="futureInfinity">∞</p>
-        </section>
-
-        {/* FINAL COLLAGE */}
-
-        <section className="journeyCollage">
-          <div className="collageSpace" aria-hidden="true">
-            <span>✦</span>
-            <span>✦</span>
-            <span>✦</span>
-            <span>✦</span>
-            <span>✦</span>
-          </div>
-
-          <div className="collageHeading">
-            <p>OUR JOURNEY SO FAR</p>
-
-            <h2>
-              LOOK AT ALL
-              <br />
-              WE&apos;VE FOUND.
-            </h2>
-
-            <span>
-              A little universe made from us.
-            </span>
-          </div>
-
-          <div className="memoryCollage">
-            {memories.map((item, index) => (
-              <article
-                className={`collageMemory collageMemory${index + 1}`}
-                key={item.number}
+              <button
+                type="button"
+                onClick={() => setFutureOpen(true)}
               >
-                <div className="collagePhoto">
-                  <span>♡</span>
-
-                  <small>
-                    MEMORY {item.number}
-                  </small>
-                </div>
-
-                <div className="collageCaption">
-                  <strong>{item.label}</strong>
-                  <span>{item.date}</span>
-                </div>
-              </article>
-            ))}
-
-            <div className="collageCenter">
-              <span>OUR STORY</span>
-              <strong>∞</strong>
+                ∞
+              </button>
             </div>
           </div>
 
-          <div className="collageActions">
-            <button
-              type="button"
-              className="collageSave"
-            >
-              <span>SAVE OUR STORY</span>
-              <strong>↓</strong>
-            </button>
-
-            <button
-              type="button"
-              className="collageWatch"
-            >
-              <span>WATCH OUR JOURNEY</span>
-              <strong>▶</strong>
-            </button>
+          <div className="osgJourneyHint">
+            DRAG TO EXPLORE · TAP A MEMORY TO OPEN
           </div>
-
-          <p className="collageEnding">
-            LET&apos;S KEEP EXPLORING TOGETHER ∞
-          </p>
-
-          <p className="collageBrand">
-            OUR STORY · MADE WITH WIVELI
-          </p>
         </section>
-      </section>
+      )}
+
+      {activeMemory && (
+        <div
+          className="osgMemoryOverlay"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              closeMemory();
+            }
+          }}
+        >
+          <article className="osgMemoryModal">
+            <button
+              type="button"
+              className="osgClose"
+              onClick={closeMemory}
+            >
+              ×
+            </button>
+
+            <div className="osgMemoryMedia">
+              {activeMemory.video ? (
+                <video
+                  src={activeMemory.video}
+                  controls
+                  playsInline
+                />
+              ) : activeMemory.photo ? (
+                <img
+                  src={activeMemory.photo}
+                  alt={activeMemory.title}
+                />
+              ) : (
+                <div className="osgMemoryPlaceholder">
+                  <span>YOUR MEMORY</span>
+                  <strong>{activeMemory.symbol}</strong>
+                </div>
+              )}
+            </div>
+
+            <div className="osgMemoryBody">
+              <p>MEMORY</p>
+
+              <div className="osgMemoryLocation">
+                <span>{activeMemory.date}</span>
+                <i />
+                <span>{activeMemory.place}</span>
+              </div>
+
+              <h2>{activeMemory.title}</h2>
+
+              <blockquote>
+                “{activeMemory.text}”
+              </blockquote>
+
+              {activeMemory.voice && (
+                <div className="osgVoice">
+                  <button type="button">▶</button>
+
+                  <div>
+                    <span>A VOICE MEMORY ♡</span>
+                    <i />
+                  </div>
+
+                  <small>0:34</small>
+                </div>
+              )}
+
+              <button
+                type="button"
+                className="osgContinue"
+                onClick={closeMemory}
+              >
+                CONTINUE OUR JOURNEY →
+              </button>
+            </div>
+          </article>
+        </div>
+      )}
+
+      {futureOpen && (
+        <div
+          className="osgFutureOverlay"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              setFutureOpen(false);
+            }
+          }}
+        >
+          <div className="osgFutureMessage">
+            <button
+              type="button"
+              onClick={() => setFutureOpen(false)}
+              className="osgClose"
+            >
+              ×
+            </button>
+
+            <p>FOR EVERYTHING STILL AHEAD ♡</p>
+
+            <h2>
+              SOMEDAY,
+              <br />
+              <em>THIS WILL BE A MEMORY TOO.</em>
+            </h2>
+
+            <blockquote>
+              “{gift.finalMessage}”
+            </blockquote>
+
+            <span>∞</span>
+
+            <small>
+              THE REST IS OURS TO WRITE.
+            </small>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
-
-   
