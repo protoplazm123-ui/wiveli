@@ -19538,3 +19538,1144 @@ main {
     font-size: 54px !important;
   }
 }
+/* =========================================================
+   WISH NOTE — RECIPIENT EXPERIENCE V2
+   ========================================================= */
+
+.wishExperience {
+  --wx-purple: #c9a2ff;
+  --wx-purple2: #9f5cff;
+  --wx-white: #fff;
+  --wx-dark: #0b0810;
+
+  position: relative;
+  min-height: 100vh;
+  padding: 22px;
+
+  overflow: hidden;
+
+  color: #fff;
+
+  background:
+    radial-gradient(
+      circle at 20% 15%,
+      rgba(151, 77, 230, .30),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 85% 75%,
+      rgba(198, 139, 255, .20),
+      transparent 35%
+    ),
+    #0c0911;
+}
+
+
+/* BACKGROUND GLOW */
+
+.wishExperienceGlow {
+  position: absolute;
+
+  width: 500px;
+  height: 500px;
+
+  border-radius: 50%;
+
+  filter: blur(130px);
+
+  pointer-events: none;
+
+  opacity: .24;
+}
+
+.wishExperienceGlowOne {
+  top: -200px;
+  left: -150px;
+
+  background: #a65cff;
+}
+
+.wishExperienceGlowTwo {
+  right: -180px;
+  bottom: -220px;
+
+  background: #d7a7ff;
+}
+
+
+/* HEADER */
+
+.wishExperienceHeader {
+  position: absolute;
+
+  top: 42px;
+  left: 52px;
+  right: 52px;
+
+  z-index: 20;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  pointer-events: none;
+}
+
+.wishExperienceHeader > div {
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: .17em;
+}
+
+.wishExperienceHeader > div span {
+  color: var(--wx-purple);
+}
+
+.wishExperienceHeader p {
+  margin: 0;
+
+  color: rgba(255,255,255,.42);
+
+  font-size: 9px;
+
+  letter-spacing: .19em;
+}
+
+
+/* =========================================================
+   OPENING CARD
+   ========================================================= */
+
+.wishOpeningCard {
+  position: relative;
+
+  width: 100%;
+  height: calc(100vh - 44px);
+  min-height: 680px;
+
+  overflow: hidden;
+
+  border-radius: 32px;
+
+  border: 1px solid rgba(255,255,255,.16);
+
+  background: #16101d;
+
+  box-shadow:
+    0 35px 120px rgba(0,0,0,.42);
+
+  transition:
+    filter .45s ease,
+    transform .45s ease,
+    opacity .45s ease;
+}
+
+.wishOpeningCardBlurred {
+  filter: blur(5px);
+  transform: scale(.985);
+}
+
+
+/* PHOTO */
+
+.wishOpeningPhoto {
+  position: absolute;
+  inset: 0;
+}
+
+.wishOpeningPhotoPlaceholder {
+  position: absolute;
+  inset: 0;
+
+  display: grid;
+  place-items: center;
+
+  background:
+    radial-gradient(
+      circle at 72% 34%,
+      rgba(232,200,255,.48),
+      transparent 27%
+    ),
+    radial-gradient(
+      circle at 25% 70%,
+      rgba(113,53,177,.40),
+      transparent 34%
+    ),
+    linear-gradient(
+      135deg,
+      #21142c,
+      #0d0912
+    );
+}
+
+.wishOpeningPhotoPlaceholder span {
+  color: rgba(255,255,255,.15);
+
+  font-size: 10px;
+
+  letter-spacing: .28em;
+}
+
+.wishOpeningPhotoShade {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(6,4,9,.78) 0%,
+      rgba(6,4,9,.30) 46%,
+      rgba(6,4,9,.20) 100%
+    ),
+    linear-gradient(
+      0deg,
+      rgba(6,4,9,.70),
+      transparent 45%
+    );
+}
+
+
+/* CONTENT */
+
+.wishOpeningContent {
+  position: absolute;
+  inset: 0;
+
+  z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 46px 55px 48px;
+}
+
+.wishOpeningTop {
+  display: flex;
+  justify-content: space-between;
+
+  color: rgba(255,255,255,.62);
+
+  font-size: 9px;
+  font-weight: 600;
+
+  letter-spacing: .18em;
+}
+
+.wishOpeningMain {
+  margin: auto 0;
+
+  max-width: 720px;
+}
+
+.wishOpeningMain > p:first-child {
+  margin: 0 0 20px;
+
+  color: var(--wx-purple);
+
+  font-size: 10px;
+  font-weight: 600;
+
+  letter-spacing: .22em;
+}
+
+.wishOpeningMain h1 {
+  margin: 0;
+
+  font-family: "Anton", sans-serif;
+
+  font-size: clamp(92px, 10vw, 180px);
+  font-weight: 400;
+
+  line-height: .80;
+
+  letter-spacing: -.035em;
+
+  color: #fff;
+}
+
+.wishOpeningMain h1 span {
+  color: var(--wx-purple);
+}
+
+.wishOpeningMessage {
+  margin: 32px 0 0;
+
+  color: rgba(255,255,255,.65);
+
+  font-family: Georgia, serif;
+  font-style: italic;
+
+  font-size: 17px;
+
+  line-height: 1.5;
+}
+
+.wishOpeningBottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.wishOpeningBottom > div {
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+}
+
+.wishOpeningBottom small {
+  color: rgba(255,255,255,.35);
+
+  font-size: 8px;
+
+  letter-spacing: .20em;
+}
+
+.wishOpeningBottom strong {
+  font-family: Georgia, serif;
+
+  font-size: 17px;
+  font-weight: 400;
+
+  font-style: italic;
+}
+
+.wishOpeningBottom button {
+  display: flex;
+  align-items: center;
+
+  gap: 35px;
+
+  height: 60px;
+
+  padding: 0 26px;
+
+  border: 1px solid rgba(255,255,255,.45);
+  border-radius: 999px;
+
+  background: rgba(255,255,255,.09);
+
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+
+  color: #fff;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: .12em;
+
+  cursor: pointer;
+
+  transition:
+    background .25s ease,
+    transform .25s ease;
+}
+
+.wishOpeningBottom button:hover {
+  transform: translateY(-2px);
+
+  background: rgba(255,255,255,.17);
+}
+
+.wishOpeningBottom button span {
+  color: var(--wx-purple);
+
+  font-size: 19px;
+}
+
+
+/* =========================================================
+   MODAL LAYER
+   ========================================================= */
+
+.wishModalLayer {
+  position: fixed;
+  inset: 0;
+
+  z-index: 100;
+
+  display: grid;
+  place-items: center;
+
+  padding: 25px;
+
+  background: rgba(7,5,10,.50);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  animation: wishFade .3s ease;
+}
+
+@keyframes wishFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+
+/* GLASS */
+
+.wishGlassModal {
+  position: relative;
+
+  width: min(760px, 100%);
+
+  max-height: calc(100vh - 50px);
+
+  overflow-y: auto;
+
+  padding: 52px;
+
+  border-radius: 30px;
+
+  border: 1px solid rgba(255,255,255,.17);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(35,25,46,.90),
+      rgba(16,11,22,.82)
+    );
+
+  backdrop-filter: blur(35px);
+  -webkit-backdrop-filter: blur(35px);
+
+  box-shadow:
+    0 35px 120px rgba(0,0,0,.55),
+    inset 0 1px 0 rgba(255,255,255,.12);
+
+  animation: wishModalIn .35s ease;
+}
+
+@keyframes wishModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px) scale(.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+/* CLOSE / BACK */
+
+.wishModalClose,
+.wishModalBack {
+  position: absolute;
+
+  top: 25px;
+
+  display: grid;
+  place-items: center;
+
+  width: 38px;
+  height: 38px;
+
+  padding: 0;
+
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 50%;
+
+  background: rgba(255,255,255,.05);
+
+  color: rgba(255,255,255,.75);
+
+  cursor: pointer;
+
+  font-size: 20px;
+}
+
+.wishModalClose {
+  right: 25px;
+}
+
+.wishModalBack {
+  left: 25px;
+
+  font-size: 15px;
+}
+
+
+/* HEADING */
+
+.wishModalHeading {
+  margin-bottom: 36px;
+}
+
+.wishModalHeading > p {
+  margin: 0 0 14px;
+
+  color: var(--wx-purple);
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: .22em;
+}
+
+.wishModalHeading h2 {
+  margin: 0;
+
+  font-family: "Anton", sans-serif;
+
+  font-size: clamp(48px, 5vw, 72px);
+  font-weight: 400;
+
+  line-height: .88;
+
+  letter-spacing: -.025em;
+}
+
+.wishModalHeading h2 span {
+  color: var(--wx-purple);
+}
+
+.wishModalHeading > span {
+  display: block;
+
+  margin-top: 17px;
+
+  color: rgba(255,255,255,.45);
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   CATEGORIES
+   ========================================================= */
+
+.wishCategoryModal {
+  width: min(900px, 100%);
+}
+
+.wishModalCategories {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0,1fr));
+
+  gap: 10px;
+}
+
+.wishModalCategories > button {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  min-height: 145px;
+
+  padding: 20px;
+
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 18px;
+
+  text-align: left;
+
+  color: #fff;
+
+  background: rgba(255,255,255,.035);
+
+  cursor: pointer;
+
+  transition:
+    background .25s ease,
+    border-color .25s ease,
+    transform .25s ease;
+}
+
+.wishModalCategories > button:hover {
+  transform: translateY(-2px);
+
+  border-color: rgba(201,162,255,.45);
+
+  background: rgba(201,162,255,.08);
+}
+
+.wishModalCategoryTop {
+  display: flex;
+  justify-content: space-between;
+
+  margin-bottom: auto;
+}
+
+.wishModalCategoryTop small {
+  color: rgba(255,255,255,.32);
+
+  font-size: 8px;
+}
+
+.wishModalCategoryTop i {
+  color: var(--wx-purple);
+
+  font-size: 19px;
+
+  font-style: normal;
+}
+
+.wishModalCategories strong {
+  display: block;
+
+  margin-bottom: 5px;
+
+  font-size: 17px;
+}
+
+.wishModalCategories span {
+  color: rgba(255,255,255,.38);
+
+  font-size: 10px;
+}
+
+.wishModalCategories b {
+  position: absolute;
+
+  right: 19px;
+  bottom: 18px;
+
+  font-weight: 400;
+}
+
+
+/* =========================================================
+   WRITE WISH
+   ========================================================= */
+
+.wishSelectedCategory {
+  display: inline-flex;
+
+  gap: 9px;
+
+  margin: 0 0 30px 50px;
+
+  padding: 9px 13px;
+
+  border: 1px solid rgba(201,162,255,.25);
+  border-radius: 999px;
+
+  background: rgba(201,162,255,.08);
+
+  color: rgba(255,255,255,.75);
+
+  font-size: 10px;
+}
+
+.wishSelectedCategory span {
+  color: var(--wx-purple);
+}
+
+.wishMainInput {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+.wishMainInput > span,
+.wishDateDetails label > span {
+  color: rgba(255,255,255,.45);
+
+  font-size: 8px;
+  font-weight: 600;
+
+  letter-spacing: .18em;
+}
+
+.wishMainInput textarea {
+  width: 100%;
+
+  resize: none;
+
+  padding: 20px;
+
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 17px;
+
+  outline: none;
+
+  background: rgba(255,255,255,.04);
+
+  color: #fff;
+
+  font: inherit;
+
+  font-size: 18px;
+
+  line-height: 1.45;
+}
+
+.wishMainInput textarea:focus {
+  border-color: rgba(201,162,255,.6);
+}
+
+.wishMainInput small {
+  position: absolute;
+
+  right: 15px;
+  bottom: 13px;
+
+  color: rgba(255,255,255,.25);
+
+  font-size: 8px;
+}
+
+
+/* CONTINUE */
+
+.wishContinueButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  height: 58px;
+
+  margin-top: 25px;
+
+  padding: 0 20px;
+
+  border: 0;
+  border-radius: 999px;
+
+  background: #fff;
+
+  color: #100b16;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: .12em;
+
+  cursor: pointer;
+}
+
+.wishContinueButton:disabled {
+  opacity: .25;
+
+  cursor: not-allowed;
+}
+
+.wishContinueButton span {
+  font-size: 18px;
+}
+
+
+/* =========================================================
+   CALENDAR
+   ========================================================= */
+
+.wishCalendarGlass {
+  padding: 14px;
+
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 22px;
+
+  background: rgba(255,255,255,.035);
+}
+
+.wishDateDetails {
+  display: grid;
+
+  grid-template-columns: .7fr 1.3fr;
+
+  gap: 10px;
+
+  margin-top: 12px;
+}
+
+.wishDateDetails label {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+
+  padding: 15px;
+
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 16px;
+
+  background: rgba(255,255,255,.035);
+}
+
+.wishDateDetails input {
+  width: 100%;
+
+  border: 0;
+
+  outline: 0;
+
+  background: transparent;
+
+  color: #fff;
+
+  font-size: 14px;
+}
+
+.wishDateDetails input::placeholder {
+  color: rgba(255,255,255,.25);
+}
+
+
+/* =========================================================
+   REVIEW
+   ========================================================= */
+
+.wishReviewHeart {
+  display: grid;
+  place-items: center;
+
+  width: 48px;
+  height: 48px;
+
+  margin-bottom: 28px;
+
+  border-radius: 50%;
+
+  background: var(--wx-purple);
+
+  color: #160e1e;
+
+  font-size: 21px;
+}
+
+.wishReviewCard {
+  padding: 26px;
+
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 20px;
+
+  background: rgba(255,255,255,.045);
+}
+
+.wishReviewCategory {
+  display: flex;
+  gap: 8px;
+
+  color: var(--wx-purple);
+
+  font-size: 10px;
+
+  letter-spacing: .08em;
+}
+
+.wishReviewCategory p {
+  margin: 0;
+}
+
+.wishReviewCard h3 {
+  max-width: 580px;
+
+  margin: 23px 0 35px;
+
+  font-family: Georgia, serif;
+
+  font-size: 27px;
+  font-weight: 400;
+
+  line-height: 1.3;
+}
+
+.wishReviewDetails {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0,1fr));
+
+  border-top: 1px solid rgba(255,255,255,.10);
+
+  padding-top: 20px;
+}
+
+.wishReviewDetails > div {
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+}
+
+.wishReviewDetails small {
+  color: rgba(255,255,255,.30);
+
+  font-size: 7px;
+
+  letter-spacing: .18em;
+}
+
+.wishReviewDetails strong {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.wishReviewActions {
+  display: grid;
+
+  grid-template-columns:
+    .65fr 1.35fr;
+
+  gap: 10px;
+
+  margin-top: 14px;
+}
+
+.wishReviewActions button {
+  height: 56px;
+
+  border-radius: 999px;
+
+  cursor: pointer;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: .10em;
+}
+
+.wishEditButton {
+  border: 1px solid rgba(255,255,255,.15);
+
+  background: transparent;
+
+  color: #fff;
+}
+
+.wishSendButton {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 20px;
+
+  border: 0;
+
+  background: #fff;
+
+  color: #100b16;
+}
+
+.wishSendButton span {
+  color: #9b55d8;
+
+  font-size: 18px;
+}
+
+
+/* =========================================================
+   SUCCESS
+   ========================================================= */
+
+.wishSuccessModal {
+  max-width: 620px;
+
+  text-align: center;
+
+  padding-top: 70px;
+  padding-bottom: 65px;
+}
+
+.wishSuccessSymbol {
+  display: grid;
+  place-items: center;
+
+  width: 76px;
+  height: 76px;
+
+  margin: 0 auto 35px;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      145deg,
+      #dfc1ff,
+      #a75ee9
+    );
+
+  color: #180d21;
+
+  font-size: 28px;
+
+  box-shadow:
+    0 0 50px rgba(183,104,255,.35);
+}
+
+.wishSuccessModal > p:first-of-type {
+  margin: 0 0 17px;
+
+  color: var(--wx-purple);
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: .23em;
+}
+
+.wishSuccessModal h2 {
+  margin: 0;
+
+  font-family: "Anton", sans-serif;
+
+  font-size: clamp(52px, 6vw, 82px);
+  font-weight: 400;
+
+  line-height: .86;
+}
+
+.wishSuccessModal h2 span {
+  color: var(--wx-purple);
+}
+
+.wishSuccessLine {
+  width: 55px;
+  height: 1px;
+
+  margin: 32px auto;
+
+  background: rgba(255,255,255,.22);
+}
+
+.wishSuccessText {
+  color: rgba(255,255,255,.70);
+
+  font-family: Georgia, serif;
+
+  font-size: 17px;
+
+  line-height: 1.5;
+}
+
+.wishSuccessModal > small {
+  display: block;
+
+  margin-top: 16px;
+
+  color: rgba(255,255,255,.35);
+
+  font-size: 10px;
+}
+
+.wishSuccessModal > button {
+  width: 180px;
+  height: 52px;
+
+  margin-top: 38px;
+
+  border: 0;
+  border-radius: 999px;
+
+  background: #fff;
+
+  color: #110b16;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: .15em;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .wishExperience {
+    padding: 10px;
+  }
+
+  .wishExperienceHeader {
+    top: 30px;
+    left: 28px;
+    right: 28px;
+  }
+
+  .wishOpeningCard {
+    height: calc(100vh - 20px);
+
+    min-height: 650px;
+
+    border-radius: 24px;
+  }
+
+  .wishOpeningContent {
+    padding: 55px 25px 28px;
+  }
+
+  .wishOpeningTop span:last-child {
+    display: none;
+  }
+
+  .wishOpeningMain h1 {
+    font-size: clamp(76px, 26vw, 120px);
+  }
+
+  .wishOpeningMessage {
+    font-size: 14px;
+  }
+
+  .wishOpeningBottom {
+    gap: 20px;
+  }
+
+  .wishOpeningBottom button {
+    gap: 15px;
+
+    height: 52px;
+
+    padding: 0 18px;
+  }
+
+  .wishGlassModal {
+    padding:
+      65px 20px
+      25px;
+
+    border-radius: 23px;
+  }
+
+  .wishModalHeading h2 {
+    font-size: 49px;
+  }
+
+  .wishModalCategories {
+    grid-template-columns: 1fr;
+  }
+
+  .wishModalCategories > button {
+    min-height: 115px;
+  }
+
+  .wishSelectedCategory {
+    margin-left: 0;
+  }
+
+  .wishDateDetails {
+    grid-template-columns: 1fr;
+  }
+
+  .wishReviewDetails {
+    grid-template-columns: 1fr;
+
+    gap: 17px;
+  }
+
+  .wishReviewActions {
+    grid-template-columns: 1fr;
+  }
+}
