@@ -21294,3 +21294,86 @@ main {
   }
 
 }
+/* =========================================================
+   WISH NOTE — MOBILE COMPOSITION FIX
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  /* чуть больше воздуха по краям */
+  .wishOpeningContent {
+    padding: 58px 28px 30px !important;
+  }
+
+  /* главный заголовок */
+  .wishOpeningMain {
+    margin: auto 0 !important;
+    transform: translateY(-10px);
+  }
+
+  .wishOpeningMain h1 {
+    font-size: clamp(72px, 21vw, 100px) !important;
+    line-height: .88 !important;
+    letter-spacing: -.065em !important;
+  }
+
+  .wishOpeningMain > p:first-child {
+    font-size: 9px !important;
+    letter-spacing: .19em !important;
+    margin-bottom: 22px !important;
+  }
+
+  /* текст под заголовком */
+  .wishOpeningMessage {
+    margin-top: 38px !important;
+    max-width: 310px;
+
+    font-size: 15px !important;
+    line-height: 1.55 !important;
+  }
+
+  /* нижний блок */
+  .wishOpeningBottom {
+    position: relative !important;
+
+    min-height: 145px;
+
+    display: flex !important;
+    align-items: flex-end !important;
+  }
+
+  /* FROM / Alex оставляем слева */
+  .wishOpeningBottom > div {
+    position: absolute;
+
+    left: 0;
+    bottom: 0;
+
+    z-index: 2;
+  }
+
+  /* кнопка выше имени */
+  .wishOpeningBottom button {
+    position: absolute !important;
+
+    left: 50% !important;
+    bottom: 68px !important;
+
+    transform: translateX(-50%) !important;
+
+    width: min(82vw, 310px) !important;
+    height: 62px !important;
+
+    padding: 0 24px !important;
+
+    font-size: 11px !important;
+    letter-spacing: .18em !important;
+
+    gap: 25px !important;
+  }
+
+  .wishOpeningBottom button > span {
+    font-size: 21px !important;
+  }
+
+}
