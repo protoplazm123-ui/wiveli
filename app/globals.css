@@ -21225,3 +21225,72 @@ main {
     animation: none !important;
   }
 }
+/* =========================================================
+   WISH NOTE — BIGGER / CENTERED MAKE A WISH BUTTON
+   ========================================================= */
+
+.wishOpeningBottom {
+  position: relative;
+}
+
+/* MAKE A WISH */
+
+.wishOpeningBottom button {
+  position: absolute !important;
+
+  left: 50% !important;
+  bottom: 0;
+
+  transform: translateX(-50%) !important;
+
+  width: 300px !important;
+  height: 72px !important;
+
+  padding: 0 30px !important;
+
+  justify-content: center !important;
+
+  gap: 32px !important;
+
+  font-size: 13px !important;
+  letter-spacing: .20em !important;
+
+  border-radius: 999px !important;
+}
+
+
+/* HEART */
+
+.wishOpeningBottom button > span {
+  font-size: 23px !important;
+}
+
+
+/* HOVER */
+
+@media (hover: hover) and (pointer: fine) {
+
+  .wishOpeningBottom button:hover {
+    transform:
+      translateX(-50%)
+      translateY(-4px)
+      scale(1.035) !important;
+  }
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+  .wishOpeningBottom button {
+    width: 250px !important;
+    height: 64px !important;
+
+    font-size: 11px !important;
+
+    gap: 23px !important;
+  }
+
+}
