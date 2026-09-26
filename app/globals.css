@@ -14188,3 +14188,391 @@ footer p {
 .wiveliGiftScene {
   z-index: 10;
 }
+/* =========================================================
+   WIVELI — FLOATING EXPERIENCES
+   ========================================================= */
+
+.wiveliCreateSection {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 82% 45%,
+      rgba(181, 93, 255, 0.16),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 20% 80%,
+      rgba(255, 80, 190, 0.08),
+      transparent 28%
+    ),
+    linear-gradient(
+      180deg,
+      #100d18 0%,
+      #0c0912 45%,
+      #09070d 100%
+    );
+
+  color: white;
+}
+
+
+/* ---------- background glow ---------- */
+
+.wiveliCreateGlow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(110px);
+  pointer-events: none;
+}
+
+.wiveliCreateGlowOne {
+  width: 420px;
+  height: 420px;
+  right: -140px;
+  top: 28%;
+  background: rgba(191, 96, 255, 0.14);
+}
+
+.wiveliCreateGlowTwo {
+  width: 300px;
+  height: 300px;
+  left: 18%;
+  bottom: -170px;
+  background: rgba(255, 72, 182, 0.08);
+}
+
+
+/* ---------- LEFT TITLE ---------- */
+
+.wiveliCreateHeading {
+  position: absolute;
+  left: 7vw;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+}
+
+.wiveliCreateHeading > p {
+  margin: 0 0 20px;
+
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+
+  color: #c89aff;
+}
+
+.wiveliCreateHeading h2 {
+  margin: 0;
+
+  font-family: "Anton", sans-serif;
+  font-size: clamp(72px, 7vw, 130px);
+  font-weight: 400;
+
+  line-height: 0.88;
+  letter-spacing: -0.035em;
+
+  color: white;
+}
+
+.wiveliCreateHeading > a {
+  display: inline-flex;
+  gap: 12px;
+  align-items: center;
+
+  margin-top: 45px;
+  padding-bottom: 7px;
+
+  color: rgba(255,255,255,0.82);
+  text-decoration: none;
+
+  font-size: 14px;
+
+  border-bottom: 1px solid rgba(201,154,255,0.55);
+
+  transition:
+    color 0.25s ease,
+    gap 0.25s ease;
+}
+
+.wiveliCreateHeading > a:hover {
+  color: white;
+  gap: 18px;
+}
+
+
+/* ---------- FLOATING AREA ---------- */
+
+.wiveliFloatingExperiences {
+  position: absolute;
+
+  top: 0;
+  right: 0;
+
+  width: 64%;
+  height: 100%;
+}
+
+
+/* ---------- CARD ---------- */
+
+.wiveliExperienceFloat {
+  position: absolute;
+
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  width: 330px;
+  min-height: 120px;
+
+  padding: 22px 52px 22px 22px;
+
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,0.105),
+      rgba(255,255,255,0.035)
+    );
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    0 18px 60px rgba(0,0,0,0.20);
+
+  color: white;
+  text-decoration: none;
+
+  transition:
+    transform 0.4s cubic-bezier(.2,.8,.2,1),
+    border-color 0.3s ease,
+    background 0.3s ease,
+    box-shadow 0.3s ease;
+
+  animation: wiveliCardFloat 5s ease-in-out infinite;
+}
+
+
+/* ---------- ICON ---------- */
+
+.wiveliExperienceIcon {
+  flex: 0 0 52px;
+
+  width: 52px;
+  height: 52px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 15px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,0.95),
+      rgba(232,211,255,0.88)
+    );
+
+  color: #8f42e8;
+
+  font-size: 27px;
+
+  box-shadow:
+    0 0 25px rgba(181,98,255,0.18);
+}
+
+
+/* ---------- CARD TEXT ---------- */
+
+.wiveliExperienceFloat h3 {
+  margin: 0 0 8px;
+
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.wiveliExperienceFloat p {
+  margin: 0;
+
+  font-size: 13px;
+  line-height: 1.45;
+
+  color: rgba(255,255,255,0.55);
+}
+
+
+/* ---------- ARROW ---------- */
+
+.wiveliCardArrow {
+  position: absolute;
+
+  right: 20px;
+  top: 18px;
+
+  font-size: 20px;
+
+  color: rgba(255,255,255,0.8);
+
+  transition: transform 0.3s ease;
+}
+
+
+/* ---------- HOVER ---------- */
+
+.wiveliExperienceFloat:hover {
+  transform:
+    translateY(-8px)
+    scale(1.035) !important;
+
+  border-color: rgba(215,166,255,0.45);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(199,143,255,0.16),
+      rgba(255,255,255,0.05)
+    );
+
+  box-shadow:
+    0 25px 80px rgba(104,40,170,0.20),
+    0 0 40px rgba(188,100,255,0.08);
+}
+
+.wiveliExperienceFloat:hover .wiveliCardArrow {
+  transform: translate(4px, -4px);
+}
+
+
+/* ---------- POSITIONS ---------- */
+
+.wiveliFloatSpecial {
+  left: 4%;
+  top: 39%;
+  width: 390px;
+
+  transform: rotate(-5deg);
+
+  animation-delay: -1s;
+}
+
+.wiveliFloatBirthday {
+  left: 42%;
+  top: 19%;
+
+  transform: rotate(4deg);
+
+  animation-delay: -2.4s;
+}
+
+.wiveliFloatTwo {
+  right: 3%;
+  top: 38%;
+
+  transform: rotate(5deg);
+
+  animation-delay: -0.7s;
+}
+
+.wiveliFloatFriends {
+  left: 30%;
+  bottom: 14%;
+
+  transform: rotate(3deg);
+
+  animation-delay: -3.2s;
+}
+
+.wiveliFloatBecause {
+  right: 8%;
+  bottom: 21%;
+
+  transform: rotate(-3deg);
+
+  animation-delay: -1.8s;
+}
+
+.wiveliFloatMemories {
+  right: 16%;
+  bottom: 5%;
+
+  transform: rotate(3deg);
+
+  animation-delay: -4s;
+}
+
+
+/* ---------- CONSTANT FLOAT ---------- */
+
+@keyframes wiveliCardFloat {
+
+  0%,
+  100% {
+    translate: 0 0;
+  }
+
+  50% {
+    translate: 0 -12px;
+  }
+
+}
+
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width: 900px) {
+
+  .wiveliCreateSection {
+    min-height: auto;
+    padding: 110px 22px 80px;
+  }
+
+  .wiveliCreateHeading {
+    position: relative;
+    left: auto;
+    top: auto;
+
+    transform: none;
+
+    margin-bottom: 65px;
+  }
+
+  .wiveliCreateHeading h2 {
+    font-size: clamp(58px, 15vw, 90px);
+  }
+
+  .wiveliFloatingExperiences {
+    position: relative;
+
+    width: 100%;
+    height: auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .wiveliExperienceFloat {
+    position: relative !important;
+
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+
+    width: 100% !important;
+
+    transform: none !important;
+
+    animation: none;
+  }
+
+}
