@@ -1,4 +1,5 @@
-* {
+
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Cinzel:wght@400&display=swap');* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -14125,4 +14126,65 @@ footer p {
   box-shadow:
     0 0 30px rgba(255, 255, 255, 0.28),
     0 0 75px rgba(190, 135, 255, 0.38);
+}
+/* =====================================================
+   WIVELI — HERO TYPOGRAPHY
+   ===================================================== */
+
+/* Общий заголовок */
+.wiveliHeroTitle {
+  width: 100%;
+  text-align: center;
+  line-height: 0.82;
+}
+
+/* GIVE THEM — тонкий, фиолетовый */
+.wiveliGiveThem {
+  display: inline-block;
+  font-family: "Cinzel", serif;
+  font-size: clamp(65px, 7vw, 125px);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+
+  color: #c79aff;
+
+  text-shadow:
+    0 0 20px rgba(191, 126, 255, 0.30),
+    0 0 50px rgba(158, 73, 255, 0.18);
+}
+
+/* SOMETHING PERSONAL — высокий жирный белый */
+.wiveliSomethingPersonal {
+  display: inline-block !important;
+
+  font-family: "Anton", sans-serif;
+  font-size: clamp(72px, 8.7vw, 155px);
+  font-weight: 400;
+
+  line-height: 0.92;
+  letter-spacing: -0.025em;
+
+  color: #ffffff !important;
+  white-space: nowrap;
+
+  text-shadow:
+    0 0 22px rgba(255,255,255,0.10),
+    0 0 45px rgba(183,108,255,0.16);
+}
+
+/* Подарок поверх второй строки */
+.wiveliGiftWrap {
+  top: 52% !important;
+  width: clamp(240px, 18vw, 360px) !important;
+  z-index: 15 !important;
+}
+
+/* Текст остаётся позади подарка */
+.wiveliHeroContent {
+  z-index: 5;
+}
+
+/* Руки поверх/рядом с композицией */
+.wiveliGiftScene {
+  z-index: 10;
 }
