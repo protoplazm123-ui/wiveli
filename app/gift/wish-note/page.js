@@ -1,638 +1,574 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import CuteCalendar from "../../components/CuteCalendar";
 
 const categories = [
-  { id: "dream", name: "Dream Together", icon: "♡" },
-  { id: "food", name: "Food & Places", icon: "✦" },
-  { id: "time", name: "Our Time", icon: "♥" },
-  { id: "little", name: "Little Things", icon: "☺" },
-  { id: "adventures", name: "Adventures", icon: "∞" },
-  { id: "special", name: "Something Special", icon: "✉" },
+  {
+    id: "dream",
+    name: "Dream Together",
+    icon: "♡",
+    description: "Something you dream of doing together",
+  },
+  {
+    id: "food",
+    name: "Food & Places",
+    icon: "✦",
+    description: "A restaurant, trip or place to discover",
+  },
+  {
+    id: "time",
+    name: "Our Time",
+    icon: "♥",
+    description: "A date or little moment together",
+  },
+  {
+    id: "little",
+    name: "Little Things",
+    icon: "☺",
+    description: "Something simple that would make you happy",
+  },
+  {
+    id: "adventures",
+    name: "Adventures",
+    icon: "∞",
+    description: "Something exciting you've always wanted to try",
+  },
+  {
+    id: "special",
+    name: "Something Special",
+    icon: "✉",
+    description: "Anything that doesn't fit anywhere else",
+  },
 ];
 
 export default function WishNoteGift() {
-  const totalWishes = 24;
+  const [step, setStep] = useState("card");
 
-  const [activeView, setActiveView] = useState("home");
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] =
+    useState(null);
 
   const [wishText, setWishText] = useState("");
   const [wishDate, setWishDate] = useState("");
+  const [wishTime, setWishTime] = useState("");
   const [wishPlace, setWishPlace] = useState("");
-  const [wishNote, setWishNote] = useState("");
-  const [calendarOpen, setCalendarOpen] = useState(false);
-
-  const [wishes, setWishes] = useState([
-    {
-      id: 1,
-      category: "time",
-      text: "Sunset picnic together",
-      date: "2026-10-14",
-      place: "Our favorite spot",
-      note: "",
-      completed: false,
-    },
-    {
-      id: 2,
-      category: "food",
-      text: "Italian dinner night",
-      date: "2026-11-02",
-      place: "",
-      note: "The place with the tiny tables ♡",
-      completed: false,
-    },
-  ]);
-
-  const remainingWishes = Math.max(
-    totalWishes - wishes.length,
-    0
-  );
-
-  const sortedWishes = useMemo(() => {
-    return [...wishes].sort((a, b) =>
-      a.date.localeCompare(b.date)
-    );
-  }, [wishes]);
-
-  const categoryCount = (categoryId) =>
-    wishes.filter(
-      (wish) => wish.category === categoryId
-    ).length;
-
-  const getCategory = (categoryId) =>
-    categories.find(
-      (category) => category.id === categoryId
-    );
-
-  const openCategory = (category) => {
-    if (remainingWishes <= 0) return;
-
-    setSelectedCategory(category);
-    setWishText("");
-    setWishDate("");
-    setWishPlace("");
-    setWishNote("");
-    setCalendarOpen(false);
-    setActiveView("create");
-  };
-
-  const sealWish = () => {
-    if (
-      !selectedCategory ||
-      !wishText.trim() ||
-      !wishDate
-    ) {
-      return;
-    }
-
-    const newWish = {
-      id: Date.now(),
-      category: selectedCategory.id,
-      text: wishText.trim(),
-      date: wishDate,
-      place: wishPlace.trim(),
-      note: wishNote.trim(),
-      completed: false,
-    };
-
-    setWishes((current) => [
-      ...current,
-      newWish,
-    ]);
-
-    setWishText("");
-    setWishDate("");
-    setWishPlace("");
-    setWishNote("");
-    setSelectedCategory(null);
-    setCalendarOpen(false);
-    setActiveView("wishes");
-  };
 
   const formatDate = (date) => {
-    if (!date) return "";
+    if (!date) return "Any day";
 
     return new Intl.DateTimeFormat("en-US", {
       month: "long",
       day: "numeric",
       year: "numeric",
-    }).format(
-      new Date(`${date}T12:00:00`)
-    );
+    }).format(new Date(`${date}T12:00:00`));
+  };
+
+  const resetWish = () => {
+    setSelectedCategory(null);
+    setWishText("");
+    setWishDate("");
+    setWishTime("");
+    setWishPlace("");
+    setStep("card");
   };
 
   return (
-    <main className="giftSpace">
-      <header className="giftSpaceHeader">
-        <div className="giftSpaceLogo">
+    <main className="wishExperience">
+
+      {/* BACKGROUND */}
+
+      <div className="wishExperienceGlow wishExperienceGlowOne" />
+      <div className="wishExperienceGlow wishExperienceGlowTwo" />
+
+      {/* TOP */}
+
+      <header className="wishExperienceHeader">
+        <div>
           WISH NOTE <span>♡</span>
         </div>
 
-        <button
-          className="giftSpaceMade"
-          type="button"
-          onClick={() =>
-            setActiveView("home")
-          }
-        >
-          made with WIVELI
-        </button>
+        <p>MADE WITH WIVELI</p>
       </header>
 
-      {activeView === "home" && (
-        <>
-          <section className="wishHero">
-  <div className="wishHeroGlow wishHeroGlowOne" />
-  <div className="wishHeroGlow wishHeroGlowTwo" />
 
-  <div className="wishHeroTop">
-    <span>365 DAYS OF HAPPINESS</span>
-    <span>MADE FOR SOPHIE ♡</span>
-  </div>
+      {/* =====================================================
+          OPENING CARD
+          ===================================================== */}
 
-  <div className="wishHeroStage">
-    <p className="wishHeroMini">
-      A LITTLE WORLD MADE JUST FOR YOU
-    </p>
+      <section
+        className={
+          step === "card"
+            ? "wishOpeningCard"
+            : "wishOpeningCard wishOpeningCardBlurred"
+        }
+      >
 
-    <h1 className="wishHeroTitle">
-      WISH
-      <br />
-      NOTE
-    </h1>
+        <div className="wishOpeningPhoto">
 
-    <div className="wishHeroHeart" aria-hidden="true">
-      <span className="wishHeroHeartShape">
-        ♥
-      </span>
-      <span className="wishHeroHeartShine" />
-    </div>
+          <div className="wishOpeningPhotoPlaceholder">
+            <span>YOUR MEMORY</span>
+          </div>
 
-    <p className="wishHeroMessage">
-      Your wishes, our plans
-      <br />
-      and the memories still waiting
-      <br />
-      to happen.
-    </p>
-  </div>
+          <div className="wishOpeningPhotoShade" />
 
-  <div className="wishHeroBottom">
-    <div className="wishHeroCounter">
-      <strong>{remainingWishes}</strong>
+        </div>
 
-      <span>
-        wishes
-        <br />
-        waiting for you
-      </span>
-    </div>
 
-    <button
-      type="button"
-      className="wishHeroButton"
-      onClick={() => {
-        document
-          .querySelector(".giftCategories")
-          ?.scrollIntoView({
-            behavior: "smooth",
-          });
-      }}
-    >
-      MAKE A WISH
-      <span>↘</span>
-    </button>
+        <div className="wishOpeningContent">
 
-    <p>
-      made with ♡
-      <br />
-      by Alex
-    </p>
-  </div>
-</section>          <section className="giftCategories">
-            <div className="giftSectionHeading">
-              <div>
-                <p>MAKE A WISH</p>
+          <div className="wishOpeningTop">
+            <span>365 DAYS OF HAPPINESS</span>
+            <span>MADE FOR SOPHIE ♡</span>
+          </div>
+
+
+          <div className="wishOpeningMain">
+
+            <p>A LITTLE SOMETHING FOR YOU</p>
+
+            <h1>
+              MAKE
+              <br />
+              A WISH<span>.</span>
+            </h1>
+
+            <p className="wishOpeningMessage">
+              Your wishes, our plans,
+              <br />
+              and memories waiting to happen.
+            </p>
+
+          </div>
+
+
+          <div className="wishOpeningBottom">
+
+            <div>
+              <small>FROM</small>
+              <strong>Alex ♡</strong>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setStep("category")}
+            >
+              MAKE A WISH
+              <span>♡</span>
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* =====================================================
+          MODAL BACKDROP
+          ===================================================== */}
+
+      {step !== "card" && (
+        <div className="wishModalLayer">
+
+          {/* ===============================================
+              CATEGORY
+              =============================================== */}
+
+          {step === "category" && (
+            <div className="wishGlassModal wishCategoryModal">
+
+              <button
+                className="wishModalClose"
+                type="button"
+                onClick={() => setStep("card")}
+              >
+                ×
+              </button>
+
+              <div className="wishModalHeading">
+                <p>MAKE A WISH ♡</p>
 
                 <h2>
                   WHAT ARE YOU
                   <br />
                   WISHING FOR?
                 </h2>
+
+                <span>
+                  Choose the feeling that fits your wish.
+                </span>
               </div>
 
-              <span>
-                Choose a category and make it
-                yours.
-              </span>
-            </div>
 
-            <div className="giftCategoryGrid">
-              {categories.map(
-                (category, index) => (
+              <div className="wishModalCategories">
+
+                {categories.map((category, index) => (
                   <button
-                    className="giftCategoryCard"
                     type="button"
                     key={category.id}
-                    onClick={() =>
-                      openCategory(category)
-                    }
+                    onClick={() => {
+                      setSelectedCategory(category);
+                      setStep("wish");
+                    }}
                   >
-                    <div className="giftCategoryTop">
-                      <span>
-                        {String(
-                          index + 1
-                        ).padStart(2, "0")}
-                      </span>
 
-                      <i>
-                        {category.icon}
-                      </i>
+                    <div className="wishModalCategoryTop">
+                      <small>
+                        {String(index + 1).padStart(2, "0")}
+                      </small>
+
+                      <i>{category.icon}</i>
                     </div>
 
                     <div>
-                      <h3>
-                        {category.name}
-                      </h3>
-
-                      <p>
-                        {categoryCount(
-                          category.id
-                        )}{" "}
-                        {categoryCount(
-                          category.id
-                        ) === 1
-                          ? "wish"
-                          : "wishes"}
-                      </p>
+                      <strong>{category.name}</strong>
+                      <span>{category.description}</span>
                     </div>
 
-                    <span className="giftCategoryArrow">
-                      ↗
-                    </span>
+                    <b>↗</b>
+
                   </button>
-                )
-              )}
-            </div>
-          </section>
+                ))}
 
-          <section className="giftQuickActions">
-            <button
-              type="button"
-              onClick={() =>
-                setActiveView("wishes")
-              }
-            >
-              <span>OUR WISHES</span>
-
-              <strong>
-                See everything we're looking
-                forward to →
-              </strong>
-            </button>
-
-            <button
-              type="button"
-              onClick={() =>
-                setActiveView("memories")
-              }
-            >
-              <span>MEMORIES</span>
-
-              <strong>
-                The wishes that became real ♡
-              </strong>
-            </button>
-          </section>
-        </>
-      )}
-
-      {activeView === "create" &&
-        selectedCategory && (
-          <section className="makeWishView">
-            <button
-              className="giftBack"
-              type="button"
-              onClick={() =>
-                setActiveView("home")
-              }
-            >
-              ← Back to Wish Note
-            </button>
-
-            <div className="makeWishCard">
-              <div className="makeWishCategory">
-                <span>
-                  {selectedCategory.icon}
-                </span>
-
-                <p>
-                  {selectedCategory.name}
-                </p>
               </div>
 
-              <p className="giftEyebrow">
-                MAKE A LITTLE PROMISE
-              </p>
+            </div>
+          )}
 
-              <h1>
-                WRITE YOUR
-                <br />
-                <span>WISH.</span>
-              </h1>
 
-              <label className="giftField">
+          {/* ===============================================
+              WISH TEXT
+              =============================================== */}
+
+          {step === "wish" && selectedCategory && (
+            <div className="wishGlassModal wishWriteModal">
+
+              <button
+                className="wishModalBack"
+                type="button"
+                onClick={() => setStep("category")}
+              >
+                ←
+              </button>
+
+              <button
+                className="wishModalClose"
+                type="button"
+                onClick={() => setStep("card")}
+              >
+                ×
+              </button>
+
+
+              <div className="wishSelectedCategory">
+                <span>{selectedCategory.icon}</span>
+                {selectedCategory.name}
+              </div>
+
+
+              <div className="wishModalHeading">
+
+                <p>YOUR WISH</p>
+
+                <h2>
+                  TELL ME
+                  <br />
+                  EVERYTHING<span>.</span>
+                </h2>
+
                 <span>
-                  WHAT DO YOU WISH FOR?
+                  What would make you smile?
                 </span>
 
+              </div>
+
+
+              <label className="wishMainInput">
+
+                <span>WHAT DO YOU WISH FOR?</span>
+
                 <textarea
-                  rows={5}
+                  rows={4}
                   maxLength={180}
                   value={wishText}
                   onChange={(event) =>
-                    setWishText(
-                      event.target.value
-                    )
+                    setWishText(event.target.value)
                   }
                   placeholder="I wish we could..."
+                  autoFocus
                 />
 
-                <small>
-                  {wishText.length}/180
-                </small>
+                <small>{wishText.length}/180</small>
+
               </label>
 
-              <div className="giftField">
+
+              <button
+                type="button"
+                className="wishContinueButton"
+                disabled={!wishText.trim()}
+                onClick={() => setStep("date")}
+              >
+                CHOOSE WHEN
+                <span>→</span>
+              </button>
+
+            </div>
+          )}
+
+
+          {/* ===============================================
+              CALENDAR / TIME / PLACE
+              =============================================== */}
+
+          {step === "date" && (
+            <div className="wishGlassModal wishDateModal">
+
+              <button
+                className="wishModalBack"
+                type="button"
+                onClick={() => setStep("wish")}
+              >
+                ←
+              </button>
+
+              <button
+                className="wishModalClose"
+                type="button"
+                onClick={() => setStep("card")}
+              >
+                ×
+              </button>
+
+
+              <div className="wishModalHeading">
+
+                <p>WHEN SHOULD IT HAPPEN?</p>
+
+                <h2>
+                  PICK YOUR
+                  <br />
+                  PERFECT DAY<span>.</span>
+                </h2>
+
+              </div>
+
+
+              <div className="wishCalendarGlass">
+
+                <CuteCalendar
+                  value={wishDate}
+                  onChange={setWishDate}
+                  onClose={() => {}}
+                />
+
+              </div>
+
+
+              <div className="wishDateDetails">
+
+                <label>
+
+                  <span>TIME</span>
+
+                  <input
+                    type="time"
+                    value={wishTime}
+                    onChange={(event) =>
+                      setWishTime(event.target.value)
+                    }
+                  />
+
+                </label>
+
+
+                <label>
+
+                  <span>PLACE</span>
+
+                  <input
+                    type="text"
+                    maxLength={80}
+                    value={wishPlace}
+                    onChange={(event) =>
+                      setWishPlace(event.target.value)
+                    }
+                    placeholder="Somewhere special..."
+                  />
+
+                </label>
+
+              </div>
+
+
+              <button
+                type="button"
+                className="wishContinueButton"
+                disabled={!wishDate}
+                onClick={() => setStep("review")}
+              >
+                REVIEW MY WISH
+                <span>→</span>
+              </button>
+
+            </div>
+          )}
+
+
+          {/* ===============================================
+              REVIEW
+              =============================================== */}
+
+          {step === "review" && (
+            <div className="wishGlassModal wishReviewModal">
+
+              <button
+                className="wishModalClose"
+                type="button"
+                onClick={() => setStep("card")}
+              >
+                ×
+              </button>
+
+
+              <div className="wishReviewHeart">
+                ♡
+              </div>
+
+
+              <div className="wishModalHeading">
+
+                <p>ONE LAST LOOK</p>
+
+                <h2>
+                  YOUR
+                  <br />
+                  WISH<span>.</span>
+                </h2>
+
                 <span>
-                  WHEN WOULD YOU LOVE TO DO IT?
+                  Make sure everything feels right.
                 </span>
 
-                <button
-                  className={
-                    wishDate
-                      ? "cuteDateTrigger selected"
-                      : "cuteDateTrigger"
-                  }
-                  type="button"
-                  onClick={() =>
-                    setCalendarOpen(
-                      (current) => !current
-                    )
-                  }
-                >
-                  <div>
-                    <small>
-                      {wishDate
-                        ? "YOUR SPECIAL DAY"
-                        : "CHOOSE A DATE"}
-                    </small>
+              </div>
 
+
+              <div className="wishReviewCard">
+
+                <div className="wishReviewCategory">
+                  <span>{selectedCategory?.icon}</span>
+
+                  <p>
+                    {selectedCategory?.name}
+                  </p>
+                </div>
+
+
+                <h3>{wishText}</h3>
+
+
+                <div className="wishReviewDetails">
+
+                  <div>
+                    <small>DATE</small>
                     <strong>
-                      {wishDate
-                        ? formatDate(
-                            wishDate
-                          )
-                        : "Select a date ♡"}
+                      {formatDate(wishDate)}
                     </strong>
                   </div>
 
-                  <span>♡</span>
-                </button>
 
-                {calendarOpen && (
-                  <div className="cuteCalendarWrap">
-                    <CuteCalendar
-                      value={wishDate}
-                      onChange={
-                        setWishDate
-                      }
-                      onClose={() =>
-                        setCalendarOpen(
-                          false
-                        )
-                      }
-                    />
+                  <div>
+                    <small>TIME</small>
+                    <strong>
+                      {wishTime || "Any time"}
+                    </strong>
                   </div>
-                )}
+
+
+                  <div>
+                    <small>PLACE</small>
+                    <strong>
+                      {wishPlace || "Anywhere"}
+                    </strong>
+                  </div>
+
+                </div>
+
               </div>
 
-              <label className="giftField">
-                <span>
-                  PLACE — OPTIONAL
-                </span>
 
-                <input
-                  type="text"
-                  maxLength={80}
-                  value={wishPlace}
-                  onChange={(event) =>
-                    setWishPlace(
-                      event.target.value
-                    )
-                  }
-                  placeholder="Somewhere special..."
-                />
-              </label>
-
-              <label className="giftField">
-                <span>
-                  A LITTLE NOTE — OPTIONAL
-                </span>
-
-                <textarea
-                  rows={3}
-                  maxLength={140}
-                  value={wishNote}
-                  onChange={(event) =>
-                    setWishNote(
-                      event.target.value
-                    )
-                  }
-                  placeholder="Something only the two of you understand..."
-                />
-
-                <small>
-                  {wishNote.length}/140
-                </small>
-              </label>
-
-              <button
-                className="sealWishButton"
-                type="button"
-                disabled={
-                  !wishText.trim() ||
-                  !wishDate
-                }
-                onClick={sealWish}
-              >
-                <span>♥</span>
-                Seal Wish ♡
-              </button>
-
-              <p className="sealHint">
-                Your wish will be added to Our
-                Wishes.
-              </p>
-            </div>
-          </section>
-        )}
-
-      {activeView === "wishes" && (
-        <section className="ourWishesView">
-          <button
-            className="giftBack"
-            type="button"
-            onClick={() =>
-              setActiveView("home")
-            }
-          >
-            ← Back to Wish Note
-          </button>
-
-          <div className="ourWishesHeading">
-            <p className="giftEyebrow">
-              THINGS TO LOOK FORWARD TO
-            </p>
-
-            <h1>
-              OUR
-              <br />
-              <span>WISHES.</span>
-            </h1>
-
-            <p>
-              Little plans, big dreams and
-              everything in between.
-            </p>
-          </div>
-
-          <div className="wishTimeline">
-            {sortedWishes.length === 0 ? (
-              <div className="emptyWishes">
-                <span>♡</span>
-
-                <h2>No wishes yet.</h2>
-
-                <p>
-                  Your little world is waiting
-                  for its first one.
-                </p>
+              <div className="wishReviewActions">
 
                 <button
                   type="button"
-                  onClick={() =>
-                    setActiveView("home")
-                  }
+                  className="wishEditButton"
+                  onClick={() => setStep("wish")}
                 >
-                  Make a Wish →
+                  ← EDIT
                 </button>
+
+
+                <button
+                  type="button"
+                  className="wishSendButton"
+                  onClick={() => setStep("success")}
+                >
+                  SEND MY WISH
+                  <span>♡</span>
+                </button>
+
               </div>
-            ) : (
-              sortedWishes.map((wish) => {
-                const category =
-                  getCategory(
-                    wish.category
-                  );
 
-                return (
-                  <article
-                    className="wishTimelineCard"
-                    key={wish.id}
-                  >
-                    <div className="wishTimelineDate">
-                      <span>
-                        {formatDate(
-                          wish.date
-                        )}
-                      </span>
-
-                      <i>
-                        {category?.icon ||
-                          "♡"}
-                      </i>
-                    </div>
-
-                    <p className="wishTimelineCategory">
-                      {category?.name}
-                    </p>
-
-                    <h2>
-                      {wish.text}
-                    </h2>
-
-                    {wish.place && (
-                      <p className="wishPlace">
-                        ⌖ {wish.place}
-                      </p>
-                    )}
-
-                    {wish.note && (
-                      <p className="wishPersonalNote">
-                        “{wish.note}”
-                      </p>
-                    )}
-
-                    <div className="wishStatus">
-                      <span></span>
-                      WAITING TO HAPPEN
-                    </div>
-                  </article>
-                );
-              })
-            )}
-          </div>
-        </section>
-      )}
-
-      {activeView === "memories" && (
-        <section className="giftMemoriesView">
-          <button
-            className="giftBack"
-            type="button"
-            onClick={() =>
-              setActiveView("home")
-            }
-          >
-            ← Back to Wish Note
-          </button>
-
-          <div className="memoriesEmpty">
-            <span>♡</span>
-
-            <p className="giftEyebrow">
-              WISHES THAT BECAME REAL
-            </p>
-
-            <h1>
-              OUR
-              <br />
-              <span>MEMORIES.</span>
-            </h1>
-
-            <p>
-              When a wish comes true, its story
-              will live here.
-            </p>
-
-            <div className="memoryEmptyPhoto">
-              YOUR FUTURE MEMORY
             </div>
+          )}
 
-            <small>
-              photos · little notes · dates ·
-              moments
-            </small>
-          </div>
-        </section>
+
+          {/* ===============================================
+              SUCCESS
+              =============================================== */}
+
+          {step === "success" && (
+            <div className="wishGlassModal wishSuccessModal">
+
+              <div className="wishSuccessSymbol">
+                ♥
+              </div>
+
+              <p>WISH SENT</p>
+
+              <h2>
+                YOUR WISH
+                <br />
+                IS ON ITS WAY<span>.</span>
+              </h2>
+
+              <div className="wishSuccessLine" />
+
+              <p className="wishSuccessText">
+                Someone special now knows
+                <br />
+                exactly what you're wishing for.
+              </p>
+
+              <small>
+                Maybe it will come true
+                sooner than you think ♡
+              </small>
+
+
+              <button
+                type="button"
+                onClick={resetWish}
+              >
+                DONE
+              </button>
+
+            </div>
+          )}
+
+        </div>
       )}
 
-      <footer className="giftSpaceFooter">
-        <span>WISH + LOVE + LIFE</span>
-        <p>made with WIVELI ♡</p>
-      </footer>
     </main>
   );
 }
