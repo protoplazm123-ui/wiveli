@@ -13601,3 +13601,77 @@ footer p {
 
   transform: translateX(-50%);
 }
+/* ===== HERO TEXT — FINAL POSITION ===== */
+
+.wiveliHeroContent {
+  position: absolute;
+  top: 20%;
+  left: 0;
+
+  width: 100%;
+  max-width: none;
+
+  text-align: center;
+  z-index: 3;
+}
+
+/* Большой заголовок — 2 строки */
+.wiveliHeroTitle {
+  width: 100%;
+  margin: 0;
+
+  font-size: clamp(70px, 7.6vw, 138px);
+  line-height: 0.82;
+  letter-spacing: -0.065em;
+
+  text-align: center;
+  white-space: normal;
+}
+
+/* Возвращаем переносы */
+.wiveliHeroTitle br {
+  display: block;
+}
+
+.wiveliHeroTitle span {
+  display: inline;
+  margin-left: 0.12em;
+}
+
+/* Маленькая верхняя надпись больше не нужна */
+.wiveliHeroEyebrow {
+  display: none;
+}
+
+/* Маленький текст сразу под большим заголовком */
+.wiveliHeroText {
+  position: absolute;
+
+  top: calc(100% + 22px);
+  left: 50%;
+
+  width: 540px;
+  max-width: 80vw;
+
+  margin: 0;
+
+  transform: translateX(-50%);
+
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: center;
+
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* КНОПКИ НЕ ДВИГАЕМ */
+.wiveliHeroActions {
+  position: fixed;
+
+  top: 76%;
+  left: 50%;
+
+  margin: 0;
+
+  transform: translateX(-50%);
+}
