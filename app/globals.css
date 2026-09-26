@@ -13974,3 +13974,155 @@ footer p {
     clip-path: none !important;
   }
 }
+/* =====================================================
+   WIVELI — HERO POLISH
+   ===================================================== */
+
+
+/* ===== TITLE ===== */
+
+.wiveliHeroTitle {
+  font-size: clamp(74px, 8.3vw, 150px);
+  line-height: 0.80;
+  letter-spacing: -0.065em;
+}
+
+.wiveliGlitchLine {
+  display: inline-block;
+}
+
+/* SOMETHING PERSONAL — одна строка + белый */
+.wiveliSomethingPersonal {
+  display: inline-block !important;
+  white-space: nowrap;
+  color: #fff !important;
+}
+
+
+/* ===== RIGHT HAND — LOWER ===== */
+
+.wiveliHandRight {
+  top: 56% !important;
+}
+
+
+/* ===== GIFT — BIGGER + LOWER ===== */
+
+.wiveliGiftWrap {
+  top: 58% !important;
+  width: clamp(230px, 17vw, 350px) !important;
+}
+
+
+/* Сам подарок продолжает постоянно парить */
+
+.wiveliGift {
+  animation: wiveliGiftFloat 3.2s ease-in-out infinite !important;
+}
+
+@keyframes wiveliGiftFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+
+  50% {
+    transform: translateY(-16px) rotate(1deg);
+  }
+}
+
+
+/* Aura тоже слегка "дышит" */
+
+.wiveliGiftAura {
+  animation: wiveliAuraFloat 3.2s ease-in-out infinite;
+}
+
+@keyframes wiveliAuraFloat {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.92);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: scale(1.08);
+  }
+}
+
+
+/* ===== SMALL DESCRIPTION — MOVE UP ===== */
+
+.wiveliHeroText {
+  top: 64vh !important;
+
+  width: 620px;
+  max-width: 80vw;
+
+  font-size: 14px;
+  line-height: 1.5;
+
+  z-index: 20;
+}
+
+
+/* ===== ACTIONS ===== */
+
+.wiveliHeroActions {
+  top: 72vh !important;
+  z-index: 20;
+}
+
+
+/* Create a Gift — мягкая подсветка */
+
+.wiveliHeroButton {
+  position: relative;
+
+  box-shadow:
+    0 0 22px rgba(255, 255, 255, 0.18),
+    0 0 55px rgba(190, 135, 255, 0.22);
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.wiveliHeroButton::before {
+  content: "";
+
+  position: absolute;
+  inset: -7px;
+
+  border-radius: inherit;
+
+  background: rgba(190, 135, 255, 0.18);
+  filter: blur(15px);
+
+  opacity: 0.55;
+  z-index: -1;
+
+  animation: wiveliButtonGlow 2.5s ease-in-out infinite;
+}
+
+@keyframes wiveliButtonGlow {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.97);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: scale(1.04);
+  }
+}
+
+.wiveliHeroButton:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 0 30px rgba(255, 255, 255, 0.28),
+    0 0 75px rgba(190, 135, 255, 0.38);
+}
