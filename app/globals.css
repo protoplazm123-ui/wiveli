@@ -16882,3 +16882,364 @@ main {
     0 25px 70px rgba(0,0,0,.25),
     0 0 35px rgba(200,156,255,.08) !important;
 }
+/* =========================================================
+   WISH NOTE — FLIPPING CARD
+   ========================================================= */
+
+.productHero {
+  grid-template-columns: .92fr 1.08fr !important;
+}
+
+.wishPreview {
+  display: flex !important;
+  position: relative !important;
+
+  min-height: 620px !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+
+  background: transparent !important;
+}
+
+.wishFlipExperience {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 28px;
+}
+
+/* soft purple atmosphere */
+
+.wishFlipExperience::before {
+  content: "";
+
+  position: absolute;
+
+  z-index: -1;
+
+  left: 50%;
+  top: 45%;
+
+  width: 540px;
+  height: 540px;
+
+  transform: translate(-50%, -50%);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(185, 111, 255, .24),
+      rgba(128, 60, 190, .08) 45%,
+      transparent 70%
+    );
+
+  filter: blur(18px);
+}
+
+
+/* 3D object */
+
+.wishFlipCard {
+  position: relative;
+
+  width: min(450px, 35vw);
+  aspect-ratio: .78;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 22px;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  transform-style: preserve-3d;
+  perspective: 1500px;
+
+  box-shadow:
+    0 45px 100px rgba(0,0,0,.34),
+    0 0 70px rgba(191,124,255,.10);
+}
+
+
+/* both sides */
+
+.wishFlipFace {
+  position: absolute;
+
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 46px;
+
+  box-sizing: border-box;
+
+  overflow: hidden;
+
+  border:
+    1px solid rgba(255,255,255,.7);
+
+  border-radius: 22px;
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+
+  text-align: left;
+
+  background:
+    linear-gradient(
+      145deg,
+      #ffffff 0%,
+      #f5eefb 100%
+    );
+
+  color: #160f1b;
+}
+
+
+/* little editorial border */
+
+.wishFlipFace::after {
+  content: "";
+
+  position: absolute;
+
+  inset: 14px;
+
+  border:
+    1px solid rgba(124,72,158,.12);
+
+  border-radius: 13px;
+
+  pointer-events: none;
+}
+
+
+/* FRONT */
+
+.wishFlipFront > p,
+.wishFlipBack > p {
+  position: relative;
+  z-index: 2;
+
+  margin: 0;
+
+  color: #9657c6;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: .27em;
+}
+
+.wishFlipFront h2 {
+  position: relative;
+  z-index: 2;
+
+  margin: auto 0 0;
+
+  font-family: "Anton", sans-serif;
+
+  font-size: clamp(55px, 5vw, 82px);
+  font-weight: 400;
+
+  line-height: .86;
+  letter-spacing: -.025em;
+
+  color: #171019;
+}
+
+.wishFlipFront > span {
+  position: relative;
+  z-index: 2;
+
+  margin-top: 22px;
+
+  color: rgba(25,15,30,.46);
+
+  font-size: 12px;
+}
+
+
+/* huge decorative heart */
+
+.wishFlipFront::before {
+  content: "♡";
+
+  position: absolute;
+
+  right: -20px;
+  top: 55px;
+
+  color: rgba(169,98,220,.08);
+
+  font-size: 230px;
+
+  line-height: 1;
+}
+
+
+/* BACK */
+
+.wishFlipBack {
+  transform: rotateY(180deg);
+
+  background:
+    linear-gradient(
+      145deg,
+      #d7b5f6 0%,
+      #aa72d8 100%
+    );
+
+  color: #160e1b;
+}
+
+.wishFlipBack::after {
+  border-color:
+    rgba(70,30,100,.14);
+}
+
+.wishFlipBack > p {
+  color:
+    rgba(53,24,73,.58);
+}
+
+.wishFlipBack h3 {
+  position: relative;
+  z-index: 2;
+
+  margin: auto 0 22px;
+
+  font-family: "Anton", sans-serif;
+
+  font-size: clamp(58px,5vw,84px);
+  font-weight: 400;
+
+  line-height: .9;
+  letter-spacing: -.03em;
+
+  color: #160e1b;
+}
+
+.wishFlipMessage {
+  position: relative;
+  z-index: 2;
+
+  max-width: 310px;
+
+  color: rgba(35,17,43,.62);
+
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.wishFlipBack > span {
+  position: relative;
+  z-index: 2;
+
+  margin-top: 28px;
+
+  font-family: "Cinzel", serif;
+
+  color: rgba(37,17,47,.8);
+
+  font-size: 15px;
+}
+
+
+/* PAGE NUMBER */
+
+.wishFlipFace > i {
+  position: absolute;
+
+  right: 34px;
+  bottom: 31px;
+
+  z-index: 3;
+
+  color: rgba(25,15,30,.3);
+
+  font-size: 9px;
+  font-style: normal;
+
+  letter-spacing: .15em;
+}
+
+.wishFlipBack > i {
+  color:
+    rgba(44,19,55,.35);
+}
+
+
+/* FLIP CONTROL */
+
+.wishFlipHint {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 10px 17px;
+
+  border:
+    1px solid rgba(255,255,255,.12);
+
+  border-radius: 100px;
+
+  background:
+    rgba(255,255,255,.025);
+
+  color:
+    rgba(255,255,255,.46);
+
+  font-size: 10px;
+
+  cursor: pointer;
+
+  transition: .25s ease;
+}
+
+.wishFlipHint span {
+  color: #c89cff;
+
+  font-size: 14px;
+}
+
+.wishFlipHint:hover {
+  color: white;
+
+  border-color:
+    rgba(200,156,255,.32);
+
+  background:
+    rgba(200,156,255,.06);
+}
+
+
+/* MOBILE */
+
+@media (max-width: 900px) {
+
+  .productHero {
+    grid-template-columns: 1fr !important;
+  }
+
+  .wishFlipCard {
+    width:
+      min(82vw, 420px);
+  }
+
+  .wishFlipFace {
+    padding: 35px;
+  }
+
+}
