@@ -13675,3 +13675,87 @@ footer p {
 
   transform: translateX(-50%);
 }
+/* ===== HERO COMPOSITION FIX ===== */
+
+/* Фиолетовый фон сразу от шапки */
+.wiveliHero {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  min-height: calc(100vh - 80px);
+}
+
+/* Большой текст — выше и шире */
+.wiveliHeroContent {
+  position: absolute;
+  top: 12%;
+  left: 0;
+
+  width: 100%;
+  max-width: none;
+
+  text-align: center;
+  z-index: 3;
+}
+
+.wiveliHeroTitle {
+  width: 100%;
+  margin: 0;
+
+  font-size: clamp(82px, 9.2vw, 168px);
+  line-height: 0.78;
+  letter-spacing: -0.065em;
+
+  text-align: center;
+  white-space: normal;
+}
+
+.wiveliHeroTitle br {
+  display: block;
+}
+
+.wiveliHeroTitle span {
+  display: inline;
+  margin: 0;
+}
+
+/* Маленький текст — ПОД руками */
+.wiveliHeroText {
+  position: absolute;
+
+  top: 67vh;
+  left: 50%;
+
+  width: 620px;
+  max-width: 80vw;
+
+  margin: 0;
+
+  transform: translateX(-50%);
+
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+
+  color: rgba(255, 255, 255, 0.58);
+
+  z-index: 10;
+}
+
+/* Create a Gift + See how it works — ниже текста */
+.wiveliHeroActions {
+  position: absolute;
+
+  top: 73vh;
+  left: 50%;
+
+  margin: 0;
+
+  transform: translateX(-50%);
+
+  z-index: 10;
+}
+
+/* Убираем старую верхнюю маленькую надпись */
+.wiveliHeroEyebrow {
+  display: none;
+}
