@@ -11,20 +11,22 @@ export default function WiveliHero() {
           A GIFT THEY&apos;LL NEVER FORGET
         </p>
 
-        <h1 className="wiveliHeroTitle">
-          GIVE THEM
+        <h1 className="wiveliHeroTitle wiveliGlitchTitle">
+          <span className="wiveliGlitchLine">GIVE THEM</span>
           <br />
-          SOMETHING
+          <span className="wiveliGlitchLine">SOMETHING</span>
           <br />
-          <span>PERSONAL.</span>
+          <span className="wiveliGlitchLine wiveliPersonal">
+            PERSONAL.
+          </span>
         </h1>
 
-        <p className="wiveliHeroText">
+        <p className="wiveliHeroText wiveliIntroDetails">
           Turn your memories, words and little moments into an
           interactive gift made just for them.
         </p>
 
-        <div className="wiveliHeroActions">
+        <div className="wiveliHeroActions wiveliIntroDetails">
           <a className="wiveliHeroButton" href="#gifts">
             <span>Create a Gift</span>
             <span className="wiveliHeroArrow">→</span>
@@ -38,12 +40,12 @@ export default function WiveliHero() {
 
       <div className="wiveliGiftScene" aria-hidden="true">
         <img
-          className="wiveliHand wiveliHandLeft"
+          className="wiveliHand wiveliHandLeft wiveliHandEnterLeft"
           src="/assets/Изображение Codex 25 сент. 2026 г., 16_56_33.png"
           alt=""
         />
 
-        <div className="wiveliGiftWrap">
+        <div className="wiveliGiftWrap wiveliGiftEnter">
           <div className="wiveliGiftAura" />
 
           <img
@@ -54,13 +56,13 @@ export default function WiveliHero() {
         </div>
 
         <img
-          className="wiveliHand wiveliHandRight"
+          className="wiveliHand wiveliHandRight wiveliHandEnterRight"
           src="/assets/Изображение Codex 25 сент. 2026 г., 16_57_18.png"
           alt=""
         />
       </div>
 
-      <div className="wiveliHeroScroll" aria-hidden="true">
+      <div className="wiveliHeroScroll wiveliIntroDetails" aria-hidden="true">
         <span>EXPLORE</span>
         <i />
       </div>
