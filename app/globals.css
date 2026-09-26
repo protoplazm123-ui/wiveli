@@ -22439,3 +22439,19 @@ main {
     margin-top: 18px;
   }
 }
+/* Bigger category symbols inside Our Calendar */
+
+.wishLifeDayIcons span {
+  font-size: 26px !important;
+  font-weight: 500;
+  line-height: 1;
+  text-shadow:
+    0 0 10px rgba(205,157,255,.75),
+    0 0 24px rgba(205,157,255,.35);
+}
+
+@media (max-width: 700px) {
+  .wishLifeDayIcons span {
+    font-size: 20px !important;
+  }
+}
