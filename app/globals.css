@@ -21377,3 +21377,500 @@ main {
   }
 
 }
+/* =========================================================
+   WISH NOTE — FINAL PREVIEW
+   ========================================================= */
+
+.wnPreviewPage {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 70% 30%, rgba(130, 69, 200, .16), transparent 38%),
+    radial-gradient(circle at 20% 70%, rgba(91, 47, 145, .12), transparent 40%),
+    #0d0a12;
+  color: #fff;
+  padding-bottom: 60px;
+}
+
+
+/* INTRO */
+
+.wnPreviewIntro {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 90px 48px 55px;
+}
+
+.wnPreviewIntro > p {
+  margin: 0 0 20px;
+  color: #cda7ff;
+  font-size: 11px;
+  letter-spacing: .24em;
+}
+
+.wnPreviewIntro h1 {
+  margin: 0;
+  font-family: "Anton", sans-serif;
+  font-size: clamp(65px, 8vw, 125px);
+  line-height: .86;
+  font-weight: 400;
+  letter-spacing: -.04em;
+}
+
+.wnPreviewIntro > span {
+  display: block;
+  margin-top: 30px;
+  color: rgba(255,255,255,.52);
+  font-size: 15px;
+}
+
+
+/* WORKSPACE */
+
+.wnPreviewWorkspace {
+  width: min(1400px, calc(100% - 96px));
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 22px;
+}
+
+
+/* DETAILS */
+
+.wnPreviewDetails {
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 24px;
+  background: rgba(255,255,255,.025);
+  overflow: hidden;
+}
+
+.wnPreviewDetailsHeader {
+  padding: 25px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.wnPreviewDetailsHeader p {
+  margin: 0 0 7px;
+  font-size: 11px;
+  letter-spacing: .18em;
+}
+
+.wnPreviewDetailsHeader span {
+  color: rgba(255,255,255,.38);
+  font-size: 12px;
+}
+
+.wnPreviewDetail {
+  position: relative;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+
+.wnPreviewDetail small,
+.wnPreviewMessage small {
+  display: block;
+  margin-bottom: 7px;
+  color: rgba(255,255,255,.35);
+  font-size: 9px;
+  letter-spacing: .2em;
+}
+
+.wnPreviewDetail strong {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.wnPreviewDetail a {
+  position: absolute;
+  right: 20px;
+  top: 28px;
+
+  color: #cba4ff;
+  font-size: 8px;
+  letter-spacing: .15em;
+  text-decoration: none;
+}
+
+.wnPreviewMessage {
+  padding: 24px;
+}
+
+.wnPreviewMessage p {
+  margin: 0;
+  color: rgba(255,255,255,.68);
+  font-family: "Cinzel", serif;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+
+/* PREVIEW STAGE */
+
+.wnPreviewStage {
+  min-height: 700px;
+  padding: 25px;
+
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 24px;
+
+  background:
+    radial-gradient(circle at 50% 45%, rgba(131,72,193,.16), transparent 42%),
+    rgba(255,255,255,.02);
+}
+
+.wnPreviewStageTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wnPreviewStageTop p {
+  margin: 0 0 5px;
+  font-size: 10px;
+  letter-spacing: .2em;
+}
+
+.wnPreviewStageTop span {
+  color: rgba(255,255,255,.38);
+  font-size: 11px;
+}
+
+
+/* SWITCH */
+
+.wnPreviewDeviceSwitch {
+  display: flex;
+  padding: 4px;
+
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 999px;
+  background: rgba(255,255,255,.03);
+}
+
+.wnPreviewDeviceSwitch button {
+  border: 0;
+  padding: 9px 15px;
+  border-radius: 999px;
+
+  background: transparent;
+  color: rgba(255,255,255,.38);
+
+  font-size: 8px;
+  letter-spacing: .15em;
+
+  cursor: pointer;
+}
+
+.wnPreviewDeviceSwitch button.active {
+  background: rgba(205,167,255,.14);
+  color: #e3caff;
+}
+
+
+/* DEVICE */
+
+.wnPreviewDevice {
+  margin: 35px auto 0;
+  transition: width .45s cubic-bezier(.16,1,.3,1);
+}
+
+.wnPreviewDevice.mobile {
+  width: min(380px, 100%);
+}
+
+.wnPreviewDevice.desktop {
+  width: min(850px, 100%);
+}
+
+.wnPreviewScreen {
+  position: relative;
+  min-height: 590px;
+  overflow: hidden;
+
+  border: 1px solid rgba(222,195,255,.18);
+  border-radius: 28px;
+
+  background:
+    radial-gradient(circle at 50% 35%, rgba(120,64,175,.4), transparent 40%),
+    linear-gradient(160deg,#1c1427,#0d0912);
+
+  box-shadow:
+    0 40px 100px rgba(0,0,0,.42),
+    inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+
+/* STARS */
+
+.wnPreviewStars {
+  position: absolute;
+  inset: 0;
+  opacity: .6;
+
+  background-image:
+    radial-gradient(circle at 12% 18%, white 0 1px, transparent 1.5px),
+    radial-gradient(circle at 78% 15%, white 0 1px, transparent 1.5px),
+    radial-gradient(circle at 62% 34%, #d9b8ff 0 1px, transparent 1.5px),
+    radial-gradient(circle at 25% 58%, white 0 1px, transparent 1.5px),
+    radial-gradient(circle at 82% 69%, white 0 1px, transparent 1.5px),
+    radial-gradient(circle at 45% 82%, #d9b8ff 0 1px, transparent 1.5px);
+
+  animation: wnPreviewTwinkle 3s ease-in-out infinite alternate;
+}
+
+@keyframes wnPreviewTwinkle {
+  from { opacity: .25; }
+  to { opacity: .8; }
+}
+
+
+/* CONTENT */
+
+.wnPreviewScreenTop {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  justify-content: space-between;
+
+  padding: 24px;
+
+  font-size: 7px;
+  letter-spacing: .16em;
+  color: rgba(255,255,255,.55);
+}
+
+.wnPreviewScreenCenter {
+  position: relative;
+  z-index: 2;
+
+  padding: 90px 35px 40px;
+}
+
+.wnPreviewScreenCenter small {
+  color: #d8b8ff;
+  font-size: 8px;
+  letter-spacing: .2em;
+}
+
+.wnPreviewScreenCenter h2 {
+  margin: 22px 0 28px;
+
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(62px, 8vw, 110px);
+  font-weight: 300;
+  line-height: .82;
+  letter-spacing: -.07em;
+}
+
+.wnPreviewScreenCenter h2 span {
+  color: #c897ff;
+}
+
+.wnPreviewScreenCenter p {
+  color: rgba(255,255,255,.6);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+
+/* BOTTOM */
+
+.wnPreviewScreenBottom {
+  position: absolute;
+  z-index: 2;
+
+  left: 30px;
+  right: 30px;
+  bottom: 28px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.wnPreviewScreenBottom div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wnPreviewScreenBottom small {
+  color: rgba(255,255,255,.3);
+  font-size: 7px;
+  letter-spacing: .2em;
+}
+
+.wnPreviewScreenBottom strong {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.wnPreviewScreenBottom a {
+  padding: 15px 22px;
+
+  border: 1px solid rgba(218,185,255,.35);
+  border-radius: 999px;
+
+  background: rgba(207,169,255,.08);
+  color: white;
+
+  font-size: 8px;
+  letter-spacing: .16em;
+  text-decoration: none;
+
+  box-shadow: 0 0 30px rgba(188,120,255,.08);
+}
+
+.wnPreviewScreenBottom a span {
+  margin-left: 14px;
+  color: #d5afff;
+}
+
+.wnPreviewHint {
+  margin: 18px 0 0;
+  text-align: center;
+
+  color: rgba(255,255,255,.3);
+  font-size: 9px;
+  letter-spacing: .08em;
+}
+
+
+/* FOOTER */
+
+.wnPreviewFooter {
+  width: min(1400px, calc(100% - 96px));
+  margin: 22px auto 0;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 25px 30px;
+
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 20px;
+}
+
+.wnPreviewBack {
+  color: rgba(255,255,255,.5);
+  text-decoration: none;
+  font-size: 9px;
+  letter-spacing: .15em;
+}
+
+.wnPreviewFooter > div {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.wnPreviewFooter small {
+  color: rgba(255,255,255,.3);
+  font-size: 8px;
+  letter-spacing: .15em;
+}
+
+.wnPreviewContinue {
+  padding: 15px 24px;
+
+  border-radius: 999px;
+  background: #fff;
+
+  color: #100c15;
+  text-decoration: none;
+
+  font-size: 9px;
+  letter-spacing: .15em;
+}
+
+.wnPreviewContinue span {
+  margin-left: 20px;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+  .wnPreviewIntro {
+    padding: 65px 22px 35px;
+  }
+
+  .wnPreviewIntro h1 {
+    font-size: 62px;
+  }
+
+  .wnPreviewWorkspace {
+    width: calc(100% - 28px);
+    grid-template-columns: 1fr;
+  }
+
+  .wnPreviewDetails {
+    order: 2;
+  }
+
+  .wnPreviewStage {
+    order: 1;
+    min-height: auto;
+    padding: 16px;
+  }
+
+  .wnPreviewStageTop {
+    gap: 15px;
+  }
+
+  .wnPreviewStageTop > div:first-child span {
+    display: none;
+  }
+
+  .wnPreviewDevice {
+    margin-top: 25px;
+  }
+
+  .wnPreviewDevice.desktop {
+    width: 100%;
+  }
+
+  .wnPreviewScreen {
+    min-height: 560px;
+  }
+
+  .wnPreviewScreenCenter {
+    padding: 100px 24px 30px;
+  }
+
+  .wnPreviewScreenCenter h2 {
+    font-size: 72px;
+  }
+
+  .wnPreviewScreenBottom {
+    left: 22px;
+    right: 22px;
+    bottom: 22px;
+  }
+
+  .wnPreviewFooter {
+    width: calc(100% - 28px);
+    padding: 20px;
+
+    flex-direction: column;
+    align-items: stretch;
+    gap: 25px;
+  }
+
+  .wnPreviewFooter > div {
+    justify-content: space-between;
+  }
+
+  .wnPreviewFooter small {
+    display: none;
+  }
+
+  .wnPreviewContinue {
+    text-align: center;
+  }
+
+}
