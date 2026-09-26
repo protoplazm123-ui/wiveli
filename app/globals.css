@@ -13361,3 +13361,32 @@ footer p {
     animation: none;
   }
 }
+/* HERO HANDS — centered composition */
+
+.wiveliGiftScene {
+  width: 100vw;
+  right: 0;
+  left: 0;
+  top: 50%;
+  transform: translateY(-43%);
+}
+
+.wiveliHandLeft {
+  width: 58vw;
+  max-width: none;
+  left: -8vw;
+  top: 53%;
+}
+
+.wiveliHandRight {
+  width: 55vw;
+  max-width: none;
+  right: -9vw;
+  top: 43%;
+}
+
+.wiveliGiftWrap {
+  left: 69%;
+  top: 46%;
+  width: clamp(180px, 15vw, 300px);
+}
