@@ -18349,3 +18349,1192 @@ main {
     min-height: 640px;
   }
 }
+/* =========================================================
+   WISH NOTE — DESIGN PAGE / NEW WIVELI DARK PURPLE
+   ========================================================= */
+
+.designPage {
+  --wd-bg: #0d0a13;
+  --wd-bg-soft: #14101d;
+  --wd-purple: #c79aff;
+  --wd-purple-strong: #a95cff;
+  --wd-text: #ffffff;
+  --wd-muted: rgba(255, 255, 255, 0.52);
+  --wd-line: rgba(255, 255, 255, 0.12);
+  --wd-card: rgba(255, 255, 255, 0.045);
+
+  position: relative;
+  min-height: 100vh;
+  overflow: visible;
+
+  color: var(--wd-text);
+
+  background:
+    radial-gradient(
+      circle at 82% 16%,
+      rgba(157, 78, 255, 0.18),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 10% 70%,
+      rgba(111, 50, 180, 0.10),
+      transparent 34%
+    ),
+    linear-gradient(
+      180deg,
+      #100d18 0%,
+      #0d0a13 55%,
+      #0a0810 100%
+    ) !important;
+}
+
+
+/* ================= HEADER ================= */
+
+.designPage .personalizeHeader {
+  position: relative !important;
+
+  width: calc(100% - 10vw);
+  height: 92px;
+
+  margin: 0 5vw;
+  padding: 0 !important;
+
+  display: grid !important;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+
+  background: transparent !important;
+
+  border-bottom:
+    1px solid rgba(255, 255, 255, 0.10);
+
+  z-index: 20;
+}
+
+.designPage .personalizeHeader .logo {
+  justify-self: start;
+
+  color: #fff !important;
+  text-decoration: none;
+
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: -0.06em;
+}
+
+.designPage .personalizeHeader .logo span {
+  color: var(--wd-purple);
+}
+
+.designPage .personalizeHeaderCenter {
+  color: rgba(255, 255, 255, 0.42) !important;
+
+  font-size: 10px !important;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+}
+
+.designPage .personalizeExit {
+  justify-self: end;
+
+  color: rgba(255, 255, 255, 0.7) !important;
+  text-decoration: none;
+
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.designPage .personalizeExit:hover {
+  color: #fff !important;
+  transform: translateX(-3px);
+}
+
+
+/* =========================================================
+   LAYOUT
+   ========================================================= */
+
+.designPage .designLayout {
+  display: grid !important;
+
+  grid-template-columns:
+    minmax(0, 1.08fr)
+    minmax(420px, 0.92fr) !important;
+
+  align-items: start;
+
+  max-width: 1500px;
+  margin: 0 auto;
+
+  padding: 100px 5vw 160px !important;
+
+  gap: clamp(70px, 8vw, 150px) !important;
+
+  background: transparent !important;
+}
+
+
+/* ================= LEFT EDITOR ================= */
+
+.designPage .designEditor {
+  width: 100% !important;
+  min-width: 0;
+
+  padding: 0 !important;
+
+  background: transparent !important;
+  border: 0 !important;
+}
+
+
+/* ================= INTRO ================= */
+
+.designPage .editorIntro {
+  max-width: 720px;
+
+  padding: 0 0 105px !important;
+  margin: 0 !important;
+
+  border: 0 !important;
+}
+
+.designPage .editorIntro .eyebrow {
+  margin: 0 0 24px !important;
+
+  color: var(--wd-purple) !important;
+
+  font-size: 11px !important;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+}
+
+.designPage .editorIntro h1 {
+  margin: 0 !important;
+
+  font-family: "Anton", sans-serif !important;
+
+  font-size: clamp(76px, 7vw, 126px) !important;
+  font-weight: 400 !important;
+
+  line-height: 0.84 !important;
+  letter-spacing: -0.035em !important;
+
+  color: #fff !important;
+}
+
+.designPage .editorIntro h1 span {
+  color: var(--wd-purple) !important;
+}
+
+.designPage .editorIntro > p:last-child {
+  max-width: 530px;
+
+  margin: 38px 0 0 !important;
+
+  color: var(--wd-muted) !important;
+
+  font-size: 15px !important;
+  line-height: 1.65 !important;
+}
+
+
+/* =========================================================
+   EDITOR SECTIONS
+   ========================================================= */
+
+.designPage .editorSection {
+  margin: 0 !important;
+
+  padding:
+    68px 0
+    78px !important;
+
+  background: transparent !important;
+
+  border: 0 !important;
+  border-top:
+    1px solid var(--wd-line) !important;
+}
+
+.designPage .editorSectionTitle {
+  display: grid !important;
+
+  grid-template-columns:
+    50px
+    minmax(0, 1fr);
+
+  align-items: start;
+
+  gap: 18px !important;
+
+  margin: 0 0 42px !important;
+}
+
+.designPage .editorSectionTitle > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  border:
+    1px solid rgba(199, 154, 255, 0.55);
+
+  border-radius: 50%;
+
+  color: var(--wd-purple) !important;
+
+  font-size: 9px !important;
+  font-weight: 700;
+}
+
+.designPage .editorSectionTitle h2 {
+  margin: 0 0 9px !important;
+
+  color: #fff !important;
+
+  font-size: clamp(26px, 2.1vw, 36px) !important;
+  font-weight: 600 !important;
+
+  line-height: 1 !important;
+  letter-spacing: -0.04em !important;
+}
+
+.designPage .editorSectionTitle p {
+  max-width: 500px;
+
+  margin: 0 !important;
+
+  color: var(--wd-muted) !important;
+
+  font-size: 13px !important;
+  line-height: 1.55 !important;
+}
+
+
+/* =========================================================
+   STYLE CARDS
+   ========================================================= */
+
+.designPage .designStyleGrid {
+  display: grid !important;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr)) !important;
+
+  gap: 14px !important;
+
+  width: 100% !important;
+}
+
+.designPage .designStyleCard {
+  position: relative !important;
+
+  display: grid !important;
+
+  grid-template-columns:
+    64px
+    minmax(0, 1fr)
+    28px !important;
+
+  align-items: center !important;
+
+  width: 100% !important;
+  min-width: 0 !important;
+
+  min-height: 112px !important;
+
+  padding: 16px !important;
+  margin: 0 !important;
+
+  text-align: left !important;
+
+  color: #fff !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.06),
+      rgba(255, 255, 255, 0.018)
+    ) !important;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.12) !important;
+
+  border-radius: 18px !important;
+
+  overflow: hidden;
+
+  cursor: pointer;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+  box-shadow: none !important;
+
+  transform: none !important;
+
+  transition:
+    border-color 0.3s ease,
+    background 0.3s ease,
+    transform 0.3s ease,
+    box-shadow 0.3s ease !important;
+}
+
+.designPage .designStyleCard:hover {
+  transform: translateY(-3px) !important;
+
+  border-color:
+    rgba(199, 154, 255, 0.4) !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(199, 154, 255, 0.10),
+      rgba(255, 255, 255, 0.025)
+    ) !important;
+}
+
+.designPage .designStyleCard.active {
+  border-color:
+    rgba(199, 154, 255, 0.78) !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(170, 90, 255, 0.18),
+      rgba(255, 255, 255, 0.04)
+    ) !important;
+
+  box-shadow:
+    0 0 0 1px rgba(199, 154, 255, 0.08),
+    0 18px 50px rgba(88, 30, 145, 0.16) !important;
+}
+
+
+/* style icon */
+
+.designPage .designStyleVisual {
+  position: relative !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  width: 54px !important;
+  height: 54px !important;
+
+  margin: 0 !important;
+
+  border-radius: 15px !important;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.11) !important;
+
+  background:
+    rgba(255, 255, 255, 0.055) !important;
+}
+
+.designPage .designStyleVisual span {
+  position: static !important;
+
+  display: block !important;
+
+  color: #fff !important;
+
+  font-size: 23px !important;
+
+  transform: none !important;
+}
+
+.designPage .designStyleCard.active
+.designStyleVisual {
+  background:
+    linear-gradient(
+      145deg,
+      #d9b5ff,
+      #a861f2
+    ) !important;
+
+  border-color:
+    rgba(255, 255, 255, 0.25) !important;
+}
+
+.designPage .designStyleCard.active
+.designStyleVisual span {
+  color: #190d23 !important;
+}
+
+
+/* text */
+
+.designPage .designStyleInfo {
+  display: flex !important;
+  flex-direction: column !important;
+
+  min-width: 0 !important;
+
+  gap: 6px !important;
+
+  padding: 0 !important;
+}
+
+.designPage .designStyleInfo strong {
+  display: block !important;
+
+  color: #fff !important;
+
+  font-size: 15px !important;
+  font-weight: 600 !important;
+
+  line-height: 1.1 !important;
+}
+
+.designPage .designStyleInfo span {
+  display: block !important;
+
+  color: rgba(255, 255, 255, 0.45) !important;
+
+  font-size: 11px !important;
+  line-height: 1.35 !important;
+
+  white-space: normal !important;
+}
+
+.designPage .designStyleCard > i {
+  position: static !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  width: 25px !important;
+  height: 25px !important;
+
+  margin: 0 !important;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.13);
+
+  border-radius: 50%;
+
+  color: #fff !important;
+
+  font-size: 11px !important;
+  font-style: normal !important;
+
+  opacity: 0.5;
+}
+
+.designPage .designStyleCard.active > i {
+  background: var(--wd-purple);
+  border-color: var(--wd-purple);
+
+  color: #160d1e !important;
+
+  opacity: 1;
+}
+
+
+/* =========================================================
+   PHOTO UPLOAD
+   ========================================================= */
+
+.designPage .photoUpload {
+  position: relative;
+
+  display: block !important;
+
+  width: 100% !important;
+  height: 390px !important;
+
+  overflow: hidden;
+
+  cursor: pointer;
+
+  border:
+    1px dashed rgba(199, 154, 255, 0.36) !important;
+
+  border-radius: 22px !important;
+
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(174, 92, 255, 0.08),
+      transparent 45%
+    ),
+    rgba(255, 255, 255, 0.025) !important;
+
+  transition:
+    border-color 0.3s ease,
+    background 0.3s ease !important;
+}
+
+.designPage .photoUpload:hover {
+  border-color:
+    rgba(199, 154, 255, 0.7) !important;
+
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(174, 92, 255, 0.14),
+      transparent 48%
+    ),
+    rgba(255, 255, 255, 0.035) !important;
+}
+
+.designPage .photoUpload input {
+  display: none !important;
+}
+
+.designPage .photoUpload > img {
+  width: 100% !important;
+  height: 100% !important;
+
+  object-fit: cover !important;
+
+  border-radius: inherit;
+}
+
+.designPage .photoUploadEmpty {
+  position: absolute;
+
+  inset: 0;
+
+  display: flex !important;
+  flex-direction: column !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+
+  gap: 7px !important;
+}
+
+.designPage .photoUploadEmpty strong {
+  color: var(--wd-purple) !important;
+
+  font-size: 36px !important;
+  font-weight: 300 !important;
+}
+
+.designPage .photoUploadEmpty span {
+  color: #fff !important;
+
+  font-size: 11px !important;
+  font-weight: 600 !important;
+
+  letter-spacing: 0.18em !important;
+}
+
+.designPage .photoUploadEmpty small {
+  color: rgba(255, 255, 255, 0.32) !important;
+
+  font-size: 9px !important;
+
+  letter-spacing: 0.12em !important;
+}
+
+
+/* change photo */
+
+.designPage .changePhotoButton {
+  display: inline-flex !important;
+
+  margin-top: 15px !important;
+
+  color: var(--wd-purple) !important;
+
+  font-size: 11px !important;
+  font-weight: 600 !important;
+
+  cursor: pointer;
+}
+
+.designPage .changePhotoButton input {
+  display: none !important;
+}
+
+
+/* =========================================================
+   CAPTION FIELD
+   ========================================================= */
+
+.designPage .editorField {
+  position: relative;
+
+  display: flex !important;
+  flex-direction: column !important;
+
+  gap: 10px !important;
+
+  width: 100% !important;
+
+  padding: 0 !important;
+
+  background: transparent !important;
+}
+
+.designPage .editorField > span {
+  color: var(--wd-purple) !important;
+
+  font-size: 9px !important;
+  font-weight: 600 !important;
+
+  letter-spacing: 0.18em !important;
+}
+
+.designPage .editorField input {
+  width: 100% !important;
+  height: 64px !important;
+
+  padding: 0 60px 0 20px !important;
+
+  outline: none !important;
+
+  color: #fff !important;
+
+  background:
+    rgba(255, 255, 255, 0.035) !important;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.13) !important;
+
+  border-radius: 14px !important;
+
+  font-size: 15px !important;
+
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease !important;
+}
+
+.designPage .editorField input:focus {
+  border-color:
+    rgba(199, 154, 255, 0.7) !important;
+
+  background:
+    rgba(199, 154, 255, 0.055) !important;
+}
+
+.designPage .editorField small {
+  position: absolute !important;
+
+  right: 18px !important;
+  bottom: 22px !important;
+
+  color:
+    rgba(255, 255, 255, 0.28) !important;
+
+  font-size: 9px !important;
+}
+
+
+/* =========================================================
+   CONTINUE
+   ========================================================= */
+
+.designPage .editorContinue {
+  display: flex !important;
+
+  align-items: center !important;
+  justify-content: space-between !important;
+
+  gap: 35px !important;
+
+  margin: 0 !important;
+  padding: 65px 0 0 !important;
+
+  border-top:
+    1px solid var(--wd-line) !important;
+
+  background: transparent !important;
+}
+
+.designPage .editorContinue > div > p {
+  margin: 0 0 8px !important;
+
+  color: var(--wd-purple) !important;
+
+  font-size: 10px !important;
+  font-weight: 600 !important;
+
+  letter-spacing: 0.18em !important;
+}
+
+.designPage .editorContinue > div > span {
+  display: block;
+
+  max-width: 390px;
+
+  color: var(--wd-muted) !important;
+
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+
+.designPage .editorContinue .primary {
+  flex: 0 0 auto;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  min-height: 56px;
+
+  padding: 0 25px !important;
+
+  border-radius: 999px !important;
+
+  background: #fff !important;
+
+  color: #120d18 !important;
+
+  text-decoration: none !important;
+
+  font-size: 12px !important;
+  font-weight: 700 !important;
+
+  border: 0 !important;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease !important;
+}
+
+.designPage .editorContinue .primary:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.22);
+}
+
+
+/* =========================================================
+   RIGHT PREVIEW
+   ========================================================= */
+
+.designPage .designPreview {
+  position: relative !important;
+
+  width: 100% !important;
+  min-width: 0 !important;
+
+  padding: 0 !important;
+
+  background: transparent !important;
+
+  border: 0 !important;
+}
+
+.designPage .previewSticky {
+  position: sticky !important;
+
+  top: 42px !important;
+
+  width: 100% !important;
+
+  padding: 0 !important;
+
+  background: transparent !important;
+}
+
+.designPage .previewLabel {
+  display: flex !important;
+
+  justify-content: space-between !important;
+  align-items: center !important;
+
+  margin: 0 0 22px !important;
+  padding: 0 2px !important;
+
+  color: rgba(255, 255, 255, 0.42) !important;
+
+  font-size: 9px !important;
+  font-weight: 600 !important;
+
+  letter-spacing: 0.18em !important;
+}
+
+.designPage .previewLabel span:last-child {
+  color: var(--wd-purple) !important;
+
+  font-size: 7px !important;
+}
+
+
+/* =========================================================
+   OPENING CARD
+   ========================================================= */
+
+.designPage .designGiftCard {
+  position: relative !important;
+
+  width: min(100%, 520px) !important;
+  min-height: 690px !important;
+
+  margin: 0 auto !important;
+
+  padding: 40px !important;
+
+  overflow: hidden;
+
+  border-radius: 28px !important;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.14) !important;
+
+  box-shadow:
+    0 35px 100px rgba(0, 0, 0, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+
+  transition:
+    background 0.45s ease,
+    color 0.45s ease,
+    border-color 0.45s ease !important;
+}
+
+
+/* SOFT */
+
+.designPage .designGiftCard.soft {
+  background:
+    radial-gradient(
+      circle at 75% 15%,
+      rgba(255, 199, 238, 0.9),
+      transparent 32%
+    ),
+    linear-gradient(
+      145deg,
+      #f8efff,
+      #ead5ff
+    ) !important;
+
+  color: #211426 !important;
+}
+
+
+/* MINIMAL */
+
+.designPage .designGiftCard.minimal {
+  background:
+    linear-gradient(
+      145deg,
+      #f7f5f1,
+      #e8e4df
+    ) !important;
+
+  color: #151515 !important;
+}
+
+
+/* FILM */
+
+.designPage .designGiftCard.film {
+  background:
+    linear-gradient(
+      145deg,
+      #d8b896,
+      #a77d5d
+    ) !important;
+
+  color: #21150f !important;
+}
+
+
+/* DARK */
+
+.designPage .designGiftCard.dark {
+  background:
+    radial-gradient(
+      circle at 75% 20%,
+      rgba(131, 57, 173, 0.42),
+      transparent 35%
+    ),
+    linear-gradient(
+      145deg,
+      #1d1224,
+      #09070c
+    ) !important;
+
+  color: #fff !important;
+
+  border-color:
+    rgba(199, 154, 255, 0.25) !important;
+}
+
+
+/* card content */
+
+.designPage .designGiftBrand {
+  margin: 0 0 70px !important;
+
+  color: inherit !important;
+
+  font-size: 10px !important;
+  font-weight: 600 !important;
+
+  letter-spacing: 0.18em !important;
+}
+
+.designPage .designGiftHeart {
+  display: grid !important;
+  place-items: center !important;
+
+  width: 58px !important;
+  height: 58px !important;
+
+  margin-bottom: 25px !important;
+
+  border-radius: 50% !important;
+
+  background:
+    rgba(166, 86, 239, 0.16) !important;
+
+  color: #9d52df !important;
+
+  font-size: 25px !important;
+}
+
+.designPage
+.designGiftCard.dark
+.designGiftHeart {
+  background:
+    rgba(199, 154, 255, 0.14) !important;
+
+  color: #d7b2ff !important;
+}
+
+.designPage .designGiftSmall {
+  margin: 0 0 10px !important;
+
+  color: inherit !important;
+
+  opacity: 0.55;
+
+  font-size: 9px !important;
+  font-weight: 600 !important;
+
+  letter-spacing: 0.15em !important;
+}
+
+.designPage .designGiftCard h2 {
+  margin: 0 !important;
+
+  color: inherit !important;
+
+  font-family: "Anton", sans-serif !important;
+
+  font-size: clamp(48px, 4vw, 72px) !important;
+  font-weight: 400 !important;
+
+  line-height: 0.88 !important;
+  letter-spacing: -0.025em !important;
+}
+
+
+/* PHOTO */
+
+.designPage .designGiftPhoto {
+  position: relative;
+
+  width: 100% !important;
+  height: 185px !important;
+
+  margin: 35px 0 18px !important;
+
+  overflow: hidden;
+
+  border-radius: 15px !important;
+
+  background:
+    rgba(255, 255, 255, 0.22) !important;
+
+  border:
+    1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.designPage
+.designGiftCard.dark
+.designGiftPhoto {
+  background:
+    rgba(255, 255, 255, 0.055) !important;
+
+  border-color:
+    rgba(255, 255, 255, 0.10) !important;
+}
+
+.designPage .designGiftPhoto img {
+  width: 100% !important;
+  height: 100% !important;
+
+  object-fit: cover !important;
+}
+
+.designPage .designGiftPhoto > span {
+  position: absolute;
+
+  inset: 0;
+
+  display: grid !important;
+  place-items: center !important;
+
+  color: inherit !important;
+
+  opacity: 0.35;
+
+  font-size: 9px !important;
+  font-weight: 600 !important;
+
+  letter-spacing: 0.18em !important;
+}
+
+
+/* caption */
+
+.designPage .designGiftCaption {
+  margin: 0 0 30px !important;
+
+  color: inherit !important;
+
+  opacity: 0.65;
+
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+
+
+/* card button */
+
+.designPage .designGiftCard > button {
+  display: inline-flex !important;
+
+  min-height: 46px !important;
+
+  align-items: center !important;
+
+  padding: 0 19px !important;
+
+  border-radius: 999px !important;
+
+  border:
+    1px solid currentColor !important;
+
+  background: transparent !important;
+
+  color: inherit !important;
+
+  font-size: 10px !important;
+  font-weight: 700 !important;
+
+  letter-spacing: 0.08em !important;
+}
+
+
+/* preview description */
+
+.designPage .previewHint {
+  max-width: 430px;
+
+  margin: 18px auto 0 !important;
+
+  text-align: center;
+
+  color:
+    rgba(255, 255, 255, 0.32) !important;
+
+  font-size: 10px !important;
+  line-height: 1.5 !important;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+  .designPage .designLayout {
+    grid-template-columns: 1fr !important;
+
+    gap: 80px !important;
+  }
+
+  .designPage .designPreview {
+    order: -1;
+  }
+
+  .designPage .previewSticky {
+    position: relative !important;
+    top: auto !important;
+  }
+
+  .designPage .designGiftCard {
+    max-width: 500px !important;
+  }
+}
+
+
+@media (max-width: 700px) {
+
+  .designPage .personalizeHeader {
+    width: calc(100% - 36px);
+    margin: 0 18px;
+
+    height: 75px;
+
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .designPage .personalizeHeaderCenter {
+    display: none;
+  }
+
+  .designPage .designLayout {
+    padding:
+      65px 18px
+      100px !important;
+  }
+
+  .designPage .editorIntro {
+    padding-bottom: 70px !important;
+  }
+
+  .designPage .editorIntro h1 {
+    font-size:
+      clamp(62px, 18vw, 92px) !important;
+  }
+
+  .designPage .designStyleGrid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .designPage .photoUpload {
+    height: 280px !important;
+  }
+
+  .designPage .editorContinue {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .designPage .editorContinue .primary {
+    width: 100%;
+  }
+
+  .designPage .designGiftCard {
+    min-height: 610px !important;
+
+    padding: 28px !important;
+
+    border-radius: 22px !important;
+  }
+
+  .designPage .designGiftCard h2 {
+    font-size: 54px !important;
+  }
+}
