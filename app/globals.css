@@ -13759,3 +13759,23 @@ footer p {
 .wiveliHeroEyebrow {
   display: none;
 }
+.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  background: transparent !important;
+  color: white;
+
+  z-index: 100;
+}
+
+.header a,
+.header button {
+  color: white;
+}
+
+.logo {
+  color: white !important;
+}
