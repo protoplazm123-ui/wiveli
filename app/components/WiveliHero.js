@@ -11,15 +11,13 @@ export default function WiveliHero() {
           A GIFT THEY&apos;LL NEVER FORGET
         </p>
 
-        <h1 className="wiveliHeroTitle wiveliGlitchTitle">
-          <span className="wiveliGlitchLine">GIVE THEM</span>
-          <br />
-          <span className="wiveliGlitchLine">SOMETHING</span>
-          <br />
-          <span className="wiveliGlitchLine wiveliPersonal">
-            PERSONAL.
-          </span>
-        </h1>
+       <h1 className="wiveliHeroTitle wiveliGlitchTitle">
+  <span className="wiveliGlitchLine">GIVE THEM</span>
+  <br />
+  <span className="wiveliGlitchLine wiveliSomethingPersonal">
+    SOMETHING PERSONAL.
+  </span>
+</h1>
 
         <p className="wiveliHeroText wiveliIntroDetails">
           Turn your memories, words and little moments into an
