@@ -25474,3 +25474,209 @@ main {
   -webkit-backdrop-filter:blur(12px);
   color:rgba(255,255,255,.32);
 }
+/* =========================================================
+   OUR STORY — FINAL THEMES + REAL DATA
+   ========================================================= */
+
+.osePreviewPhotoReal,
+.osgLetterPhotoReal{
+  background-size:cover;
+  background-position:center;
+}
+
+.oseMemoryMove{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.oseMemoryMove button{
+  width:28px;
+  height:28px;
+  cursor:pointer;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:50%;
+  color:rgba(255,255,255,.45);
+  background:rgba(255,255,255,.025);
+}
+
+.oseMemoryMove button:disabled{
+  opacity:.15;
+  cursor:default;
+}
+
+.osgLoading{
+  position:fixed;
+  inset:0;
+  display:grid;
+  place-items:center;
+  color:#d3afff;
+  font-family:Georgia,serif;
+  font-size:35px;
+  background:#08060d;
+}
+
+/* CLOUD WORLD */
+
+.osgTheme-clouds .osgBackground{
+  background:
+    linear-gradient(
+      180deg,
+      #332b4d 0%,
+      #64577b 45%,
+      #b08fae 100%
+    );
+}
+
+.osgTheme-clouds .osgNebula{
+  display:none;
+}
+
+.osgCloud{
+  position:absolute;
+  width:420px;
+  height:150px;
+  border-radius:50%;
+  background:rgba(255,255,255,.09);
+  filter:blur(22px);
+  animation:osgCloudFloat 18s ease-in-out infinite alternate;
+}
+
+.osgCloud::before,
+.osgCloud::after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  background:inherit;
+}
+
+.osgCloud::before{
+  width:190px;
+  height:190px;
+  left:70px;
+  top:-70px;
+}
+
+.osgCloud::after{
+  width:240px;
+  height:220px;
+  right:45px;
+  top:-95px;
+}
+
+.osgCloud1{
+  left:-80px;
+  top:22%;
+}
+
+.osgCloud2{
+  left:35%;
+  top:12%;
+  transform:scale(.7);
+  opacity:.55;
+}
+
+.osgCloud3{
+  right:-100px;
+  top:50%;
+  transform:scale(1.2);
+}
+
+.osgCloud4{
+  left:25%;
+  bottom:-20px;
+  opacity:.45;
+}
+
+.osgTheme-clouds .osgStarButton strong{
+  border:0;
+  color:#fff;
+  background:transparent;
+  box-shadow:none;
+  font-size:50px;
+  text-shadow:
+    0 5px 30px rgba(255,255,255,.35);
+}
+
+.osgTheme-clouds .osgStarButton>i{
+  border-color:rgba(255,255,255,.12);
+}
+
+.osgTheme-clouds .osgPathGlow{
+  stroke:rgba(255,255,255,.48);
+}
+
+/* COLOR WORLD */
+
+.osgTheme-color .osgBackground{
+  background:
+    radial-gradient(
+      circle at 50% 45%,
+      var(--story-custom-color),
+      #0b0810 68%
+    );
+}
+
+.osgTheme-color .osgNebula{
+  opacity:.08;
+}
+
+.osgTheme-color .osgStarButton strong{
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,255,255,.5),
+      var(--story-custom-color) 48%,
+      rgba(10,7,14,.8) 80%
+    );
+}
+
+/* CUSTOM WORLD */
+
+.osgTheme-custom .osgBackground{
+  background:#08060d;
+}
+
+.osgTheme-custom .osgWorld{
+  background-repeat:no-repeat;
+}
+
+.osgTheme-custom .osgStarButton strong{
+  inset:22px;
+  border:3px solid #fff;
+  background:#b781ed;
+  box-shadow:
+    0 0 0 5px rgba(183,129,237,.18),
+    0 10px 30px rgba(0,0,0,.35);
+  font-size:0;
+}
+
+.osgTheme-custom .osgPath path:first-child{
+  stroke:rgba(255,255,255,.7);
+  stroke-dasharray:8 10;
+}
+
+.osgTheme-custom .osgPathGlow{
+  stroke:rgba(202,157,255,.8);
+}
+
+.osgRealAudio{
+  width:100%;
+  margin-top:28px;
+  opacity:.8;
+}
+
+@keyframes osgCloudFloat{
+  from{
+    transform:translate3d(-25px,0,0);
+  }
+  to{
+    transform:translate3d(35px,18px,0);
+  }
+}
+
+@media(max-width:700px){
+  .osgCloud{
+    transform:scale(.7);
+  }
+}
