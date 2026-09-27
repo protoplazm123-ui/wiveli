@@ -28988,3 +28988,273 @@ main {
     transition:none;
   }
 }
+/* OPEN WHEN — CREATOR INTERACTION BUILDER */
+
+.owcPeople{
+  display:flex;
+  gap:12px;
+  margin-top:27px;
+}
+
+.owcPeople label{
+  width:150px;
+}
+
+.owcPeople span,
+.owcField>span,
+.owcWhenWhere span,
+.owcMiniField>span{
+  display:block;
+  margin-bottom:6px;
+  color:#a975cf;
+  font-size:5px;
+  letter-spacing:.18em;
+}
+
+.owcPeople input{
+  width:100%;
+  padding:8px 0;
+  border:0;
+  border-bottom:1px solid rgba(255,255,255,.12);
+  outline:0;
+  background:transparent;
+  color:#fff;
+  font-size:11px;
+}
+
+.owcEditorOverlay{
+  overflow-y:auto;
+}
+
+.owcEditorV2{
+  width:min(920px,calc(100% - 30px));
+  max-height:calc(100vh - 40px);
+  overflow-y:auto;
+}
+
+.owcBuildGrid{
+  display:grid;
+  grid-template-columns:1.25fr .75fr;
+  gap:10px;
+  margin-top:24px;
+}
+
+.owcBuildMain,
+.owcInteractionBuilder{
+  padding:20px;
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.015);
+}
+
+.owcField textarea{
+  width:100%;
+  height:145px;
+  padding:15px;
+  resize:none;
+  border:1px solid rgba(255,255,255,.07);
+  outline:0;
+  background:rgba(255,255,255,.02);
+  color:#fff;
+  font-family:Georgia,serif;
+  font-size:14px;
+  line-height:1.55;
+}
+
+.owcWhenWhere{
+  display:grid;
+  grid-template-columns:1fr 1fr 1.5fr;
+  gap:7px;
+  margin-top:9px;
+}
+
+.owcWhenWhere label{
+  padding:11px;
+  border:1px solid rgba(255,255,255,.07);
+}
+
+.owcWhenWhere input{
+  width:100%;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:#fff;
+  font-size:9px;
+}
+
+.owcMediaRow{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+  margin-top:9px;
+}
+
+.owcMediaRow label{
+  min-height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:6px;
+  border:1px solid rgba(255,255,255,.07);
+  cursor:pointer;
+}
+
+.owcMediaRow b{
+  color:#c394e5;
+  font-size:15px;
+  font-weight:400;
+}
+
+.owcMediaRow span{
+  color:rgba(255,255,255,.4);
+  font-size:5px;
+  letter-spacing:.13em;
+}
+
+.owcMediaRow input{
+  display:none;
+}
+
+.owcInteractionTitle>span{
+  color:#a975cf;
+  font-size:5px;
+  letter-spacing:.17em;
+}
+
+.owcInteractionTitle h3{
+  margin:7px 0 5px;
+  font-family:Georgia,serif;
+  font-size:19px;
+  font-weight:400;
+}
+
+.owcInteractionTitle p{
+  margin:0 0 17px;
+  color:rgba(255,255,255,.35);
+  font-size:8px;
+}
+
+.owcSwitch{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  cursor:pointer;
+}
+
+.owcSwitch input{
+  display:none;
+}
+
+.owcSwitch>span{
+  position:relative;
+  width:31px;
+  height:17px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:20px;
+  background:rgba(255,255,255,.04);
+}
+
+.owcSwitch>span:after{
+  content:"";
+  position:absolute;
+  left:3px;
+  top:3px;
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:rgba(255,255,255,.35);
+  transition:.2s;
+}
+
+.owcSwitch input:checked+span{
+  background:#a877ca;
+}
+
+.owcSwitch input:checked+span:after{
+  left:17px;
+  background:#fff;
+}
+
+.owcSwitch b{
+  color:rgba(255,255,255,.45);
+  font-size:5px;
+  font-weight:400;
+  letter-spacing:.14em;
+}
+
+.owcInteractionTypes{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin:17px 0;
+}
+
+.owcInteractionTypes button{
+  padding:8px 9px;
+  border:1px solid rgba(255,255,255,.08);
+  background:transparent;
+  color:rgba(255,255,255,.35);
+  font-size:5px;
+  cursor:pointer;
+}
+
+.owcInteractionTypes button.active{
+  border-color:#b985dd;
+  background:rgba(185,133,221,.1);
+  color:#d5b3ed;
+}
+
+.owcMiniField{
+  display:block;
+  margin-top:10px;
+}
+
+.owcMiniField input{
+  width:100%;
+  padding:9px 0;
+  border:0;
+  border-bottom:1px solid rgba(255,255,255,.09);
+  outline:0;
+  background:transparent;
+  color:#fff;
+  font-size:9px;
+}
+
+.owcResponsePreview{
+  margin-top:17px;
+  padding:13px;
+  border:1px solid rgba(196,148,229,.14);
+  background:rgba(196,148,229,.04);
+}
+
+.owcResponsePreview span{
+  color:#a975cf;
+  font-size:5px;
+  letter-spacing:.14em;
+}
+
+.owcResponsePreview p{
+  margin:7px 0 0;
+  color:rgba(255,255,255,.6);
+  font-family:Georgia,serif;
+  font-size:10px;
+  font-style:italic;
+}
+
+@media(max-width:700px){
+  .owcBuildGrid{
+    grid-template-columns:1fr;
+  }
+
+  .owcWhenWhere{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .owcWhenWhere label:last-child{
+    grid-column:1/-1;
+  }
+
+  .owcPeople{
+    flex-wrap:wrap;
+  }
+}
