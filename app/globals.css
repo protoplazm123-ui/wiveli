@@ -29575,3 +29575,426 @@ main {
     grid-template-columns:1fr;
   }
 }
+/* =========================================================
+   OPEN WHEN — RECIPIENT WORLDS
+   ========================================================= */
+
+.owrGeneratedWorld{
+  position:absolute;
+  z-index:0;
+  inset:0;
+  overflow:hidden;
+}
+
+.owrCustomImage{
+  background-size:cover;
+  background-position:center;
+}
+
+/* ---------------- ROMANTIC ---------------- */
+
+.owrTheme-romantic{
+  background:#2a1625;
+}
+
+.owrTheme-romantic .owrGeneratedWorld{
+  background:
+    radial-gradient(circle at 72% 42%,rgba(255,185,219,.24),transparent 25%),
+    radial-gradient(circle at 28% 70%,rgba(187,113,158,.16),transparent 30%),
+    linear-gradient(145deg,#5a304d 0%,#2d1929 45%,#170f19 100%);
+}
+
+.owrTheme-romantic .owrClosedCard{
+  border-color:rgba(255,225,238,.65);
+  background:
+    radial-gradient(circle at 70% 20%,rgba(255,255,255,.16),transparent 30%),
+    linear-gradient(145deg,rgba(112,60,88,.94),rgba(46,25,40,.96));
+}
+
+.owrTheme-romantic .owrBigFront{
+  border-color:rgba(255,221,235,.55);
+  background:
+    radial-gradient(circle at 70% 18%,rgba(255,206,226,.2),transparent 32%),
+    linear-gradient(145deg,#76435f,#321c2d);
+}
+
+.owrTheme-romantic .owrFocusGlow{
+  background:radial-gradient(
+    circle,
+    rgba(255,166,207,.2),
+    transparent 65%
+  );
+}
+
+.owrTheme-romantic .owrKeepButton{
+  border-color:rgba(255,190,220,.4)!important;
+  color:#ffd1e4!important;
+}
+
+.owrRomanticHearts i{
+  position:absolute;
+  color:rgba(255,225,238,.2);
+  font-family:Georgia,serif;
+  font-size:35px;
+  font-style:normal;
+  animation:owrRomanticFloat 7s ease-in-out infinite;
+}
+
+.owrRomanticHearts i:nth-child(1){
+  left:10%;
+  top:20%;
+}
+
+.owrRomanticHearts i:nth-child(2){
+  left:34%;
+  top:75%;
+  animation-delay:-2s;
+}
+
+.owrRomanticHearts i:nth-child(3){
+  right:15%;
+  top:16%;
+  animation-delay:-4s;
+}
+
+.owrRomanticHearts i:nth-child(4){
+  right:32%;
+  top:68%;
+  animation-delay:-1s;
+}
+
+.owrRomanticHearts i:nth-child(5){
+  left:55%;
+  top:35%;
+  animation-delay:-5s;
+}
+
+@keyframes owrRomanticFloat{
+  0%,100%{
+    transform:translateY(0) rotate(-5deg);
+  }
+
+  50%{
+    transform:translateY(-20px) rotate(5deg);
+  }
+}
+
+/* ---------------- TECH ---------------- */
+
+.owrTheme-tech{
+  background:#02090d;
+}
+
+.owrTheme-tech .owrGeneratedWorld{
+  background:
+    linear-gradient(rgba(88,211,255,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(88,211,255,.055) 1px,transparent 1px),
+    radial-gradient(circle at 74% 48%,rgba(35,171,220,.14),transparent 25%),
+    linear-gradient(145deg,#071117,#02070a);
+  background-size:42px 42px,42px 42px,auto,auto;
+}
+
+.owrTheme-tech .owrStars{
+  display:none;
+}
+
+.owrTheme-tech .owrClosedCard{
+  border-color:rgba(103,220,255,.55);
+  border-radius:0;
+  background:rgba(4,16,22,.85);
+  box-shadow:
+    0 20px 50px rgba(0,0,0,.4),
+    inset 0 0 25px rgba(71,209,255,.06);
+}
+
+.owrTheme-tech .owrClosedCard small,
+.owrTheme-tech .owrCardStar{
+  color:#83e4ff;
+}
+
+.owrTheme-tech .owrBigFront{
+  border-color:#62d6f5;
+  background:
+    linear-gradient(rgba(85,210,245,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(85,210,245,.05) 1px,transparent 1px),
+    #06141a;
+  background-size:25px 25px;
+}
+
+.owrTheme-tech .owrBigFront h1{
+  font-family:Arial,Helvetica,sans-serif;
+  font-weight:300;
+  letter-spacing:.04em;
+}
+
+.owrTheme-tech .owrFocusGlow{
+  background:radial-gradient(
+    circle,
+    rgba(62,209,255,.14),
+    transparent 65%
+  );
+}
+
+.owrTheme-tech .owrKeepButton{
+  border-color:rgba(80,213,255,.4)!important;
+  color:#85e7ff!important;
+}
+
+.owrTechGrid>span{
+  position:absolute;
+  color:rgba(110,224,255,.2);
+  font-size:6px;
+  letter-spacing:.25em;
+}
+
+.owrTechGrid>span:first-child{
+  left:5%;
+  top:20%;
+  writing-mode:vertical-rl;
+}
+
+.owrTechGrid>span:last-child{
+  right:4%;
+  bottom:5%;
+}
+
+/* ---------------- DREAMY ---------------- */
+
+.owrTheme-dreamy{
+  background:#9e91ba;
+}
+
+.owrTheme-dreamy .owrGeneratedWorld{
+  background:
+    radial-gradient(circle at 75% 35%,rgba(255,255,255,.45),transparent 23%),
+    linear-gradient(145deg,#c9c0dc,#a99cc4 45%,#786d98);
+}
+
+.owrTheme-dreamy .owrShade{
+  background:linear-gradient(
+    180deg,
+    rgba(64,50,90,.05),
+    rgba(43,32,65,.18)
+  );
+}
+
+.owrTheme-dreamy .owrClosedCard{
+  border-color:rgba(255,255,255,.72);
+  background:rgba(245,241,252,.65);
+  color:#5b506c;
+  box-shadow:0 20px 50px rgba(54,42,78,.2);
+}
+
+.owrTheme-dreamy .owrClosedCard small,
+.owrTheme-dreamy .owrClosedCard>span{
+  color:rgba(73,60,93,.55);
+}
+
+.owrTheme-dreamy .owrBigFront{
+  border-color:rgba(255,255,255,.7);
+  background:
+    radial-gradient(circle at 70% 20%,rgba(255,255,255,.6),transparent 35%),
+    linear-gradient(145deg,#b3a5cc,#796c9a);
+}
+
+.owrTheme-dreamy .owrFocusGlow{
+  background:radial-gradient(
+    circle,
+    rgba(255,255,255,.25),
+    transparent 65%
+  );
+}
+
+.owrClouds i{
+  position:absolute;
+  width:350px;
+  height:100px;
+  border-radius:50%;
+  background:rgba(255,255,255,.15);
+  filter:blur(18px);
+  animation:owrCloudMove 18s ease-in-out infinite alternate;
+}
+
+.owrClouds i:nth-child(1){
+  left:-5%;
+  top:18%;
+}
+
+.owrClouds i:nth-child(2){
+  right:5%;
+  top:60%;
+  animation-delay:-6s;
+}
+
+.owrClouds i:nth-child(3){
+  left:35%;
+  bottom:-3%;
+  animation-delay:-10s;
+}
+
+@keyframes owrCloudMove{
+  from{
+    transform:translateX(-30px);
+  }
+
+  to{
+    transform:translateX(60px);
+  }
+}
+
+/* ---------------- CUSTOM ---------------- */
+
+.owrTheme-custom{
+  background:
+    radial-gradient(
+      circle at 72% 45%,
+      color-mix(in srgb,var(--owr-accent) 32%,transparent),
+      transparent 28%
+    ),
+    linear-gradient(145deg,#16101d,#07060a);
+}
+
+.owrTheme-custom .owrGeneratedWorld{
+  background:
+    radial-gradient(
+      circle at 72% 45%,
+      color-mix(in srgb,var(--owr-accent) 35%,transparent),
+      transparent 28%
+    ),
+    linear-gradient(145deg,#17101f,#08060c);
+}
+
+.owrTheme-custom .owrClosedCard{
+  border-color:var(--owr-accent);
+}
+
+.owrTheme-custom .owrBigFront{
+  border-color:var(--owr-accent);
+  background:
+    radial-gradient(
+      circle at 70% 20%,
+      color-mix(in srgb,var(--owr-accent) 30%,transparent),
+      transparent 35%
+    ),
+    linear-gradient(145deg,#17121d,#08070c);
+}
+
+.owrTheme-custom .owrFocusGlow{
+  background:radial-gradient(
+    circle,
+    color-mix(in srgb,var(--owr-accent) 22%,transparent),
+    transparent 65%
+  );
+}
+
+.owrTheme-custom .owrKeepButton{
+  border-color:var(--owr-accent)!important;
+  color:var(--owr-accent)!important;
+}
+
+.owrCustomSymbol{
+  position:absolute;
+  right:8%;
+  top:12%;
+  color:color-mix(
+    in srgb,
+    var(--owr-accent) 25%,
+    transparent
+  );
+  font-family:Georgia,serif;
+  font-size:220px;
+  font-weight:400;
+}
+
+/* COMMON WORLD ORBS */
+
+.owrWorldOrb{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(2px);
+  pointer-events:none;
+}
+
+.owrOrbOne{
+  right:12%;
+  top:16%;
+  width:280px;
+  height:280px;
+  border:1px solid rgba(255,255,255,.05);
+}
+
+.owrOrbTwo{
+  right:22%;
+  top:32%;
+  width:500px;
+  height:500px;
+  border:1px solid rgba(255,255,255,.035);
+}
+
+.owrOrbThree{
+  left:10%;
+  bottom:8%;
+  width:180px;
+  height:180px;
+  border:1px solid rgba(255,255,255,.04);
+}
+
+/* opened memory adapts to worlds */
+
+.owrTheme-romantic .owrMemoryCard{
+  background:#f5e6eb;
+}
+
+.owrTheme-tech .owrMemoryCard{
+  background:#dff7fc;
+}
+
+.owrTheme-dreamy .owrMemoryCard{
+  background:#f6f2fb;
+}
+
+.owrTheme-custom .owrMemoryCard{
+  border:2px solid var(--owr-accent);
+}
+
+/* Interaction follows selected world */
+
+.owrTheme-romantic .owrInteraction{
+  border-color:rgba(255,184,216,.25);
+  background:rgba(55,27,45,.88);
+}
+
+.owrTheme-tech .owrInteraction{
+  border-color:rgba(90,218,255,.3);
+  background:rgba(3,15,20,.9);
+}
+
+.owrTheme-tech .owrInteraction>span{
+  color:#76dcf8;
+}
+
+.owrTheme-dreamy .owrInteraction{
+  border-color:rgba(255,255,255,.3);
+  background:rgba(91,76,121,.8);
+}
+
+.owrTheme-custom .owrInteraction{
+  border-color:var(--owr-accent);
+}
+
+/* Mobile */
+
+@media(max-width:700px){
+  .owrCustomSymbol{
+    font-size:120px;
+  }
+
+  .owrOrbTwo{
+    width:300px;
+    height:300px;
+  }
+
+  .owrTheme-dreamy .owrClosedCard{
+    backdrop-filter:blur(12px);
+  }
+}
