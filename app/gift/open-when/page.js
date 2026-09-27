@@ -4,389 +4,451 @@ import { useEffect, useMemo, useState } from "react";
 
 const FALLBACK = {
   recipient: "Sophie",
+  sender: "Alex",
   moments: [
     {
-      id: 1,
+      id: "miss-me",
       title: "YOU MISS ME",
       message:
-        "If you're here because you miss me, remember that somewhere I'm probably missing you too. ♡",
+        "If you're opening this, I wish I could be right there with you. So keep this little piece of me close until I am. ♡",
       photo: null,
-      video: null,
       voice: null,
+      video: null,
+      place: "Our favorite place",
+      date: "September 27",
+      time: "19:30",
     },
     {
-      id: 2,
+      id: "sad",
+      title: "YOU'RE SAD",
+      message:
+        "You don't have to fix everything today. I just want you to remember that I'm always on your side.",
+      photo: null,
+      voice: null,
+      video: null,
+      place: "",
+      date: "",
+      time: "",
+    },
+    {
+      id: "sleep",
       title: "YOU CAN'T SLEEP",
       message:
-        "Close your eyes for a second. Imagine I'm right there next to you.",
+        "Close your eyes for a second. Imagine I'm there beside you telling you everything is going to be okay.",
       photo: null,
-      video: null,
       voice: null,
+      video: null,
+      place: "",
+      date: "",
+      time: "",
     },
     {
-      id: 3,
-      title: "YOU'RE OVERTHINKING",
+      id: "bored",
+      title: "YOU'RE BORED",
       message:
-        "Not everything needs to be figured out tonight. Tomorrow can carry some of it.",
+        "Okay. This is officially your sign to stop scrolling and go do something fun. Preferably with me.",
       photo: null,
-      video: null,
       voice: null,
+      video: null,
+      place: "",
+      date: "",
+      time: "",
     },
     {
-      id: 4,
-      title: "YOU NEED A HUG",
+      id: "courage",
+      title: "YOU NEED COURAGE",
       message:
-        "This isn't quite the real thing, but consider this one saved for you. ♡",
+        "You've done harder things than this. Go do the scary thing. I'll be proud of you either way.",
       photo: null,
-      video: null,
       voice: null,
+      video: null,
+      place: "",
+      date: "",
+      time: "",
     },
   ],
 };
 
-export default function OpenWhenGift() {
+const POSITIONS = [
+  { x: 67, y: 20, r: -8 },
+  { x: 80, y: 37, r: 7 },
+  { x: 65, y: 54, r: -4 },
+  { x: 84, y: 67, r: 9 },
+  { x: 72, y: 78, r: -7 },
+  { x: 91, y: 50, r: 4 },
+  { x: 55, y: 68, r: 6 },
+  { x: 88, y: 23, r: -5 },
+];
+
+export default function OpenWhenGiftPage() {
   const [gift, setGift] = useState(FALLBACK);
-  const [stage, setStage] = useState("intro");
-  const [activeId, setActiveId] = useState(null);
-  const [revealed, setRevealed] = useState([]);
-  const [contentStep, setContentStep] = useState(0);
+  const [loaded, setLoaded] = useState(false);
+
+  const [opened, setOpened] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
+
+  const [focused, setFocused] = useState(false);
+  const [flipped, setFlipped] = useState(false);
+  const [showExtras, setShowExtras] = useState(false);
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("wiveli-open-when-v2");
+      const stored = localStorage.getItem("wiveli-open-when-v2");
 
-      if (saved) {
-        const parsed = JSON.parse(saved);
+      if (stored) {
+        const parsed = JSON.parse(stored);
 
         if (parsed?.moments?.length) {
           setGift({
             ...FALLBACK,
             ...parsed,
+            moments: parsed.moments,
           });
         }
+      }
+
+      const openedStored = localStorage.getItem(
+        "wiveli-open-when-opened-v1"
+      );
+
+      if (openedStored) {
+        setOpened(JSON.parse(openedStored));
       }
     } catch (error) {
       console.error(error);
     }
+
+    setLoaded(true);
   }, []);
 
-  const active = useMemo(
+  const selected = useMemo(
     () =>
-      gift.moments.find((moment) => moment.id === activeId) ||
-      null,
-    [gift, activeId]
+      gift.moments.find(
+        (moment) => String(moment.id) === String(selectedId)
+      ),
+    [gift, selectedId]
   );
 
-  const pieces = useMemo(() => {
-    if (!active) return [];
+  const isOpened = (id) =>
+    opened.map(String).includes(String(id));
 
-    const result = [];
+  const chooseMoment = (moment) => {
+    setSelectedId(moment.id);
+    setShowExtras(false);
+    setFlipped(false);
 
-    if (active.photo) {
-      result.push({
-        type: "photo",
-        value: active.photo,
-      });
-    }
-
-    if (active.message) {
-      result.push({
-        type: "message",
-        value: active.message,
-      });
-    }
-
-    if (active.voice) {
-      result.push({
-        type: "voice",
-        value: active.voice,
-      });
-    }
-
-    if (active.video) {
-      result.push({
-        type: "video",
-        value: active.video,
-      });
-    }
-
-    return result;
-  }, [active]);
-
-  const openMoment = (moment) => {
-    setActiveId(moment.id);
-    setContentStep(0);
-
-    setRevealed((current) =>
-      current.includes(moment.id)
-        ? current
-        : [...current, moment.id]
-    );
+    requestAnimationFrame(() => {
+      setFocused(true);
+    });
   };
 
-  const closeMoment = () => {
-    setActiveId(null);
-    setContentStep(0);
-  };
+  const flipCard = () => {
+    if (!focused) return;
 
-  const nextPiece = () => {
-    if (contentStep < pieces.length - 1) {
-      setContentStep((current) => current + 1);
+    if (!flipped) {
+      setFlipped(true);
+
+      if (!isOpened(selected.id)) {
+        const next = [...opened, selected.id];
+
+        setOpened(next);
+
+        try {
+          localStorage.setItem(
+            "wiveli-open-when-opened-v1",
+            JSON.stringify(next)
+          );
+        } catch (error) {
+          console.error(error);
+        }
+      }
     } else {
-      closeMoment();
+      setFlipped(false);
     }
   };
 
-  const previousPiece = () => {
-    if (contentStep > 0) {
-      setContentStep((current) => current - 1);
-    }
+  const returnCard = () => {
+    setShowExtras(false);
+    setFlipped(false);
+
+    setTimeout(() => {
+      setFocused(false);
+
+      setTimeout(() => {
+        setSelectedId(null);
+      }, 500);
+    }, 150);
   };
 
-  const currentPiece = pieces[contentStep];
+  const allOpened =
+    gift.moments.length > 0 &&
+    gift.moments.every((moment) => isOpened(moment.id));
+
+  if (!loaded) {
+    return <main className="owrPage" />;
+  }
 
   return (
-    <main className="owgPage">
-      {stage === "intro" && (
-        <section className="owgIntro">
-          <div className="owgIntroStars" />
+    <main
+      className={`owrPage ${
+        focused ? "owrHasFocus" : ""
+      }`}
+    >
+      <video
+        className="owrBackground"
+        autoPlay
+        muted
+        loop
+        playsInline
+      >
+        <source
+          src="/assets/open-when/OPEN.mp4"
+          type="video/mp4"
+        />
+      </video>
 
-          <div className="owgIntroContent">
-            <span className="owgTiny">SOMETHING FOR YOU ♡</span>
+      <div className="owrShade" />
+      <div className="owrStars" />
 
-            <div className="owgIntroOrb">
-              <div className="owgOrbRing owgOrbRing1" />
-              <div className="owgOrbRing owgOrbRing2" />
+      <header className="owrHeader">
+        <a href="/" className="owrLogo">
+          WI<span>♥</span>ELI
+        </a>
 
-              <span>♡</span>
-            </div>
+        <span>A LITTLE SOMETHING FOR YOU</span>
+      </header>
 
-            <p>FOR {gift.recipient?.toUpperCase()}</p>
+      <div className="owrHint">
+        <span>FROM {gift.sender || "SOMEONE SPECIAL"}</span>
+        <p>Choose the moment you need.</p>
+      </div>
 
-            <h1>
-              FOR THE MOMENTS
-              <br />
-              <em>YOU NEED ME.</em>
-            </h1>
+      <section className="owrUniverse">
+        <div className="owrBurstPoint">
+          <i />
+          <i />
+          <i />
+        </div>
 
-            <p className="owgIntroText">
-              I can&apos;t always be right there.
-              <br />
-              So I left a few little pieces of me here for you.
-            </p>
+        {gift.moments.map((moment, index) => {
+          const position =
+            POSITIONS[index % POSITIONS.length];
 
+          const openedMoment = isOpened(moment.id);
+
+          const isSelected =
+            String(selectedId) === String(moment.id);
+
+          return (
             <button
               type="button"
-              onClick={() => setStage("world")}
+              key={moment.id}
+              className={[
+                "owrFloatingCard",
+                openedMoment ? "isOpened" : "",
+                isSelected ? "isSelected" : "",
+              ].join(" ")}
+              style={{
+                "--owr-x": `${position.x}%`,
+                "--owr-y": `${position.y}%`,
+                "--owr-r": `${position.r}deg`,
+                "--owr-delay": `${index * -0.7}s`,
+              }}
+              onClick={() => chooseMoment(moment)}
             >
-              ENTER ♡
-            </button>
-          </div>
-        </section>
-      )}
+              {openedMoment ? (
+                <div className="owrMemoryCard">
+                  {moment.photo ? (
+                    <img src={moment.photo} alt="" />
+                  ) : (
+                    <div className="owrMemoryFallback">
+                      <span>♡</span>
+                    </div>
+                  )}
 
-      {stage === "world" && !active && (
-        <section className="owgWorld">
-          <header className="owgWorldHeader">
-            <div>
-              <span>OPEN WHEN</span>
+                  <div>
+                    <small>OPENED ♡</small>
+                    <strong>{moment.title}</strong>
+                  </div>
+                </div>
+              ) : (
+                <div className="owrClosedCard">
+                  <div className="owrCardStar">✦</div>
 
-              <h1>
-                What do you
-                <br />
-                <em>need right now?</em>
-              </h1>
-            </div>
-
-            <div className="owgProgress">
-              <strong>
-                {revealed.length}/{gift.moments.length}
-              </strong>
-
-              <span>MOMENTS OPENED</span>
-            </div>
-          </header>
-
-          <div className="owgConstellation">
-            <div className="owgLine owgLine1" />
-            <div className="owgLine owgLine2" />
-            <div className="owgLine owgLine3" />
-
-            {gift.moments.map((moment, index) => {
-              const isRevealed = revealed.includes(moment.id);
-
-              return (
-                <button
-                  type="button"
-                  key={moment.id}
-                  className={`owgMoment owgMoment${
-                    (index % 7) + 1
-                  } ${isRevealed ? "isOpened" : ""}`}
-                  onClick={() => openMoment(moment)}
-                >
-                  <div className="owgMomentGlow" />
-
-                  <small>
-                    {String(index + 1).padStart(2, "0")}
-                  </small>
-
-                  <span>OPEN WHEN</span>
+                  <small>OPEN WHEN</small>
 
                   <strong>{moment.title}</strong>
 
-                  <i>{isRevealed ? "♡" : "＋"}</i>
+                  <span>TAP TO OPEN</span>
+                </div>
+              )}
+            </button>
+          );
+        })}
+      </section>
 
-                  <b>
-                    {isRevealed
-                      ? "OPEN AGAIN"
-                      : "OPEN THIS MOMENT"}
-                  </b>
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="owgWorldFooter">
-            <span>
-              Choose the moment that feels right.
-            </span>
-
-            <i>♡</i>
-
-            <span>
-              Come back whenever you need it.
-            </span>
-          </div>
-        </section>
+      {allOpened && !focused && (
+        <div className="owrAllOpened">
+          <span>YOU'VE OPENED THEM ALL.</span>
+          <p>
+            But they're still here whenever you need them. ♡
+          </p>
+        </div>
       )}
 
-      {stage === "world" && active && (
-        <section className="owgExperience">
-          <div className="owgExperienceBg" />
-
-          <header className="owgExperienceHeader">
-            <button type="button" onClick={closeMoment}>
-              ← ALL MOMENTS
-            </button>
-
-            <span>
-              {String(contentStep + 1).padStart(2, "0")}
-              {" / "}
-              {String(Math.max(pieces.length, 1)).padStart(
-                2,
-                "0"
-              )}
-            </span>
-          </header>
-
-          <div className="owgExperienceTitle">
-            <span>OPEN WHEN...</span>
-            <h1>{active.title}</h1>
-          </div>
-
-          <div
-            className={`owgReveal owgReveal-${
-              currentPiece?.type || "empty"
-            }`}
-            key={`${active.id}-${contentStep}`}
+      {selected && (
+        <section
+          className={`owrFocusLayer ${
+            focused ? "isVisible" : ""
+          }`}
+        >
+          <button
+            type="button"
+            className="owrBack"
+            onClick={returnCard}
           >
-            {currentPiece?.type === "photo" && (
-              <div className="owgPhotoReveal">
-                <div className="owgPhoto">
-                  <img src={currentPiece.value} alt="" />
-                  <p>ONE OF MY FAVORITES ♡</p>
-                </div>
+            ← BACK TO MY MOMENTS
+          </button>
 
-                <span>KEEP THIS ONE CLOSE.</span>
-              </div>
-            )}
+          <div className="owrFocusGlow" />
 
-            {currentPiece?.type === "message" && (
-              <div className="owgMessageReveal">
-                <span>A LITTLE NOTE FOR YOU</span>
-
-                <p>{currentPiece.value}</p>
-
-                <i>♡</i>
-              </div>
-            )}
-
-            {currentPiece?.type === "voice" && (
-              <div className="owgVoiceReveal">
-                <div className="owgVoiceHeart">♡</div>
-
-                <span>PRESS PLAY</span>
-
-                <h2>
-                  A little piece
-                  <br />
-                  of my voice.
-                </h2>
-
-                <audio
-                  controls
-                  src={currentPiece.value}
-                />
-
-                <p>A LITTLE MESSAGE FROM ME ♡</p>
-              </div>
-            )}
-
-            {currentPiece?.type === "video" && (
-              <div className="owgVideoReveal">
-                <video
-                  controls
-                  playsInline
-                  src={currentPiece.value}
-                />
-
-                <p>JUST FOR YOU ♡</p>
-              </div>
-            )}
-
-            {!currentPiece && (
-              <div className="owgEmptyReveal">
-                <span>♡</span>
-
-                <p>
-                  This little moment is waiting for something
-                  special.
-                </p>
-              </div>
-            )}
-          </div>
-
-          <div className="owgExperienceNav">
+          <div className="owrFocusArea">
             <button
               type="button"
-              disabled={contentStep === 0}
-              onClick={previousPiece}
+              className={`owrBigCard ${
+                flipped ? "isFlipped" : ""
+              }`}
+              onClick={flipCard}
             >
-              ←
+              <div className="owrBigCardInner">
+                <div className="owrBigFront">
+                  <span className="owrFrontNumber">
+                    {String(
+                      gift.moments.findIndex(
+                        (item) =>
+                          String(item.id) ===
+                          String(selected.id)
+                      ) + 1
+                    ).padStart(2, "0")}
+                  </span>
+
+                  <span className="owrFrontStar">✦</span>
+
+                  <div>
+                    <small>OPEN WHEN</small>
+                    <h1>{selected.title}</h1>
+                  </div>
+
+                  <span className="owrTap">
+                    TAP TO TURN OVER
+                  </span>
+                </div>
+
+                <div className="owrBigBack">
+                  <span className="owrBackLabel">
+                    JUST FOR YOU ♡
+                  </span>
+
+                  <p>
+                    {selected.message ||
+                      "There is something I wanted you to remember when you opened this."}
+                  </p>
+
+                  {(selected.date ||
+                    selected.time ||
+                    selected.place) && (
+                    <div className="owrMeta">
+                      {selected.date && (
+                        <div>
+                          <span>DATE</span>
+                          <strong>{selected.date}</strong>
+                        </div>
+                      )}
+
+                      {selected.time && (
+                        <div>
+                          <span>TIME</span>
+                          <strong>{selected.time}</strong>
+                        </div>
+                      )}
+
+                      {selected.place && (
+                        <div>
+                          <span>PLACE</span>
+                          <strong>{selected.place}</strong>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <span className="owrBackHeart">♡</span>
+                </div>
+              </div>
             </button>
 
-            <div className="owgDots">
-              {pieces.map((piece, index) => (
-                <span
-                  key={`${piece.type}-${index}`}
-                  className={
-                    index === contentStep ? "active" : ""
-                  }
-                />
-              ))}
-            </div>
+            {flipped && (
+              <div className="owrAfterCard">
+                {(selected.photo ||
+                  selected.voice ||
+                  selected.video) && (
+                  <button
+                    type="button"
+                    className="owrMoreButton"
+                    onClick={() =>
+                      setShowExtras((value) => !value)
+                    }
+                  >
+                    {showExtras
+                      ? "CLOSE LITTLE EXTRAS ↑"
+                      : "THERE'S MORE FOR YOU ♡"}
+                  </button>
+                )}
 
-            <button type="button" onClick={nextPiece}>
-              {contentStep === pieces.length - 1
-                ? "♡"
-                : "→"}
-            </button>
+                <button
+                  type="button"
+                  className="owrKeepButton"
+                  onClick={returnCard}
+                >
+                  KEEP THIS ONE CLOSE ♡
+                </button>
+              </div>
+            )}
           </div>
 
-          {pieces.length > 1 && (
-            <span className="owgTapHint">
-              TAP THROUGH THE LITTLE THINGS THEY LEFT FOR YOU
-            </span>
+          {flipped && showExtras && (
+            <aside className="owrExtras">
+              <div className="owrExtrasTitle">
+                <span>ONE MORE THING ♡</span>
+                <p>A few little pieces left for you.</p>
+              </div>
+
+              {selected.photo && (
+                <div className="owrPhoto">
+                  <img src={selected.photo} alt="" />
+                </div>
+              )}
+
+              {selected.voice && (
+                <div className="owrAudio">
+                  <span>◉ A LITTLE MESSAGE FROM ME</span>
+
+                  <audio
+                    src={selected.voice}
+                    controls
+                  />
+                </div>
+              )}
+
+              {selected.video && (
+                <div className="owrVideo">
+                  <video
+                    src={selected.video}
+                    controls
+                    playsInline
+                  />
+                </div>
+              )}
+            </aside>
           )}
         </section>
       )}
