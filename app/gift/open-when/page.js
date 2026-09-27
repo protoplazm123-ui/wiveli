@@ -1,6 +1,18 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import {
+  Suspense,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import {
+  Environment,
+  useAnimations,
+  useGLTF,
+} from "@react-three/drei";
 
 const FALLBACK = {
   recipient: "Masha",
@@ -60,6 +72,95 @@ const POSITIONS = [
   { x: 88, y: 23, r: -5 },
 ];
 
+/* =========================================================
+   3D WIVELI BOY
+   ========================================================= */
+
+function WiveliBoy() {
+  const group = useRef();
+
+  const { scene, animations } = useGLTF(
+    "/assets/wiveli-boy-animated.glb"
+  );
+
+  const { actions } = useAnimations(animations, group);
+
+  useEffect(() => {
+    const availableActions = Object.values(actions).filter(Boolean);
+    const animation = availableActions[0];
+
+    if (animation) {
+      animation.reset();
+      animation.fadeIn(0.3);
+      animation.play();
+    }
+
+    return () => {
+      availableActions.forEach((action) => action.stop());
+    };
+  }, [actions]);
+
+  useFrame((state) => {
+    if (!group.current) return;
+
+    group.current.position.y =
+      -1.65 +
+      Math.sin(state.clock.elapsedTime * 1.1) * 0.012;
+  });
+
+  return (
+    <group
+      ref={group}
+      position={[0, -1.65, 0]}
+      rotation={[0, -0.1, 0]}
+      scale={1.48}
+    >
+      <primitive object={scene} />
+    </group>
+  );
+}
+
+function CosmicBoyScene() {
+  return (
+    <div className="owrHeroBoy">
+      <Canvas
+        dpr={[1, 1.6]}
+        camera={{
+          position: [0, 0.15, 5.8],
+          fov: 30,
+        }}
+        gl={{
+          alpha: true,
+          antialias: true,
+        }}
+      >
+        <ambientLight intensity={2.2} />
+
+        <directionalLight
+          position={[4, 5, 5]}
+          intensity={3}
+        />
+
+        <directionalLight
+          position={[-4, 1, 3]}
+          intensity={1.4}
+        />
+
+        <Suspense fallback={null}>
+          <WiveliBoy />
+          <Environment preset="city" />
+        </Suspense>
+      </Canvas>
+    </div>
+  );
+}
+
+useGLTF.preload("/assets/wiveli-boy-animated.glb");
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
 export default function OpenWhenGiftPage() {
   const [gift, setGift] = useState(FALLBACK);
   const [loaded, setLoaded] = useState(false);
@@ -75,7 +176,9 @@ export default function OpenWhenGiftPage() {
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem("wiveli-open-when-v2");
+      const stored = localStorage.getItem(
+        "wiveli-open-when-v2"
+      );
 
       if (stored) {
         const parsed = JSON.parse(stored);
@@ -117,7 +220,8 @@ export default function OpenWhenGiftPage() {
   const selected = useMemo(
     () =>
       gift.moments.find(
-        (moment) => String(moment.id) === String(selectedId)
+        (moment) =>
+          String(moment.id) === String(selectedId)
       ),
     [gift, selectedId]
   );
@@ -130,13 +234,16 @@ export default function OpenWhenGiftPage() {
 
   const hasResponded = (id) =>
     responses.some(
-      (item) => String(item.momentId) === String(id)
+      (item) =>
+        String(item.momentId) === String(id)
     );
 
   const saveEvent = (event) => {
     try {
       const current = JSON.parse(
-        localStorage.getItem("wiveli-open-when-events-v1") || "[]"
+        localStorage.getItem(
+          "wiveli-open-when-events-v1"
+        ) || "[]"
       );
 
       localStorage.setItem(
@@ -200,7 +307,11 @@ export default function OpenWhenGiftPage() {
 
   const sendResponse = () => {
     if (!selected?.interaction?.enabled) return;
-    if (hasResponded(selected.id) || responseSent) return;
+    if (
+      hasResponded(selected.id) ||
+      responseSent
+    )
+      return;
 
     const response = {
       id: `response-${selected.id}-${Date.now()}`,
@@ -245,9 +356,13 @@ export default function OpenWhenGiftPage() {
 
   const allOpened =
     gift.moments.length > 0 &&
-    gift.moments.every((moment) => isOpened(moment.id));
+    gift.moments.every((moment) =>
+      isOpened(moment.id)
+    );
 
-  const customBackground = gift.theme?.customBackground;
+  const customBackground =
+    gift.theme?.customBackground;
+
   const customIsVideo =
     typeof customBackground === "string" &&
     customBackground.startsWith("data:video");
@@ -263,51 +378,90 @@ export default function OpenWhenGiftPage() {
       }`}
       style={{ "--owr-accent": accent }}
     >
-      {/* COSMIC */}
+      {/* ===================================================
+          NEW COSMIC WORLD
+          =================================================== */}
 
       {theme === "cosmic" && (
-        <video
-          className="owrBackground"
-          autoPlay
-          muted
-          loop
-          playsInline
-        >
-          <source
-            src="/assets/open-when/OPEN.mp4"
-            type="video/mp4"
-          />
-        </video>
+        <div className="owrCosmicWorld">
+          <div className="owrCosmicGlow owrCosmicGlowOne" />
+          <div className="owrCosmicGlow owrCosmicGlowTwo" />
+
+          <div className="owrCosmicDust" />
+
+          <div className="owrHeroTypography">
+            <div className="owrHeroOpen">
+              OPEN
+            </div>
+
+            <div className="owrHeroWhen">
+              <span>W</span>
+              <span>H</span>
+              <span>E</span>
+              <span>N</span>
+            </div>
+          </div>
+
+          <div className="owrBoyCloud">
+            <div className="owrCloudGlow" />
+            <div className="owrCloudBody" />
+          </div>
+
+          <CosmicBoyScene />
+
+          <div className="owrOrbit owrOrbitOne" />
+          <div className="owrOrbit owrOrbitTwo" />
+
+          <span className="owrCosmicSpark owrSparkOne">
+            ✦
+          </span>
+
+          <span className="owrCosmicSpark owrSparkTwo">
+            ✧
+          </span>
+
+          <span className="owrCosmicSpark owrSparkThree">
+            ✦
+          </span>
+        </div>
       )}
 
-      {/* CUSTOM BACKGROUND */}
+      {/* ===================================================
+          CUSTOM BACKGROUND
+          =================================================== */}
 
-      {theme === "custom" && customBackground && (
-        <>
-          {customIsVideo ? (
-            <video
-              className="owrBackground"
-              src={customBackground}
-              autoPlay
-              muted
-              loop
-              playsInline
-            />
-          ) : (
-            <div
-              className="owrBackground owrCustomImage"
-              style={{
-                backgroundImage: `url("${customBackground}")`,
-              }}
-            />
-          )}
-        </>
-      )}
+      {theme === "custom" &&
+        customBackground && (
+          <>
+            {customIsVideo ? (
+              <video
+                className="owrBackground"
+                src={customBackground}
+                autoPlay
+                muted
+                loop
+                playsInline
+              />
+            ) : (
+              <div
+                className="owrBackground owrCustomImage"
+                style={{
+                  backgroundImage: `url("${customBackground}")`,
+                }}
+              />
+            )}
+          </>
+        )}
 
-      {/* CSS WORLDS */}
+      {/* ===================================================
+          OTHER CSS WORLDS
+          =================================================== */}
 
       {theme !== "cosmic" &&
-        !(theme === "custom" && customBackground) && (
+        !(
+          theme === "custom" &&
+          customBackground
+        ) && (
           <div className="owrGeneratedWorld">
             <div className="owrWorldOrb owrOrbOne" />
             <div className="owrWorldOrb owrOrbTwo" />
@@ -326,7 +480,9 @@ export default function OpenWhenGiftPage() {
             {theme === "tech" && (
               <div className="owrTechGrid">
                 <span>OPEN / WHEN</span>
-                <span>01 — MEMORY SYSTEM</span>
+                <span>
+                  01 — MEMORY SYSTEM
+                </span>
               </div>
             )}
 
@@ -339,13 +495,19 @@ export default function OpenWhenGiftPage() {
             )}
 
             {theme === "custom" && (
-              <div className="owrCustomSymbol">∞</div>
+              <div className="owrCustomSymbol">
+                ∞
+              </div>
             )}
           </div>
         )}
 
       <div className="owrShade" />
       <div className="owrStars" />
+
+      {/* ===================================================
+          HEADER
+          =================================================== */}
 
       <header className="owrHeader">
         <a href="/" className="owrLogo">
@@ -366,7 +528,11 @@ export default function OpenWhenGiftPage() {
       </header>
 
       <div className="owrHint">
-        <span>FROM {gift.sender || "SOMEONE SPECIAL"}</span>
+        <span>
+          FROM{" "}
+          {gift.sender || "SOMEONE SPECIAL"}
+        </span>
+
         <p>
           {theme === "romantic"
             ? "For every moment you need a little bit of me."
@@ -378,6 +544,10 @@ export default function OpenWhenGiftPage() {
         </p>
       </div>
 
+      {/* ===================================================
+          FLOATING CARDS
+          =================================================== */}
+
       <section className="owrUniverse">
         <div className="owrBurstPoint">
           <i />
@@ -385,66 +555,103 @@ export default function OpenWhenGiftPage() {
           <i />
         </div>
 
-        {gift.moments.map((moment, index) => {
-          const position =
-            POSITIONS[index % POSITIONS.length];
+        {gift.moments.map(
+          (moment, index) => {
+            const position =
+              POSITIONS[
+                index % POSITIONS.length
+              ];
 
-          const openedMoment = isOpened(moment.id);
+            const openedMoment =
+              isOpened(moment.id);
 
-          return (
-            <button
-              type="button"
-              key={moment.id}
-              className={`owrFloatingCard ${
-                openedMoment ? "isOpened" : ""
-              }`}
-              style={{
-                "--owr-x": `${position.x}%`,
-                "--owr-y": `${position.y}%`,
-                "--owr-r": `${position.r}deg`,
-                "--owr-delay": `${index * -0.7}s`,
-              }}
-              onClick={() => chooseMoment(moment)}
-            >
-              {openedMoment ? (
-                <div className="owrMemoryCard">
-                  {moment.photo ? (
-                    <img src={moment.photo} alt="" />
-                  ) : (
-                    <div className="owrMemoryFallback">
-                      <span>♡</span>
+            return (
+              <button
+                type="button"
+                key={moment.id}
+                className={`owrFloatingCard ${
+                  openedMoment
+                    ? "isOpened"
+                    : ""
+                }`}
+                style={{
+                  "--owr-x": `${position.x}%`,
+                  "--owr-y": `${position.y}%`,
+                  "--owr-r": `${position.r}deg`,
+                  "--owr-delay": `${
+                    index * -0.7
+                  }s`,
+                }}
+                onClick={() =>
+                  chooseMoment(moment)
+                }
+              >
+                {openedMoment ? (
+                  <div className="owrMemoryCard">
+                    {moment.photo ? (
+                      <img
+                        src={moment.photo}
+                        alt=""
+                      />
+                    ) : (
+                      <div className="owrMemoryFallback">
+                        <span>♡</span>
+                      </div>
+                    )}
+
+                    <div>
+                      <small>
+                        OPENED ♡
+                      </small>
+
+                      <strong>
+                        {moment.title}
+                      </strong>
                     </div>
-                  )}
-
-                  <div>
-                    <small>OPENED ♡</small>
-                    <strong>{moment.title}</strong>
                   </div>
-                </div>
-              ) : (
-                <div className="owrClosedCard">
-                  <div className="owrCardStar">
-                    {theme === "tech" ? "◇" : "✦"}
-                  </div>
+                ) : (
+                  <div className="owrClosedCard">
+                    <div className="owrCardStar">
+                      {theme === "tech"
+                        ? "◇"
+                        : "✦"}
+                    </div>
 
-                  <small>OPEN WHEN</small>
-                  <strong>{moment.title}</strong>
-                  <span>TAP TO OPEN</span>
-                </div>
-              )}
-            </button>
-          );
-        })}
+                    <small>
+                      OPEN WHEN
+                    </small>
+
+                    <strong>
+                      {moment.title}
+                    </strong>
+
+                    <span>
+                      TAP TO OPEN
+                    </span>
+                  </div>
+                )}
+              </button>
+            );
+          }
+        )}
       </section>
 
       {allOpened && !focused && (
         <div className="owrAllOpened">
-          <span>YOU'VE OPENED THEM ALL.</span>
+          <span>
+            YOU'VE OPENED THEM ALL.
+          </span>
+
           <p>
-            But they're still here whenever you need them. ♡
+            But they're still here whenever
+            you need them. ♡
           </p>
         </div>
       )}
+
+      {/* ===================================================
+          FOCUSED CARD
+          =================================================== */}
 
       {selected && (
         <section
@@ -483,12 +690,19 @@ export default function OpenWhenGiftPage() {
                   </span>
 
                   <span className="owrFrontStar">
-                    {theme === "tech" ? "◇" : "✦"}
+                    {theme === "tech"
+                      ? "◇"
+                      : "✦"}
                   </span>
 
                   <div>
-                    <small>OPEN WHEN</small>
-                    <h1>{selected.title}</h1>
+                    <small>
+                      OPEN WHEN
+                    </small>
+
+                    <h1>
+                      {selected.title}
+                    </h1>
                   </div>
 
                   <span className="owrTap">
@@ -512,28 +726,48 @@ export default function OpenWhenGiftPage() {
                     <div className="owrMeta">
                       {selected.date && (
                         <div>
-                          <span>DATE</span>
-                          <strong>{selected.date}</strong>
+                          <span>
+                            DATE
+                          </span>
+                          <strong>
+                            {
+                              selected.date
+                            }
+                          </strong>
                         </div>
                       )}
 
                       {selected.time && (
                         <div>
-                          <span>TIME</span>
-                          <strong>{selected.time}</strong>
+                          <span>
+                            TIME
+                          </span>
+                          <strong>
+                            {
+                              selected.time
+                            }
+                          </strong>
                         </div>
                       )}
 
                       {selected.place && (
                         <div>
-                          <span>PLACE</span>
-                          <strong>{selected.place}</strong>
+                          <span>
+                            PLACE
+                          </span>
+                          <strong>
+                            {
+                              selected.place
+                            }
+                          </strong>
                         </div>
                       )}
                     </div>
                   )}
 
-                  <span className="owrBackHeart">♡</span>
+                  <span className="owrBackHeart">
+                    ♡
+                  </span>
                 </div>
               </div>
             </button>
@@ -546,7 +780,9 @@ export default function OpenWhenGiftPage() {
                   <button
                     type="button"
                     onClick={() =>
-                      setShowExtras((value) => !value)
+                      setShowExtras(
+                        (value) => !value
+                      )
                     }
                   >
                     {showExtras
@@ -565,59 +801,89 @@ export default function OpenWhenGiftPage() {
               </div>
             )}
 
-            {flipped && selected.interaction?.enabled && (
-              <div className="owrInteraction">
-                <span>♡ A LITTLE QUESTION</span>
+            {flipped &&
+              selected.interaction
+                ?.enabled && (
+                <div className="owrInteraction">
+                  <span>
+                    ♡ A LITTLE QUESTION
+                  </span>
 
-                <h2>
-                  {selected.interaction.question ||
-                    "WOULD YOU DO THIS WITH ME?"}
-                </h2>
+                  <h2>
+                    {selected.interaction
+                      .question ||
+                      "WOULD YOU DO THIS WITH ME?"}
+                  </h2>
 
-                <p>
-                  {selected.interaction.text ||
-                    "Maybe this deserves another memory."}
-                </p>
+                  <p>
+                    {selected.interaction
+                      .text ||
+                      "Maybe this deserves another memory."}
+                  </p>
 
-                {!responseSent ? (
-                  <button
-                    type="button"
-                    onClick={sendResponse}
-                  >
-                    {selected.interaction.button ||
-                      `TELL ${gift.sender?.toUpperCase()} ♡`}
-                  </button>
-                ) : (
-                  <div className="owrSent">
-                    <strong>
-                      SENT TO {gift.sender?.toUpperCase()} ♡
-                    </strong>
-                    <small>
-                      They'll know you want this too.
-                    </small>
-                  </div>
-                )}
-              </div>
-            )}
+                  {!responseSent ? (
+                    <button
+                      type="button"
+                      onClick={
+                        sendResponse
+                      }
+                    >
+                      {selected
+                        .interaction
+                        .button ||
+                        `TELL ${gift.sender?.toUpperCase()} ♡`}
+                    </button>
+                  ) : (
+                    <div className="owrSent">
+                      <strong>
+                        SENT TO{" "}
+                        {gift.sender?.toUpperCase()}{" "}
+                        ♡
+                      </strong>
+
+                      <small>
+                        They'll know you
+                        want this too.
+                      </small>
+                    </div>
+                  )}
+                </div>
+              )}
           </div>
 
           {flipped && showExtras && (
             <aside className="owrExtras">
               <div className="owrExtrasTitle">
-                <span>ONE MORE THING ♡</span>
-                <p>A few little pieces left for you.</p>
+                <span>
+                  ONE MORE THING ♡
+                </span>
+
+                <p>
+                  A few little pieces left
+                  for you.
+                </p>
               </div>
 
               {selected.photo && (
                 <div className="owrPhoto">
-                  <img src={selected.photo} alt="" />
+                  <img
+                    src={selected.photo}
+                    alt=""
+                  />
                 </div>
               )}
 
               {selected.voice && (
                 <div className="owrAudio">
-                  <span>◉ A LITTLE MESSAGE FROM ME</span>
-                  <audio src={selected.voice} controls />
+                  <span>
+                    ◉ A LITTLE MESSAGE FROM
+                    ME
+                  </span>
+
+                  <audio
+                    src={selected.voice}
+                    controls
+                  />
                 </div>
               )}
 
