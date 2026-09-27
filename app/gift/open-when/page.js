@@ -5,6 +5,11 @@ import { useEffect, useMemo, useState } from "react";
 const FALLBACK = {
   recipient: "Masha",
   sender: "Alex",
+  theme: {
+    id: "cosmic",
+    accent: "#8c63c7",
+    customBackground: null,
+  },
   moments: [
     {
       id: "miss-me",
@@ -17,6 +22,9 @@ const FALLBACK = {
       place: "",
       date: "",
       time: "",
+      interaction: {
+        enabled: false,
+      },
     },
     {
       id: "movie",
@@ -32,44 +40,10 @@ const FALLBACK = {
       interaction: {
         enabled: true,
         type: "movie",
-        question: "WOULD YOU DO THIS WITH ME AGAIN?",
+        question: "WOULD YOU GO TO THE MOVIES WITH ME AGAIN?",
         text: "One more movie night. Just us.",
         button: "YES, LET'S DO IT ♡",
-        response:
-          "Masha wants to go to the movies with you again ♡",
-      },
-    },
-    {
-      id: "sad",
-      title: "YOU'RE SAD",
-      message:
-        "You don't have to fix everything today. I'm always on your side.",
-      photo: null,
-      voice: null,
-      video: null,
-      place: "",
-      date: "",
-      time: "",
-    },
-    {
-      id: "memory",
-      title: "YOU MISS THIS DAY",
-      message:
-        "I'd go back here with you without thinking twice.",
-      photo: null,
-      voice: null,
-      video: null,
-      place: "Our place",
-      date: "",
-      time: "",
-      interaction: {
-        enabled: true,
-        type: "repeat",
-        question: "SHOULD WE MAKE THIS MEMORY AGAIN?",
-        text: "Maybe some moments deserve a second chapter.",
-        button: "I WANT THIS AGAIN ♡",
-        response:
-          "Masha wants to recreate this memory with you ♡",
+        response: "Masha wants to go to the movies with you again ♡",
       },
     },
   ],
@@ -89,6 +63,7 @@ const POSITIONS = [
 export default function OpenWhenGiftPage() {
   const [gift, setGift] = useState(FALLBACK);
   const [loaded, setLoaded] = useState(false);
+
   const [opened, setOpened] = useState([]);
   const [responses, setResponses] = useState([]);
 
@@ -109,8 +84,10 @@ export default function OpenWhenGiftPage() {
           setGift({
             ...FALLBACK,
             ...parsed,
-            recipient: parsed.recipient || FALLBACK.recipient,
-            sender: parsed.sender || FALLBACK.sender,
+            theme: {
+              ...FALLBACK.theme,
+              ...(parsed.theme || {}),
+            },
           });
         }
       }
@@ -123,12 +100,12 @@ export default function OpenWhenGiftPage() {
         setOpened(JSON.parse(openedStored));
       }
 
-      const responseStored = localStorage.getItem(
+      const responsesStored = localStorage.getItem(
         "wiveli-open-when-responses-v1"
       );
 
-      if (responseStored) {
-        setResponses(JSON.parse(responseStored));
+      if (responsesStored) {
+        setResponses(JSON.parse(responsesStored));
       }
     } catch (error) {
       console.error(error);
@@ -145,6 +122,9 @@ export default function OpenWhenGiftPage() {
     [gift, selectedId]
   );
 
+  const theme = gift.theme?.id || "cosmic";
+  const accent = gift.theme?.accent || "#8c63c7";
+
   const isOpened = (id) =>
     opened.map(String).includes(String(id));
 
@@ -156,15 +136,12 @@ export default function OpenWhenGiftPage() {
   const saveEvent = (event) => {
     try {
       const current = JSON.parse(
-        localStorage.getItem("wiveli-open-when-events-v1") ||
-          "[]"
+        localStorage.getItem("wiveli-open-when-events-v1") || "[]"
       );
-
-      const next = [...current, event];
 
       localStorage.setItem(
         "wiveli-open-when-events-v1",
-        JSON.stringify(next)
+        JSON.stringify([...current, event])
       );
     } catch (error) {
       console.error(error);
@@ -211,7 +188,7 @@ export default function OpenWhenGiftPage() {
   };
 
   const flipCard = () => {
-    if (!focused || !selected) return;
+    if (!selected) return;
 
     if (!flipped) {
       setFlipped(true);
@@ -229,7 +206,6 @@ export default function OpenWhenGiftPage() {
       id: `response-${selected.id}-${Date.now()}`,
       momentId: selected.id,
       momentTitle: selected.title,
-      type: selected.interaction.type || "custom",
       recipient: gift.recipient,
       sender: gift.sender,
       message:
@@ -243,14 +219,10 @@ export default function OpenWhenGiftPage() {
     setResponses(next);
     setResponseSent(true);
 
-    try {
-      localStorage.setItem(
-        "wiveli-open-when-responses-v1",
-        JSON.stringify(next)
-      );
-    } catch (error) {
-      console.error(error);
-    }
+    localStorage.setItem(
+      "wiveli-open-when-responses-v1",
+      JSON.stringify(next)
+    );
 
     saveEvent({
       ...response,
@@ -267,7 +239,7 @@ export default function OpenWhenGiftPage() {
 
       setTimeout(() => {
         setSelectedId(null);
-      }, 450);
+      }, 400);
     }, 100);
   };
 
@@ -275,28 +247,102 @@ export default function OpenWhenGiftPage() {
     gift.moments.length > 0 &&
     gift.moments.every((moment) => isOpened(moment.id));
 
+  const customBackground = gift.theme?.customBackground;
+  const customIsVideo =
+    typeof customBackground === "string" &&
+    customBackground.startsWith("data:video");
+
   if (!loaded) {
     return <main className="owrPage" />;
   }
 
   return (
     <main
-      className={`owrPage ${
+      className={`owrPage owrTheme-${theme} ${
         focused ? "owrHasFocus" : ""
       }`}
+      style={{ "--owr-accent": accent }}
     >
-      <video
-        className="owrBackground"
-        autoPlay
-        muted
-        loop
-        playsInline
-      >
-        <source
-          src="/assets/open-when/OPEN.mp4"
-          type="video/mp4"
-        />
-      </video>
+      {/* COSMIC */}
+
+      {theme === "cosmic" && (
+        <video
+          className="owrBackground"
+          autoPlay
+          muted
+          loop
+          playsInline
+        >
+          <source
+            src="/assets/open-when/OPEN.mp4"
+            type="video/mp4"
+          />
+        </video>
+      )}
+
+      {/* CUSTOM BACKGROUND */}
+
+      {theme === "custom" && customBackground && (
+        <>
+          {customIsVideo ? (
+            <video
+              className="owrBackground"
+              src={customBackground}
+              autoPlay
+              muted
+              loop
+              playsInline
+            />
+          ) : (
+            <div
+              className="owrBackground owrCustomImage"
+              style={{
+                backgroundImage: `url("${customBackground}")`,
+              }}
+            />
+          )}
+        </>
+      )}
+
+      {/* CSS WORLDS */}
+
+      {theme !== "cosmic" &&
+        !(theme === "custom" && customBackground) && (
+          <div className="owrGeneratedWorld">
+            <div className="owrWorldOrb owrOrbOne" />
+            <div className="owrWorldOrb owrOrbTwo" />
+            <div className="owrWorldOrb owrOrbThree" />
+
+            {theme === "romantic" && (
+              <div className="owrRomanticHearts">
+                <i>♡</i>
+                <i>♡</i>
+                <i>♡</i>
+                <i>♡</i>
+                <i>♡</i>
+              </div>
+            )}
+
+            {theme === "tech" && (
+              <div className="owrTechGrid">
+                <span>OPEN / WHEN</span>
+                <span>01 — MEMORY SYSTEM</span>
+              </div>
+            )}
+
+            {theme === "dreamy" && (
+              <div className="owrClouds">
+                <i />
+                <i />
+                <i />
+              </div>
+            )}
+
+            {theme === "custom" && (
+              <div className="owrCustomSymbol">∞</div>
+            )}
+          </div>
+        )}
 
       <div className="owrShade" />
       <div className="owrStars" />
@@ -306,12 +352,30 @@ export default function OpenWhenGiftPage() {
           WI<span>♥</span>ELI
         </a>
 
-        <span>A LITTLE SOMETHING FOR YOU</span>
+        <span>
+          {theme === "romantic"
+            ? "MADE WITH LOVE"
+            : theme === "tech"
+            ? "PERSONAL MEMORY SYSTEM"
+            : theme === "dreamy"
+            ? "A LITTLE WORLD FOR YOU"
+            : theme === "custom"
+            ? "MADE JUST FOR YOU"
+            : "A LITTLE SOMETHING FOR YOU"}
+        </span>
       </header>
 
       <div className="owrHint">
         <span>FROM {gift.sender || "SOMEONE SPECIAL"}</span>
-        <p>Choose the moment you need.</p>
+        <p>
+          {theme === "romantic"
+            ? "For every moment you need a little bit of me."
+            : theme === "tech"
+            ? "Select a moment."
+            : theme === "dreamy"
+            ? "Choose whatever your heart needs."
+            : "Choose the moment you need."}
+        </p>
       </div>
 
       <section className="owrUniverse">
@@ -359,7 +423,9 @@ export default function OpenWhenGiftPage() {
                 </div>
               ) : (
                 <div className="owrClosedCard">
-                  <div className="owrCardStar">✦</div>
+                  <div className="owrCardStar">
+                    {theme === "tech" ? "◇" : "✦"}
+                  </div>
 
                   <small>OPEN WHEN</small>
                   <strong>{moment.title}</strong>
@@ -416,7 +482,9 @@ export default function OpenWhenGiftPage() {
                     ).padStart(2, "0")}
                   </span>
 
-                  <span className="owrFrontStar">✦</span>
+                  <span className="owrFrontStar">
+                    {theme === "tech" ? "◇" : "✦"}
+                  </span>
 
                   <div>
                     <small>OPEN WHEN</small>
@@ -521,7 +589,9 @@ export default function OpenWhenGiftPage() {
                   </button>
                 ) : (
                   <div className="owrSent">
-                    <strong>SENT TO {gift.sender?.toUpperCase()} ♡</strong>
+                    <strong>
+                      SENT TO {gift.sender?.toUpperCase()} ♡
+                    </strong>
                     <small>
                       They'll know you want this too.
                     </small>
