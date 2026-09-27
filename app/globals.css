@@ -1,4 +1,432 @@
+/* =========================================================
+   OPEN WHEN — NEW COSMIC 3D WORLD
+   ========================================================= */
 
+.owrTheme-cosmic{
+  background:
+    radial-gradient(circle at 37% 44%, rgba(83,92,171,.26), transparent 28%),
+    radial-gradient(circle at 13% 18%, rgba(72,64,137,.18), transparent 24%),
+    radial-gradient(circle at 60% 76%, rgba(31,45,104,.22), transparent 32%),
+    linear-gradient(145deg,#060816 0%,#090d20 45%,#03050e 100%);
+}
+
+/* Main world */
+
+.owrCosmicWorld{
+  position:absolute;
+  z-index:0;
+  inset:0;
+  overflow:hidden;
+  pointer-events:none;
+}
+
+/* Soft nebula */
+
+.owrCosmicGlow{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(70px);
+  opacity:.6;
+}
+
+.owrCosmicGlowOne{
+  width:42vw;
+  height:42vw;
+  left:-7vw;
+  top:10vh;
+  background:rgba(92,101,194,.19);
+}
+
+.owrCosmicGlowTwo{
+  width:34vw;
+  height:34vw;
+  left:31vw;
+  bottom:-14vw;
+  background:rgba(71,58,146,.15);
+}
+
+/* Tiny star field */
+
+.owrCosmicDust{
+  position:absolute;
+  inset:0;
+  opacity:.58;
+  background-image:
+    radial-gradient(circle,rgba(255,255,255,.95) 0 1px,transparent 1.3px),
+    radial-gradient(circle,rgba(194,204,255,.7) 0 1px,transparent 1.4px),
+    radial-gradient(circle,rgba(255,255,255,.5) 0 .7px,transparent 1px);
+
+  background-size:
+    97px 97px,
+    157px 157px,
+    53px 53px;
+
+  background-position:
+    12px 18px,
+    67px 39px,
+    29px 71px;
+}
+
+/* =========================================================
+   OPEN / WHEN
+   ========================================================= */
+
+.owrHeroTypography{
+  position:absolute;
+  z-index:2;
+  left:5.5%;
+  top:14%;
+  width:55%;
+  height:72%;
+}
+
+.owrHeroOpen{
+  position:absolute;
+  left:0;
+  top:0;
+
+  color:#fff;
+
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:clamp(88px,12.5vw,230px);
+  font-weight:400;
+  line-height:.8;
+  letter-spacing:-.075em;
+
+  text-shadow:
+    0 0 30px rgba(210,218,255,.12),
+    0 0 80px rgba(122,132,210,.08);
+}
+
+.owrHeroWhen{
+  position:absolute;
+  left:-.5%;
+  bottom:2%;
+
+  display:flex;
+  align-items:flex-end;
+
+  color:#fff;
+
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:clamp(92px,13vw,245px);
+  font-weight:900;
+  line-height:.72;
+  letter-spacing:-.105em;
+
+  text-shadow:
+    0 0 25px rgba(214,220,255,.12),
+    0 0 80px rgba(105,116,205,.09);
+}
+
+.owrHeroWhen span{
+  display:block;
+}
+
+.owrHeroWhen span:nth-child(2){
+  transform:translateY(-2px);
+}
+
+.owrHeroWhen span:nth-child(3){
+  transform:translateY(2px);
+}
+
+/* =========================================================
+   3D BOY
+   ========================================================= */
+
+.owrHeroBoy{
+  position:absolute;
+
+  /*
+    THIS is the main positioning control.
+    We'll fine-tune these after seeing the screenshot.
+  */
+
+  z-index:4;
+
+  left:26%;
+  top:19%;
+
+  width:31vw;
+  height:70vh;
+
+  min-width:360px;
+  min-height:520px;
+
+  pointer-events:none;
+
+  filter:
+    drop-shadow(0 24px 35px rgba(0,0,0,.28))
+    drop-shadow(0 0 28px rgba(141,151,224,.09));
+}
+
+.owrHeroBoy canvas{
+  width:100% !important;
+  height:100% !important;
+  background:transparent !important;
+}
+
+/* =========================================================
+   CLOUD / SOFT BASE
+   ========================================================= */
+
+.owrBoyCloud{
+  position:absolute;
+  z-index:3;
+
+  left:24%;
+  top:67%;
+
+  width:29vw;
+  height:12vh;
+
+  opacity:.8;
+}
+
+.owrCloudGlow{
+  position:absolute;
+  inset:-30% -20%;
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(174,183,241,.2),
+      rgba(107,117,193,.08) 45%,
+      transparent 72%
+    );
+
+  filter:blur(18px);
+}
+
+.owrCloudBody{
+  position:absolute;
+  left:12%;
+  right:8%;
+  top:32%;
+  height:38%;
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(210,216,244,.12),
+      rgba(124,134,194,.05) 55%,
+      transparent 72%
+    );
+
+  filter:blur(8px);
+}
+
+/* =========================================================
+   ORBITS
+   ========================================================= */
+
+.owrOrbit{
+  position:absolute;
+  z-index:1;
+
+  border:1px solid rgba(196,204,255,.12);
+  border-radius:50%;
+
+  transform:rotate(-18deg);
+}
+
+.owrOrbitOne{
+  left:6%;
+  top:33%;
+
+  width:51vw;
+  height:29vw;
+}
+
+.owrOrbitTwo{
+  left:15%;
+  top:23%;
+
+  width:38vw;
+  height:42vw;
+
+  border-color:rgba(196,204,255,.07);
+
+  transform:rotate(32deg);
+}
+
+/* =========================================================
+   DECORATIVE STARS
+   ========================================================= */
+
+.owrCosmicSpark{
+  position:absolute;
+  z-index:5;
+
+  color:rgba(255,255,255,.8);
+
+  text-shadow:
+    0 0 10px rgba(255,255,255,.5),
+    0 0 24px rgba(161,173,255,.4);
+
+  animation:owrCosmicTwinkle 3s ease-in-out infinite;
+}
+
+.owrSparkOne{
+  left:8%;
+  top:48%;
+  font-size:19px;
+}
+
+.owrSparkTwo{
+  left:48%;
+  top:15%;
+  font-size:12px;
+  animation-delay:-1.4s;
+}
+
+.owrSparkThree{
+  left:53%;
+  top:72%;
+  font-size:16px;
+  animation-delay:-2.1s;
+}
+
+@keyframes owrCosmicTwinkle{
+  0%,100%{
+    opacity:.35;
+    transform:scale(.85);
+  }
+
+  50%{
+    opacity:1;
+    transform:scale(1.15);
+  }
+}
+
+/* =========================================================
+   MAKE EXISTING OVERLAYS WORK WITH NEW WORLD
+   ========================================================= */
+
+.owrTheme-cosmic .owrShade{
+  background:
+    linear-gradient(
+      90deg,
+      rgba(2,4,13,.04) 0%,
+      transparent 46%,
+      rgba(2,4,13,.1) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(2,4,13,.05),
+      transparent 55%,
+      rgba(2,4,13,.2)
+    );
+}
+
+.owrTheme-cosmic .owrStars{
+  opacity:.18;
+}
+
+/* When a card is opened, fade the whole hero too */
+
+.owrHasFocus .owrCosmicWorld{
+  opacity:.12;
+  filter:blur(12px);
+  transform:scale(1.04);
+}
+
+.owrCosmicWorld{
+  transition:
+    opacity .45s ease,
+    filter .45s ease,
+    transform .6s ease;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media(max-width:900px){
+
+  .owrHeroTypography{
+    left:5%;
+    top:17%;
+    width:70%;
+  }
+
+  .owrHeroOpen{
+    font-size:18vw;
+  }
+
+  .owrHeroWhen{
+    font-size:19vw;
+    bottom:10%;
+  }
+
+  .owrHeroBoy{
+    left:26%;
+    top:23%;
+
+    width:43vw;
+    height:61vh;
+
+    min-width:280px;
+    min-height:420px;
+  }
+
+  .owrBoyCloud{
+    left:25%;
+    width:40vw;
+  }
+}
+
+@media(max-width:600px){
+
+  .owrHeroTypography{
+    left:6%;
+    top:16%;
+    width:88%;
+    height:55%;
+  }
+
+  .owrHeroOpen{
+    font-size:24vw;
+  }
+
+  .owrHeroWhen{
+    bottom:-13%;
+    font-size:24vw;
+  }
+
+  .owrHeroBoy{
+    left:27%;
+    top:23%;
+
+    width:67vw;
+    height:54vh;
+
+    min-width:0;
+    min-height:0;
+  }
+
+  .owrBoyCloud{
+    left:25%;
+    top:61%;
+
+    width:62vw;
+  }
+
+  .owrOrbitOne{
+    width:90vw;
+    height:60vw;
+  }
+
+  .owrOrbitTwo{
+    width:70vw;
+    height:80vw;
+  }
+}
 @import url('https://fonts.googleapis.com/css2?family=Anton&family=Cinzel:wght@400&display=swap');* {
   box-sizing: border-box;
   margin: 0;
