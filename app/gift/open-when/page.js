@@ -3,26 +3,47 @@
 import { useEffect, useMemo, useState } from "react";
 
 const FALLBACK = {
-  recipient: "Sophie",
+  recipient: "Masha",
   sender: "Alex",
   moments: [
     {
       id: "miss-me",
       title: "YOU MISS ME",
       message:
-        "If you're opening this, I wish I could be right there with you. So keep this little piece of me close until I am. ♡",
+        "If you're opening this, I wish I could be right there with you. Keep this little piece of me close until I am. ♡",
       photo: null,
       voice: null,
       video: null,
-      place: "Our favorite place",
+      place: "",
+      date: "",
+      time: "",
+    },
+    {
+      id: "movie",
+      title: "YOU MISS OUR MOVIE NIGHTS",
+      message:
+        "Remember this night? I still think about how simple and perfect it felt.",
+      photo: null,
+      voice: null,
+      video: null,
+      place: "Our cinema",
       date: "September 27",
       time: "19:30",
+      interaction: {
+        enabled: true,
+        type: "movie",
+        question: "WOULD YOU DO THIS WITH ME AGAIN?",
+        text: "One more movie night. Just us.",
+        button: "YES, LET'S DO IT ♡",
+        response:
+          "Masha wants to go to the movies with you again ♡",
+      },
     },
     {
       id: "sad",
       title: "YOU'RE SAD",
       message:
-        "You don't have to fix everything today. I just want you to remember that I'm always on your side.",
+        "You don't have to fix everything today. I'm always on your side.",
       photo: null,
       voice: null,
       video: null,
@@ -31,40 +52,25 @@ const FALLBACK = {
       time: "",
     },
     {
-      id: "sleep",
-      title: "YOU CAN'T SLEEP",
+      id: "memory",
+      title: "YOU MISS THIS DAY",
       message:
-        "Close your eyes for a second. Imagine I'm there beside you telling you everything is going to be okay.",
+        "I'd go back here with you without thinking twice.",
       photo: null,
       voice: null,
       video: null,
-      place: "",
+      place: "Our place",
       date: "",
       time: "",
-    },
-    {
-      id: "bored",
-      title: "YOU'RE BORED",
-      message:
-        "Okay. This is officially your sign to stop scrolling and go do something fun. Preferably with me.",
-      photo: null,
-      voice: null,
-      video: null,
-      place: "",
-      date: "",
-      time: "",
-    },
-    {
-      id: "courage",
-      title: "YOU NEED COURAGE",
-      message:
-        "You've done harder things than this. Go do the scary thing. I'll be proud of you either way.",
-      photo: null,
-      voice: null,
-      video: null,
-      place: "",
-      date: "",
-      time: "",
+      interaction: {
+        enabled: true,
+        type: "repeat",
+        question: "SHOULD WE MAKE THIS MEMORY AGAIN?",
+        text: "Maybe some moments deserve a second chapter.",
+        button: "I WANT THIS AGAIN ♡",
+        response:
+          "Masha wants to recreate this memory with you ♡",
+      },
     },
   ],
 };
@@ -83,13 +89,14 @@ const POSITIONS = [
 export default function OpenWhenGiftPage() {
   const [gift, setGift] = useState(FALLBACK);
   const [loaded, setLoaded] = useState(false);
-
   const [opened, setOpened] = useState([]);
-  const [selectedId, setSelectedId] = useState(null);
+  const [responses, setResponses] = useState([]);
 
+  const [selectedId, setSelectedId] = useState(null);
   const [focused, setFocused] = useState(false);
   const [flipped, setFlipped] = useState(false);
   const [showExtras, setShowExtras] = useState(false);
+  const [responseSent, setResponseSent] = useState(false);
 
   useEffect(() => {
     try {
@@ -102,7 +109,8 @@ export default function OpenWhenGiftPage() {
           setGift({
             ...FALLBACK,
             ...parsed,
-            moments: parsed.moments,
+            recipient: parsed.recipient || FALLBACK.recipient,
+            sender: parsed.sender || FALLBACK.sender,
           });
         }
       }
@@ -113,6 +121,14 @@ export default function OpenWhenGiftPage() {
 
       if (openedStored) {
         setOpened(JSON.parse(openedStored));
+      }
+
+      const responseStored = localStorage.getItem(
+        "wiveli-open-when-responses-v1"
+      );
+
+      if (responseStored) {
+        setResponses(JSON.parse(responseStored));
       }
     } catch (error) {
       console.error(error);
@@ -132,39 +148,114 @@ export default function OpenWhenGiftPage() {
   const isOpened = (id) =>
     opened.map(String).includes(String(id));
 
+  const hasResponded = (id) =>
+    responses.some(
+      (item) => String(item.momentId) === String(id)
+    );
+
+  const saveEvent = (event) => {
+    try {
+      const current = JSON.parse(
+        localStorage.getItem("wiveli-open-when-events-v1") ||
+          "[]"
+      );
+
+      const next = [...current, event];
+
+      localStorage.setItem(
+        "wiveli-open-when-events-v1",
+        JSON.stringify(next)
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const chooseMoment = (moment) => {
     setSelectedId(moment.id);
     setShowExtras(false);
     setFlipped(false);
+    setResponseSent(hasResponded(moment.id));
 
     requestAnimationFrame(() => {
       setFocused(true);
     });
   };
 
+  const markOpened = (moment) => {
+    if (isOpened(moment.id)) return;
+
+    const next = [...opened, moment.id];
+
+    setOpened(next);
+
+    try {
+      localStorage.setItem(
+        "wiveli-open-when-opened-v1",
+        JSON.stringify(next)
+      );
+    } catch (error) {
+      console.error(error);
+    }
+
+    saveEvent({
+      id: `opened-${moment.id}-${Date.now()}`,
+      type: "OPENED",
+      momentId: moment.id,
+      momentTitle: moment.title,
+      recipient: gift.recipient,
+      sender: gift.sender,
+      message: `${gift.recipient} opened "${moment.title}" ♡`,
+      createdAt: new Date().toISOString(),
+    });
+  };
+
   const flipCard = () => {
-    if (!focused) return;
+    if (!focused || !selected) return;
 
     if (!flipped) {
       setFlipped(true);
-
-      if (!isOpened(selected.id)) {
-        const next = [...opened, selected.id];
-
-        setOpened(next);
-
-        try {
-          localStorage.setItem(
-            "wiveli-open-when-opened-v1",
-            JSON.stringify(next)
-          );
-        } catch (error) {
-          console.error(error);
-        }
-      }
+      markOpened(selected);
     } else {
       setFlipped(false);
     }
+  };
+
+  const sendResponse = () => {
+    if (!selected?.interaction?.enabled) return;
+    if (hasResponded(selected.id) || responseSent) return;
+
+    const response = {
+      id: `response-${selected.id}-${Date.now()}`,
+      momentId: selected.id,
+      momentTitle: selected.title,
+      type: selected.interaction.type || "custom",
+      recipient: gift.recipient,
+      sender: gift.sender,
+      message:
+        selected.interaction.response ||
+        `${gift.recipient} wants to do this with you ♡`,
+      createdAt: new Date().toISOString(),
+    };
+
+    const next = [...responses, response];
+
+    setResponses(next);
+    setResponseSent(true);
+
+    try {
+      localStorage.setItem(
+        "wiveli-open-when-responses-v1",
+        JSON.stringify(next)
+      );
+    } catch (error) {
+      console.error(error);
+    }
+
+    saveEvent({
+      ...response,
+      type: "RESPONSE",
+    });
   };
 
   const returnCard = () => {
@@ -176,8 +267,8 @@ export default function OpenWhenGiftPage() {
 
       setTimeout(() => {
         setSelectedId(null);
-      }, 500);
-    }, 150);
+      }, 450);
+    }, 100);
   };
 
   const allOpened =
@@ -236,18 +327,13 @@ export default function OpenWhenGiftPage() {
 
           const openedMoment = isOpened(moment.id);
 
-          const isSelected =
-            String(selectedId) === String(moment.id);
-
           return (
             <button
               type="button"
               key={moment.id}
-              className={[
-                "owrFloatingCard",
-                openedMoment ? "isOpened" : "",
-                isSelected ? "isSelected" : "",
-              ].join(" ")}
+              className={`owrFloatingCard ${
+                openedMoment ? "isOpened" : ""
+              }`}
               style={{
                 "--owr-x": `${position.x}%`,
                 "--owr-y": `${position.y}%`,
@@ -276,9 +362,7 @@ export default function OpenWhenGiftPage() {
                   <div className="owrCardStar">✦</div>
 
                   <small>OPEN WHEN</small>
-
                   <strong>{moment.title}</strong>
-
                   <span>TAP TO OPEN</span>
                 </div>
               )}
@@ -393,14 +477,13 @@ export default function OpenWhenGiftPage() {
                   selected.video) && (
                   <button
                     type="button"
-                    className="owrMoreButton"
                     onClick={() =>
                       setShowExtras((value) => !value)
                     }
                   >
                     {showExtras
-                      ? "CLOSE LITTLE EXTRAS ↑"
-                      : "THERE'S MORE FOR YOU ♡"}
+                      ? "CLOSE EXTRAS ↑"
+                      : "THERE'S MORE ♡"}
                   </button>
                 )}
 
@@ -411,6 +494,39 @@ export default function OpenWhenGiftPage() {
                 >
                   KEEP THIS ONE CLOSE ♡
                 </button>
+              </div>
+            )}
+
+            {flipped && selected.interaction?.enabled && (
+              <div className="owrInteraction">
+                <span>♡ A LITTLE QUESTION</span>
+
+                <h2>
+                  {selected.interaction.question ||
+                    "WOULD YOU DO THIS WITH ME?"}
+                </h2>
+
+                <p>
+                  {selected.interaction.text ||
+                    "Maybe this deserves another memory."}
+                </p>
+
+                {!responseSent ? (
+                  <button
+                    type="button"
+                    onClick={sendResponse}
+                  >
+                    {selected.interaction.button ||
+                      `TELL ${gift.sender?.toUpperCase()} ♡`}
+                  </button>
+                ) : (
+                  <div className="owrSent">
+                    <strong>SENT TO {gift.sender?.toUpperCase()} ♡</strong>
+                    <small>
+                      They'll know you want this too.
+                    </small>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -431,11 +547,7 @@ export default function OpenWhenGiftPage() {
               {selected.voice && (
                 <div className="owrAudio">
                   <span>◉ A LITTLE MESSAGE FROM ME</span>
-
-                  <audio
-                    src={selected.voice}
-                    controls
-                  />
+                  <audio src={selected.voice} controls />
                 </div>
               )}
 
