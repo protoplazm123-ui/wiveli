@@ -3,135 +3,95 @@
 import { useMemo, useState } from "react";
 
 const IDEAS = [
-  {
-    id: "miss",
-    category: "LOVE",
-    title: "YOU MISS ME",
-    symbol: "♡",
-    text: "A little piece of you for when the distance feels bigger.",
-  },
-  {
-    id: "sleep",
-    category: "COMFORT",
-    title: "YOU CAN'T SLEEP",
-    symbol: "☾",
-    text: "Something soft for the late nights.",
-  },
-  {
-    id: "reset",
-    category: "COMFORT",
-    title: "YOU NEED A RESET",
-    symbol: "↺",
-    text: "A small pause when everything feels loud.",
-  },
-  {
-    id: "smile",
-    category: "FUN",
-    title: "YOU NEED TO SMILE",
-    symbol: "☺",
-    text: "Something silly, sweet, or completely you.",
-  },
-  {
-    id: "love",
-    category: "LOVE",
-    title: "YOU NEED TO FEEL LOVED",
-    symbol: "♥",
-    text: "Remind them exactly how much they mean to you.",
-  },
-  {
-    id: "overthinking",
-    category: "COMFORT",
-    title: "YOU'RE OVERTHINKING",
-    symbol: "∞",
-    text: "A reminder to come back to right now.",
-  },
-  {
-    id: "courage",
-    category: "MOTIVATION",
-    title: "YOU NEED COURAGE",
-    symbol: "✦",
-    text: "A little push before the scary thing.",
-  },
-  {
-    id: "alone",
-    category: "COMFORT",
-    title: "YOU FEEL ALONE",
-    symbol: "◌",
-    text: "Proof that you are never quite by yourself.",
-  },
-  {
-    id: "movie",
-    category: "LOVE",
-    title: "YOU MISS OUR MOVIE NIGHTS",
-    symbol: "▶",
-    text: "A memory that might deserve another chapter.",
-  },
-  {
-    id: "good",
-    category: "FUN",
-    title: "SOMETHING GOOD HAPPENED",
-    symbol: "☆",
-    text: "Celebrate the good news together.",
-  },
-  {
-    id: "proud",
-    category: "MOTIVATION",
-    title: "YOU DOUBT YOURSELF",
-    symbol: "↑",
-    text: "Remind them what you already see in them.",
-  },
-  {
-    id: "bad-day",
-    category: "COMFORT",
-    title: "YOU HAD A BAD DAY",
-    symbol: "♡",
-    text: "A safe little corner for a difficult day.",
-  },
+  { id:"miss", category:"LOVE", title:"YOU MISS ME", symbol:"♡", text:"A little piece of you for when the distance feels bigger." },
+  { id:"sleep", category:"COMFORT", title:"YOU CAN'T SLEEP", symbol:"☾", text:"Something soft for the late nights." },
+  { id:"reset", category:"COMFORT", title:"YOU NEED A RESET", symbol:"↺", text:"A small pause when everything feels loud." },
+  { id:"smile", category:"FUN", title:"YOU NEED TO SMILE", symbol:"☺", text:"Something silly, sweet, or completely you." },
+  { id:"love", category:"LOVE", title:"YOU NEED TO FEEL LOVED", symbol:"♥", text:"Remind them exactly how much they mean to you." },
+  { id:"overthinking", category:"COMFORT", title:"YOU'RE OVERTHINKING", symbol:"∞", text:"A reminder to come back to right now." },
+  { id:"courage", category:"MOTIVATION", title:"YOU NEED COURAGE", symbol:"✦", text:"A little push before the scary thing." },
+  { id:"alone", category:"COMFORT", title:"YOU FEEL ALONE", symbol:"◌", text:"Proof that you are never quite by yourself." },
+  { id:"movie", category:"LOVE", title:"YOU MISS OUR MOVIE NIGHTS", symbol:"▶", text:"A memory that might deserve another chapter." },
+  { id:"good", category:"FUN", title:"SOMETHING GOOD HAPPENED", symbol:"☆", text:"Celebrate the good news together." },
+  { id:"proud", category:"MOTIVATION", title:"YOU DOUBT YOURSELF", symbol:"↑", text:"Remind them what you already see in them." },
+  { id:"bad-day", category:"COMFORT", title:"YOU HAD A BAD DAY", symbol:"♡", text:"A safe little corner for a difficult day." },
 ];
 
 const FILTERS = ["ALL", "LOVE", "COMFORT", "FUN", "MOTIVATION"];
 
+const THEMES = [
+  {
+    id:"romantic",
+    name:"ROMANTIC",
+    symbol:"♡",
+    description:"Soft, intimate and warm.",
+  },
+  {
+    id:"cosmic",
+    name:"COSMIC",
+    symbol:"✦",
+    description:"A little universe made for two.",
+  },
+  {
+    id:"tech",
+    name:"TECH / FUTURE",
+    symbol:"◇",
+    description:"Clean, digital and futuristic.",
+  },
+  {
+    id:"dreamy",
+    name:"DREAMY",
+    symbol:"☁",
+    description:"Light, floating and gentle.",
+  },
+  {
+    id:"custom",
+    name:"CUSTOM",
+    symbol:"∞",
+    description:"Make the world completely yours.",
+  },
+];
+
 const INTERACTIONS = [
   {
-    id: "movie",
-    label: "MOVIE",
-    question: "WOULD YOU GO TO THE MOVIES WITH ME AGAIN?",
-    text: "One more movie night. Just us.",
-    button: "YES, LET'S DO IT ♡",
+    id:"movie",
+    label:"MOVIE",
+    question:"WOULD YOU GO TO THE MOVIES WITH ME AGAIN?",
+    text:"One more movie night. Just us.",
+    button:"YES, LET'S DO IT ♡",
   },
   {
-    id: "dinner",
-    label: "DINNER",
-    question: "SHOULD WE HAVE DINNER TOGETHER?",
-    text: "I think we deserve another evening together.",
-    button: "YES, TAKE ME THERE ♡",
+    id:"dinner",
+    label:"DINNER",
+    question:"SHOULD WE HAVE DINNER TOGETHER?",
+    text:"I think we deserve another evening together.",
+    button:"YES, TAKE ME THERE ♡",
   },
   {
-    id: "trip",
-    label: "TRIP",
-    question: "SHOULD WE GO SOMEWHERE TOGETHER?",
-    text: "Maybe it's time for another little adventure.",
-    button: "LET'S GO ♡",
+    id:"trip",
+    label:"TRIP",
+    question:"SHOULD WE GO SOMEWHERE TOGETHER?",
+    text:"Maybe it's time for another little adventure.",
+    button:"LET'S GO ♡",
   },
   {
-    id: "repeat",
-    label: "DO THIS AGAIN",
-    question: "SHOULD WE MAKE THIS MEMORY AGAIN?",
-    text: "Some moments deserve a second chapter.",
-    button: "I WANT THIS AGAIN ♡",
+    id:"repeat",
+    label:"DO THIS AGAIN",
+    question:"SHOULD WE MAKE THIS MEMORY AGAIN?",
+    text:"Some moments deserve a second chapter.",
+    button:"I WANT THIS AGAIN ♡",
   },
   {
-    id: "custom",
-    label: "CUSTOM",
-    question: "WOULD YOU DO THIS WITH ME?",
-    text: "There's something I'd love to share with you.",
-    button: "YES ♡",
+    id:"custom",
+    label:"CUSTOM",
+    question:"WOULD YOU DO THIS WITH ME?",
+    text:"There's something I'd love to share with you.",
+    button:"YES ♡",
   },
 ];
 
 function readFile(file, done) {
   if (!file) return;
-
   const reader = new FileReader();
   reader.onload = () => done(reader.result);
   reader.readAsDataURL(file);
@@ -139,70 +99,72 @@ function readFile(file, done) {
 
 function createMoment(idea) {
   return {
-    id: `${idea.id}-${Date.now()}`,
-    title: idea.title,
-    category: idea.category || "CUSTOM",
-    message: "",
-    photo: null,
-    voice: null,
-    video: null,
-    place: "",
-    date: "",
-    time: "",
-    interaction: {
-      enabled: false,
-      type: "custom",
-      question: "",
-      text: "",
-      button: "",
-      response: "",
+    id:`${idea.id}-${Date.now()}`,
+    title:idea.title,
+    category:idea.category || "CUSTOM",
+    message:"",
+    photo:null,
+    voice:null,
+    video:null,
+    place:"",
+    date:"",
+    time:"",
+    interaction:{
+      enabled:false,
+      type:"custom",
+      question:"",
+      text:"",
+      button:"",
+      response:"",
     },
   };
 }
 
 export default function OpenWhenPage() {
-  const [filter, setFilter] = useState("ALL");
-  const [recipient, setRecipient] = useState("Masha");
-  const [sender, setSender] = useState("Alex");
+  const [filter,setFilter] = useState("ALL");
+  const [recipient,setRecipient] = useState("Masha");
+  const [sender,setSender] = useState("Alex");
 
-  const [moments, setMoments] = useState([]);
-  const [selectedIdea, setSelectedIdea] = useState(null);
-  const [editingId, setEditingId] = useState(null);
+  const [moments,setMoments] = useState([]);
+  const [selectedIdea,setSelectedIdea] = useState(null);
+  const [editingId,setEditingId] = useState(null);
 
-  const [customOpen, setCustomOpen] = useState(false);
-  const [customTitle, setCustomTitle] = useState("");
+  const [customOpen,setCustomOpen] = useState(false);
+  const [customTitle,setCustomTitle] = useState("");
+
+  const [theme,setTheme] = useState("cosmic");
+  const [customColor,setCustomColor] = useState("#8c63c7");
+  const [customBackground,setCustomBackground] = useState(null);
 
   const filtered = useMemo(() => {
-    if (filter === "ALL") return IDEAS;
-    return IDEAS.filter((idea) => idea.category === filter);
-  }, [filter]);
+    if(filter === "ALL") return IDEAS;
+    return IDEAS.filter((idea)=>idea.category === filter);
+  },[filter]);
 
-  const editing = moments.find(
-    (moment) => moment.id === editingId
-  );
+  const editing = moments.find((moment)=>moment.id === editingId);
 
   const alreadyAdded = (idea) =>
-    moments.some((moment) => moment.title === idea.title);
+    moments.some((moment)=>moment.title === idea.title);
 
-  const updateMoment = (field, value) => {
-    setMoments((current) =>
-      current.map((moment) =>
+  const updateMoment = (field,value) => {
+    setMoments((current)=>
+      current.map((moment)=>
         moment.id === editingId
-          ? { ...moment, [field]: value }
+          ? {...moment,[field]:value}
           : moment
       )
     );
   };
 
-  const updateInteraction = (field, value) => {
-    setMoments((current) =>
-      current.map((moment) =>
+  const updateInteraction = (field,value) => {
+    setMoments((current)=>
+      current.map((moment)=>
         moment.id === editingId
           ? {
               ...moment,
-              interaction: {
+              interaction:{
                 ...moment.interaction,
-                [field]: value,
+                [field]:value,
               },
             }
           : moment
@@ -212,10 +174,10 @@ export default function OpenWhenPage() {
 
   const addIdea = (idea) => {
     const existing = moments.find(
-      (moment) => moment.title === idea.title
+      (moment)=>moment.title === idea.title
     );
 
-    if (existing) {
+    if(existing){
       setSelectedIdea(null);
       setEditingId(existing.id);
       return;
@@ -223,31 +185,30 @@ export default function OpenWhenPage() {
 
     const moment = createMoment(idea);
 
-    setMoments((current) => [...current, moment]);
+    setMoments((current)=>[...current,moment]);
     setSelectedIdea(null);
     setEditingId(moment.id);
   };
 
   const addCustom = () => {
-    if (!customTitle.trim()) return;
+    if(!customTitle.trim()) return;
 
     const moment = createMoment({
-      id: "custom",
-      category: "CUSTOM",
-      title: customTitle.trim().toUpperCase(),
+      id:"custom",
+      category:"CUSTOM",
+      title:customTitle.trim().toUpperCase(),
     });
 
-    setMoments((current) => [...current, moment]);
+    setMoments((current)=>[...current,moment]);
     setCustomTitle("");
     setCustomOpen(false);
     setEditingId(moment.id);
   };
 
   const deleteMoment = () => {
-    setMoments((current) =>
-      current.filter((moment) => moment.id !== editingId)
+    setMoments((current)=>
+      current.filter((moment)=>moment.id !== editingId)
     );
-
     setEditingId(null);
   };
 
@@ -263,18 +224,18 @@ export default function OpenWhenPage() {
         ? `${recipient} wants to recreate this memory with you ♡`
         : `${recipient} wants to do this with you ♡`;
 
-    setMoments((current) =>
-      current.map((moment) =>
+    setMoments((current)=>
+      current.map((moment)=>
         moment.id === editingId
           ? {
               ...moment,
-              interaction: {
-                enabled: true,
-                type: preset.id,
-                question: preset.question,
-                text: preset.text,
-                button: preset.button,
-                response: responseText,
+              interaction:{
+                enabled:true,
+                type:preset.id,
+                question:preset.question,
+                text:preset.text,
+                button:preset.button,
+                response:responseText,
               },
             }
           : moment
@@ -283,36 +244,37 @@ export default function OpenWhenPage() {
   };
 
   const preview = () => {
-    try {
+    try{
       localStorage.setItem(
         "wiveli-open-when-v2",
         JSON.stringify({
-          recipient: recipient || "Someone special",
-          sender: sender || "Someone special",
+          recipient:recipient || "Someone special",
+          sender:sender || "Someone special",
+
+          theme:{
+            id:theme,
+            accent:customColor,
+            customBackground,
+          },
+
           moments,
         })
       );
 
-      localStorage.removeItem(
-        "wiveli-open-when-opened-v1"
-      );
+      localStorage.removeItem("wiveli-open-when-opened-v1");
+      localStorage.removeItem("wiveli-open-when-responses-v1");
+      localStorage.removeItem("wiveli-open-when-events-v1");
 
-      localStorage.removeItem(
-        "wiveli-open-when-responses-v1"
-      );
-
-      localStorage.removeItem(
-        "wiveli-open-when-events-v1"
-      );
-    } catch (error) {
+    }catch(error){
       console.error(error);
     }
 
-    window.location.href = "/gift/open-when";
+    window.location.href="/gift/open-when";
   };
 
-  return (
+  return(
     <main className="owcPage">
+
       <header className="owcHeader">
         <a href="/" className="owcLogo">
           WI<span>♥</span>ELI
@@ -335,7 +297,7 @@ export default function OpenWhenPage() {
 
           <h1>
             Open when
-            <br />
+            <br/>
             <em>they need you.</em>
           </h1>
 
@@ -350,7 +312,7 @@ export default function OpenWhenPage() {
               <span>FROM</span>
               <input
                 value={sender}
-                onChange={(e) => setSender(e.target.value)}
+                onChange={(e)=>setSender(e.target.value)}
                 placeholder="Your name"
               />
             </label>
@@ -359,7 +321,7 @@ export default function OpenWhenPage() {
               <span>FOR</span>
               <input
                 value={recipient}
-                onChange={(e) => setRecipient(e.target.value)}
+                onChange={(e)=>setRecipient(e.target.value)}
                 placeholder="Their name"
               />
             </label>
@@ -368,18 +330,13 @@ export default function OpenWhenPage() {
 
         <div className="owcGiftStatus">
           <span>YOUR GIFT</span>
-
-          <strong>
-            {String(moments.length).padStart(2, "0")}
-          </strong>
-
-          <p>
-            {moments.length === 1 ? "MOMENT" : "MOMENTS"} ADDED
-          </p>
+          <strong>{String(moments.length).padStart(2,"0")}</strong>
+          <p>{moments.length === 1 ? "MOMENT" : "MOMENTS"} ADDED</p>
         </div>
       </section>
 
       <section className="owcDiscover">
+
         <div className="owcDiscoverTop">
           <div>
             <span>CHOOSE A MOMENT</span>
@@ -389,19 +346,19 @@ export default function OpenWhenPage() {
           <button
             type="button"
             className="owcCustomTop"
-            onClick={() => setCustomOpen(true)}
+            onClick={()=>setCustomOpen(true)}
           >
             + CREATE YOUR OWN
           </button>
         </div>
 
         <div className="owcFilters">
-          {FILTERS.map((item) => (
+          {FILTERS.map((item)=>(
             <button
               type="button"
               key={item}
               className={filter === item ? "active" : ""}
-              onClick={() => setFilter(item)}
+              onClick={()=>setFilter(item)}
             >
               {item}
             </button>
@@ -409,23 +366,18 @@ export default function OpenWhenPage() {
         </div>
 
         <div className="owcGrid">
-          {filtered.map((idea, index) => {
-            const added = alreadyAdded(idea);
+          {filtered.map((idea,index)=>{
+            const added=alreadyAdded(idea);
 
-            return (
+            return(
               <button
                 type="button"
                 key={idea.id}
-                className={`owcCard ${
-                  added ? "isAdded" : ""
-                }`}
-                onClick={() => setSelectedIdea(idea)}
+                className={`owcCard ${added ? "isAdded" : ""}`}
+                onClick={()=>setSelectedIdea(idea)}
               >
                 <div className="owcCardTop">
-                  <span>
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-
+                  <span>{String(index+1).padStart(2,"0")}</span>
                   <i>{idea.symbol}</i>
                 </div>
 
@@ -437,9 +389,7 @@ export default function OpenWhenPage() {
 
                 <div className="owcCardBottom">
                   <span>{idea.category}</span>
-                  <strong>
-                    {added ? "ADDED ✓" : "EXPLORE →"}
-                  </strong>
+                  <strong>{added ? "ADDED ✓" : "EXPLORE →"}</strong>
                 </div>
               </button>
             );
@@ -448,19 +398,106 @@ export default function OpenWhenPage() {
           <button
             type="button"
             className="owcCard owcCustomCard"
-            onClick={() => setCustomOpen(true)}
+            onClick={()=>setCustomOpen(true)}
           >
             <div>
               <span>＋</span>
               <small>YOUR MOMENT</small>
-              <h3>
-                Something only you two understand.
-              </h3>
+              <h3>Something only you two understand.</h3>
             </div>
 
             <strong>CREATE YOUR OWN →</strong>
           </button>
         </div>
+      </section>
+
+      <section className="owcWorldSection">
+
+        <div className="owcWorldIntro">
+          <span>CHOOSE YOUR WORLD</span>
+          <h2>How should their Open When feel?</h2>
+          <p>
+            The memories stay the same. The whole atmosphere changes.
+          </p>
+        </div>
+
+        <div className="owcWorldGrid">
+          {THEMES.map((item)=>(
+            <button
+              type="button"
+              key={item.id}
+              className={`owcWorldCard owcWorld-${item.id} ${
+                theme === item.id ? "active" : ""
+              }`}
+              onClick={()=>setTheme(item.id)}
+            >
+              <div className="owcWorldPreview">
+                <div className="owcWorldMiniCard">
+                  <small>OPEN WHEN</small>
+                  <strong>YOU MISS ME</strong>
+                  <i>{item.symbol}</i>
+                </div>
+              </div>
+
+              <div className="owcWorldInfo">
+                <span>{item.symbol}</span>
+
+                <div>
+                  <strong>{item.name}</strong>
+                  <p>{item.description}</p>
+                </div>
+              </div>
+
+              {theme === item.id && (
+                <b className="owcWorldSelected">
+                  SELECTED ✓
+                </b>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {theme === "custom" && (
+          <div className="owcCustomWorld">
+
+            <label>
+              <span>ACCENT COLOR</span>
+
+              <div>
+                <input
+                  type="color"
+                  value={customColor}
+                  onChange={(e)=>setCustomColor(e.target.value)}
+                />
+
+                <strong>{customColor}</strong>
+              </div>
+            </label>
+
+            <label className="owcCustomUpload">
+              <span>BACKGROUND PHOTO / VIDEO</span>
+
+              <strong>
+                {customBackground
+                  ? "BACKGROUND ADDED ✓"
+                  : "+ UPLOAD YOUR WORLD"}
+              </strong>
+
+              <input
+                type="file"
+                accept="image/*,video/*"
+                onChange={(e)=>
+                  readFile(
+                    e.target.files?.[0],
+                    (value)=>setCustomBackground(value)
+                  )
+                }
+              />
+            </label>
+
+          </div>
+        )}
+
       </section>
 
       {moments.length > 0 && (
@@ -469,25 +506,23 @@ export default function OpenWhenPage() {
             <span>YOUR GIFT</span>
             <strong>
               {moments.length}{" "}
-              {moments.length === 1
-                ? "MOMENT"
-                : "MOMENTS"}
+              {moments.length === 1 ? "MOMENT" : "MOMENTS"}
             </strong>
           </div>
 
           <div className="owcDockItems">
-            {moments.slice(0, 4).map((moment) => (
+            {moments.slice(0,4).map((moment)=>(
               <button
                 type="button"
                 key={moment.id}
-                onClick={() => setEditingId(moment.id)}
+                onClick={()=>setEditingId(moment.id)}
               >
                 {moment.title}
               </button>
             ))}
 
             {moments.length > 4 && (
-              <span>+{moments.length - 4}</span>
+              <span>+{moments.length-4}</span>
             )}
           </div>
 
@@ -504,10 +539,11 @@ export default function OpenWhenPage() {
       {selectedIdea && (
         <div className="owcOverlay">
           <div className="owcIdeaPanel">
+
             <button
               type="button"
               className="owcClose"
-              onClick={() => setSelectedIdea(null)}
+              onClick={()=>setSelectedIdea(null)}
             >
               ×
             </button>
@@ -536,12 +572,13 @@ export default function OpenWhenPage() {
             <button
               type="button"
               className="owcCreateMoment"
-              onClick={() => addIdea(selectedIdea)}
+              onClick={()=>addIdea(selectedIdea)}
             >
               {alreadyAdded(selectedIdea)
                 ? "EDIT THIS MOMENT →"
                 : "CREATE THIS MOMENT →"}
             </button>
+
           </div>
         </div>
       )}
@@ -549,10 +586,11 @@ export default function OpenWhenPage() {
       {customOpen && (
         <div className="owcOverlay">
           <div className="owcCustomPanel">
+
             <button
               type="button"
               className="owcClose"
-              onClick={() => setCustomOpen(false)}
+              onClick={()=>setCustomOpen(false)}
             >
               ×
             </button>
@@ -564,11 +602,9 @@ export default function OpenWhenPage() {
               autoFocus
               value={customTitle}
               placeholder="YOU..."
-              onChange={(e) =>
-                setCustomTitle(e.target.value)
-              }
-              onKeyDown={(e) => {
-                if (e.key === "Enter") addCustom();
+              onChange={(e)=>setCustomTitle(e.target.value)}
+              onKeyDown={(e)=>{
+                if(e.key === "Enter") addCustom();
               }}
             />
 
@@ -579,6 +615,7 @@ export default function OpenWhenPage() {
             >
               CREATE MOMENT →
             </button>
+
           </div>
         </div>
       )}
@@ -586,10 +623,11 @@ export default function OpenWhenPage() {
       {editing && (
         <div className="owcOverlay owcEditorOverlay">
           <div className="owcEditor owcEditorV2">
+
             <button
               type="button"
               className="owcClose"
-              onClick={() => setEditingId(null)}
+              onClick={()=>setEditingId(null)}
             >
               ×
             </button>
@@ -600,43 +638,37 @@ export default function OpenWhenPage() {
 
               <input
                 value={editing.title}
-                onChange={(e) =>
-                  updateMoment(
-                    "title",
-                    e.target.value.toUpperCase()
-                  )
+                onChange={(e)=>
+                  updateMoment("title",e.target.value.toUpperCase())
                 }
               />
             </div>
 
             <div className="owcBuildGrid">
+
               <div className="owcBuildMain">
+
                 <label className="owcField">
                   <span>YOUR MESSAGE ♡</span>
 
                   <textarea
                     value={editing.message}
                     placeholder="If you're opening this..."
-                    onChange={(e) =>
-                      updateMoment(
-                        "message",
-                        e.target.value
-                      )
+                    onChange={(e)=>
+                      updateMoment("message",e.target.value)
                     }
                   />
                 </label>
 
                 <div className="owcWhenWhere">
+
                   <label>
                     <span>DATE</span>
                     <input
                       type="date"
                       value={editing.date}
-                      onChange={(e) =>
-                        updateMoment(
-                          "date",
-                          e.target.value
-                        )
+                      onChange={(e)=>
+                        updateMoment("date",e.target.value)
                       }
                     />
                   </label>
@@ -646,11 +678,8 @@ export default function OpenWhenPage() {
                     <input
                       type="time"
                       value={editing.time}
-                      onChange={(e) =>
-                        updateMoment(
-                          "time",
-                          e.target.value
-                        )
+                      onChange={(e)=>
+                        updateMoment("time",e.target.value)
                       }
                     />
                   </label>
@@ -660,123 +689,94 @@ export default function OpenWhenPage() {
                     <input
                       value={editing.place}
                       placeholder="Cinema, our place..."
-                      onChange={(e) =>
-                        updateMoment(
-                          "place",
-                          e.target.value
-                        )
+                      onChange={(e)=>
+                        updateMoment("place",e.target.value)
                       }
                     />
                   </label>
+
                 </div>
 
                 <div className="owcMediaRow">
+
                   <label>
-                    <b>
-                      {editing.photo ? "✓" : "▣"}
-                    </b>
+                    <b>{editing.photo ? "✓" : "▣"}</b>
                     <span>
-                      {editing.photo
-                        ? "PHOTO ADDED"
-                        : "ADD PHOTO"}
+                      {editing.photo ? "PHOTO ADDED" : "ADD PHOTO"}
                     </span>
 
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) =>
+                      onChange={(e)=>
                         readFile(
                           e.target.files?.[0],
-                          (value) =>
-                            updateMoment(
-                              "photo",
-                              value
-                            )
+                          (value)=>updateMoment("photo",value)
                         )
                       }
                     />
                   </label>
 
                   <label>
-                    <b>
-                      {editing.voice ? "✓" : "◉"}
-                    </b>
+                    <b>{editing.voice ? "✓" : "◉"}</b>
                     <span>
-                      {editing.voice
-                        ? "VOICE ADDED"
-                        : "ADD VOICE"}
+                      {editing.voice ? "VOICE ADDED" : "ADD VOICE"}
                     </span>
 
                     <input
                       type="file"
                       accept="audio/*"
-                      onChange={(e) =>
+                      onChange={(e)=>
                         readFile(
                           e.target.files?.[0],
-                          (value) =>
-                            updateMoment(
-                              "voice",
-                              value
-                            )
+                          (value)=>updateMoment("voice",value)
                         )
                       }
                     />
                   </label>
 
                   <label>
-                    <b>
-                      {editing.video ? "✓" : "▶"}
-                    </b>
+                    <b>{editing.video ? "✓" : "▶"}</b>
                     <span>
-                      {editing.video
-                        ? "VIDEO ADDED"
-                        : "ADD VIDEO"}
+                      {editing.video ? "VIDEO ADDED" : "ADD VIDEO"}
                     </span>
 
                     <input
                       type="file"
                       accept="video/*"
-                      onChange={(e) =>
+                      onChange={(e)=>
                         readFile(
                           e.target.files?.[0],
-                          (value) =>
-                            updateMoment(
-                              "video",
-                              value
-                            )
+                          (value)=>updateMoment("video",value)
                         )
                       }
                     />
                   </label>
+
                 </div>
+
               </div>
 
               <div className="owcInteractionBuilder">
+
                 <div className="owcInteractionTitle">
                   <span>OPTIONAL</span>
                   <h3>Make it interactive ♡</h3>
                   <p>
-                    Let {recipient || "them"} respond to this
-                    moment.
+                    Let {recipient || "them"} respond to this moment.
                   </p>
                 </div>
 
                 <label className="owcSwitch">
                   <input
                     type="checkbox"
-                    checked={
-                      editing.interaction?.enabled ||
-                      false
-                    }
-                    onChange={(e) =>
-                      updateInteraction(
-                        "enabled",
-                        e.target.checked
-                      )
+                    checked={editing.interaction?.enabled || false}
+                    onChange={(e)=>
+                      updateInteraction("enabled",e.target.checked)
                     }
                   />
 
-                  <span />
+                  <span/>
 
                   <b>
                     {editing.interaction?.enabled
@@ -788,19 +788,16 @@ export default function OpenWhenPage() {
                 {editing.interaction?.enabled && (
                   <>
                     <div className="owcInteractionTypes">
-                      {INTERACTIONS.map((item) => (
+                      {INTERACTIONS.map((item)=>(
                         <button
                           type="button"
                           key={item.id}
                           className={
-                            editing.interaction.type ===
-                            item.id
+                            editing.interaction.type === item.id
                               ? "active"
                               : ""
                           }
-                          onClick={() =>
-                            chooseInteraction(item)
-                          }
+                          onClick={()=>chooseInteraction(item)}
                         >
                           {item.label}
                         </button>
@@ -809,57 +806,36 @@ export default function OpenWhenPage() {
 
                     <label className="owcMiniField">
                       <span>QUESTION</span>
-
                       <input
-                        value={
-                          editing.interaction.question
-                        }
-                        onChange={(e) =>
-                          updateInteraction(
-                            "question",
-                            e.target.value
-                          )
+                        value={editing.interaction.question}
+                        onChange={(e)=>
+                          updateInteraction("question",e.target.value)
                         }
                       />
                     </label>
 
                     <label className="owcMiniField">
                       <span>LITTLE NOTE</span>
-
                       <input
-                        value={
-                          editing.interaction.text
-                        }
-                        onChange={(e) =>
-                          updateInteraction(
-                            "text",
-                            e.target.value
-                          )
+                        value={editing.interaction.text}
+                        onChange={(e)=>
+                          updateInteraction("text",e.target.value)
                         }
                       />
                     </label>
 
                     <label className="owcMiniField">
                       <span>BUTTON</span>
-
                       <input
-                        value={
-                          editing.interaction.button
-                        }
-                        onChange={(e) =>
-                          updateInteraction(
-                            "button",
-                            e.target.value
-                          )
+                        value={editing.interaction.button}
+                        onChange={(e)=>
+                          updateInteraction("button",e.target.value)
                         }
                       />
                     </label>
 
                     <div className="owcResponsePreview">
-                      <span>
-                        WHAT YOU'LL BE NOTIFIED
-                      </span>
-
+                      <span>WHAT YOU'LL BE NOTIFIED</span>
                       <p>
                         {editing.interaction.response ||
                           `${recipient} wants to do this with you ♡`}
@@ -867,7 +843,9 @@ export default function OpenWhenPage() {
                     </div>
                   </>
                 )}
+
               </div>
+
             </div>
 
             <div className="owcEditorActions">
@@ -880,14 +858,16 @@ export default function OpenWhenPage() {
 
               <button
                 type="button"
-                onClick={() => setEditingId(null)}
+                onClick={()=>setEditingId(null)}
               >
                 SAVE MOMENT ♡
               </button>
             </div>
+
           </div>
         </div>
       )}
+
     </main>
   );
 }
