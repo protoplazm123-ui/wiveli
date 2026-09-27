@@ -29258,3 +29258,320 @@ main {
     flex-wrap:wrap;
   }
 }
+/* =========================================================
+   OPEN WHEN — CHOOSE YOUR WORLD
+   ========================================================= */
+
+.owcWorldSection{
+  position:relative;
+  padding:90px 4% 150px;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+
+.owcWorldIntro{
+  max-width:620px;
+  margin-bottom:35px;
+}
+
+.owcWorldIntro>span{
+  color:#a978cf;
+  font-size:6px;
+  letter-spacing:.2em;
+}
+
+.owcWorldIntro h2{
+  margin:9px 0 8px;
+  color:#fff;
+  font-family:Georgia,serif;
+  font-size:30px;
+  font-weight:400;
+}
+
+.owcWorldIntro p{
+  margin:0;
+  color:rgba(255,255,255,.35);
+  font-size:9px;
+}
+
+.owcWorldGrid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:8px;
+}
+
+.owcWorldCard{
+  position:relative;
+  min-width:0;
+  padding:0;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.08);
+  background:#0d0a13;
+  color:#fff;
+  text-align:left;
+  cursor:pointer;
+  transition:
+    transform .25s ease,
+    border-color .25s ease;
+}
+
+.owcWorldCard:hover{
+  transform:translateY(-3px);
+  border-color:rgba(255,255,255,.22);
+}
+
+.owcWorldCard.active{
+  border-color:#bb8de0;
+}
+
+.owcWorldPreview{
+  position:relative;
+  height:180px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.owcWorldMiniCard{
+  position:relative;
+  width:95px;
+  height:125px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:14px;
+  box-shadow:0 15px 35px rgba(0,0,0,.3);
+  transform:rotate(-4deg);
+}
+
+.owcWorldMiniCard small{
+  margin-bottom:7px;
+  font-size:4px;
+  letter-spacing:.15em;
+  opacity:.55;
+}
+
+.owcWorldMiniCard strong{
+  max-width:70px;
+  font-size:8px;
+  font-weight:500;
+  line-height:1.15;
+}
+
+.owcWorldMiniCard i{
+  position:absolute;
+  right:10px;
+  bottom:8px;
+  font-family:Georgia,serif;
+  font-size:13px;
+  font-style:normal;
+}
+
+/* ROMANTIC */
+
+.owcWorld-romantic .owcWorldPreview{
+  background:
+    radial-gradient(circle at 60% 30%,rgba(255,195,224,.35),transparent 38%),
+    linear-gradient(145deg,#6f3f61,#281a2c);
+}
+
+.owcWorld-romantic .owcWorldMiniCard{
+  background:#f2e4e8;
+  color:#5d3449;
+}
+
+/* COSMIC */
+
+.owcWorld-cosmic .owcWorldPreview{
+  background:
+    radial-gradient(circle at 70% 25%,#9b83d5 0 1px,transparent 2px),
+    radial-gradient(circle at 25% 65%,#fff 0 1px,transparent 2px),
+    radial-gradient(circle at 65% 50%,rgba(111,86,190,.35),transparent 35%),
+    linear-gradient(145deg,#111a42,#050714);
+  background-size:auto,auto,auto,auto;
+}
+
+.owcWorld-cosmic .owcWorldMiniCard{
+  border:1px solid rgba(255,255,255,.35);
+  background:#11172d;
+}
+
+/* TECH */
+
+.owcWorld-tech .owcWorldPreview{
+  background:
+    linear-gradient(rgba(106,214,255,.08) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(106,214,255,.08) 1px,transparent 1px),
+    linear-gradient(145deg,#071015,#0c1820);
+  background-size:20px 20px,20px 20px,auto;
+}
+
+.owcWorld-tech .owcWorldMiniCard{
+  border:1px solid #75cbe3;
+  background:rgba(6,18,24,.85);
+  color:#b8efff;
+}
+
+/* DREAMY */
+
+.owcWorld-dreamy .owcWorldPreview{
+  background:
+    radial-gradient(ellipse at 25% 75%,rgba(255,255,255,.85),transparent 28%),
+    radial-gradient(ellipse at 80% 25%,rgba(255,255,255,.55),transparent 25%),
+    linear-gradient(145deg,#c3b5df,#897cad);
+}
+
+.owcWorld-dreamy .owcWorldMiniCard{
+  background:rgba(250,248,255,.87);
+  color:#685b7d;
+}
+
+/* CUSTOM */
+
+.owcWorld-custom .owcWorldPreview{
+  background:
+    conic-gradient(
+      from 210deg,
+      #311d43,
+      #5c4079,
+      #324d65,
+      #633f5e,
+      #311d43
+    );
+}
+
+.owcWorld-custom .owcWorldMiniCard{
+  border:1px solid rgba(255,255,255,.35);
+  background:rgba(10,8,15,.65);
+  backdrop-filter:blur(8px);
+}
+
+.owcWorldInfo{
+  min-height:83px;
+  display:flex;
+  gap:10px;
+  padding:15px;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+
+.owcWorldInfo>span{
+  color:#c59ae4;
+  font-family:Georgia,serif;
+  font-size:16px;
+}
+
+.owcWorldInfo strong{
+  display:block;
+  font-size:7px;
+  font-weight:500;
+  letter-spacing:.08em;
+}
+
+.owcWorldInfo p{
+  margin:5px 0 0;
+  color:rgba(255,255,255,.32);
+  font-size:7px;
+  line-height:1.35;
+}
+
+.owcWorldSelected{
+  position:absolute;
+  right:10px;
+  top:10px;
+  padding:5px 7px;
+  background:#fff;
+  color:#17101c;
+  font-size:5px;
+  font-weight:500;
+  letter-spacing:.1em;
+}
+
+/* CUSTOM CONTROLS */
+
+.owcCustomWorld{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+  padding:16px;
+  border:1px solid rgba(188,140,223,.2);
+  background:rgba(188,140,223,.035);
+}
+
+.owcCustomWorld>label{
+  flex:1;
+}
+
+.owcCustomWorld>label>span{
+  display:block;
+  margin-bottom:8px;
+  color:#a978cf;
+  font-size:5px;
+  letter-spacing:.17em;
+}
+
+.owcCustomWorld label>div{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.owcCustomWorld input[type="color"]{
+  width:36px;
+  height:27px;
+  padding:0;
+  border:0;
+  background:none;
+  cursor:pointer;
+}
+
+.owcCustomWorld strong{
+  color:rgba(255,255,255,.55);
+  font-size:7px;
+  font-weight:400;
+}
+
+.owcCustomUpload{
+  cursor:pointer;
+}
+
+.owcCustomUpload>strong{
+  display:flex;
+  min-height:29px;
+  align-items:center;
+  padding:0 12px;
+  border:1px solid rgba(255,255,255,.1);
+}
+
+.owcCustomUpload input{
+  display:none;
+}
+
+@media(max-width:1000px){
+  .owcWorldGrid{
+    grid-template-columns:repeat(3,1fr);
+  }
+}
+
+@media(max-width:650px){
+  .owcWorldSection{
+    padding:60px 18px 130px;
+  }
+
+  .owcWorldGrid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .owcWorldPreview{
+    height:145px;
+  }
+
+  .owcCustomWorld{
+    flex-direction:column;
+  }
+}
+
+@media(max-width:420px){
+  .owcWorldGrid{
+    grid-template-columns:1fr;
+  }
+}
