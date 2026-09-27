@@ -15,21 +15,21 @@ const IDEAS = [
     category: "COMFORT",
     title: "YOU CAN'T SLEEP",
     symbol: "☾",
-    text: "Something soft for the nights when their mind won't slow down.",
+    text: "Something soft for the late nights.",
   },
   {
     id: "reset",
     category: "COMFORT",
     title: "YOU NEED A RESET",
     symbol: "↺",
-    text: "A small pause to help them breathe and begin again.",
+    text: "A small pause when everything feels loud.",
   },
   {
     id: "smile",
     category: "FUN",
     title: "YOU NEED TO SMILE",
     symbol: "☺",
-    text: "A tiny dose of you for a day that needs something lighter.",
+    text: "Something silly, sweet, or completely you.",
   },
   {
     id: "love",
@@ -43,62 +43,91 @@ const IDEAS = [
     category: "COMFORT",
     title: "YOU'RE OVERTHINKING",
     symbol: "∞",
-    text: "A little grounding when their thoughts get too loud.",
+    text: "A reminder to come back to right now.",
   },
   {
-    id: "proud",
+    id: "courage",
     category: "MOTIVATION",
-    title: "YOU DOUBT YOURSELF",
+    title: "YOU NEED COURAGE",
     symbol: "✦",
-    text: "Give them your voice when they forget what they're capable of.",
+    text: "A little push before the scary thing.",
   },
   {
     id: "alone",
     category: "COMFORT",
     title: "YOU FEEL ALONE",
     symbol: "◌",
-    text: "Something to make the distance between you feel smaller.",
+    text: "Proof that you are never quite by yourself.",
+  },
+  {
+    id: "movie",
+    category: "LOVE",
+    title: "YOU MISS OUR MOVIE NIGHTS",
+    symbol: "▶",
+    text: "A memory that might deserve another chapter.",
   },
   {
     id: "good",
-    category: "LOVE",
+    category: "FUN",
     title: "SOMETHING GOOD HAPPENED",
     symbol: "☆",
-    text: "A little celebration waiting for their happiest days.",
+    text: "Celebrate the good news together.",
   },
   {
-    id: "courage",
+    id: "proud",
     category: "MOTIVATION",
-    title: "YOU NEED COURAGE",
+    title: "YOU DOUBT YOURSELF",
     symbol: "↑",
-    text: "A reminder that you're already cheering for them.",
-  },
-  {
-    id: "bored",
-    category: "FUN",
-    title: "YOU'RE BORED",
-    symbol: "→",
-    text: "A tiny surprise, challenge or plan to change the mood.",
+    text: "Remind them what you already see in them.",
   },
   {
     id: "bad-day",
     category: "COMFORT",
     title: "YOU HAD A BAD DAY",
     symbol: "♡",
-    text: "A safe little corner for the days that simply weren't kind.",
+    text: "A safe little corner for a difficult day.",
   },
 ];
 
 const FILTERS = ["ALL", "LOVE", "COMFORT", "FUN", "MOTIVATION"];
 
-const createMoment = (idea) => ({
-  id: `${idea.id}-${Date.now()}`,
-  title: idea.title,
-  message: "",
-  photo: null,
-  voice: null,
-  video: null,
-});
+const INTERACTIONS = [
+  {
+    id: "movie",
+    label: "MOVIE",
+    question: "WOULD YOU GO TO THE MOVIES WITH ME AGAIN?",
+    text: "One more movie night. Just us.",
+    button: "YES, LET'S DO IT ♡",
+  },
+  {
+    id: "dinner",
+    label: "DINNER",
+    question: "SHOULD WE HAVE DINNER TOGETHER?",
+    text: "I think we deserve another evening together.",
+    button: "YES, TAKE ME THERE ♡",
+  },
+  {
+    id: "trip",
+    label: "TRIP",
+    question: "SHOULD WE GO SOMEWHERE TOGETHER?",
+    text: "Maybe it's time for another little adventure.",
+    button: "LET'S GO ♡",
+  },
+  {
+    id: "repeat",
+    label: "DO THIS AGAIN",
+    question: "SHOULD WE MAKE THIS MEMORY AGAIN?",
+    text: "Some moments deserve a second chapter.",
+    button: "I WANT THIS AGAIN ♡",
+  },
+  {
+    id: "custom",
+    label: "CUSTOM",
+    question: "WOULD YOU DO THIS WITH ME?",
+    text: "There's something I'd love to share with you.",
+    button: "YES ♡",
+  },
+];
 
 function readFile(file, done) {
   if (!file) return;
@@ -108,57 +137,52 @@ function readFile(file, done) {
   reader.readAsDataURL(file);
 }
 
+function createMoment(idea) {
+  return {
+    id: `${idea.id}-${Date.now()}`,
+    title: idea.title,
+    category: idea.category || "CUSTOM",
+    message: "",
+    photo: null,
+    voice: null,
+    video: null,
+    place: "",
+    date: "",
+    time: "",
+    interaction: {
+      enabled: false,
+      type: "custom",
+      question: "",
+      text: "",
+      button: "",
+      response: "",
+    },
+  };
+}
+
 export default function OpenWhenPage() {
   const [filter, setFilter] = useState("ALL");
-  const [selectedIdea, setSelectedIdea] = useState(null);
+  const [recipient, setRecipient] = useState("Masha");
+  const [sender, setSender] = useState("Alex");
+
   const [moments, setMoments] = useState([]);
+  const [selectedIdea, setSelectedIdea] = useState(null);
   const [editingId, setEditingId] = useState(null);
+
   const [customOpen, setCustomOpen] = useState(false);
   const [customTitle, setCustomTitle] = useState("");
 
-  const filtered = useMemo(
-    () =>
-      filter === "ALL"
-        ? IDEAS
-        : IDEAS.filter((idea) => idea.category === filter),
-    [filter]
-  );
+  const filtered = useMemo(() => {
+    if (filter === "ALL") return IDEAS;
+    return IDEAS.filter((idea) => idea.category === filter);
+  }, [filter]);
 
-  const editing = moments.find((item) => item.id === editingId);
+  const editing = moments.find(
+    (moment) => moment.id === editingId
+  );
 
   const alreadyAdded = (idea) =>
     moments.some((moment) => moment.title === idea.title);
-
-  const addIdea = (idea) => {
-    const existing = moments.find(
-      (moment) => moment.title === idea.title
-    );
-
-    if (existing) {
-      setEditingId(existing.id);
-      setSelectedIdea(null);
-      return;
-    }
-
-    const moment = createMoment(idea);
-    setMoments((current) => [...current, moment]);
-    setSelectedIdea(null);
-    setEditingId(moment.id);
-  };
-
-  const addCustom = () => {
-    if (!customTitle.trim()) return;
-
-    const moment = createMoment({
-      id: "custom",
-      title: customTitle.trim().toUpperCase(),
-    });
-
-    setMoments((current) => [...current, moment]);
-    setCustomTitle("");
-    setCustomOpen(false);
-    setEditingId(moment.id);
-  };
 
   const updateMoment = (field, value) => {
     setMoments((current) =>
@@ -170,11 +194,92 @@ export default function OpenWhenPage() {
     );
   };
 
+  const updateInteraction = (field, value) => {
+    setMoments((current) =>
+      current.map((moment) =>
+        moment.id === editingId
+          ? {
+              ...moment,
+              interaction: {
+                ...moment.interaction,
+                [field]: value,
+              },
+            }
+          : moment
+      )
+    );
+  };
+
+  const addIdea = (idea) => {
+    const existing = moments.find(
+      (moment) => moment.title === idea.title
+    );
+
+    if (existing) {
+      setSelectedIdea(null);
+      setEditingId(existing.id);
+      return;
+    }
+
+    const moment = createMoment(idea);
+
+    setMoments((current) => [...current, moment]);
+    setSelectedIdea(null);
+    setEditingId(moment.id);
+  };
+
+  const addCustom = () => {
+    if (!customTitle.trim()) return;
+
+    const moment = createMoment({
+      id: "custom",
+      category: "CUSTOM",
+      title: customTitle.trim().toUpperCase(),
+    });
+
+    setMoments((current) => [...current, moment]);
+    setCustomTitle("");
+    setCustomOpen(false);
+    setEditingId(moment.id);
+  };
+
   const deleteMoment = () => {
     setMoments((current) =>
       current.filter((moment) => moment.id !== editingId)
     );
+
     setEditingId(null);
+  };
+
+  const chooseInteraction = (preset) => {
+    const responseText =
+      preset.id === "movie"
+        ? `${recipient} wants to go to the movies with you ♡`
+        : preset.id === "dinner"
+        ? `${recipient} wants to have dinner with you ♡`
+        : preset.id === "trip"
+        ? `${recipient} wants to go somewhere with you ♡`
+        : preset.id === "repeat"
+        ? `${recipient} wants to recreate this memory with you ♡`
+        : `${recipient} wants to do this with you ♡`;
+
+    setMoments((current) =>
+      current.map((moment) =>
+        moment.id === editingId
+          ? {
+              ...moment,
+              interaction: {
+                enabled: true,
+                type: preset.id,
+                question: preset.question,
+                text: preset.text,
+                button: preset.button,
+                response: responseText,
+              },
+            }
+          : moment
+      )
+    );
   };
 
   const preview = () => {
@@ -182,9 +287,22 @@ export default function OpenWhenPage() {
       localStorage.setItem(
         "wiveli-open-when-v2",
         JSON.stringify({
-          recipient: "Someone special",
+          recipient: recipient || "Someone special",
+          sender: sender || "Someone special",
           moments,
         })
+      );
+
+      localStorage.removeItem(
+        "wiveli-open-when-opened-v1"
+      );
+
+      localStorage.removeItem(
+        "wiveli-open-when-responses-v1"
+      );
+
+      localStorage.removeItem(
+        "wiveli-open-when-events-v1"
       );
     } catch (error) {
       console.error(error);
@@ -222,10 +340,30 @@ export default function OpenWhenPage() {
           </h1>
 
           <p>
-            Create little moments they can come back to —
-            whenever they need comfort, courage, love, or just
-            a little bit of you.
+            Create little moments they can return to whenever
+            they need comfort, courage, love or simply a little
+            bit of you.
           </p>
+
+          <div className="owcPeople">
+            <label>
+              <span>FROM</span>
+              <input
+                value={sender}
+                onChange={(e) => setSender(e.target.value)}
+                placeholder="Your name"
+              />
+            </label>
+
+            <label>
+              <span>FOR</span>
+              <input
+                value={recipient}
+                onChange={(e) => setRecipient(e.target.value)}
+                placeholder="Their name"
+              />
+            </label>
+          </div>
         </div>
 
         <div className="owcGiftStatus">
@@ -238,25 +376,6 @@ export default function OpenWhenPage() {
           <p>
             {moments.length === 1 ? "MOMENT" : "MOMENTS"} ADDED
           </p>
-
-          {moments.length > 0 && (
-            <div className="owcMiniMoments">
-              {moments.slice(0, 5).map((moment, index) => (
-                <button
-                  type="button"
-                  key={moment.id}
-                  onClick={() => setEditingId(moment.id)}
-                  title={moment.title}
-                >
-                  {String(index + 1).padStart(2, "0")}
-                </button>
-              ))}
-
-              {moments.length > 5 && (
-                <i>+{moments.length - 5}</i>
-              )}
-            </div>
-          )}
         </div>
       </section>
 
@@ -297,7 +416,9 @@ export default function OpenWhenPage() {
               <button
                 type="button"
                 key={idea.id}
-                className={`owcCard ${added ? "isAdded" : ""}`}
+                className={`owcCard ${
+                  added ? "isAdded" : ""
+                }`}
                 onClick={() => setSelectedIdea(idea)}
               >
                 <div className="owcCardTop">
@@ -316,7 +437,6 @@ export default function OpenWhenPage() {
 
                 <div className="owcCardBottom">
                   <span>{idea.category}</span>
-
                   <strong>
                     {added ? "ADDED ✓" : "EXPLORE →"}
                   </strong>
@@ -333,7 +453,9 @@ export default function OpenWhenPage() {
             <div>
               <span>＋</span>
               <small>YOUR MOMENT</small>
-              <h3>Something only you two understand.</h3>
+              <h3>
+                Something only you two understand.
+              </h3>
             </div>
 
             <strong>CREATE YOUR OWN →</strong>
@@ -345,10 +467,11 @@ export default function OpenWhenPage() {
         <div className="owcDock">
           <div>
             <span>YOUR GIFT</span>
-
             <strong>
               {moments.length}{" "}
-              {moments.length === 1 ? "MOMENT" : "MOMENTS"}
+              {moments.length === 1
+                ? "MOMENT"
+                : "MOMENTS"}
             </strong>
           </div>
 
@@ -379,14 +502,7 @@ export default function OpenWhenPage() {
       )}
 
       {selectedIdea && (
-        <div
-          className="owcOverlay"
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) {
-              setSelectedIdea(null);
-            }
-          }}
-        >
+        <div className="owcOverlay">
           <div className="owcIdeaPanel">
             <button
               type="button"
@@ -401,9 +517,7 @@ export default function OpenWhenPage() {
             </div>
 
             <span>OPEN WHEN...</span>
-
             <h2>{selectedIdea.title}</h2>
-
             <p>{selectedIdea.text}</p>
 
             <div className="owcCanHold">
@@ -414,6 +528,8 @@ export default function OpenWhenPage() {
                 <i>▣ PHOTO</i>
                 <i>◉ VOICE</i>
                 <i>▶ VIDEO</i>
+                <i>⌖ PLACE</i>
+                <i>✦ INVITATION</i>
               </div>
             </div>
 
@@ -448,18 +564,18 @@ export default function OpenWhenPage() {
               autoFocus
               value={customTitle}
               placeholder="YOU..."
-              onChange={(event) =>
-                setCustomTitle(event.target.value)
+              onChange={(e) =>
+                setCustomTitle(e.target.value)
               }
-              onKeyDown={(event) => {
-                if (event.key === "Enter") addCustom();
+              onKeyDown={(e) => {
+                if (e.key === "Enter") addCustom();
               }}
             />
 
             <button
               type="button"
-              disabled={!customTitle.trim()}
               onClick={addCustom}
+              disabled={!customTitle.trim()}
             >
               CREATE MOMENT →
             </button>
@@ -468,8 +584,8 @@ export default function OpenWhenPage() {
       )}
 
       {editing && (
-        <div className="owcOverlay">
-          <div className="owcEditor">
+        <div className="owcOverlay owcEditorOverlay">
+          <div className="owcEditor owcEditorV2">
             <button
               type="button"
               className="owcClose"
@@ -479,96 +595,279 @@ export default function OpenWhenPage() {
             </button>
 
             <div className="owcEditorHead">
-              <span>YOUR MOMENT</span>
+              <span>BUILD THIS MOMENT</span>
               <small>OPEN WHEN...</small>
 
               <input
                 value={editing.title}
-                onChange={(event) =>
+                onChange={(e) =>
                   updateMoment(
                     "title",
-                    event.target.value.toUpperCase()
+                    e.target.value.toUpperCase()
                   )
                 }
               />
             </div>
 
-            <div className="owcEditorGrid">
-              <div className="owcMessageEditor">
-                <span>MESSAGE</span>
+            <div className="owcBuildGrid">
+              <div className="owcBuildMain">
+                <label className="owcField">
+                  <span>YOUR MESSAGE ♡</span>
 
-                <textarea
-                  value={editing.message}
-                  placeholder="If you're opening this..."
-                  onChange={(event) =>
-                    updateMoment("message", event.target.value)
-                  }
-                />
+                  <textarea
+                    value={editing.message}
+                    placeholder="If you're opening this..."
+                    onChange={(e) =>
+                      updateMoment(
+                        "message",
+                        e.target.value
+                      )
+                    }
+                  />
+                </label>
 
-                <i>♡</i>
+                <div className="owcWhenWhere">
+                  <label>
+                    <span>DATE</span>
+                    <input
+                      type="date"
+                      value={editing.date}
+                      onChange={(e) =>
+                        updateMoment(
+                          "date",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </label>
+
+                  <label>
+                    <span>TIME</span>
+                    <input
+                      type="time"
+                      value={editing.time}
+                      onChange={(e) =>
+                        updateMoment(
+                          "time",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </label>
+
+                  <label>
+                    <span>PLACE</span>
+                    <input
+                      value={editing.place}
+                      placeholder="Cinema, our place..."
+                      onChange={(e) =>
+                        updateMoment(
+                          "place",
+                          e.target.value
+                        )
+                      }
+                    />
+                  </label>
+                </div>
+
+                <div className="owcMediaRow">
+                  <label>
+                    <b>
+                      {editing.photo ? "✓" : "▣"}
+                    </b>
+                    <span>
+                      {editing.photo
+                        ? "PHOTO ADDED"
+                        : "ADD PHOTO"}
+                    </span>
+
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) =>
+                        readFile(
+                          e.target.files?.[0],
+                          (value) =>
+                            updateMoment(
+                              "photo",
+                              value
+                            )
+                        )
+                      }
+                    />
+                  </label>
+
+                  <label>
+                    <b>
+                      {editing.voice ? "✓" : "◉"}
+                    </b>
+                    <span>
+                      {editing.voice
+                        ? "VOICE ADDED"
+                        : "ADD VOICE"}
+                    </span>
+
+                    <input
+                      type="file"
+                      accept="audio/*"
+                      onChange={(e) =>
+                        readFile(
+                          e.target.files?.[0],
+                          (value) =>
+                            updateMoment(
+                              "voice",
+                              value
+                            )
+                        )
+                      }
+                    />
+                  </label>
+
+                  <label>
+                    <b>
+                      {editing.video ? "✓" : "▶"}
+                    </b>
+                    <span>
+                      {editing.video
+                        ? "VIDEO ADDED"
+                        : "ADD VIDEO"}
+                    </span>
+
+                    <input
+                      type="file"
+                      accept="video/*"
+                      onChange={(e) =>
+                        readFile(
+                          e.target.files?.[0],
+                          (value) =>
+                            updateMoment(
+                              "video",
+                              value
+                            )
+                        )
+                      }
+                    />
+                  </label>
+                </div>
               </div>
 
-              <label className="owcMediaEditor">
-                {editing.photo ? (
-                  <img src={editing.photo} alt="" />
-                ) : (
+              <div className="owcInteractionBuilder">
+                <div className="owcInteractionTitle">
+                  <span>OPTIONAL</span>
+                  <h3>Make it interactive ♡</h3>
+                  <p>
+                    Let {recipient || "them"} respond to this
+                    moment.
+                  </p>
+                </div>
+
+                <label className="owcSwitch">
+                  <input
+                    type="checkbox"
+                    checked={
+                      editing.interaction?.enabled ||
+                      false
+                    }
+                    onChange={(e) =>
+                      updateInteraction(
+                        "enabled",
+                        e.target.checked
+                      )
+                    }
+                  />
+
+                  <span />
+
+                  <b>
+                    {editing.interaction?.enabled
+                      ? "INTERACTION ON"
+                      : "ADD INTERACTION"}
+                  </b>
+                </label>
+
+                {editing.interaction?.enabled && (
                   <>
-                    <b>＋</b>
-                    <span>ADD PHOTO</span>
+                    <div className="owcInteractionTypes">
+                      {INTERACTIONS.map((item) => (
+                        <button
+                          type="button"
+                          key={item.id}
+                          className={
+                            editing.interaction.type ===
+                            item.id
+                              ? "active"
+                              : ""
+                          }
+                          onClick={() =>
+                            chooseInteraction(item)
+                          }
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    <label className="owcMiniField">
+                      <span>QUESTION</span>
+
+                      <input
+                        value={
+                          editing.interaction.question
+                        }
+                        onChange={(e) =>
+                          updateInteraction(
+                            "question",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </label>
+
+                    <label className="owcMiniField">
+                      <span>LITTLE NOTE</span>
+
+                      <input
+                        value={
+                          editing.interaction.text
+                        }
+                        onChange={(e) =>
+                          updateInteraction(
+                            "text",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </label>
+
+                    <label className="owcMiniField">
+                      <span>BUTTON</span>
+
+                      <input
+                        value={
+                          editing.interaction.button
+                        }
+                        onChange={(e) =>
+                          updateInteraction(
+                            "button",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </label>
+
+                    <div className="owcResponsePreview">
+                      <span>
+                        WHAT YOU'LL BE NOTIFIED
+                      </span>
+
+                      <p>
+                        {editing.interaction.response ||
+                          `${recipient} wants to do this with you ♡`}
+                      </p>
+                    </div>
                   </>
                 )}
-
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(event) =>
-                    readFile(
-                      event.target.files?.[0],
-                      (value) => updateMoment("photo", value)
-                    )
-                  }
-                />
-              </label>
-
-              <label className="owcSmallMedia">
-                <b>{editing.voice ? "✓" : "◉"}</b>
-                <span>
-                  {editing.voice
-                    ? "VOICE ADDED"
-                    : "ADD YOUR VOICE"}
-                </span>
-
-                <input
-                  type="file"
-                  accept="audio/*"
-                  onChange={(event) =>
-                    readFile(
-                      event.target.files?.[0],
-                      (value) => updateMoment("voice", value)
-                    )
-                  }
-                />
-              </label>
-
-              <label className="owcSmallMedia">
-                <b>{editing.video ? "✓" : "▶"}</b>
-                <span>
-                  {editing.video
-                    ? "VIDEO ADDED"
-                    : "ADD A VIDEO"}
-                </span>
-
-                <input
-                  type="file"
-                  accept="video/*"
-                  onChange={(event) =>
-                    readFile(
-                      event.target.files?.[0],
-                      (value) => updateMoment("video", value)
-                    )
-                  }
-                />
-              </label>
+              </div>
             </div>
 
             <div className="owcEditorActions">
