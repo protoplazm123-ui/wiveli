@@ -30947,3 +30947,17 @@ main {
     display:none;
   }
 }
+/* WIVELI BOY — POSITION FIX */
+
+.owrHeroBoy{
+  left:24% !important;
+  top:30% !important;
+
+  width:36vw !important;
+  height:62vh !important;
+
+  min-width:420px !important;
+  min-height:560px !important;
+
+  overflow:visible !important;
+}
