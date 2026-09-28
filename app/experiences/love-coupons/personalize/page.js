@@ -132,42 +132,100 @@ export default function LoveCouponsPersonalize() {
     setModal("coupons");
   };
 
-  const createGift = async () => {
-    if (!senderName.trim()) return;
-    if (!recipientName.trim()) return;
-    if (!selectedCoupons.length) return;
+ const createGift = async () => {
+  if (!senderName.trim()) return;
+  if (!recipientName.trim()) return;
+  if (!selectedCoupons.length) return;
 
-    setCreating(true);
+  setCreating(true);
 
-    try {
-      const gift = createLoveCouponsGift({
-        senderName: senderName.trim(),
-        recipientName: recipientName.trim(),
-        senderTelegram:
-          senderTelegram.trim(),
-        couponCount,
-        dailyLimit,
-        coupons: selectedCoupons,
-      });
+  try {
+    /*
+      Ready-made coupons keep their original IDs.
+      Edited coupons are stored as custom coupons.
+    */
 
-      await saveLoveCouponsGift(gift);
+    const selectedCouponIds = selected.filter(
+      (id) =>
+        !customCoupons.some(
+          (coupon) => coupon.originalId === id
+        )
+    );
 
-      const url =
-        typeof window !== "undefined"
-          ? `${window.location.origin}/gift/love-coupons/${gift.id}`
-          : `/gift/love-coupons/${gift.id}`;
+    const selectedCustomCoupons = customCoupons
+      .filter((coupon) =>
+        selected.includes(coupon.originalId)
+      )
+      .map((coupon) => ({
+        ...coupon,
 
-      setGiftUrl(url);
-      setModal("send");
-    } catch (error) {
-      console.error(
-        "Failed to create gift:",
-        error
+        // Recipient/redeem API needs a real coupon.id
+        id: coupon.originalId,
+      }));
+
+    const giftData = {
+      senderName: senderName.trim(),
+      recipientName: recipientName.trim(),
+
+      couponIds: selectedCouponIds,
+
+      customCoupons: selectedCustomCoupons,
+
+      dailyLimit: Number(dailyLimit),
+
+      redemptions: [],
+
+      createdAt: new Date().toISOString(),
+    };
+
+    const response = await fetch("/api/gifts", {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({
+        giftType: "love-coupons",
+        giftData,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success || !data.id) {
+      throw new Error(
+        data.error || "Could not create gift"
       );
-    } finally {
-      setCreating(false);
     }
-  };
+
+    /*
+      Keep local copy only as cache/prototype data.
+      Supabase is the real source of truth.
+    */
+
+    saveLoveCouponsGift({
+      ...giftData,
+      serverId: data.id,
+    });
+
+    const url =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/gift/love-coupons/${data.id}`
+        : `/gift/love-coupons/${data.id}`;
+
+    setGiftUrl(url);
+    setModal("send");
+  } catch (error) {
+    console.error("Failed to create gift:", error);
+
+    alert(
+      "Could not create the gift. Please try again ♡"
+    );
+  } finally {
+    setCreating(false);
+  }
+};
 
   const copyGiftLink = async () => {
     if (!giftUrl) return;
