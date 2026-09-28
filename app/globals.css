@@ -30967,3 +30967,11 @@ main {
   width:42vw !important;
   height:70vh !important;
 }
+/* Сближаем OPEN и WHEN и поднимаем мальчика */
+.owrHeroWhen {
+  bottom: 30% !important;
+}
+
+.owrHeroBoy {
+  top: -5% !important;
+}
