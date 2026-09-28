@@ -207,19 +207,13 @@ export default function LoveCouponsPersonalize() {
             LOVE COUPON MACHINE
           </p>
 
-          <h1 className="heroTitle">
-            <span className="heroThin">
-              LITTLE
-            </span>
-            <br />
-            <strong>PROMISES,</strong>
-            <br />
-            <span className="heroThin">
-              MADE FOR
-            </span>
-            <br />
-            <em>SOMEONE SPECIAL.</em>
-          </h1>
+         <h1 className="heroTitle">
+  <strong>LITTLE PROMISES,</strong>
+  <br />
+  <span className="heroThin">MADE FOR</span>
+  <br />
+  <em>SOMEONE SPECIAL.</em>
+</h1>
 
           <p className="intro">
             Pick the promises you want to
@@ -1161,59 +1155,40 @@ export default function LoveCouponsPersonalize() {
         /* NEW HERO TYPOGRAPHY */
 
         .heroTitle {
-          max-width: 760px;
+  max-width: 760px;
+  line-height: 0.87;
+  letter-spacing: -0.055em;
+}
 
-          font-weight: 400;
+/* ТОНКИЙ — ПОЧТИ ЧЁРНЫЙ */
+.heroTitle .heroThin {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  font-style: normal;
+  color: #181313;
+  letter-spacing: -0.065em;
+}
 
-          line-height: 0.87;
+/* ЖИРНЫЙ — БОРДОВЫЙ */
+.heroTitle strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  font-style: normal;
+  color: #741020;
+  letter-spacing: -0.07em;
+}
 
-          letter-spacing:
-            -0.055em;
-        }
-
-        .heroTitle .heroThin {
-          font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
-
-          font-weight: 400;
-
-          letter-spacing:
-            -0.065em;
-        }
-
-        .heroTitle strong {
-          font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
-
-          font-weight: 700;
-
-          letter-spacing:
-            -0.07em;
-        }
-
-        .heroTitle em {
-          display: inline-block;
-
-          margin-top: 7px;
-
-          font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
-
-          font-weight: 400;
-          font-style: italic;
-
-          letter-spacing:
-            -0.07em;
-
-          transform:
-            translateX(8px);
-        }
+/* ТОНКИЙ КУРСИВ — ПОЧТИ ЧЁРНЫЙ */
+.heroTitle em {
+  display: inline-block;
+  margin-top: 7px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  font-style: italic;
+  color: #181313;
+  letter-spacing: -0.07em;
+  transform: translateX(8px);
+}
 
         .intro {
           max-width: 450px;
