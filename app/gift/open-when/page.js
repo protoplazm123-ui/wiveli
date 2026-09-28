@@ -113,7 +113,7 @@ function WiveliBoy() {
       ref={group}
       position={[0, -1.65, 0]}
       rotation={[0, -0.1, 0]}
-      scale={1.55}
+      scale={3.2}
     >
       <primitive object={scene} />
     </group>
