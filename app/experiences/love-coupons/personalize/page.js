@@ -207,10 +207,16 @@ export default function LoveCouponsPersonalize() {
             LOVE COUPON MACHINE
           </p>
 
-          <h1>
-            LITTLE PROMISES,
+          <h1 className="heroTitle">
+            <span className="heroThin">
+              LITTLE
+            </span>
             <br />
-            MADE FOR
+            <strong>PROMISES,</strong>
+            <br />
+            <span className="heroThin">
+              MADE FOR
+            </span>
             <br />
             <em>SOMEONE SPECIAL.</em>
           </h1>
@@ -264,8 +270,7 @@ export default function LoveCouponsPersonalize() {
           </p>
         </div>
       </section>
-
-      {/* DETAILS */}
+        {/* DETAILS */}
 
       {modal === "details" && (
         <Modal
@@ -348,21 +353,11 @@ export default function LoveCouponsPersonalize() {
                       )
                     }
                   >
-                    <option value={4}>
-                      4
-                    </option>
-                    <option value={6}>
-                      6
-                    </option>
-                    <option value={8}>
-                      8
-                    </option>
-                    <option value={10}>
-                      10
-                    </option>
-                    <option value={12}>
-                      12
-                    </option>
+                    <option value={4}>4</option>
+                    <option value={6}>6</option>
+                    <option value={8}>8</option>
+                    <option value={10}>10</option>
+                    <option value={12}>12</option>
                   </select>
                 </label>
 
@@ -622,8 +617,7 @@ export default function LoveCouponsPersonalize() {
                           {
                             ...editingCoupon,
                             title:
-                              event
-                                .target
+                              event.target
                                 .value,
                           }
                         )
@@ -644,8 +638,7 @@ export default function LoveCouponsPersonalize() {
                           {
                             ...editingCoupon,
                             message:
-                              event
-                                .target
+                              event.target
                                 .value,
                           }
                         )
@@ -656,8 +649,7 @@ export default function LoveCouponsPersonalize() {
                 </div>
               )}
 
-              {editTab ===
-                "photo" && (
+              {editTab === "photo" && (
                 <AttachmentPanel
                   icon="◇"
                   title="ADD A PHOTO"
@@ -675,8 +667,7 @@ export default function LoveCouponsPersonalize() {
                 />
               )}
 
-              {editTab ===
-                "video" && (
+              {editTab === "video" && (
                 <AttachmentPanel
                   icon="▷"
                   title="ADD A VIDEO"
@@ -694,8 +685,7 @@ export default function LoveCouponsPersonalize() {
                 />
               )}
 
-              {editTab ===
-                "voice" && (
+              {editTab === "voice" && (
                 <AttachmentPanel
                   icon="♪"
                   title="VOICE NOTE"
@@ -713,8 +703,7 @@ export default function LoveCouponsPersonalize() {
                 />
               )}
 
-              {editTab ===
-                "gift" && (
+              {editTab === "gift" && (
                 <AttachmentPanel
                   icon="♥"
                   title="ADD A REAL GIFT"
@@ -722,7 +711,7 @@ export default function LoveCouponsPersonalize() {
                   value={
                     editingCoupon.giftUrl
                   }
-                  placeholder="Paste gift or ticket URL"
+                  placeholder="Paste private gift link"
                   onChange={(value) =>
                     setEditingCoupon({
                       ...editingCoupon,
@@ -734,41 +723,47 @@ export default function LoveCouponsPersonalize() {
 
               {editTab ===
                 "reminder" && (
-                <div className="panel reminderPanel">
-                  <span className="attachmentIcon">
-                    ↗
-                  </span>
+                <div className="panel">
+                  <div className="reminderCard">
+                    <div>
+                      <span className="reminderHeart">
+                        ♡
+                      </span>
 
-                  <h3>
-                    DO IT TOGETHER
-                  </h3>
+                      <div>
+                        <strong>
+                          REMIND ME WHEN
+                          THEY USE IT
+                        </strong>
 
-                  <p>
-                    When this coupon is
-                    redeemed, WIVELI can
-                    remind you that
-                    they&apos;re ready to
-                    use it.
-                  </p>
+                        <p>
+                          We&apos;ll use
+                          your contact
+                          details later to
+                          let you know when
+                          this promise is
+                          redeemed.
+                        </p>
+                      </div>
+                    </div>
 
-                  <button
-                    className={`reminderToggle ${
-                      editingCoupon.reminderEnabled
-                        ? "active"
-                        : ""
-                    }`}
-                    onClick={() =>
-                      setEditingCoupon({
-                        ...editingCoupon,
-                        reminderEnabled:
-                          !editingCoupon.reminderEnabled,
-                      })
-                    }
-                  >
-                    {editingCoupon.reminderEnabled
-                      ? "✓ REMINDER ON"
-                      : "+ TURN REMINDER ON"}
-                  </button>
+                    <button
+                      className={
+                        editingCoupon.reminderEnabled
+                          ? "toggle active"
+                          : "toggle"
+                      }
+                      onClick={() =>
+                        setEditingCoupon({
+                          ...editingCoupon,
+                          reminderEnabled:
+                            !editingCoupon.reminderEnabled,
+                        })
+                      }
+                    >
+                      <span />
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -785,29 +780,18 @@ export default function LoveCouponsPersonalize() {
                 message={
                   editingCoupon.message
                 }
-                selected
+                compact
               />
             </div>
 
-            <div className="modalFooter">
-              <button
-                className="textButton"
-                onClick={() =>
-                  setModal("coupons")
-                }
-              >
-                ← BACK
-              </button>
-
-              <button
-                className="primary"
-                onClick={
-                  saveEditedCoupon
-                }
-              >
-                SAVE COUPON ♡
-              </button>
-            </div>
+            <button
+              className="primary full"
+              onClick={
+                saveEditedCoupon
+              }
+            >
+              SAVE COUPON ♡
+            </button>
           </Modal>
         )}
 
@@ -819,39 +803,45 @@ export default function LoveCouponsPersonalize() {
             setModal("coupons")
           }
         >
-          <p className="eyebrow">
-            STEP 03 · PREVIEW
-          </p>
+          <div className="previewLayout">
+            <div>
+              <p className="eyebrow">
+                STEP 03 · PREVIEW
+              </p>
 
-          <h2>
-            READY TO
-            <br />
-            <em>MAKE THEIR DAY?</em>
-          </h2>
+              <h2>
+                READY TO
+                <br />
+                <em>PRINT?</em>
+              </h2>
 
-          <p className="modalIntro">
-            A little collection of
-            promises from {senderName} to{" "}
-            {recipientName}.
-          </p>
-
-          <div className="previewCard">
-            <div className="previewNames">
-              <span>
-                FROM
+              <p className="modalIntro">
+                From{" "}
                 <strong>
                   {senderName}
-                </strong>
-              </span>
-
-              <i>♡</i>
-
-              <span>
-                FOR
+                </strong>{" "}
+                to{" "}
                 <strong>
                   {recipientName}
                 </strong>
-              </span>
+                .
+              </p>
+
+              <p className="modalIntro">
+                {selectedCoupons.length}{" "}
+                little promises, waiting
+                to be opened.
+              </p>
+
+              <button
+                className="primary full"
+                disabled={creating}
+                onClick={createGift}
+              >
+                {creating
+                  ? "PRINTING..."
+                  : "CREATE GIFT ♡"}
+              </button>
             </div>
 
             <MiniTicketRoll
@@ -859,42 +849,9 @@ export default function LoveCouponsPersonalize() {
                 selectedCoupons
               }
             />
-
-            <div className="previewMeta">
-              <span>
-                {selectedCoupons.length}{" "}
-                LOVE COUPONS
-              </span>
-
-              <span>
-                UP TO {dailyLimit} / DAY
-              </span>
-            </div>
-          </div>
-
-          <div className="modalFooter">
-            <button
-              className="textButton"
-              onClick={() =>
-                setModal("coupons")
-              }
-            >
-              ← EDIT COUPONS
-            </button>
-
-            <button
-              className="primary"
-              disabled={creating}
-              onClick={createGift}
-            >
-              {creating
-                ? "CREATING..."
-                : "CREATE GIFT →"}
-            </button>
           </div>
         </Modal>
       )}
-
       {/* SEND */}
 
       {modal === "send" && (
@@ -903,82 +860,71 @@ export default function LoveCouponsPersonalize() {
             setModal(null)
           }
         >
-          <div className="sendSuccess">
-            <span className="successHeart">
-              ♡
-            </span>
-
+          <div className="sendLayout">
             <p className="eyebrow">
               YOUR GIFT IS READY
             </p>
 
             <h2>
-              HOW DO YOU
+              SEND A LITTLE
               <br />
-              WANT TO SEND IT?
+              <em>LOVE.</em>
             </h2>
 
-            <p>
-              Your private Love Coupon
-              collection for{" "}
-              {recipientName} is ready.
+            <p className="modalIntro">
+              Your love coupons for{" "}
+              <strong>
+                {recipientName}
+              </strong>{" "}
+              are ready ♡
             </p>
 
-            <div className="sendOptions">
+            <div className="sendChoices">
               <button
-                className="sendOption"
-                onClick={() => {
-                  const subject =
-                    encodeURIComponent(
-                      `${senderName} sent you Love Coupons ♡`
-                    );
-
-                  const body =
-                    encodeURIComponent(
-                      `A little gift is waiting for you ♡\n\n${giftUrl}`
-                    );
-
-                  window.location.href =
-                    `mailto:?subject=${subject}&body=${body}`;
-                }}
+                className="sendChoice"
+                onClick={copyGiftLink}
               >
                 <span>01</span>
 
-                <strong>
-                  SEND FROM WIVELI
-                </strong>
+                <div>
+                  <strong>
+                    I&apos;LL SEND IT
+                    MYSELF
+                  </strong>
 
-                <small>
-                  Open your email app with
-                  the gift link ready.
-                </small>
+                  <p>
+                    Copy the private link
+                    and send it however you
+                    like.
+                  </p>
+                </div>
 
                 <b>→</b>
               </button>
 
               <button
-                className="sendOption"
-                onClick={copyGiftLink}
+                className="sendChoice"
+                type="button"
               >
                 <span>02</span>
 
-                <strong>
-                  I&apos;LL SEND IT MYSELF
-                </strong>
+                <div>
+                  <strong>
+                    SEND FROM WIVELI
+                  </strong>
 
-                <small>
-                  Copy the private link and
-                  send it anywhere.
-                </small>
+                  <p>
+                    Let WIVELI deliver the
+                    gift for you.
+                  </p>
+                </div>
 
-                <b>→</b>
+                <b>♡</b>
               </button>
             </div>
 
             <div className="giftLink">
-              <span>
-                PRIVATE GIFT LINK
-              </span>
+              <span>PRIVATE GIFT LINK</span>
 
               <input
                 readOnly
@@ -986,9 +932,7 @@ export default function LoveCouponsPersonalize() {
               />
 
               <button
-                onClick={
-                  copyGiftLink
-                }
+                onClick={copyGiftLink}
               >
                 COPY
               </button>
@@ -997,134 +941,192 @@ export default function LoveCouponsPersonalize() {
         </Modal>
       )}
 
-      <style jsx>{`
-        :global(*) {
+      <style jsx global>{`
+        * {
           box-sizing: border-box;
         }
 
-        .page {
-          min-height: 100vh;
-          color: #68101e;
-          background:
-            radial-gradient(
-              circle at 80% 18%,
-              rgba(
-                255,
-                255,
-                255,
-                0.42
-              ),
-              transparent 26%
-            ),
-            #f2cfca;
+        html,
+        body {
+          margin: 0;
+          padding: 0;
 
+          background: #efc9c5;
+          color: #741020;
+        }
+
+        body {
           font-family:
             Georgia,
             "Times New Roman",
             serif;
         }
 
+        button,
+        input,
+        textarea,
+        select {
+          font: inherit;
+        }
+
+        button {
+          color: inherit;
+        }
+
+        .page {
+          min-height: 100vh;
+
+          overflow: hidden;
+
+          background:
+            radial-gradient(
+              circle at 72% 18%,
+              rgba(
+                255,
+                246,
+                240,
+                0.22
+              ),
+              transparent 27%
+            ),
+            linear-gradient(
+              180deg,
+              #efc9c5 0%,
+              #edc5c1 100%
+            );
+        }
+
         .header {
-          height: 76px;
+          width: min(
+            1500px,
+            calc(100% - 72px)
+          );
+
+          min-height: 86px;
 
           display: flex;
           align-items: center;
           justify-content:
             space-between;
 
-          padding: 0 4vw;
+          margin: 0 auto;
 
           border-bottom:
             1px solid
             rgba(
-              104,
+              116,
               16,
-              30,
-              0.25
+              32,
+              0.3
             );
         }
 
         .logo {
-          color: inherit;
+          color: #741020;
 
-          text-decoration: none;
-
-          font-size: 21px;
-
-          font-weight: 600;
+          font-size: 24px;
+          font-weight: 700;
 
           letter-spacing:
-            -0.04em;
+            -0.06em;
+
+          text-decoration: none;
         }
 
         .headerRight {
           display: flex;
-
           align-items: center;
 
-          gap: 18px;
+          gap: 22px;
 
           font-family:
             Arial,
             sans-serif;
 
-          font-size: 8px;
-
+          font-size: 9px;
           font-weight: 700;
 
           letter-spacing:
-            0.16em;
+            0.17em;
+        }
+
+        .headerRight span:last-child {
+          font-family:
+            Georgia,
+            serif;
+
+          font-size: 20px;
+          font-weight: 400;
         }
 
         .hero {
+          width: min(
+            1500px,
+            calc(100% - 72px)
+          );
+
           min-height:
-            calc(
-              100vh - 76px
-            );
+            calc(100vh - 86px);
 
           display: grid;
 
           grid-template-columns:
-            minmax(0, 0.95fr)
-            minmax(420px, 1.05fr);
+            minmax(0, 1fr)
+            minmax(420px, 0.82fr);
 
           align-items: center;
 
-          gap: 4vw;
+          gap: clamp(
+            35px,
+            6vw,
+            110px
+          );
+
+          margin: 0 auto;
 
           padding:
-            70px
-            5vw
+            75px
+            0
             90px;
         }
 
         .heroCopy {
-          max-width: 660px;
+          position: relative;
+          z-index: 5;
         }
 
         .eyebrow {
           margin:
             0
             0
-            18px;
+            22px;
 
           font-family:
             Arial,
             sans-serif;
 
           font-size: 8px;
-
           font-weight: 700;
 
           letter-spacing:
-            0.22em;
+            0.23em;
+
+          text-transform:
+            uppercase;
         }
 
         h1,
         h2 {
           margin: 0;
 
+          font-family:
+            Georgia,
+            "Times New Roman",
+            serif;
+
           font-weight: 400;
+
+          color: #741020;
 
           letter-spacing:
             -0.055em;
@@ -1153,56 +1155,111 @@ export default function LoveCouponsPersonalize() {
         h1 em,
         h2 em {
           font-weight: 400;
-
           font-style: italic;
         }
 
-        .intro,
-        .modalIntro {
-          max-width: 440px;
+        /* NEW HERO TYPOGRAPHY */
+
+        .heroTitle {
+          max-width: 760px;
+
+          font-weight: 400;
+
+          line-height: 0.87;
+
+          letter-spacing:
+            -0.055em;
+        }
+
+        .heroTitle .heroThin {
+          font-family:
+            Georgia,
+            "Times New Roman",
+            serif;
+
+          font-weight: 400;
+
+          letter-spacing:
+            -0.065em;
+        }
+
+        .heroTitle strong {
+          font-family:
+            Georgia,
+            "Times New Roman",
+            serif;
+
+          font-weight: 700;
+
+          letter-spacing:
+            -0.07em;
+        }
+
+        .heroTitle em {
+          display: inline-block;
+
+          margin-top: 7px;
+
+          font-family:
+            Georgia,
+            "Times New Roman",
+            serif;
+
+          font-weight: 400;
+          font-style: italic;
+
+          letter-spacing:
+            -0.07em;
+
+          transform:
+            translateX(8px);
+        }
+
+        .intro {
+          max-width: 450px;
 
           margin:
-            28px
-            0;
+            34px
+            0
+            31px;
 
-          font-size: 15px;
+          font-size: 17px;
 
           line-height: 1.55;
         }
 
         .primary {
-          min-height: 48px;
+          min-height: 50px;
 
           padding:
             0
-            24px;
+            27px;
 
           border:
-            1px solid
-            #741020;
+            1px solid #741020;
 
-          border-radius: 100px;
+          border-radius: 999px;
 
-          color: #f9dcd7;
+          color: #f4d5d0;
 
           background: #741020;
-
-          cursor: pointer;
 
           font-family:
             Arial,
             sans-serif;
 
           font-size: 8px;
-
           font-weight: 700;
 
           letter-spacing:
-            0.14em;
+            0.16em;
+
+          cursor: pointer;
 
           transition:
-            transform 0.18s ease,
-            opacity 0.18s ease;
+            transform 180ms ease,
+            opacity 180ms ease,
+            background 180ms ease;
         }
 
         .primary:hover {
@@ -1211,45 +1268,48 @@ export default function LoveCouponsPersonalize() {
         }
 
         .primary:disabled {
-          cursor: not-allowed;
+          opacity: 0.4;
 
-          opacity: 0.35;
+          cursor: default;
 
           transform: none;
-        }
-
-        .startButton {
-          margin-top: 5px;
         }
 
         .full {
           width: 100%;
 
-          margin-top: 12px;
+          margin-top: 22px;
         }
 
         .steps {
+          width: min(
+            1500px,
+            calc(100% - 72px)
+          );
+
           display: grid;
 
           grid-template-columns:
             repeat(3, 1fr);
 
+          margin: 0 auto;
+
           border-top:
             1px solid
             rgba(
-              104,
+              116,
               16,
-              30,
-              0.25
+              32,
+              0.32
             );
 
           border-bottom:
             1px solid
             rgba(
-              104,
+              116,
               16,
-              30,
-              0.25
+              32,
+              0.32
             );
         }
 
@@ -1257,34 +1317,31 @@ export default function LoveCouponsPersonalize() {
           min-height: 190px;
 
           padding:
-            30px
-            4vw;
-
-          border-right:
-            1px solid
-            rgba(
-              104,
-              16,
-              30,
-              0.25
-            );
+            34px
+            36px;
         }
 
-        .steps > div:last-child {
-          border-right: 0;
+        .steps > div + div {
+          border-left:
+            1px solid
+            rgba(
+              116,
+              16,
+              32,
+              0.32
+            );
         }
 
         .steps span {
           display: block;
 
-          margin-bottom: 30px;
+          margin-bottom: 21px;
 
           font-family:
             Arial,
             sans-serif;
 
           font-size: 7px;
-
           font-weight: 700;
 
           letter-spacing:
@@ -1294,46 +1351,28 @@ export default function LoveCouponsPersonalize() {
         .steps strong {
           display: block;
 
-          font-size: 24px;
+          font-size: 27px;
 
           font-weight: 400;
         }
 
         .steps p {
-          max-width: 250px;
+          max-width: 270px;
 
           margin:
-            9px
+            12px
             0
             0;
 
-          font-size: 11px;
+          font-size: 14px;
 
-          line-height: 1.45;
-        }
-                .detailsLayout {
-          display: grid;
-          grid-template-columns:
-            minmax(0, 0.92fr)
-            minmax(360px, 1.08fr);
-          gap: 54px;
-          align-items: center;
-        }
-
-        .detailsForm {
-          min-width: 0;
-        }
-
-        .detailsMachine {
-          min-width: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          line-height: 1.5;
         }
 
         label {
           display: block;
-          margin-bottom: 17px;
+
+          margin-top: 18px;
 
           font-family:
             Arial,
@@ -1341,120 +1380,159 @@ export default function LoveCouponsPersonalize() {
 
           font-size: 7px;
           font-weight: 700;
-          letter-spacing: 0.15em;
+
+          letter-spacing:
+            0.15em;
         }
 
         input,
         textarea,
         select {
           width: 100%;
-          margin-top: 7px;
 
-          border: 1px solid
+          margin-top: 8px;
+
+          border: 0;
+
+          border-bottom:
+            1px solid
             rgba(
-              104,
+              116,
               16,
-              30,
-              0.45
+              32,
+              0.55
             );
 
           border-radius: 0;
 
           outline: none;
 
-          color: #68101e;
+          color: #741020;
+
           background:
-            rgba(
-              255,
-              255,
-              255,
-              0.17
-            );
+            transparent;
 
           font-family:
             Georgia,
             "Times New Roman",
             serif;
 
-          font-size: 15px;
+          font-size: 18px;
+
+          letter-spacing: 0;
         }
 
         input,
         select {
-          height: 48px;
-          padding: 0 14px;
+          height: 44px;
         }
 
         textarea {
-          min-height: 120px;
-          padding: 14px;
-          resize: vertical;
-        }
+          min-height: 110px;
 
-        input::placeholder,
-        textarea::placeholder {
-          color:
-            rgba(
-              104,
-              16,
-              30,
-              0.43
-            );
+          padding-top: 12px;
+
+          resize: vertical;
         }
 
         label small {
           display: block;
-          margin-top: 7px;
 
-          font-family:
-            Georgia,
-            serif;
+          margin-top: 8px;
 
-          font-size: 9px;
+          font-size: 6px;
+
           font-weight: 400;
-          line-height: 1.4;
-          letter-spacing: 0;
+
+          line-height: 1.5;
+
+          letter-spacing:
+            0.08em;
+
           opacity: 0.65;
         }
 
         .smallGrid {
           display: grid;
+
           grid-template-columns:
-            1fr
-            1fr;
-          gap: 12px;
+            repeat(2, 1fr);
+
+          gap: 22px;
         }
 
-        /*
-          COUPON PICKER
-        */
+        .detailsLayout,
+        .previewLayout {
+          display: grid;
+
+          grid-template-columns:
+            minmax(0, 0.82fr)
+            minmax(420px, 1fr);
+
+          align-items: center;
+
+          gap: 50px;
+        }
+
+        .detailsForm {
+          max-width: 480px;
+        }
+
+        .detailsMachine {
+          min-width: 0;
+        }
+
+        .modalIntro {
+          max-width: 430px;
+
+          margin:
+            24px
+            0;
+
+          font-size: 16px;
+
+          line-height: 1.55;
+        }
 
         .couponHeader {
           display: flex;
-          align-items: flex-end;
+
+          align-items:
+            flex-end;
+
           justify-content:
             space-between;
+
           gap: 30px;
-          margin-bottom: 30px;
         }
 
         .counter {
-          min-width: 110px;
-          text-align: right;
+          display: grid;
+
+          grid-template-columns:
+            auto
+            auto;
+
+          align-items:
+            baseline;
+
+          min-width: 100px;
         }
 
         .counter strong {
           font-size: 42px;
+
           font-weight: 400;
         }
 
         .counter span {
-          font-size: 18px;
-          opacity: 0.55;
+          font-size: 20px;
         }
 
         .counter small {
-          display: block;
+          grid-column:
+            1 / -1;
+
           margin-top: 3px;
 
           font-family:
@@ -1463,81 +1541,73 @@ export default function LoveCouponsPersonalize() {
 
           font-size: 6px;
           font-weight: 700;
-          letter-spacing: 0.18em;
+
+          letter-spacing:
+            0.17em;
         }
 
         .categoryBar {
           display: flex;
-          gap: 6px;
 
-          margin-bottom: 30px;
-
-          padding-bottom: 13px;
+          gap: 8px;
 
           overflow-x: auto;
 
-          border-bottom:
-            1px solid
-            rgba(
-              104,
-              16,
-              30,
-              0.28
-            );
+          margin:
+            35px
+            0
+            28px;
 
-          scrollbar-width: none;
+          padding-bottom: 4px;
         }
 
-        .categoryBar::-webkit-scrollbar {
-          display: none;
-        }
-
-        .categoryBar button {
+        .categoryBar button,
+        .editorTabs button {
           flex: 0 0 auto;
 
-          min-height: 34px;
-
           padding:
-            0
+            10px
             15px;
 
           border:
             1px solid
             rgba(
-              104,
+              116,
               16,
-              30,
-              0.55
+              32,
+              0.5
             );
 
-          border-radius: 100px;
+          border-radius: 999px;
 
-          color: #68101e;
-          background: transparent;
+          color: #741020;
 
-          cursor: pointer;
+          background:
+            transparent;
 
           font-family:
             Arial,
             sans-serif;
 
-          font-size: 6px;
+          font-size: 7px;
           font-weight: 700;
-          letter-spacing: 0.13em;
 
-          transition:
-            color 0.18s ease,
-            background 0.18s ease;
+          letter-spacing:
+            0.12em;
+
+          cursor: pointer;
         }
 
-        .categoryBar button:hover,
-        .categoryBar button.active {
-          color: #f8d9d4;
+        .categoryBar button.active,
+        .editorTabs button.active {
+          color: #f4d5d0;
+
           background: #741020;
         }
 
         .ticketGrid {
           display: grid;
+
           grid-template-columns:
             repeat(
               2,
@@ -1545,471 +1615,281 @@ export default function LoveCouponsPersonalize() {
             );
 
           gap:
-            34px
-            24px;
-
-          padding:
-            8px
-            2px
-            34px;
+            24px
+            20px;
         }
 
-        /*
-          EDITOR
-        */
+        .modalFooter {
+          display: flex;
+
+          align-items: center;
+
+          justify-content:
+            space-between;
+
+          gap: 20px;
+
+          margin-top: 34px;
+
+          padding-top: 22px;
+
+          border-top:
+            1px solid
+            rgba(
+              116,
+              16,
+              32,
+              0.32
+            );
+
+          font-family:
+            Arial,
+            sans-serif;
+
+          font-size: 7px;
+          font-weight: 700;
+
+          letter-spacing:
+            0.15em;
+        }
 
         .editTitle {
-          margin-bottom: 26px;
+          margin-bottom: 28px;
         }
 
         .editorTabs {
           display: flex;
-          gap: 5px;
 
-          padding-bottom: 12px;
+          gap: 7px;
 
           overflow-x: auto;
 
-          border-bottom:
-            1px solid
-            rgba(
-              104,
-              16,
-              30,
-              0.25
-            );
-
-          scrollbar-width: none;
+          padding-bottom: 4px;
         }
 
-        .editorTabs::-webkit-scrollbar {
-          display: none;
+        .editorContent {
+          margin-top: 25px;
         }
 
-        .editorTabs button {
-          flex: 0 0 auto;
-
-          min-height: 34px;
-
+        .panel {
           padding:
-            0
-            13px;
+            22px
+            24px;
 
           border:
             1px solid
             rgba(
-              104,
+              116,
               16,
-              30,
-              0.45
+              32,
+              0.42
             );
 
-          border-radius: 100px;
+          border-radius: 16px;
+        }
 
-          color: #68101e;
-          background: transparent;
+        .editorPreview {
+          max-width: 570px;
 
-          cursor: pointer;
+          margin:
+            25px
+            auto
+            0;
+        }
 
+        .reminderCard {
+          display: flex;
+
+          align-items: center;
+
+          justify-content:
+            space-between;
+
+          gap: 25px;
+        }
+
+        .reminderCard > div {
+          display: flex;
+
+          align-items:
+            flex-start;
+
+          gap: 16px;
+        }
+
+        .reminderHeart {
+          font-family:
+            Georgia,
+            serif;
+
+          font-size: 30px;
+        }
+
+        .reminderCard strong {
           font-family:
             Arial,
             sans-serif;
 
-          font-size: 6px;
-          font-weight: 700;
-          letter-spacing: 0.12em;
+          font-size: 8px;
+
+          letter-spacing:
+            0.13em;
         }
 
-        .editorTabs button.active {
-          color: #f8d9d4;
-          background: #741020;
-        }
-
-        .editorContent {
-          margin-top: 24px;
-        }
-
-        .panel {
-          min-height: 210px;
-        }
-
-        .attachmentPanel,
-        .reminderPanel {
-          min-height: 250px;
-
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-
-          padding: 35px;
-
-          text-align: center;
-
-          border:
-            1px dashed
-            rgba(
-              104,
-              16,
-              30,
-              0.45
-            );
-        }
-
-        .attachmentIcon {
-          display: block;
-
-          margin-bottom: 12px;
-
-          font-size: 35px;
-          line-height: 1;
-        }
-
-        .attachmentPanel h3,
-        .reminderPanel h3 {
-          margin:
-            0
-            0
-            9px;
-
-          font-size: 25px;
-          font-weight: 400;
-        }
-
-        .attachmentPanel p,
-        .reminderPanel p {
-          max-width: 420px;
+        .reminderCard p {
+          max-width: 390px;
 
           margin:
+            7px
             0
-            auto
-            18px;
+            0;
 
-          font-size: 11px;
+          font-size: 14px;
+
           line-height: 1.5;
         }
 
-        .attachmentPanel input {
-          max-width: 470px;
-        }
+        .toggle {
+          position: relative;
 
-        .reminderToggle {
-          min-height: 42px;
+          flex: 0 0 auto;
 
-          padding:
-            0
-            18px;
+          width: 48px;
+          height: 27px;
+
+          padding: 0;
 
           border:
             1px solid
             #741020;
 
-          border-radius: 100px;
+          border-radius: 999px;
 
-          color: #68101e;
-          background: transparent;
+          background:
+            transparent;
 
           cursor: pointer;
-
-          font-family:
-            Arial,
-            sans-serif;
-
-          font-size: 7px;
-          font-weight: 700;
-          letter-spacing: 0.12em;
         }
 
-        .reminderToggle.active {
-          color: #f8d9d4;
+        .toggle span {
+          position: absolute;
+
+          top: 4px;
+          left: 4px;
+
+          width: 17px;
+          height: 17px;
+
+          border-radius: 50%;
+
+          background: #741020;
+
+          transition:
+            transform 180ms ease;
+        }
+
+        .toggle.active {
           background: #741020;
         }
 
-        .editorPreview {
-          max-width: 590px;
+        .toggle.active span {
+          background: #efc9c5;
 
-          margin:
-            28px
-            auto
-            10px;
+          transform:
+            translateX(21px);
         }
 
-        /*
-          MODAL FOOTER
-        */
+        .sendLayout {
+          max-width: 720px;
 
-        .modalFooter {
-          display: flex;
+          margin: 0 auto;
+        }
+
+        .sendChoices {
+          display: grid;
+
+          gap: 12px;
+
+          margin-top: 30px;
+        }
+
+        .sendChoice {
+          width: 100%;
+
+          display: grid;
+
+          grid-template-columns:
+            35px
+            1fr
+            auto;
+
           align-items: center;
-          justify-content:
-            space-between;
-          gap: 20px;
 
-          margin-top: 30px;
+          gap: 16px;
 
-          padding-top: 20px;
-
-          border-top:
-            1px solid
-            rgba(
-              104,
-              16,
-              30,
-              0.25
-            );
-
-          font-family:
-            Arial,
-            sans-serif;
-
-          font-size: 7px;
-          font-weight: 700;
-          letter-spacing: 0.13em;
-        }
-
-        .textButton {
-          border: 0;
-          padding: 10px 0;
-
-          color: #68101e;
-          background: transparent;
-
-          cursor: pointer;
-
-          font-family:
-            Arial,
-            sans-serif;
-
-          font-size: 7px;
-          font-weight: 700;
-          letter-spacing: 0.12em;
-        }
-
-        /*
-          PREVIEW
-        */
-
-        .previewCard {
-          margin-top: 30px;
-
-          padding: 24px;
+          padding:
+            20px
+            22px;
 
           border:
             1px solid
             rgba(
-              104,
+              116,
               16,
-              30,
-              0.42
+              32,
+              0.55
             );
+
+          border-radius: 15px;
+
+          color: #741020;
 
           background:
             rgba(
               255,
-              255,
-              255,
-              0.1
+              239,
+              235,
+              0.15
             );
-        }
-
-        .previewNames {
-          display: grid;
-          grid-template-columns:
-            1fr
-            auto
-            1fr;
-
-          align-items: center;
-
-          gap: 20px;
-
-          padding-bottom: 20px;
-
-          border-bottom:
-            1px solid
-            rgba(
-              104,
-              16,
-              30,
-              0.25
-            );
-        }
-
-        .previewNames span {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-
-          font-family:
-            Arial,
-            sans-serif;
-
-          font-size: 6px;
-          font-weight: 700;
-          letter-spacing: 0.16em;
-        }
-
-        .previewNames span:last-child {
-          text-align: right;
-        }
-
-        .previewNames strong {
-          font-family:
-            Georgia,
-            serif;
-
-          font-size: 20px;
-          font-weight: 400;
-          letter-spacing: 0;
-        }
-
-        .previewNames i {
-          font-size: 25px;
-          font-style: normal;
-        }
-
-        .previewMeta {
-          display: flex;
-          justify-content:
-            space-between;
-
-          gap: 20px;
-
-          margin-top: 20px;
-
-          padding-top: 17px;
-
-          border-top:
-            1px solid
-            rgba(
-              104,
-              16,
-              30,
-              0.25
-            );
-
-          font-family:
-            Arial,
-            sans-serif;
-
-          font-size: 6px;
-          font-weight: 700;
-          letter-spacing: 0.15em;
-        }
-
-        /*
-          SEND
-        */
-
-        .sendSuccess {
-          text-align: center;
-        }
-
-        .successHeart {
-          display: block;
-
-          margin-bottom: 15px;
-
-          font-size: 55px;
-          line-height: 1;
-        }
-
-        .sendSuccess > p:not(.eyebrow) {
-          max-width: 440px;
-
-          margin:
-            20px
-            auto
-            28px;
-
-          font-size: 13px;
-          line-height: 1.5;
-        }
-
-        .sendOptions {
-          display: grid;
-          grid-template-columns:
-            1fr
-            1fr;
-
-          gap: 12px;
-
-          margin-top: 26px;
-        }
-
-        .sendOption {
-          position: relative;
-
-          min-height: 170px;
-
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-
-          padding: 20px;
-
-          border:
-            1px solid
-            #741020;
-
-          color: #68101e;
-          background: transparent;
 
           text-align: left;
 
           cursor: pointer;
-
-          transition:
-            color 0.2s ease,
-            background 0.2s ease,
-            transform 0.2s ease;
         }
 
-        .sendOption:hover {
-          color: #f7d8d3;
-          background: #741020;
-          transform:
-            translateY(-3px);
-        }
-
-        .sendOption span {
-          margin-bottom: 28px;
-
+        .sendChoice > span {
           font-family:
             Arial,
             sans-serif;
 
           font-size: 7px;
+
           font-weight: 700;
         }
 
-        .sendOption strong {
-          max-width: 230px;
-
-          font-size: 21px;
-          font-weight: 400;
-        }
-
-        .sendOption small {
-          max-width: 230px;
-
-          margin-top: 8px;
-
+        .sendChoice strong {
           font-family:
-            Georgia,
-            serif;
+            Arial,
+            sans-serif;
 
-          font-size: 9px;
-          line-height: 1.4;
+          font-size: 8px;
+
+          letter-spacing:
+            0.13em;
         }
 
-        .sendOption b {
-          position: absolute;
+        .sendChoice p {
+          margin:
+            6px
+            0
+            0;
 
-          right: 18px;
-          bottom: 17px;
+          font-size: 14px;
+        }
 
-          font-size: 18px;
+        .sendChoice b {
+          font-size: 21px;
+
           font-weight: 400;
         }
 
@@ -2017,60 +1897,54 @@ export default function LoveCouponsPersonalize() {
           display: grid;
 
           grid-template-columns:
-            auto
             1fr
             auto;
 
-          align-items: center;
+          align-items:
+            end;
 
-          gap: 12px;
+          gap: 10px;
 
-          margin-top: 20px;
-
-          padding-top: 20px;
-
-          border-top:
-            1px solid
-            rgba(
-              104,
-              16,
-              30,
-              0.25
-            );
+          margin-top: 25px;
         }
 
-        .giftLink > span {
+        .giftLink span {
+          grid-column:
+            1 / -1;
+
           font-family:
             Arial,
             sans-serif;
 
           font-size: 6px;
+
           font-weight: 700;
-          letter-spacing: 0.14em;
+
+          letter-spacing:
+            0.16em;
         }
 
         .giftLink input {
-          height: 40px;
           margin: 0;
 
-          font-size: 10px;
+          font-size: 13px;
         }
 
         .giftLink button {
-          height: 40px;
+          height: 42px;
 
           padding:
             0
-            17px;
+            18px;
 
           border:
-            1px solid
-            #741020;
+            1px solid #741020;
 
-          color: #f8d9d4;
+          border-radius: 999px;
+
+          color: #f4d5d0;
+
           background: #741020;
-
-          cursor: pointer;
 
           font-family:
             Arial,
@@ -2078,12 +1952,12 @@ export default function LoveCouponsPersonalize() {
 
           font-size: 7px;
           font-weight: 700;
-          letter-spacing: 0.12em;
-        }
 
-        /*
-          RESPONSIVE
-        */
+          letter-spacing:
+            0.13em;
+
+          cursor: pointer;
+        }
 
         @media (
           max-width: 1000px
@@ -2092,59 +1966,73 @@ export default function LoveCouponsPersonalize() {
             grid-template-columns:
               1fr;
 
-            min-height: auto;
-
             padding-top: 55px;
           }
 
           .heroCopy {
-            max-width: 720px;
+            max-width: 800px;
           }
 
-          .detailsLayout {
+          .detailsLayout,
+          .previewLayout {
             grid-template-columns:
               1fr;
           }
 
-          .detailsMachine {
-            display: none;
+          .detailsForm {
+            max-width: none;
           }
         }
 
         @media (
-          max-width: 800px
+          max-width: 700px
         ) {
-          .header {
-            height: 64px;
+          .header,
+          .hero,
+          .steps {
+            width:
+              calc(
+                100% - 34px
+              );
+          }
 
-            padding:
-              0
-              20px;
+          .header {
+            min-height: 70px;
+          }
+
+          .headerRight span:first-child {
+            display: none;
           }
 
           .hero {
+            min-height: auto;
+
             padding:
-              45px
-              20px
+              52px
+              0
               65px;
           }
 
           h1 {
             font-size:
               clamp(
-                46px,
-                14vw,
-                72px
+                48px,
+                15vw,
+                74px
               );
           }
 
           h2 {
             font-size:
               clamp(
-                39px,
-                11vw,
+                40px,
+                12vw,
                 62px
               );
+          }
+
+          .heroTitle em {
+            transform: none;
           }
 
           .steps {
@@ -2156,53 +2044,31 @@ export default function LoveCouponsPersonalize() {
             min-height: auto;
 
             padding:
-              24px
-              20px;
+              28px
+              4px;
+          }
 
-            border-right: 0;
+          .steps > div + div {
+            border-left: 0;
 
-            border-bottom:
+            border-top:
               1px solid
               rgba(
-                104,
+                116,
                 16,
-                30,
-                0.25
+                32,
+                0.32
               );
-          }
-
-          .steps > div:last-child {
-            border-bottom: 0;
-          }
-
-          .steps span {
-            margin-bottom: 12px;
           }
 
           .ticketGrid {
             grid-template-columns:
               1fr;
-
-            gap: 32px;
           }
 
           .couponHeader {
             align-items:
               flex-start;
-          }
-
-          .sendOptions {
-            grid-template-columns:
-              1fr;
-          }
-
-          .giftLink {
-            grid-template-columns:
-              1fr;
-          }
-
-          .giftLink > span {
-            text-align: left;
           }
 
           .smallGrid {
@@ -2210,247 +2076,162 @@ export default function LoveCouponsPersonalize() {
               1fr;
           }
 
-          .previewNames strong {
-            font-size: 16px;
-          }
-        }
-
-        @media (
-          max-width: 520px
-        ) {
-          .headerRight span:first-child {
-            display: none;
-          }
-
-          .hero {
-            padding-top: 35px;
-          }
-
-          .intro {
-            margin:
-              22px
-              0;
-          }
-
-          .couponHeader {
-            display: block;
-          }
-
-          .counter {
-            margin-top: 18px;
-            text-align: left;
-          }
-
           .modalFooter {
-            align-items: stretch;
-            flex-direction: column;
+            align-items:
+              stretch;
+
+            flex-direction:
+              column;
           }
 
           .modalFooter .primary {
             width: 100%;
-          }
-
-          .previewNames {
-            gap: 9px;
-          }
-
-          .previewNames strong {
-            font-size: 13px;
-          }
-
-          .previewMeta {
-            flex-direction: column;
-            gap: 7px;
           }
         }
       `}</style>
     </main>
   );
 }
-
-/*
-  MODAL
-*/
-
 function Modal({
   children,
   onClose,
   wide = false,
 }) {
   return (
-    <div className="modalOverlay">
-      <button
-        className="modalBackdrop"
-        aria-label="Close"
-        onClick={onClose}
-      />
-
-      <section
-        className={`modalCard ${
-          wide ? "wide" : ""
-        }`}
+    <div className="modalBackdrop">
+      <div
+        className={
+          wide
+            ? "modalCard wide"
+            : "modalCard"
+        }
       >
         <button
           className="modalClose"
-          aria-label="Close"
           onClick={onClose}
+          aria-label="Close"
         >
           ×
         </button>
 
         {children}
-      </section>
+      </div>
 
       <style jsx>{`
-        .modalOverlay {
+        .modalBackdrop {
           position: fixed;
-          inset: 0;
           z-index: 1000;
+          inset: 0;
 
           display: flex;
           align-items: center;
           justify-content: center;
 
-          padding: 28px;
+          padding: 30px;
 
           overflow-y: auto;
-        }
-
-        .modalBackdrop {
-          position: fixed;
-          inset: 0;
-
-          border: 0;
 
           background:
-            rgba(
-              65,
-              4,
-              16,
-              0.66
-            );
+            rgba(83, 6, 21, 0.72);
 
           backdrop-filter:
-            blur(7px);
-
-          cursor: default;
+            blur(13px);
         }
 
         .modalCard {
           position: relative;
-          z-index: 2;
 
-          width:
-            min(
-              900px,
-              100%
-            );
+          width: min(1050px, 100%);
 
           max-height:
-            calc(
-              100vh - 56px
-            );
+            calc(100vh - 60px);
 
           overflow-y: auto;
 
           padding:
-            clamp(
-              30px,
-              5vw,
-              62px
-            );
+            clamp(34px, 5vw, 72px);
 
-          color: #68101e;
+          border:
+            1px solid
+            rgba(116, 16, 32, 0.55);
 
-          background: #f2cfca;
+          border-radius: 24px;
+
+          color: #741020;
+
+          background: #efc9c5;
 
           box-shadow:
-            0
-            35px
-            90px
-            rgba(
-              44,
-              0,
-              9,
-              0.28
-            );
-
-          font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
+            0 35px 90px
+            rgba(60, 0, 12, 0.28);
         }
 
         .modalCard.wide {
-          width:
-            min(
-              1180px,
-              100%
-            );
+          width: min(1380px, 100%);
         }
 
         .modalClose {
           position: absolute;
 
-          top: 15px;
-          right: 18px;
+          z-index: 20;
 
-          z-index: 5;
+          top: 20px;
+          right: 23px;
 
-          width: 36px;
-          height: 36px;
+          width: 38px;
+          height: 38px;
 
-          border: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
 
-          color: #68101e;
+          padding: 0;
+
+          border:
+            1px solid
+            rgba(116, 16, 32, 0.5);
+
+          border-radius: 50%;
+
+          color: #741020;
           background: transparent;
-
-          cursor: pointer;
 
           font-family:
             Georgia,
             serif;
 
-          font-size: 27px;
-          line-height: 1;
+          font-size: 25px;
+
+          cursor: pointer;
         }
 
-        @media (
-          max-width: 700px
-        ) {
-          .modalOverlay {
-            align-items:
-              flex-start;
+        @media (max-width: 700px) {
+          .modalBackdrop {
+            align-items: flex-start;
 
-            padding: 0;
+            padding: 12px;
           }
 
-          .modalCard,
-          .modalCard.wide {
-            width: 100%;
-            min-height: 100vh;
+          .modalCard {
             max-height: none;
 
             padding:
-              70px
+              58px
               20px
               35px;
+
+            border-radius: 18px;
           }
 
           .modalClose {
-            position: fixed;
-
-            top: 15px;
-            right: 15px;
+            top: 13px;
+            right: 13px;
           }
         }
       `}</style>
     </div>
   );
 }
-/*
-  ATTACHMENT PANEL
-*/
 
 function AttachmentPanel({
   icon,
@@ -2462,114 +2243,100 @@ function AttachmentPanel({
 }) {
   return (
     <div className="attachmentPanel">
-      <span className="attachmentIcon">
+      <div className="attachmentIcon">
         {icon}
-      </span>
+      </div>
 
-      <h3>{title}</h3>
+      <div className="attachmentCopy">
+        <strong>{title}</strong>
 
-      <p>{description}</p>
+        <p>{description}</p>
 
-      <input
-        value={value || ""}
-        onChange={(event) =>
-          onChange(event.target.value)
-        }
-        placeholder={placeholder}
-      />
+        <input
+          value={value || ""}
+          onChange={(event) =>
+            onChange(event.target.value)
+          }
+          placeholder={placeholder}
+        />
+      </div>
 
       <style jsx>{`
         .attachmentPanel {
-          min-height: 250px;
+          display: grid;
 
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
+          grid-template-columns:
+            60px
+            1fr;
 
-          padding: 35px;
+          gap: 20px;
 
-          text-align: center;
-
-          border:
-            1px dashed
-            rgba(104, 16, 30, 0.45);
-        }
-
-        .attachmentIcon {
-          display: block;
-
-          margin-bottom: 12px;
-
-          color: #68101e;
-
-          font-size: 35px;
-          line-height: 1;
-        }
-
-        h3 {
-          margin: 0 0 9px;
-
-          color: #68101e;
-
-          font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
-
-          font-size: 25px;
-          font-weight: 400;
-        }
-
-        p {
-          max-width: 420px;
-
-          margin: 0 auto 18px;
-
-          color: #68101e;
-
-          font-family:
-            Georgia,
-            "Times New Roman",
-            serif;
-
-          font-size: 11px;
-          line-height: 1.5;
-        }
-
-        input {
-          width: min(470px, 100%);
-          height: 48px;
-
-          padding: 0 14px;
+          padding: 25px;
 
           border:
             1px solid
-            rgba(104, 16, 30, 0.45);
+            rgba(116, 16, 32, 0.42);
 
-          outline: none;
+          border-radius: 16px;
+        }
 
-          color: #68101e;
+        .attachmentIcon {
+          width: 60px;
+          height: 60px;
 
-          background:
-            rgba(255, 255, 255, 0.16);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          border:
+            1px solid
+            rgba(116, 16, 32, 0.5);
+
+          border-radius: 50%;
 
           font-family:
             Georgia,
-            "Times New Roman",
             serif;
 
-          font-size: 13px;
+          font-size: 26px;
         }
 
-        input::placeholder {
-          color:
-            rgba(104, 16, 30, 0.42);
+        .attachmentCopy strong {
+          font-family:
+            Arial,
+            sans-serif;
+
+          font-size: 8px;
+          font-weight: 700;
+
+          letter-spacing:
+            0.14em;
+        }
+
+        .attachmentCopy p {
+          margin:
+            7px
+            0
+            14px;
+
+          font-size: 14px;
+          line-height: 1.45;
+        }
+
+        .attachmentCopy input {
+          margin: 0;
+        }
+
+        @media (max-width: 600px) {
+          .attachmentPanel {
+            grid-template-columns: 1fr;
+          }
         }
       `}</style>
     </div>
   );
 }
+
 
 /*
   LOVE COUPON MACHINE
@@ -2587,7 +2354,8 @@ function MachinePreview({
           {
             id: "example-1",
             title: "BREAKFAST IN BED",
-            subtitle: "Wake up happier.",
+            subtitle:
+              "Wake up happier.",
           },
           {
             id: "example-2",
@@ -2598,7 +2366,8 @@ function MachinePreview({
           {
             id: "example-3",
             title: "ONE LONG HUG",
-            subtitle: "No time limit.",
+            subtitle:
+              "No time limit.",
           },
         ];
 
@@ -2607,8 +2376,6 @@ function MachinePreview({
       <div className="machineGlow" />
 
       <div className="machine">
-        {/* TOP */}
-
         <div className="machineTop">
           <div className="topScrew left" />
           <div className="topScrew right" />
@@ -2633,8 +2400,6 @@ function MachinePreview({
           </div>
         </div>
 
-        {/* CONTROL PANEL */}
-
         <div className="controlPanel">
           <div className="controlText">
             <span>FROM</span>
@@ -2658,8 +2423,6 @@ function MachinePreview({
           </div>
         </div>
 
-        {/* SLOT */}
-
         <div className="slotSection">
           <div className="slotLabel">
             <span>
@@ -2675,8 +2438,6 @@ function MachinePreview({
             <div className="slotInside" />
           </div>
         </div>
-
-        {/* BUTTONS */}
 
         <div className="machineControls">
           <div className="roundButton">
@@ -2696,13 +2457,11 @@ function MachinePreview({
           </div>
         </div>
 
-        {/* FEET */}
-
         <div className="machineFoot leftFoot" />
         <div className="machineFoot rightFoot" />
       </div>
 
-      {/* PAPER COMING FROM MACHINE */}
+      {/* PAPER COMING DIRECTLY FROM SLOT */}
 
       <div className="paperConnector">
         <div className="paperLine" />
@@ -2750,11 +2509,7 @@ function MachinePreview({
         .machineArea {
           position: relative;
 
-          width:
-            min(
-              610px,
-              100%
-            );
+          width: min(610px, 100%);
 
           margin: 0 auto;
 
@@ -2808,8 +2563,7 @@ function MachinePreview({
             25px;
 
           border:
-            2px solid
-            #5c0918;
+            2px solid #5c0918;
 
           border-radius:
             25px
@@ -2869,8 +2623,7 @@ function MachinePreview({
               0.24
             );
 
-          border-radius:
-            18px;
+          border-radius: 18px;
 
           pointer-events: none;
         }
@@ -2880,9 +2633,7 @@ function MachinePreview({
 
           display: flex;
 
-          align-items:
-            flex-start;
-
+          align-items: flex-start;
           justify-content:
             space-between;
 
@@ -2941,7 +2692,6 @@ function MachinePreview({
             sans-serif;
 
           font-size: 6px;
-
           font-weight: 700;
 
           letter-spacing:
@@ -2981,7 +2731,6 @@ function MachinePreview({
             sans-serif;
 
           font-size: 5px;
-
           font-weight: 700;
 
           letter-spacing:
@@ -3004,7 +2753,6 @@ function MachinePreview({
             sans-serif;
 
           font-size: 5px;
-
           font-weight: 700;
 
           letter-spacing:
@@ -3064,7 +2812,6 @@ function MachinePreview({
             sans-serif;
 
           font-size: 5px;
-
           font-weight: 700;
 
           letter-spacing:
@@ -3083,13 +2830,11 @@ function MachinePreview({
             serif;
 
           font-size: 12px;
-
           font-weight: 400;
 
           white-space: nowrap;
 
-          text-overflow:
-            ellipsis;
+          text-overflow: ellipsis;
         }
 
         .machineHeart {
@@ -3146,7 +2891,6 @@ function MachinePreview({
             sans-serif;
 
           font-size: 5px;
-
           font-weight: 700;
 
           letter-spacing:
@@ -3198,8 +2942,7 @@ function MachinePreview({
 
           border-radius: 2px;
 
-          background:
-            #35020c;
+          background: #35020c;
 
           box-shadow:
             inset
@@ -3288,7 +3031,6 @@ function MachinePreview({
             sans-serif;
 
           font-size: 5px;
-
           font-weight: 700;
 
           line-height: 1.4;
@@ -3327,7 +3069,7 @@ function MachinePreview({
         }
 
         /*
-          PAPER
+          PAPER — SAME WIDTH AS OUTPUT
         */
 
         .paperConnector {
@@ -3335,9 +3077,9 @@ function MachinePreview({
 
           z-index: 3;
 
-          width: 68%;
+          width: 72%;
 
-          height: 33px;
+          height: 24px;
 
           display: flex;
 
@@ -3346,7 +3088,7 @@ function MachinePreview({
           gap: 8px;
 
           margin:
-            -2px
+            -8px
             auto
             0;
 
@@ -3412,40 +3154,34 @@ function MachinePreview({
 
           z-index: 2;
 
-          width: 100%;
+          width: 72%;
 
           display: flex;
 
           flex-direction: column;
 
-          gap: 8px;
+          gap: 3px;
 
           margin:
-            -1px
+            -9px
             auto
             0;
         }
 
         .printedTicket {
+          position: relative;
+
           width: 100%;
+
+          margin: 0;
 
           transform-origin:
             top center;
         }
 
-        .printedTicket:nth-child(1) {
-          transform:
-            rotate(0.4deg);
-        }
-
-        .printedTicket:nth-child(2) {
-          transform:
-            rotate(-0.35deg);
-        }
-
-        .printedTicket:nth-child(3) {
-          transform:
-            rotate(0.25deg);
+        .printedTicket +
+        .printedTicket {
+          margin-top: -1px;
         }
 
         .machineCaption {
@@ -3460,7 +3196,6 @@ function MachinePreview({
             sans-serif;
 
           font-size: 6px;
-
           font-weight: 700;
 
           letter-spacing:
@@ -3469,9 +3204,7 @@ function MachinePreview({
           opacity: 0.58;
         }
 
-        @media (
-          max-width: 1000px
-        ) {
+        @media (max-width: 1000px) {
           .machineArea {
             max-width: 570px;
 
@@ -3479,9 +3212,7 @@ function MachinePreview({
           }
         }
 
-        @media (
-          max-width: 600px
-        ) {
+        @media (max-width: 600px) {
           .machineArea {
             padding:
               10px
@@ -3525,8 +3256,9 @@ function MachinePreview({
             font-size: 17px;
           }
 
-          .paperConnector {
-            width: 76%;
+          .paperConnector,
+          .printedRoll {
+            width: 78%;
           }
 
           .machineFoot {
@@ -3545,6 +3277,7 @@ function MachinePreview({
     </div>
   );
 }
+
 
 /*
   SMALL PREVIEW ROLL
@@ -3597,7 +3330,6 @@ function MiniTicketRoll({
               sans-serif;
 
             font-size: 6px;
-
             font-weight: 700;
 
             letter-spacing:
@@ -3668,7 +3400,6 @@ function MiniTicketRoll({
             sans-serif;
 
           font-size: 6px;
-
           font-weight: 700;
 
           letter-spacing:
