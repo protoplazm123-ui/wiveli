@@ -3178,7 +3178,44 @@ function MachinePreview({
 
           opacity: 0.58;
         }
+/* FIT HERO INTO ONE SCREEN */
 
+.hero {
+  min-height: calc(100vh - 70px);
+  padding: 22px 0 28px;
+  align-items: center;
+}
+
+.header {
+  min-height: 70px;
+}
+
+.heroTitle {
+  font-size: clamp(46px, 5.25vw, 82px);
+  line-height: 0.84;
+  max-width: 680px;
+}
+
+.intro {
+  margin: 20px 0 20px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.primary {
+  min-height: 44px;
+}
+
+.machineArea {
+  transform: scale(0.82);
+  transform-origin: center center;
+  margin-top: -55px;
+  margin-bottom: -75px;
+}
+
+.steps {
+  display: none;
+}
         @media (max-width: 1000px) {
           .machineArea {
             max-width: 570px;
