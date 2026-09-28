@@ -31170,3 +31170,281 @@ main {
     left: 18% !important;
   }
 }
+/* =========================================================
+   HOME — MOBILE FIX
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+  /* ---------- FLOATING EXPERIENCES ---------- */
+
+  .wiveliCreateSection {
+    min-height: auto !important;
+    height: auto !important;
+    padding: 75px 18px 85px !important;
+    overflow: hidden !important;
+  }
+
+  .wiveliCreateHeading {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    margin: 0 0 42px !important;
+    z-index: 5 !important;
+  }
+
+  .wiveliCreateHeading p {
+    margin: 0 0 17px !important;
+    font-size: 10px !important;
+    letter-spacing: 0.24em !important;
+  }
+
+  .wiveliCreateHeading h2 {
+    margin: 0 !important;
+    max-width: 100% !important;
+    font-size: clamp(58px, 17vw, 78px) !important;
+    line-height: 0.86 !important;
+    letter-spacing: -0.055em !important;
+  }
+
+  .wiveliCreateHeading a {
+    display: inline-flex !important;
+    margin-top: 27px !important;
+    padding-bottom: 7px !important;
+    font-size: 14px !important;
+  }
+
+  .wiveliFloatingExperiences {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    display: grid !important;
+    gap: 10px !important;
+  }
+
+  .wiveliExperienceFloat {
+    position: relative !important;
+    inset: auto !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+
+    width: 100% !important;
+    height: auto !important;
+    min-height: 125px !important;
+
+    transform: none !important;
+
+    display: grid !important;
+    grid-template-columns: 70px 1fr 34px !important;
+    align-items: center !important;
+    gap: 15px !important;
+
+    padding: 18px !important;
+
+    border-radius: 25px !important;
+  }
+
+  .wiveliExperienceIcon {
+    width: 64px !important;
+    height: 64px !important;
+
+    display: grid !important;
+    place-items: center !important;
+
+    font-size: 27px !important;
+
+    border-radius: 20px !important;
+  }
+
+  .wiveliExperienceContent {
+    min-width: 0 !important;
+  }
+
+  .wiveliExperienceContent h3 {
+    margin: 0 0 7px !important;
+
+    font-size: 20px !important;
+    line-height: 1.05 !important;
+  }
+
+  .wiveliExperienceContent p {
+    margin: 0 !important;
+
+    font-size: 13px !important;
+    line-height: 1.35 !important;
+  }
+
+  .wiveliExperienceContent br {
+    display: none !important;
+  }
+
+  .wiveliCardArrow {
+    position: static !important;
+
+    width: 32px !important;
+    height: 32px !important;
+
+    display: grid !important;
+    place-items: center !important;
+
+    font-size: 18px !important;
+  }
+
+
+  /* ---------- EXPERIENCES ---------- */
+
+  .experiences {
+    padding-top: 75px !important;
+    padding-bottom: 75px !important;
+  }
+
+  .experienceHeading {
+    margin-bottom: 40px !important;
+  }
+
+  .experienceHeading h2 {
+    font-size: 17vw !important;
+    line-height: 0.84 !important;
+  }
+
+
+  /* =====================================================
+     FINAL "MORE THAN A GIFT" BLOCK
+     ===================================================== */
+
+  .meaning {
+    width: 100% !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+
+    gap: 0 !important;
+
+    padding: 75px 22px 65px !important;
+
+    border: 0 !important;
+  }
+
+  .meaningCopy {
+    width: 100% !important;
+  }
+
+  .meaningCopy .eyebrow {
+    margin-bottom: 18px !important;
+
+    font-size: 9px !important;
+    letter-spacing: 0.22em !important;
+  }
+
+  .meaning h2 {
+    margin: 0 !important;
+
+    font-size: clamp(64px, 19vw, 88px) !important;
+    line-height: 0.79 !important;
+    letter-spacing: -0.055em !important;
+  }
+
+  .meaningCopy > p:not(.eyebrow) {
+    margin: 28px 0 28px !important;
+
+    max-width: 100% !important;
+
+    font-size: 16px !important;
+    line-height: 1.55 !important;
+  }
+
+  .meaningCopy .primary {
+    width: 100% !important;
+    min-height: 58px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+
+    padding: 0 20px !important;
+
+    font-size: 13px !important;
+  }
+
+
+  /* PHONE IS DECORATIVE — REMOVE ON MOBILE */
+
+  .meaning .phone {
+    display: none !important;
+  }
+
+
+  /* ---------- FEATURES ---------- */
+
+  .features {
+    width: 100% !important;
+
+    margin-top: 55px !important;
+
+    border-top: 1px solid var(--line) !important;
+  }
+
+  .features > div {
+    display: grid !important;
+
+    grid-template-columns: 38px 1fr !important;
+
+    gap: 4px 10px !important;
+
+    padding: 24px 0 !important;
+
+    border-bottom: 1px solid var(--line) !important;
+  }
+
+  .features span {
+    grid-row: 1 / 3 !important;
+
+    padding-top: 3px !important;
+
+    color: var(--pink) !important;
+
+    font-size: 11px !important;
+  }
+
+  .features h3 {
+    margin: 0 !important;
+
+    color: inherit !important;
+
+    font-size: 18px !important;
+    line-height: 1.15 !important;
+  }
+
+  .features p {
+    margin: 5px 0 0 !important;
+
+    color: #666 !important;
+
+    font-size: 13px !important;
+    line-height: 1.45 !important;
+  }
+
+
+  /* ---------- FOOTER ---------- */
+
+  footer {
+    min-height: auto !important;
+
+    padding: 38px 22px 42px !important;
+
+    gap: 13px !important;
+  }
+
+  footer .logo {
+    font-size: 26px !important;
+  }
+
+  footer p {
+    margin: 0 !important;
+
+    font-size: 12px !important;
+  }
+}
