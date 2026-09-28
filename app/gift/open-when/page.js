@@ -72,6 +72,17 @@ const POSITIONS = [
   { x: 88, y: 23, r: -5 },
 ];
 
+// Плавное закрытие и открытие глаза.
+function expressionPulse(phase, start, duration) {
+  if (phase < start || phase > start + duration) {
+    return 0;
+  }
+
+  return Math.sin(
+    ((phase - start) / duration) * Math.PI
+  ) ** 2;
+}
+
 function WiveliBoy() {
   const group = useRef();
 
@@ -81,8 +92,25 @@ function WiveliBoy() {
 
   const { actions } = useAnimations(animations, group);
 
+  const faceMeshes = useMemo(() => {
+    const meshes = [];
+
+    scene.traverse((object) => {
+      if (
+        object.isMesh &&
+        object.morphTargetDictionary &&
+        object.morphTargetInfluences
+      ) {
+        meshes.push(object);
+      }
+    });
+
+    return meshes;
+  }, [scene]);
+
   useEffect(() => {
-    const animation = Object.values(actions)[0];
+    const availableActions = Object.values(actions).filter(Boolean);
+    const animation = availableActions[0];
 
     if (animation) {
       animation.reset();
@@ -91,15 +119,49 @@ function WiveliBoy() {
     }
 
     return () => {
-      Object.values(actions).forEach((action) => action?.stop());
+      availableActions.forEach((action) => action.stop());
     };
   }, [actions]);
 
   useFrame((state) => {
-    if (!group.current) return;
+    const time = state.clock.elapsedTime;
 
-    group.current.position.y =
-      -1.65 + Math.sin(state.clock.elapsedTime * 1.1) * 0.012;
+    if (group.current) {
+      group.current.position.y =
+        -1.65 + Math.sin(time * 1.1) * 0.012;
+    }
+
+    // Подмигивание одним глазом раз в 11 секунд.
+    const winkPhase = time % 11;
+    const wink = expressionPulse(winkPhase, 7, 0.7);
+
+    // Во время подмигивания обычное моргание отключено.
+    const blink =
+      winkPhase >= 6.8 && winkPhase <= 8
+        ? 0
+        : expressionPulse(time % 4.6, 3.7, 0.28);
+
+    // Мягкая улыбка, немного сильнее при подмигивании.
+    const smile =
+      0.3 +
+      0.12 * (0.5 + 0.5 * Math.sin(time * 0.65)) +
+      wink * 0.18;
+
+    for (const mesh of faceMeshes) {
+      const setExpression = (name, value) => {
+        const index = mesh.morphTargetDictionary[name];
+
+        if (index !== undefined) {
+          mesh.morphTargetInfluences[index] = value;
+        }
+      };
+
+      setExpression("Fcl_EYE_Close", 0);
+      setExpression("Fcl_EYE_Close_L", Math.max(blink, wink));
+      setExpression("Fcl_EYE_Close_R", blink);
+      setExpression("Fcl_MTH_Joy", smile);
+      setExpression("Fcl_BRW_Joy", 0.1 + wink * 0.08);
+    }
   });
 
   return (
