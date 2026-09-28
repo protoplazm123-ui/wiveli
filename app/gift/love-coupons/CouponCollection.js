@@ -256,7 +256,111 @@ export default function CouponCollection({
                 <span>♡</span>
               </div>
             </div>
+<div className="couponExtras">
+  <p className="extrasLabel">
+    SOMETHING EXTRA FOR YOU ♡
+  </p>
 
+  <div className="extrasButtons">
+    <button
+      type="button"
+      className={
+        selectedCoupon.photoUrl
+          ? "extraButton active"
+          : "extraButton"
+      }
+      disabled={!selectedCoupon.photoUrl}
+      onClick={() => {
+        if (selectedCoupon.photoUrl) {
+          window.open(
+            selectedCoupon.photoUrl,
+            "_blank",
+            "noopener,noreferrer"
+          );
+        }
+      }}
+    >
+      <span>◇</span>
+      PHOTO
+    </button>
+
+    <button
+      type="button"
+      className={
+        selectedCoupon.videoUrl
+          ? "extraButton active"
+          : "extraButton"
+      }
+      disabled={!selectedCoupon.videoUrl}
+      onClick={() => {
+        if (selectedCoupon.videoUrl) {
+          window.open(
+            selectedCoupon.videoUrl,
+            "_blank",
+            "noopener,noreferrer"
+          );
+        }
+      }}
+    >
+      <span>▷</span>
+      VIDEO
+    </button>
+
+    <button
+      type="button"
+      className={
+        selectedCoupon.voiceUrl
+          ? "extraButton active"
+          : "extraButton"
+      }
+      disabled={!selectedCoupon.voiceUrl}
+      onClick={() => {
+        if (selectedCoupon.voiceUrl) {
+          window.open(
+            selectedCoupon.voiceUrl,
+            "_blank",
+            "noopener,noreferrer"
+          );
+        }
+      }}
+    >
+      <span>♪</span>
+      VOICE
+    </button>
+
+    <button
+      type="button"
+      className={
+        selectedCoupon.giftUrl
+          ? "extraButton active"
+          : "extraButton"
+      }
+      disabled={!selectedCoupon.giftUrl}
+      onClick={() => {
+        if (selectedCoupon.giftUrl) {
+          window.open(
+            selectedCoupon.giftUrl,
+            "_blank",
+            "noopener,noreferrer"
+          );
+        }
+      }}
+    >
+      <span>♡</span>
+      GIFT
+    </button>
+  </div>
+
+  {selectedCoupon.message && (
+    <div className="couponMessage">
+      <small>A NOTE FOR YOU</small>
+
+      <p>
+        “{selectedCoupon.message}”
+      </p>
+    </div>
+  )}
+</div>
             {leftToday === 0 && !unlimited ? (
               <>
                 <p className="question">
@@ -998,7 +1102,120 @@ footer {
 
           letter-spacing: -2px;
         }
+.couponExtras {
+  margin-top: 20px;
+}
 
+.extrasLabel {
+  margin: 0 0 10px;
+
+  font-family: Arial, sans-serif;
+  font-size: 6px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.extrasButtons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+}
+
+.extraButton {
+  min-height: 48px;
+
+  border:
+    1px solid rgba(87, 10, 22, 0.18);
+
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 4px;
+
+  background:
+    rgba(255, 240, 236, 0.25);
+
+  color:
+    rgba(87, 10, 22, 0.3);
+
+  font-family: Arial, sans-serif;
+  font-size: 5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+
+  cursor: default;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.extraButton span {
+  font-family: Georgia, serif;
+  font-size: 15px;
+}
+
+.extraButton.active {
+  border-color: #570a16;
+
+  background: #570a16;
+  color: #f5d3cf;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 6px 15px
+    rgba(87, 10, 22, 0.16);
+}
+
+.extraButton.active:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 9px 18px
+    rgba(87, 10, 22, 0.22);
+}
+
+.couponMessage {
+  margin-top: 10px;
+  padding: 12px 16px;
+
+  border:
+    1px solid rgba(87, 10, 22, 0.18);
+
+  border-radius: 10px;
+
+  background:
+    rgba(255, 240, 236, 0.28);
+
+  text-align: left;
+}
+
+.couponMessage small {
+  display: block;
+
+  margin-bottom: 5px;
+
+  font-family: Arial, sans-serif;
+  font-size: 5px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.couponMessage p {
+  margin: 0;
+
+  font-family: Georgia, serif;
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.35;
+}
         .question {
           margin:
             30px 0 18px;
