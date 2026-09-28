@@ -31103,3 +31103,44 @@ main {
     height: 47% !important;
   }
 }
+/* Крупный мальчик с WHEN, OPEN позади головы */
+
+.owrTheme-cosmic .owNewOpen {
+  left: 5% !important;
+  top: 16% !important;
+  transform: none !important;
+
+  font-size: clamp(100px, 16vw, 280px) !important;
+  line-height: 0.85 !important;
+
+  z-index: 1 !important;
+}
+
+.owrTheme-cosmic .owNewBoyCanvas {
+  left: 20% !important;
+  top: 10% !important;
+  width: 44% !important;
+  height: 74% !important;
+
+  transform: scale(3) !important;
+  transform-origin: center center !important;
+
+  z-index: 2 !important;
+  pointer-events: none !important;
+}
+
+@media (max-width: 600px) {
+  .owrTheme-cosmic .owNewOpen {
+    left: 5% !important;
+    top: 18% !important;
+    font-size: 23vw !important;
+  }
+
+  .owrTheme-cosmic .owNewBoyCanvas {
+    left: 15% !important;
+    top: 23% !important;
+    width: 65% !important;
+    height: 46% !important;
+    transform: scale(2.5) !important;
+  }
+}
