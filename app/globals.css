@@ -31046,3 +31046,60 @@ main {
   color: #b578a5;
   text-shadow: 0 0 14px rgba(255, 255, 255, 0.9);
 }
+/* Новая композиция OPEN + модель с WHEN */
+
+.owrTheme-cosmic .owNewComposition {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.owrTheme-cosmic .owNewOpen {
+  position: absolute !important;
+  left: 5% !important;
+  top: 46% !important;
+  transform: translateY(-50%) !important;
+
+  display: block !important;
+  color: #79516e !important;
+  font-family: Georgia, "Times New Roman", serif !important;
+  font-size: clamp(70px, 10vw, 190px) !important;
+  font-weight: 400 !important;
+  line-height: 0.9 !important;
+  letter-spacing: -0.075em !important;
+}
+
+.owrTheme-cosmic .owNewBoyCanvas {
+  position: absolute !important;
+  left: 33% !important;
+  top: 12% !important;
+  width: 44% !important;
+  height: 74% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+}
+
+.owrTheme-cosmic .owNewBoyCanvas canvas {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent !important;
+}
+
+@media (max-width: 600px) {
+  .owrTheme-cosmic .owNewOpen {
+    left: 4% !important;
+    top: 39% !important;
+    font-size: 12vw !important;
+  }
+
+  .owrTheme-cosmic .owNewBoyCanvas {
+    left: 34% !important;
+    top: 18% !important;
+    width: 63% !important;
+    height: 47% !important;
+  }
+}
