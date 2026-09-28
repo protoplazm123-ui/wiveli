@@ -55,6 +55,15 @@ function createRedemptionCode(existingRedemptions) {
   return code;
 }
 
+/*
+  IMPORTANT:
+  This is the only version of the gift
+  that is returned to the recipient.
+
+  Private sender contact information
+  must NEVER be added here.
+*/
+
 function makePublicGift(gift) {
   return {
     senderName: gift.senderName || "",
@@ -116,7 +125,7 @@ export async function POST(request, { params }) {
     }
 
     /*
-      1. Load the real gift from the database.
+      1. Load the real gift from Supabase.
     */
 
     const giftResponse = await fetch(
@@ -125,9 +134,11 @@ export async function POST(request, { params }) {
       )}&gift_type=eq.love-coupons&select=id,gift_type,gift_data&limit=1`,
       {
         method: "GET",
+
         headers: {
           apikey: secretKey,
         },
+
         cache: "no-store",
       }
     );
@@ -170,9 +181,10 @@ export async function POST(request, { params }) {
     const readyMadeIds =
       storedGift.couponIds || [];
 
-    const customIds = (
-      storedGift.customCoupons || []
-    )
+    const customCoupons =
+      storedGift.customCoupons || [];
+
+    const customIds = customCoupons
       .map((coupon) => coupon?.id)
       .filter(Boolean);
 
@@ -180,6 +192,37 @@ export async function POST(request, { params }) {
       ...readyMadeIds,
       ...customIds,
     ]);
+
+    /*
+      Find the custom version of this coupon.
+
+      This is also where reminderEnabled,
+      attachments and edited content live.
+    */
+
+    const customCoupon =
+      customCoupons.find(
+        (coupon) =>
+          coupon?.id === couponId
+      );
+
+    /*
+      REMIND ME is enabled separately
+      for every coupon.
+    */
+
+    const reminderEnabled =
+      customCoupon?.reminderEnabled === true;
+
+    /*
+      Sender contact is private server data.
+
+      It is deliberately NOT included
+      in makePublicGift().
+    */
+
+    const senderContact =
+      storedGift.senderContact || null;
 
     if (!allowedCouponIds.has(couponId)) {
       return NextResponse.json(
@@ -211,6 +254,7 @@ export async function POST(request, { params }) {
           success: false,
           reason: "already-redeemed",
           redemption: alreadyRedeemed,
+
           giftData:
             makePublicGift(storedGift),
         },
@@ -280,6 +324,7 @@ export async function POST(request, { params }) {
           reason: "daily-limit",
           usedToday,
           dailyLimit,
+
           giftData:
             makePublicGift(storedGift),
         },
@@ -288,17 +333,21 @@ export async function POST(request, { params }) {
     }
 
     /*
-      6. Create the redemption on the server.
+      6. Create the redemption
+      on the server.
     */
 
     const redemption = {
       couponId,
+
       code:
         createRedemptionCode(
           redemptions
         ),
+
       redeemedAt:
         new Date().toISOString(),
+
       dayKey: today,
     };
 
@@ -314,7 +363,11 @@ export async function POST(request, { params }) {
     };
 
     /*
-      7. Save it back to the database.
+      7. Save the redemption
+      back to Supabase FIRST.
+
+      Notification logic happens only
+      after the redemption is saved.
     */
 
     const updateResponse = await fetch(
@@ -326,8 +379,10 @@ export async function POST(request, { params }) {
 
         headers: {
           apikey: secretKey,
+
           "Content-Type":
             "application/json",
+
           Prefer:
             "return=representation",
         },
@@ -370,12 +425,74 @@ export async function POST(request, { params }) {
     }
 
     /*
-      8. Return only recipient-safe data.
+      8. REMIND ME notification hook.
+
+      At this point the coupon has
+      successfully been redeemed.
+
+      We check whether THIS coupon has
+      reminderEnabled and whether the
+      sender supplied a Telegram contact.
+
+      Actual Telegram delivery will be
+      connected once WIVELI has a bot
+      authorization flow and stores
+      the sender's Telegram chat_id.
+
+      Telegram bots cannot reliably send
+      a first message using only @username.
+    */
+
+    if (
+      reminderEnabled &&
+      senderContact?.type === "telegram"
+    ) {
+      console.log(
+        "Coupon reminder requested:",
+        {
+          giftId: id,
+
+          couponId,
+
+          couponTitle:
+            customCoupon?.title || "",
+
+          senderTelegram:
+            senderContact.value || "",
+
+          recipientName:
+            storedGift.recipientName || "",
+
+          redeemedAt:
+            redemption.redeemedAt,
+        }
+      );
+
+      /*
+        FUTURE TELEGRAM DELIVERY:
+
+        Once senderContact contains a
+        Telegram chat_id, this is where
+        the Telegram Bot API call belongs.
+
+        Never put the Telegram bot token
+        directly in this file.
+        Keep it in an environment variable.
+      */
+    }
+
+    /*
+      9. Return only recipient-safe data.
+
+      senderContact is intentionally
+      excluded.
     */
 
     return NextResponse.json({
       success: true,
+
       redemption,
+
       giftData:
         makePublicGift(updatedGift),
     });
