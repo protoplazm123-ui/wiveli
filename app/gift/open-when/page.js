@@ -10,7 +10,6 @@ import {
   useRef,
   useState,
 } from "react";
-
 import { Canvas, useThree } from "@react-three/fiber";
 import {
   Bounds,
@@ -18,13 +17,10 @@ import {
   useAnimations,
   useGLTF,
 } from "@react-three/drei";
-
-import { Group, Vector3 } from "three";
 import { clone } from "three/addons/utils/SkeletonUtils.js";
 
 const MODEL_URL = "/assets/new-boy.glb";
 
-// Начинаем загрузку модели при загрузке модуля страницы.
 useGLTF.preload(MODEL_URL);
 
 const FALLBACK = {
@@ -163,7 +159,6 @@ function WiveliModel({ onReady }) {
   const group = useRef();
   const bounds = useBounds();
   const { size } = useThree();
-
   const { scene: originalScene, animations } = useGLTF(MODEL_URL);
 
   const scene = useMemo(() => {
@@ -219,45 +214,12 @@ function WiveliModel({ onReady }) {
       mixer.update(0);
     }
 
-    // Вращаем только персонажа вокруг точки посадки.
-    // Текст WHEN остаётся отдельным неподвижным объектом.
-    const armature = scene.getObjectByName("Armature");
-    const hips = scene.getObjectByName("J_Bip_C_Hips");
-
-    let pivot = null;
-    let originalParent = null;
-
-    if (armature && hips && armature.parent) {
-      scene.updateMatrixWorld(true);
-
-      originalParent = armature.parent;
-
-      const seatPosition = hips.getWorldPosition(new Vector3());
-      originalParent.worldToLocal(seatPosition);
-
-      pivot = new Group();
-      pivot.name = "WiveliCharacterTurn";
-      pivot.position.copy(seatPosition);
-
-      const offset = new Group();
-      offset.position.copy(seatPosition).multiplyScalar(-1);
-
-      originalParent.add(pivot);
-      pivot.add(offset);
-      offset.add(armature);
-
-      // Примерно 17 градусов вправо.
-      pivot.rotation.y = 0.3;
-      scene.updateMatrixWorld(true);
-    }
+    // Дополнительного поворота вправо больше нет.
+    // Используем исходное положение модели.
+    scene.updateMatrixWorld(true);
 
     return () => {
       action?.stop();
-
-      if (pivot && originalParent && armature) {
-        originalParent.add(armature);
-        originalParent.remove(pivot);
-      }
     };
   }, [actions, mixer, scene]);
 
@@ -269,7 +231,6 @@ function WiveliModel({ onReady }) {
   useEffect(() => {
     let secondFrame = 0;
 
-    // Даём Canvas отрисовать модель перед открытием страницы.
     const firstFrame = requestAnimationFrame(() => {
       secondFrame = requestAnimationFrame(onReady);
     });
@@ -305,9 +266,7 @@ function NewBoyScene({ onReady, onError }) {
             gl.setClearColor(0x000000, 0);
           }}
         >
-          <hemisphereLight
-            args={["#fff5ed", "#c9bddc", 1.5]}
-          />
+          <hemisphereLight args={["#fff5ed", "#c9bddc", 1.5]} />
 
           <directionalLight
             position={[3, 5, 6]}
@@ -362,7 +321,6 @@ export default function OpenWhenGiftPage() {
 
   const [opened, setOpened] = useState([]);
   const [responses, setResponses] = useState([]);
-
   const [selectedId, setSelectedId] = useState(null);
   const [focused, setFocused] = useState(false);
   const [flipped, setFlipped] = useState(false);
@@ -404,13 +362,8 @@ export default function OpenWhenGiftPage() {
         localStorage.getItem("wiveli-open-when-responses-v1") || "[]"
       );
 
-      if (Array.isArray(savedOpened)) {
-        setOpened(savedOpened);
-      }
-
-      if (Array.isArray(savedResponses)) {
-        setResponses(savedResponses);
-      }
+      if (Array.isArray(savedOpened)) setOpened(savedOpened);
+      if (Array.isArray(savedResponses)) setResponses(savedResponses);
     } catch (error) {
       console.error(error);
     }
@@ -428,24 +381,19 @@ export default function OpenWhenGiftPage() {
 
   const theme = gift.theme?.id || "cosmic";
   const accent = gift.theme?.accent || "#8c63c7";
-
-  const pageReady =
-    loaded && (theme !== "cosmic" || modelReady);
+  const pageReady = loaded && (theme !== "cosmic" || modelReady);
 
   const isOpened = (id) =>
     opened.some((item) => String(item) === String(id));
 
   const hasResponded = (id) =>
-    responses.some(
-      (item) => String(item.momentId) === String(id)
-    );
+    responses.some((item) => String(item.momentId) === String(id));
 
   const saveEvent = (event) => {
     try {
       const stored = JSON.parse(
         localStorage.getItem("wiveli-open-when-events-v1") || "[]"
       );
-
       const current = Array.isArray(stored) ? stored : [];
 
       localStorage.setItem(
@@ -462,7 +410,6 @@ export default function OpenWhenGiftPage() {
     setShowExtras(false);
     setFlipped(false);
     setResponseSent(hasResponded(moment.id));
-
     requestAnimationFrame(() => setFocused(true));
   };
 
@@ -551,14 +498,11 @@ export default function OpenWhenGiftPage() {
     gift.moments.every((moment) => isOpened(moment.id));
 
   const customBackground = gift.theme?.customBackground;
-
   const customIsVideo =
     typeof customBackground === "string" &&
     customBackground.startsWith("data:video");
 
-  if (!loaded) {
-    return <LoadingScreen />;
-  }
+  if (!loaded) return <LoadingScreen />;
 
   return (
     <>
@@ -640,7 +584,6 @@ export default function OpenWhenGiftPage() {
           <a href="/" className="owrLogo">
             WI<span>♥</span>ELI
           </a>
-
           <span>
             {theme === "romantic"
               ? "MADE WITH LOVE"
@@ -656,7 +599,6 @@ export default function OpenWhenGiftPage() {
 
         <div className="owrHint">
           <span>FROM {gift.sender || "SOMEONE SPECIAL"}</span>
-
           <p>
             {theme === "romantic"
               ? "For every moment you need a little bit of me."
@@ -701,7 +643,6 @@ export default function OpenWhenGiftPage() {
                         <span>♡</span>
                       </div>
                     )}
-
                     <div>
                       <small>OPENED ♡</small>
                       <strong>{moment.title}</strong>
@@ -773,15 +714,11 @@ export default function OpenWhenGiftPage() {
                       <h1>{selected.title}</h1>
                     </div>
 
-                    <span className="owrTap">
-                      TAP TO TURN OVER
-                    </span>
+                    <span className="owrTap">TAP TO TURN OVER</span>
                   </div>
 
                   <div className="owrBigBack">
-                    <span className="owrBackLabel">
-                      JUST FOR YOU ♡
-                    </span>
+                    <span className="owrBackLabel">JUST FOR YOU ♡</span>
 
                     <p>
                       {selected.message ||
@@ -798,14 +735,12 @@ export default function OpenWhenGiftPage() {
                             <strong>{selected.date}</strong>
                           </div>
                         )}
-
                         {selected.time && (
                           <div>
                             <span>TIME</span>
                             <strong>{selected.time}</strong>
                           </div>
                         )}
-
                         {selected.place && (
                           <div>
                             <span>PLACE</span>
@@ -829,9 +764,7 @@ export default function OpenWhenGiftPage() {
                       type="button"
                       onClick={() => setShowExtras((value) => !value)}
                     >
-                      {showExtras
-                        ? "CLOSE EXTRAS ↑"
-                        : "THERE'S MORE ♡"}
+                      {showExtras ? "CLOSE EXTRAS ↑" : "THERE'S MORE ♡"}
                     </button>
                   )}
 
@@ -848,12 +781,10 @@ export default function OpenWhenGiftPage() {
               {flipped && selected.interaction?.enabled && (
                 <div className="owrInteraction">
                   <span>♡ A LITTLE QUESTION</span>
-
                   <h2>
                     {selected.interaction.question ||
                       "WOULD YOU DO THIS WITH ME?"}
                   </h2>
-
                   <p>
                     {selected.interaction.text ||
                       "Maybe this deserves another memory."}
