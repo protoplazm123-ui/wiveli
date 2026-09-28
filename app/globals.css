@@ -31144,3 +31144,29 @@ main {
     transform: scale(2.5) !important;
   }
 }
+/* Модель немного правее */
+.owrTheme-cosmic .owNewBoyCanvas {
+  left: 24% !important;
+}
+
+/* Более выразительные цвета и мягкая тень */
+.owrTheme-cosmic .owNewBoyCanvas canvas {
+  filter:
+    saturate(1.2)
+    contrast(1.12)
+    drop-shadow(0 3px 5px rgba(100, 55, 90, 0.18));
+}
+
+/* Читаемая подпись отправителя */
+.owrTheme-cosmic .owrHint > span {
+  color: #000 !important;
+  opacity: 1 !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+@media (max-width: 600px) {
+  .owrTheme-cosmic .owNewBoyCanvas {
+    left: 18% !important;
+  }
+}
