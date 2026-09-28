@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { couponIdfunction MiniTicketRoll({eas, couponCategories } from "../coupons";
+import { couponIdeas, couponCategories } from "../coupons";
 import LoveCouponTicket from "../../../gift/love-coupons/LoveCouponTicket";
 import {
   createLoveCouponsGift,
