@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { couponIdeas, couponCategories } from "../coupons";
+import { couponIdfunction MiniTicketRoll({eas, couponCategories } from "../coupons";
 import LoveCouponTicket from "../../../gift/love-coupons/LoveCouponTicket";
 import {
   createLoveCouponsGift,
@@ -3454,57 +3454,37 @@ function MachinePreview({
   SMALL PREVIEW ROLL
 */
 
-function MiniTicketRoll({
-  coupons = [],
-}) {
-  const previewCoupons =
-    coupons.length > 0
-      ? coupons.slice(0, 3)
-      : [];
+function MiniTicketRoll({ coupons = [] }) {
+  const firstCoupon = coupons[0];
 
-  if (!previewCoupons.length) {
+  if (!firstCoupon) {
     return (
-      <div className="emptyPreview">
+      <div className="previewEmpty">
         <span>♡</span>
-
-        <p>
-          YOUR COUPONS WILL APPEAR HERE
-        </p>
+        <strong>YOUR COUPONS</strong>
+        <small>WILL APPEAR HERE</small>
 
         <style jsx>{`
-          .emptyPreview {
-            min-height: 180px;
-
+          .previewEmpty {
+            height: 230px;
             display: flex;
-
             flex-direction: column;
-
             align-items: center;
             justify-content: center;
-
-            gap: 10px;
-
-            padding: 25px;
-
-            text-align: center;
+            border: 1px solid rgba(116, 16, 32, 0.25);
+            border-radius: 18px;
           }
 
-          .emptyPreview span {
-            font-size: 38px;
+          .previewEmpty span {
+            margin-bottom: 10px;
+            font-size: 34px;
           }
 
-          .emptyPreview p {
-            margin: 0;
-
-            font-family:
-              Arial,
-              sans-serif;
-
-            font-size: 6px;
-            font-weight: 700;
-
-            letter-spacing:
-              0.17em;
+          .previewEmpty strong,
+          .previewEmpty small {
+            font-family: Arial, sans-serif;
+            font-size: 7px;
+            letter-spacing: 0.16em;
           }
         `}</style>
       </div>
@@ -3512,69 +3492,184 @@ function MiniTicketRoll({
   }
 
   return (
-    <div className="miniRoll">
-      {previewCoupons.map(
-        (coupon, index) => (
-          <LoveCouponTicket
-            key={
-              coupon.id ||
-              coupon.originalId ||
-              `${coupon.title}-${index}`
-            }
-            number={String(
-              index + 1
-            ).padStart(2, "0")}
-            title={coupon.title}
-            description={
-              coupon.subtitle ||
-              coupon.description ||
-              ""
-            }
-            message={
-              coupon.message || ""
-            }
-            compact
-          />
-        )
-      )}
+    <div className="previewStack">
+      <div className="backTicket backTwo" />
+      <div className="backTicket backOne" />
 
-      {coupons.length > 3 && (
-        <div className="moreCoupons">
-          + {coupons.length - 3} MORE
-          COUPONS ♡
+      <div className="previewTicket">
+        <div className="previewMain">
+          <div className="previewMeta">
+            <span>WI♡ELI</span>
+            <span>LOVE COUPON ✦</span>
+          </div>
+
+          <small>A LITTLE PROMISE FOR YOU</small>
+
+          <h3>{firstCoupon.title}</h3>
+
+          <p>
+            {firstCoupon.subtitle ||
+              firstCoupon.description ||
+              "Made with love."}
+          </p>
+
+          <div className="previewBottom">
+            <span>WITH LOVE ♡</span>
+          </div>
         </div>
-      )}
+
+        <div className="previewStub">
+          <span>♡</span>
+          <strong>01</strong>
+
+          <div className="previewBarcode">
+            ||| || ||| |
+          </div>
+        </div>
+      </div>
+
+      <div className="couponCount">
+        {coupons.length} LOVE COUPONS ♡
+      </div>
 
       <style jsx>{`
-        .miniRoll {
-          display: flex;
-
-          flex-direction: column;
-
-          gap: 8px;
-
-          max-width: 570px;
-
-          margin:
-            25px
-            auto
-            0;
+        .previewStack {
+          position: relative;
+          width: min(440px, 100%);
+          margin: 0 auto;
+          padding: 26px 0 34px;
         }
 
-        .moreCoupons {
-          padding-top: 8px;
+        .backTicket {
+          position: absolute;
+          left: 50%;
+          width: 88%;
+          height: 178px;
+          border: 1px solid #741020;
+          border-radius: 14px;
+          background: #eabdb9;
+        }
+
+        .backTwo {
+          top: 10px;
+          transform: translateX(-50%) rotate(3deg);
+          opacity: 0.45;
+        }
+
+        .backOne {
+          top: 18px;
+          transform: translateX(-50%) rotate(-2deg);
+          opacity: 0.7;
+        }
+
+        .previewTicket {
+          position: relative;
+          z-index: 3;
+          min-height: 190px;
+
+          display: grid;
+          grid-template-columns: 1fr 76px;
+
+          overflow: hidden;
+
+          border: 1.5px solid #741020;
+          border-radius: 15px;
+
+          background: #f3cfcb;
+          color: #741020;
+
+          box-shadow:
+            0 18px 35px rgba(76, 8, 20, 0.12);
+        }
+
+        .previewMain {
+          position: relative;
+          padding: 22px 24px;
+        }
+
+        .previewMeta {
+          display: flex;
+          justify-content: space-between;
+
+          margin-bottom: 28px;
+
+          font-family: Arial, sans-serif;
+          font-size: 6px;
+          font-weight: 700;
+          letter-spacing: 0.13em;
+        }
+
+        .previewMain > small {
+          font-family: Arial, sans-serif;
+          font-size: 5px;
+          font-weight: 700;
+          letter-spacing: 0.14em;
+        }
+
+        .previewMain h3 {
+          max-width: 280px;
+          margin: 7px 0 5px;
+
+          font-family: Georgia, serif;
+          font-size: 30px;
+          line-height: 0.9;
+          letter-spacing: -0.04em;
+        }
+
+        .previewMain p {
+          margin: 0;
+
+          font-family: Georgia, serif;
+          font-size: 11px;
+          font-style: italic;
+        }
+
+        .previewBottom {
+          position: absolute;
+          left: 24px;
+          bottom: 17px;
+
+          font-family: Arial, sans-serif;
+          font-size: 5px;
+          font-weight: 700;
+          letter-spacing: 0.14em;
+        }
+
+        .previewStub {
+          border-left: 1px dashed #741020;
+
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+
+          gap: 9px;
+        }
+
+        .previewStub > span {
+          font-size: 25px;
+        }
+
+        .previewStub strong {
+          font-family: Georgia, serif;
+          font-size: 20px;
+        }
+
+        .previewBarcode {
+          font-family: monospace;
+          font-size: 12px;
+          writing-mode: vertical-rl;
+        }
+
+        .couponCount {
+          margin-top: 15px;
 
           text-align: center;
 
-          font-family:
-            Arial,
-            sans-serif;
-
+          font-family: Arial, sans-serif;
           font-size: 6px;
           font-weight: 700;
-
-          letter-spacing:
-            0.15em;
+          letter-spacing: 0.16em;
         }
       `}</style>
     </div>
