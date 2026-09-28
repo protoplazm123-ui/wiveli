@@ -10,444 +10,879 @@ export default function LoveCouponTicket({
   selected = false,
   onSelect,
   onEdit,
+  compact = false,
 }) {
   const [flipped, setFlipped] = useState(false);
 
   return (
-    <div className="couponWrap">
+    <div className={`loveTicketWrap ${compact ? "compact" : ""}`}>
       <div
-        className="couponScene"
-        onClick={() => setFlipped((v) => !v)}
+        className="loveTicketScene"
+        onClick={() => setFlipped((value) => !value)}
       >
-        <div className={`coupon3d ${flipped ? "flipped" : ""}`}>
-          
+        <div className={`loveTicket3d ${flipped ? "flipped" : ""}`}>
           {/* FRONT */}
-          <article className="couponFace couponFront">
-            <div className="couponBody">
-              <div className="couponTop">
+          <article className="loveTicketFace loveTicketFront">
+            <div className="loveTicketMain">
+              <div className="ticketTop">
                 <strong>WI♡ELI</strong>
-                <i />
-                <span>LOVE COUPON ✦</span>
+
+                <span className="topLine" />
+
+                <span className="topLabel">
+                  LOVE COUPON ✦
+                </span>
               </div>
 
-              <div className="couponInner">
-                <small>A LITTLE PROMISE FOR YOU</small>
+              <div className="ticketContent">
+                <small>
+                  A LITTLE PROMISE FOR YOU
+                </small>
+
                 <h3>{title}</h3>
+
                 <p>{description}</p>
 
                 {message && (
-                  <div className="couponMessage">
+                  <div className="ticketMessage">
                     “{message}”
                   </div>
                 )}
               </div>
 
-              <span className="flipHint">CLICK TO FLIP ↻</span>
+              <span className="flipHint">
+                CLICK TO FLIP ↻
+              </span>
             </div>
 
-            <CouponStub number={number} />
+            <TicketStub number={number} />
           </article>
 
           {/* BACK */}
-          <article className="couponFace couponBack">
-            <div className="couponBody backBody">
-              <div className="couponTop">
+          <article className="loveTicketFace loveTicketBack">
+            <div className="loveTicketMain">
+              <div className="ticketTop">
                 <strong>WI♡ELI</strong>
-                <i />
-                <span>MADE WITH LOVE ✦</span>
+
+                <span className="topLine" />
+
+                <span className="topLabel">
+                  MADE WITH LOVE ✦
+                </span>
               </div>
 
               <div className="backContent">
-                <small>LOVE COUPON · {number}</small>
+                <small>
+                  LOVE COUPON · {number}
+                </small>
 
-                <div className="bigHeart">♡</div>
+                <span className="backHeart">
+                  ♡
+                </span>
 
                 <h3>{title}</h3>
+
                 <p>{description}</p>
 
                 {message && (
-                  <div className="backMessage">{message}</div>
+                  <div className="backMessage">
+                    {message}
+                  </div>
                 )}
 
-                <span className="flipHint">
+                <span className="backHint">
                   CLICK TO TURN OVER ↻
                 </span>
               </div>
             </div>
 
-            <CouponStub number={number} />
+            <TicketStub number={number} />
           </article>
         </div>
       </div>
 
-      {/* CONTROLS */}
-      <div className="couponControls">
-        <button
-          type="button"
-          className={selected ? "selected" : ""}
-          onClick={onSelect}
-        >
-          {selected ? "✓ SELECTED" : "+ ADD COUPON"}
-        </button>
+      {!compact && (onSelect || onEdit) && (
+        <div className="ticketActions">
+          {onSelect && (
+            <button
+              type="button"
+              className={selected ? "selected" : ""}
+              onClick={onSelect}
+            >
+              {selected
+                ? "✓ SELECTED"
+                : "+ ADD COUPON"}
+            </button>
+          )}
 
-        <button type="button" onClick={onEdit}>
-          EDIT ♡
-        </button>
-      </div>
+          {onEdit && (
+            <button
+              type="button"
+              onClick={onEdit}
+            >
+              EDIT ♡
+            </button>
+          )}
+        </div>
+      )}
 
       <style jsx>{`
-        .couponWrap {
+        .loveTicketWrap {
           width: 100%;
+          min-width: 0;
         }
 
-        .couponScene {
+        .loveTicketScene {
           width: 100%;
-          aspect-ratio: 2.55 / 1;
-          perspective: 1400px;
-          cursor: pointer;
-          transition:
-            transform 0.3s ease,
-            filter 0.3s ease;
-        }
+          aspect-ratio: 2.5 / 1;
 
-        .couponScene:hover {
-          transform: translateY(-7px) rotate(-0.6deg);
-          filter: drop-shadow(
-            0 18px 20px rgba(91, 9, 24, 0.16)
-          );
-        }
-
-        .coupon3d {
           position: relative;
+
+          perspective: 1500px;
+
+          cursor: pointer;
+
+          transition:
+            transform 0.28s ease,
+            filter 0.28s ease;
+        }
+
+        .loveTicketScene:hover {
+          transform:
+            translateY(-6px)
+            rotate(-0.5deg);
+
+          filter:
+            drop-shadow(
+              0 17px 18px
+              rgba(87, 7, 20, 0.16)
+            );
+        }
+
+        .loveTicket3d {
+          position: relative;
+
           width: 100%;
           height: 100%;
+
           transform-style: preserve-3d;
-          transition: transform 0.65s
-            cubic-bezier(0.2, 0.8, 0.2, 1);
+
+          transition:
+            transform 0.65s
+            cubic-bezier(
+              0.2,
+              0.8,
+              0.2,
+              1
+            );
         }
 
-        .coupon3d.flipped {
+        .loveTicket3d.flipped {
           transform: rotateY(180deg);
         }
 
-        .couponFace {
+        .loveTicketFace {
           position: absolute;
           inset: 0;
+
           display: grid;
-          grid-template-columns: 1fr 21%;
+
+          grid-template-columns:
+            minmax(0, 1fr)
+            20%;
+
           overflow: hidden;
-          border-radius: 14px;
+
+          border-radius: 15px;
+
           color: #68101e;
+
           background:
             radial-gradient(
-              circle at 30% 15%,
-              rgba(255,255,255,.5),
+              circle at 22% 10%,
+              rgba(255, 255, 255, 0.5),
               transparent 32%
             ),
-            linear-gradient(135deg, #f8ded9, #efc5c2);
+            radial-gradient(
+              circle at 78% 85%,
+              rgba(181, 77, 90, 0.08),
+              transparent 38%
+            ),
+            #f5d2ce;
 
           box-shadow:
             inset 0 0 0 2px #741020,
-            inset 0 0 0 7px #f4d2ce,
-            inset 0 0 0 8px rgba(116,16,32,.55);
+            inset 0 0 0 7px #f5d2ce,
+            inset 0 0 0 8px
+              rgba(116, 16, 32, 0.65),
+            0 8px 20px
+              rgba(94, 13, 28, 0.08);
 
           backface-visibility: hidden;
           -webkit-backface-visibility: hidden;
         }
 
-        .couponFace::before,
-        .couponFace::after {
+        /*
+          SIDE CUT-OUTS
+        */
+
+        .loveTicketFace::before,
+        .loveTicketFace::after {
           content: "";
+
           position: absolute;
+
           top: 50%;
-          width: 24px;
-          height: 24px;
-          margin-top: -12px;
+
+          width: 26px;
+          height: 26px;
+
+          margin-top: -13px;
+
           border-radius: 50%;
+
           background: #f2cfca;
-          z-index: 10;
+
+          z-index: 20;
         }
 
-        .couponFace::before {
-          left: -12px;
+        .loveTicketFace::before {
+          left: -13px;
         }
 
-        .couponFace::after {
-          right: -12px;
+        .loveTicketFace::after {
+          right: -13px;
         }
 
-        .couponBack {
+        .loveTicketBack {
           transform: rotateY(180deg);
         }
 
-        .couponBody {
+        /*
+          MAIN TICKET
+        */
+
+        .loveTicketMain {
           position: relative;
+
           min-width: 0;
-          padding: 19px 21px;
+
+          padding:
+            20px
+            22px;
         }
 
-        .couponTop {
-          height: 22px;
+        .ticketTop {
+          height: 23px;
+
           display: flex;
+
           align-items: center;
+
           gap: 11px;
         }
 
-        .couponTop strong {
-          font-family: Georgia, serif;
+        .ticketTop strong {
+          flex: 0 0 auto;
+
+          font-family:
+            Georgia,
+            "Times New Roman",
+            serif;
+
           font-size: 17px;
+
+          line-height: 1;
+
+          font-weight: 600;
+
+          letter-spacing: -0.03em;
+
           white-space: nowrap;
         }
 
-        .couponTop i {
+        .topLine {
           flex: 1;
+
           height: 1px;
-          background: rgba(104,16,30,.5);
+
+          background:
+            rgba(
+              104,
+              16,
+              30,
+              0.5
+            );
         }
 
-        .couponTop span {
-          font-family: Arial, sans-serif;
+        .topLabel {
+          flex: 0 0 auto;
+
+          font-family:
+            Arial,
+            sans-serif;
+
           font-size: 6px;
+
           font-weight: 700;
-          letter-spacing: .16em;
+
+          letter-spacing: 0.17em;
+
           white-space: nowrap;
         }
 
-        .couponInner {
+        /*
+          FRONT CONTENT
+        */
+
+        .ticketContent {
           position: absolute;
-          left: 21px;
-          right: 21px;
-          top: 51px;
+
+          left: 22px;
+          right: 22px;
+
+          top: 54px;
           bottom: 20px;
 
           display: flex;
+
           flex-direction: column;
+
           justify-content: center;
 
-          padding: 15px 18px;
+          padding:
+            14px
+            18px;
 
-          border: 1px dashed rgba(104,16,30,.52);
+          border:
+            1px dashed
+            rgba(
+              104,
+              16,
+              30,
+              0.5
+            );
+
           border-radius: 11px;
         }
 
-        .couponInner small,
+        .ticketContent small,
         .backContent small {
-          font-family: Arial, sans-serif;
+          display: block;
+
+          font-family:
+            Arial,
+            sans-serif;
+
           font-size: 5px;
+
           font-weight: 700;
-          letter-spacing: .2em;
+
+          letter-spacing: 0.2em;
+
+          line-height: 1.2;
         }
 
-        .couponInner h3,
+        .ticketContent h3,
         .backContent h3 {
-          margin: 6px 0 4px;
-          font-family: Georgia, serif;
-          font-size: clamp(17px, 2.1vw, 27px);
-          line-height: .95;
+          margin:
+            7px
+            0
+            4px;
+
+          font-family:
+            Georgia,
+            "Times New Roman",
+            serif;
+
+          font-size:
+            clamp(
+              17px,
+              2.15vw,
+              28px
+            );
+
+          line-height: 0.94;
+
           font-weight: 500;
+
+          letter-spacing: -0.035em;
+
           text-transform: uppercase;
         }
 
-        .couponInner p,
+        .ticketContent p,
         .backContent p {
           margin: 0;
-          font-family: Georgia, serif;
+
+          font-family:
+            Georgia,
+            "Times New Roman",
+            serif;
+
           font-size: 9px;
+
+          line-height: 1.25;
+
           font-style: italic;
         }
 
-        .couponMessage {
+        .ticketMessage {
           margin-top: 8px;
-          font-family: Georgia, serif;
+
+          max-width: 90%;
+
+          font-family:
+            Georgia,
+            serif;
+
           font-size: 8px;
-          opacity: .75;
+
+          line-height: 1.3;
+
+          opacity: 0.75;
         }
 
         .flipHint {
           position: absolute;
+
+          z-index: 5;
+
           left: 50%;
           bottom: 6px;
-          transform: translateX(-50%);
+
+          transform:
+            translateX(-50%);
+
+          font-family:
+            Arial,
+            sans-serif;
+
+          font-size: 5px;
+
+          font-weight: 700;
+
+          letter-spacing: 0.13em;
+
           white-space: nowrap;
 
-          font-family: Arial, sans-serif;
-          font-size: 5px;
-          font-weight: 700;
-          letter-spacing: .14em;
-          opacity: .42;
+          opacity: 0.38;
         }
 
-        .couponStub {
+        /*
+          STUB
+        */
+
+        .ticketStub {
           position: relative;
+
+          min-width: 0;
+
           display: flex;
+
           flex-direction: column;
+
           align-items: center;
+
           justify-content: center;
+
           gap: 7px;
 
-          border-left: 1px dashed #741020;
+          padding:
+            17px
+            8px;
+
+          border-left:
+            1px dashed
+            #741020;
         }
 
-        .couponStub::before,
-        .couponStub::after {
+        /*
+          PERFORATION HOLES
+        */
+
+        .ticketStub::before,
+        .ticketStub::after {
           content: "";
+
           position: absolute;
+
           left: -8px;
+
           width: 15px;
           height: 15px;
+
           border-radius: 50%;
+
           background: #f2cfca;
+
+          z-index: 10;
         }
 
-        .couponStub::before {
+        .ticketStub::before {
           top: -8px;
         }
 
-        .couponStub::after {
+        .ticketStub::after {
           bottom: -8px;
         }
 
-        .stubSpark {
-          font-size: 10px;
+        .stubStar {
+          font-size: 9px;
         }
 
         .stubHeart {
-          font-size: 26px;
-          line-height: 1;
+          font-family:
+            Georgia,
+            serif;
+
+          font-size: 27px;
+
+          line-height: 0.9;
         }
 
         .stubNumber {
-          font-family: Georgia, serif;
+          font-family:
+            Georgia,
+            serif;
+
           font-size: 10px;
+
+          white-space: nowrap;
         }
 
-        .barcode {
-          width: 32px;
-          height: 39px;
+        /*
+          CSS BARCODE
+        */
 
-          background: repeating-linear-gradient(
-            90deg,
-            #68101e 0 1px,
-            transparent 1px 3px,
-            #68101e 3px 5px,
-            transparent 5px 7px
-          );
+        .barcode {
+          width: 34px;
+          height: 40px;
+
+          background:
+            repeating-linear-gradient(
+              90deg,
+              #68101e 0px,
+              #68101e 1px,
+
+              transparent 1px,
+              transparent 3px,
+
+              #68101e 3px,
+              #68101e 5px,
+
+              transparent 5px,
+              transparent 7px,
+
+              #68101e 7px,
+              #68101e 8px,
+
+              transparent 8px,
+              transparent 10px
+            );
         }
 
         .stubLogo {
-          font-family: Arial, sans-serif;
+          font-family:
+            Arial,
+            sans-serif;
+
           font-size: 5px;
+
           font-weight: 700;
-          letter-spacing: .18em;
+
+          letter-spacing: 0.17em;
         }
 
-        .backBody {
-          position: relative;
-        }
+        /*
+          BACK
+        */
 
         .backContent {
           position: absolute;
-          inset: 48px 25px 18px;
+
+          left: 24px;
+          right: 24px;
+
+          top: 52px;
+          bottom: 19px;
 
           display: flex;
+
           flex-direction: column;
-          justify-content: center;
+
           align-items: center;
 
+          justify-content: center;
+
           text-align: center;
-          border: 1px dashed rgba(104,16,30,.5);
+
+          padding:
+            10px
+            20px;
+
+          border:
+            1px dashed
+            rgba(
+              104,
+              16,
+              30,
+              0.5
+            );
+
           border-radius: 11px;
         }
 
-        .bigHeart {
-          margin: 2px 0;
+        .backHeart {
+          display: block;
+
+          margin:
+            3px
+            0
+            -1px;
+
+          font-family:
+            Georgia,
+            serif;
+
           font-size: 22px;
         }
 
         .backMessage {
-          margin-top: 7px;
           max-width: 85%;
+
+          margin-top: 7px;
+
+          font-family:
+            Georgia,
+            serif;
+
           font-size: 8px;
+
+          line-height: 1.3;
+
           font-style: italic;
+
+          opacity: 0.8;
         }
 
-        .couponControls {
+        .backHint {
+          position: absolute;
+
+          bottom: 5px;
+
+          font-family:
+            Arial,
+            sans-serif;
+
+          font-size: 5px;
+
+          font-weight: 700;
+
+          letter-spacing: 0.13em;
+
+          opacity: 0.38;
+        }
+
+        /*
+          ADD / EDIT
+        */
+
+        .ticketActions {
           display: grid;
-          grid-template-columns: 1fr 1fr;
+
+          grid-template-columns:
+            1fr
+            1fr;
+
           gap: 7px;
+
           margin-top: 9px;
         }
 
-        .couponControls button {
+        .ticketActions button {
           height: 36px;
-          border: 1px solid #741020;
+
+          padding:
+            0
+            12px;
+
+          border:
+            1px solid
+            #741020;
+
           border-radius: 100px;
-          background: transparent;
+
           color: #741020;
+
+          background: transparent;
 
           cursor: pointer;
 
-          font-family: Arial, sans-serif;
-          font-size: 7px;
-          font-weight: 700;
-          letter-spacing: .11em;
+          font-family:
+            Arial,
+            sans-serif;
 
-          transition: .2s ease;
+          font-size: 7px;
+
+          font-weight: 700;
+
+          letter-spacing: 0.11em;
+
+          transition:
+            color 0.18s ease,
+            background 0.18s ease,
+            transform 0.18s ease;
         }
 
-        .couponControls button:hover,
-        .couponControls button.selected {
+        .ticketActions button:hover {
+          transform:
+            translateY(-1px);
+
           color: #f9ddd8;
+
           background: #741020;
         }
 
+        .ticketActions button.selected {
+          color: #f9ddd8;
+
+          background: #741020;
+        }
+
+        /*
+          COMPACT VERSION
+          FOR PRINTER LATER
+        */
+
+        .compact
+          .loveTicketScene {
+          pointer-events: none;
+        }
+
+        .compact
+          .flipHint {
+          display: none;
+        }
+
+        /*
+          MOBILE
+        */
+
         @media (max-width: 600px) {
-          .couponScene {
-            aspect-ratio: 2.05 / 1;
+          .loveTicketScene {
+            aspect-ratio:
+              2.05 / 1;
           }
 
-          .couponFace {
-            grid-template-columns: 1fr 23%;
+          .loveTicketFace {
+            grid-template-columns:
+              minmax(0, 1fr)
+              23%;
           }
 
-          .couponBody {
-            padding: 13px 15px;
+          .loveTicketMain {
+            padding:
+              13px
+              15px;
           }
 
-          .couponTop strong {
+          .ticketTop {
+            gap: 7px;
+          }
+
+          .ticketTop strong {
             font-size: 12px;
           }
 
-          .couponTop span {
+          .topLabel {
             font-size: 4px;
           }
 
-          .couponInner {
+          .ticketContent {
             left: 15px;
             right: 15px;
+
             top: 40px;
             bottom: 14px;
-            padding: 10px 12px;
+
+            padding:
+              9px
+              11px;
           }
 
-          .couponInner h3,
+          .ticketContent small,
+          .backContent small {
+            font-size: 4px;
+          }
+
+          .ticketContent h3,
           .backContent h3 {
+            margin:
+              4px
+              0
+              2px;
+
             font-size: 15px;
           }
 
-          .couponInner p,
+          .ticketContent p,
           .backContent p {
             font-size: 7px;
           }
 
+          .ticketMessage,
+          .backMessage {
+            margin-top: 4px;
+
+            font-size: 6px;
+          }
+
           .backContent {
-            inset: 39px 17px 13px;
+            left: 16px;
+            right: 16px;
+
+            top: 39px;
+            bottom: 13px;
+
+            padding:
+              7px
+              10px;
+          }
+
+          .backHeart {
+            font-size: 16px;
+          }
+
+          .stubHeart {
+            font-size: 21px;
+          }
+
+          .stubNumber {
+            font-size: 8px;
+          }
+
+          .barcode {
+            width: 27px;
+            height: 31px;
+          }
+
+          .stubLogo {
+            font-size: 4px;
+          }
+
+          .flipHint,
+          .backHint {
+            display: none;
           }
         }
 
-        @media (prefers-reduced-motion: reduce) {
-          .coupon3d,
-          .couponScene {
+        @media (
+          prefers-reduced-motion:
+          reduce
+        ) {
+          .loveTicket3d,
+          .loveTicketScene {
             transition: none;
           }
         }
@@ -456,11 +891,16 @@ export default function LoveCouponTicket({
   );
 }
 
-function CouponStub({ number }) {
+function TicketStub({ number }) {
   return (
-    <aside className="couponStub">
-      <span className="stubSpark">✦</span>
-      <span className="stubHeart">♡</span>
+    <aside className="ticketStub">
+      <span className="stubStar">
+        ✦
+      </span>
+
+      <span className="stubHeart">
+        ♡
+      </span>
 
       <span className="stubNumber">
         No. {number}
