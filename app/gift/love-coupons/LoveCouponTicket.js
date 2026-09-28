@@ -911,6 +911,140 @@ function TicketStub({ number }) {
       <span className="stubLogo">
         WI♡ELI
       </span>
+
+      <style jsx>{`
+        .ticketStub {
+          position: relative;
+
+          min-width: 0;
+
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+
+          gap: 7px;
+
+          padding: 17px 8px;
+
+          border-left:
+            1px dashed #741020;
+
+          color: #68101e;
+        }
+
+        .ticketStub::before,
+        .ticketStub::after {
+          content: "";
+
+          position: absolute;
+
+          left: -8px;
+
+          width: 15px;
+          height: 15px;
+
+          border-radius: 50%;
+
+          background: #f2cfca;
+
+          z-index: 10;
+        }
+
+        .ticketStub::before {
+          top: -8px;
+        }
+
+        .ticketStub::after {
+          bottom: -8px;
+        }
+
+        .stubStar {
+          font-size: 9px;
+          line-height: 1;
+        }
+
+        .stubHeart {
+          font-family:
+            Georgia,
+            "Times New Roman",
+            serif;
+
+          font-size: 27px;
+          line-height: 0.9;
+        }
+
+        .stubNumber {
+          font-family:
+            Georgia,
+            "Times New Roman",
+            serif;
+
+          font-size: 10px;
+
+          white-space: nowrap;
+        }
+
+        .barcode {
+          width: 34px;
+          height: 40px;
+
+          background:
+            repeating-linear-gradient(
+              90deg,
+              #68101e 0px,
+              #68101e 1px,
+              transparent 1px,
+              transparent 3px,
+              #68101e 3px,
+              #68101e 5px,
+              transparent 5px,
+              transparent 7px,
+              #68101e 7px,
+              #68101e 8px,
+              transparent 8px,
+              transparent 10px
+            );
+        }
+
+        .stubLogo {
+          font-family:
+            Arial,
+            sans-serif;
+
+          font-size: 5px;
+          font-weight: 700;
+
+          letter-spacing: 0.17em;
+        }
+
+        @media (max-width: 600px) {
+          .ticketStub {
+            gap: 5px;
+
+            padding:
+              12px
+              5px;
+          }
+
+          .stubHeart {
+            font-size: 21px;
+          }
+
+          .stubNumber {
+            font-size: 8px;
+          }
+
+          .barcode {
+            width: 27px;
+            height: 31px;
+          }
+
+          .stubLogo {
+            font-size: 4px;
+          }
+        }
+      `}</style>
     </aside>
   );
 }
