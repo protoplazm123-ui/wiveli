@@ -3178,43 +3178,144 @@ function MachinePreview({
 
           opacity: 0.58;
         }
-/* FIT HERO INTO ONE SCREEN */
-
-.hero {
-  min-height: calc(100vh - 70px);
-  padding: 22px 0 28px;
-  align-items: center;
-}
+/* FIT EVERYTHING INTO ONE SCREEN */
 
 .header {
-  min-height: 70px;
+  min-height: 58px;
+  height: 58px;
 }
 
+.hero {
+  width: min(1500px, calc(100% - 72px));
+  height: calc(100vh - 58px);
+  min-height: 0;
+
+  grid-template-columns:
+    minmax(0, 1.08fr)
+    minmax(360px, 0.72fr);
+
+  align-items: center;
+
+  gap: 45px;
+
+  padding: 12px 0 18px;
+}
+
+/* LEFT SIDE */
+
 .heroTitle {
-  font-size: clamp(46px, 5.25vw, 82px);
-  line-height: 0.84;
-  max-width: 680px;
+  max-width: 720px;
+
+  font-size: clamp(42px, 4.65vw, 74px);
+
+  line-height: 0.82;
+}
+
+.heroTitle em {
+  margin-top: 3px;
+}
+
+.eyebrow {
+  margin-bottom: 12px;
 }
 
 .intro {
-  margin: 20px 0 20px;
-  font-size: 14px;
-  line-height: 1.4;
+  margin: 16px 0 17px;
+
+  font-size: 13px;
+  line-height: 1.35;
 }
 
-.primary {
-  min-height: 44px;
+.startButton {
+  min-height: 40px;
+
+  padding: 0 23px;
 }
+
+/* MACHINE */
 
 .machineArea {
-  transform: scale(0.82);
-  transform-origin: center center;
-  margin-top: -55px;
-  margin-bottom: -75px;
+  width: min(490px, 100%);
+
+  margin: 0 auto;
+
+  padding: 0 18px;
 }
 
+.machine {
+  width: 82%;
+
+  padding: 16px 18px 18px;
+}
+
+.machineTop {
+  min-height: 70px;
+
+  padding: 4px 6px 10px;
+}
+
+.machineBrand strong {
+  font-size: 25px;
+}
+
+.controlPanel {
+  padding: 10px 6px;
+}
+
+.machineHeart {
+  width: 30px;
+  height: 30px;
+
+  font-size: 16px;
+}
+
+.slotSection {
+  padding: 7px 6px 5px;
+}
+
+.slot {
+  height: 24px;
+}
+
+.machineControls {
+  padding: 9px 6px 0;
+}
+
+.roundButton {
+  width: 27px;
+  height: 27px;
+}
+
+/* PRINTED COUPONS */
+
+.paperConnector {
+  width: 72%;
+  height: 16px;
+
+  margin: -6px auto 0;
+}
+
+.printedRoll {
+  width: 72%;
+
+  gap: 1px;
+
+  margin: -6px auto 0;
+}
+
+/* physically reduce each ticket */
+.printedTicket {
+  font-size: 0.82em;
+}
+
+.machineCaption {
+  margin-top: 5px;
+}
+
+/* REMOVE SECOND SECTION FROM LANDING */
+
 .steps {
-  display: none;
+  display: none !important;
 }
         @media (max-width: 1000px) {
           .machineArea {
