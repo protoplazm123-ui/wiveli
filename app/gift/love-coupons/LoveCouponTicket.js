@@ -7,523 +7,447 @@ export default function LoveCouponTicket({
   title = "BREAKFAST IN BED",
   description = "Wake up happier.",
   message = "",
-  onEdit,
   selected = false,
   onSelect,
-  compact = false,
+  onEdit,
 }) {
   const [flipped, setFlipped] = useState(false);
 
-  const flip = () => setFlipped((v) => !v);
-
   return (
-    <div
-      className={`lcTicketScene ${compact ? "isCompact" : ""}`}
-      onClick={flip}
-    >
-      <div className={`lcTicket ${flipped ? "isFlipped" : ""}`}>
+    <div className="couponWrap">
+      <div
+        className="couponScene"
+        onClick={() => setFlipped((v) => !v)}
+      >
+        <div className={`coupon3d ${flipped ? "flipped" : ""}`}>
+          
+          {/* FRONT */}
+          <article className="couponFace couponFront">
+            <div className="couponBody">
+              <div className="couponTop">
+                <strong>WI♡ELI</strong>
+                <i />
+                <span>LOVE COUPON ✦</span>
+              </div>
 
-        {/* ================= FRONT ================= */}
-        <div className="lcFace lcFront">
+              <div className="couponInner">
+                <small>A LITTLE PROMISE FOR YOU</small>
+                <h3>{title}</h3>
+                <p>{description}</p>
 
-          <TicketShape />
+                {message && (
+                  <div className="couponMessage">
+                    “{message}”
+                  </div>
+                )}
+              </div>
 
-          <div className="lcMain">
-            <div className="lcTop">
-              <span className="lcLogo">WI♡ELI</span>
-              <span className="lcRule" />
-              <span className="lcType">LOVE COUPON ✦</span>
+              <span className="flipHint">CLICK TO FLIP ↻</span>
             </div>
 
-            <div className="lcContent">
-              <span className="lcTiny">A LITTLE PROMISE FOR YOU</span>
+            <CouponStub number={number} />
+          </article>
 
-              <h3>{title}</h3>
+          {/* BACK */}
+          <article className="couponFace couponBack">
+            <div className="couponBody backBody">
+              <div className="couponTop">
+                <strong>WI♡ELI</strong>
+                <i />
+                <span>MADE WITH LOVE ✦</span>
+              </div>
 
-              <p>{description}</p>
+              <div className="backContent">
+                <small>LOVE COUPON · {number}</small>
 
-              {message && (
-                <div className="lcMessage">
-                  “{message}”
-                </div>
-              )}
+                <div className="bigHeart">♡</div>
+
+                <h3>{title}</h3>
+                <p>{description}</p>
+
+                {message && (
+                  <div className="backMessage">{message}</div>
+                )}
+
+                <span className="flipHint">
+                  CLICK TO TURN OVER ↻
+                </span>
+              </div>
             </div>
 
-            <div className="lcActions" onClick={(e) => e.stopPropagation()}>
-              <button type="button" onClick={onEdit}>
-                <b>✎</b>
-                <span>EDIT</span>
-              </button>
-
-              <button type="button" onClick={onEdit}>
-                <b>▧</b>
-                <span>PHOTO</span>
-              </button>
-
-              <button type="button" onClick={onEdit}>
-                <b>▷</b>
-                <span>VIDEO</span>
-              </button>
-
-              <button type="button" onClick={onEdit}>
-                <b>♬</b>
-                <span>VOICE</span>
-              </button>
-
-              <button type="button" onClick={onEdit}>
-                <b>♡</b>
-                <span>GIFT</span>
-              </button>
-            </div>
-          </div>
-
-          <TicketStub number={number} />
-
-        </div>
-
-
-        {/* ================= BACK ================= */}
-        <div className="lcFace lcBack">
-
-          <TicketShape />
-
-          <div className="lcMain lcBackMain">
-
-            <div className="lcTop">
-              <span className="lcLogo">WI♡ELI</span>
-              <span className="lcRule" />
-              <span className="lcType">
-                MADE FOR SOMEONE SPECIAL ✦
-              </span>
-            </div>
-
-            <div className="lcBackContent">
-              <span className="lcTiny">
-                LOVE COUPON · {number}
-              </span>
-
-              <h3>{title}</h3>
-
-              <div className="lcHeart">♡</div>
-
-              <p>{description}</p>
-
-              {message && (
-                <div className="lcBackMessage">
-                  {message}
-                </div>
-              )}
-
-              <span className="lcFlipHint">
-                TAP TO TURN OVER ↻
-              </span>
-            </div>
-
-          </div>
-
-          <TicketStub number={number} back />
-
+            <CouponStub number={number} />
+          </article>
         </div>
       </div>
 
-      {onSelect && (
+      {/* CONTROLS */}
+      <div className="couponControls">
         <button
           type="button"
-          className={`lcSelect ${selected ? "selected" : ""}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            onSelect();
-          }}
+          className={selected ? "selected" : ""}
+          onClick={onSelect}
         >
           {selected ? "✓ SELECTED" : "+ ADD COUPON"}
         </button>
-      )}
+
+        <button type="button" onClick={onEdit}>
+          EDIT ♡
+        </button>
+      </div>
 
       <style jsx>{`
-        .lcTicketScene {
+        .couponWrap {
           width: 100%;
-          max-width: 760px;
-          aspect-ratio: 2.65 / 1;
-          perspective: 1600px;
-          position: relative;
-          cursor: pointer;
-          transition: transform .28s ease, filter .28s ease;
         }
 
-        .lcTicketScene:hover {
-          transform: translateY(-8px) rotate(-0.7deg);
-          filter: drop-shadow(0 18px 22px rgba(92, 15, 27, .16));
-        }
-
-        .lcTicket {
+        .couponScene {
           width: 100%;
-          height: 100%;
-          position: relative;
-          transform-style: preserve-3d;
-          transition: transform .7s cubic-bezier(.2,.8,.2,1);
-        }
-
-        .lcTicket.isFlipped {
-          transform: rotateY(180deg);
-        }
-
-        .lcFace {
-          position: absolute;
-          inset: 0;
-          display: grid;
-          grid-template-columns: 1fr 19%;
-          backface-visibility: hidden;
-          -webkit-backface-visibility: hidden;
-          color: #72111f;
-          border-radius: 18px;
-          overflow: hidden;
-          isolation: isolate;
-        }
-
-        .lcFront {
-          background:
-            radial-gradient(circle at 25% 20%, rgba(255,255,255,.55), transparent 35%),
-            linear-gradient(135deg,#f8d9d5,#f3c9c6);
-        }
-
-        .lcBack {
-          transform: rotateY(180deg);
-          background:
-            radial-gradient(circle at 70% 25%, rgba(255,255,255,.5), transparent 35%),
-            linear-gradient(135deg,#f7d7d3,#efc3c0);
-        }
-
-        .lcFace:before {
-          content: "";
-          position: absolute;
-          inset: 7px;
-          border: 2px solid #7b1422;
-          border-radius: 14px;
-          pointer-events: none;
-          z-index: 5;
-        }
-
-        .lcFace:after {
-          content: "";
-          position: absolute;
-          inset: 13px;
-          border: 1px solid rgba(123,20,34,.65);
-          border-radius: 10px;
-          pointer-events: none;
-          z-index: 5;
-        }
-
-        .lcShape {
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-        }
-
-        .lcNotch {
-          position: absolute;
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          background: #f3c8c5;
-          z-index: 10;
-        }
-
-        .lcNotch.left {
-          left: -16px;
-          top: calc(50% - 16px);
-        }
-
-        .lcNotch.right {
-          right: -16px;
-          top: calc(50% - 16px);
-        }
-
-        .lcMain {
-          min-width: 0;
-          padding: 25px 27px 18px;
-          position: relative;
-        }
-
-        .lcTop {
-          display: flex;
-          align-items: center;
-          gap: 14px;
-          height: 25px;
-        }
-
-        .lcLogo {
-          font-family: Georgia, serif;
-          font-size: 22px;
-          white-space: nowrap;
-        }
-
-        .lcRule {
-          height: 1px;
-          flex: 1;
-          background: rgba(114,17,31,.55);
-        }
-
-        .lcType {
-          font-family: Arial, sans-serif;
-          font-size: 8px;
-          letter-spacing: .2em;
-          font-weight: 800;
-          white-space: nowrap;
-        }
-
-        .lcContent {
-          height: calc(100% - 64px);
-          margin-top: 13px;
-          border: 1px dashed rgba(114,17,31,.55);
-          border-radius: 14px;
-          padding: 20px 24px 50px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-        }
-
-        .lcTiny {
-          font-family: Arial, sans-serif;
-          font-size: 7px;
-          letter-spacing: .22em;
-          font-weight: 800;
-        }
-
-        .lcContent h3,
-        .lcBackContent h3 {
-          font-family: Georgia, serif;
-          font-size: clamp(20px, 3vw, 36px);
-          line-height: .95;
-          margin: 8px 0 5px;
-          text-transform: uppercase;
-        }
-
-        .lcContent p,
-        .lcBackContent p {
-          font-family: Georgia, serif;
-          font-size: 12px;
-          font-style: italic;
-          margin: 0;
-        }
-
-        .lcMessage {
-          font-family: Georgia, serif;
-          margin-top: 12px;
-          font-size: 11px;
-        }
-
-        .lcActions {
-          position: absolute;
-          left: 28px;
-          right: 28px;
-          bottom: 18px;
-          display: flex;
-          gap: 5px;
-        }
-
-        .lcActions button {
-          appearance: none;
-          border: 1px solid rgba(114,17,31,.25);
-          background: rgba(255,255,255,.22);
-          color: #72111f;
-          height: 34px;
-          flex: 1;
-          border-radius: 9px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 5px;
+          aspect-ratio: 2.55 / 1;
+          perspective: 1400px;
           cursor: pointer;
-          transition: .2s ease;
+          transition:
+            transform 0.3s ease,
+            filter 0.3s ease;
         }
 
-        .lcActions button:hover {
-          background: #72111f;
-          color: #f8d9d5;
-          transform: translateY(-2px);
-        }
-
-        .lcActions b {
-          font-size: 12px;
-        }
-
-        .lcActions span {
-          font-family: Arial, sans-serif;
-          font-size: 6px;
-          font-weight: 800;
-          letter-spacing: .12em;
-        }
-
-        .lcStub {
-          position: relative;
-          border-left: 2px dashed #72111f;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 9px;
-          padding: 18px 10px;
-        }
-
-        .lcStubHeart {
-          font-size: 35px;
-          line-height: 1;
-        }
-
-        .lcStubNo {
-          font-family: Georgia, serif;
-          font-size: 18px;
-        }
-
-        .lcBarcode {
-          width: 42px;
-          height: 55px;
-          background: repeating-linear-gradient(
-            90deg,
-            #72111f 0 2px,
-            transparent 2px 4px,
-            #72111f 4px 5px,
-            transparent 5px 8px
+        .couponScene:hover {
+          transform: translateY(-7px) rotate(-0.6deg);
+          filter: drop-shadow(
+            0 18px 20px rgba(91, 9, 24, 0.16)
           );
         }
 
-        .lcStubBrand {
-          font-family: Arial, sans-serif;
-          font-size: 7px;
-          letter-spacing: .18em;
-          font-weight: 800;
+        .coupon3d {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          transform-style: preserve-3d;
+          transition: transform 0.65s
+            cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        .lcBackContent {
-          height: calc(100% - 38px);
+        .coupon3d.flipped {
+          transform: rotateY(180deg);
+        }
+
+        .couponFace {
+          position: absolute;
+          inset: 0;
+          display: grid;
+          grid-template-columns: 1fr 21%;
+          overflow: hidden;
+          border-radius: 14px;
+          color: #68101e;
+          background:
+            radial-gradient(
+              circle at 30% 15%,
+              rgba(255,255,255,.5),
+              transparent 32%
+            ),
+            linear-gradient(135deg, #f8ded9, #efc5c2);
+
+          box-shadow:
+            inset 0 0 0 2px #741020,
+            inset 0 0 0 7px #f4d2ce,
+            inset 0 0 0 8px rgba(116,16,32,.55);
+
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
+        }
+
+        .couponFace::before,
+        .couponFace::after {
+          content: "";
+          position: absolute;
+          top: 50%;
+          width: 24px;
+          height: 24px;
+          margin-top: -12px;
+          border-radius: 50%;
+          background: #f2cfca;
+          z-index: 10;
+        }
+
+        .couponFace::before {
+          left: -12px;
+        }
+
+        .couponFace::after {
+          right: -12px;
+        }
+
+        .couponBack {
+          transform: rotateY(180deg);
+        }
+
+        .couponBody {
+          position: relative;
+          min-width: 0;
+          padding: 19px 21px;
+        }
+
+        .couponTop {
+          height: 22px;
+          display: flex;
+          align-items: center;
+          gap: 11px;
+        }
+
+        .couponTop strong {
+          font-family: Georgia, serif;
+          font-size: 17px;
+          white-space: nowrap;
+        }
+
+        .couponTop i {
+          flex: 1;
+          height: 1px;
+          background: rgba(104,16,30,.5);
+        }
+
+        .couponTop span {
+          font-family: Arial, sans-serif;
+          font-size: 6px;
+          font-weight: 700;
+          letter-spacing: .16em;
+          white-space: nowrap;
+        }
+
+        .couponInner {
+          position: absolute;
+          left: 21px;
+          right: 21px;
+          top: 51px;
+          bottom: 20px;
+
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+
+          padding: 15px 18px;
+
+          border: 1px dashed rgba(104,16,30,.52);
+          border-radius: 11px;
+        }
+
+        .couponInner small,
+        .backContent small {
+          font-family: Arial, sans-serif;
+          font-size: 5px;
+          font-weight: 700;
+          letter-spacing: .2em;
+        }
+
+        .couponInner h3,
+        .backContent h3 {
+          margin: 6px 0 4px;
+          font-family: Georgia, serif;
+          font-size: clamp(17px, 2.1vw, 27px);
+          line-height: .95;
+          font-weight: 500;
+          text-transform: uppercase;
+        }
+
+        .couponInner p,
+        .backContent p {
+          margin: 0;
+          font-family: Georgia, serif;
+          font-size: 9px;
+          font-style: italic;
+        }
+
+        .couponMessage {
+          margin-top: 8px;
+          font-family: Georgia, serif;
+          font-size: 8px;
+          opacity: .75;
+        }
+
+        .flipHint {
+          position: absolute;
+          left: 50%;
+          bottom: 6px;
+          transform: translateX(-50%);
+          white-space: nowrap;
+
+          font-family: Arial, sans-serif;
+          font-size: 5px;
+          font-weight: 700;
+          letter-spacing: .14em;
+          opacity: .42;
+        }
+
+        .couponStub {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 7px;
+
+          border-left: 1px dashed #741020;
+        }
+
+        .couponStub::before,
+        .couponStub::after {
+          content: "";
+          position: absolute;
+          left: -8px;
+          width: 15px;
+          height: 15px;
+          border-radius: 50%;
+          background: #f2cfca;
+        }
+
+        .couponStub::before {
+          top: -8px;
+        }
+
+        .couponStub::after {
+          bottom: -8px;
+        }
+
+        .stubSpark {
+          font-size: 10px;
+        }
+
+        .stubHeart {
+          font-size: 26px;
+          line-height: 1;
+        }
+
+        .stubNumber {
+          font-family: Georgia, serif;
+          font-size: 10px;
+        }
+
+        .barcode {
+          width: 32px;
+          height: 39px;
+
+          background: repeating-linear-gradient(
+            90deg,
+            #68101e 0 1px,
+            transparent 1px 3px,
+            #68101e 3px 5px,
+            transparent 5px 7px
+          );
+        }
+
+        .stubLogo {
+          font-family: Arial, sans-serif;
+          font-size: 5px;
+          font-weight: 700;
+          letter-spacing: .18em;
+        }
+
+        .backBody {
+          position: relative;
+        }
+
+        .backContent {
+          position: absolute;
+          inset: 48px 25px 18px;
+
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
+
           text-align: center;
-          padding: 14px 35px;
+          border: 1px dashed rgba(104,16,30,.5);
+          border-radius: 11px;
         }
 
-        .lcHeart {
-          font-family: Georgia, serif;
-          font-size: 25px;
-          margin: 4px 0;
+        .bigHeart {
+          margin: 2px 0;
+          font-size: 22px;
         }
 
-        .lcBackMessage {
-          margin-top: 8px;
-          max-width: 80%;
-          font-family: Georgia, serif;
-          font-size: 11px;
+        .backMessage {
+          margin-top: 7px;
+          max-width: 85%;
+          font-size: 8px;
           font-style: italic;
         }
 
-        .lcFlipHint {
-          margin-top: 12px;
-          font-family: Arial, sans-serif;
-          font-size: 6px;
-          font-weight: 800;
-          letter-spacing: .18em;
-          opacity: .55;
+        .couponControls {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 7px;
+          margin-top: 9px;
         }
 
-        .lcSelect {
-          position: absolute;
-          z-index: 20;
-          right: 25%;
-          bottom: -16px;
-          border: 0;
-          border-radius: 999px;
-          padding: 11px 18px;
-          background: #72111f;
-          color: #fff0eb;
-          font-size: 8px;
-          font-weight: 800;
-          letter-spacing: .12em;
+        .couponControls button {
+          height: 36px;
+          border: 1px solid #741020;
+          border-radius: 100px;
+          background: transparent;
+          color: #741020;
+
           cursor: pointer;
+
+          font-family: Arial, sans-serif;
+          font-size: 7px;
+          font-weight: 700;
+          letter-spacing: .11em;
+
+          transition: .2s ease;
         }
 
-        .lcSelect.selected {
-          background: #9d1b30;
+        .couponControls button:hover,
+        .couponControls button.selected {
+          color: #f9ddd8;
+          background: #741020;
         }
 
-        @media (max-width: 650px) {
-          .lcTicketScene {
+        @media (max-width: 600px) {
+          .couponScene {
             aspect-ratio: 2.05 / 1;
           }
 
-          .lcFace {
-            grid-template-columns: 1fr 22%;
+          .couponFace {
+            grid-template-columns: 1fr 23%;
           }
 
-          .lcMain {
-            padding: 15px 16px 11px;
+          .couponBody {
+            padding: 13px 15px;
           }
 
-          .lcLogo {
-            font-size: 14px;
-          }
-
-          .lcType {
-            font-size: 5px;
-          }
-
-          .lcContent {
-            margin-top: 7px;
-            padding: 10px 12px 39px;
-          }
-
-          .lcContent h3,
-          .lcBackContent h3 {
-            font-size: 17px;
-          }
-
-          .lcContent p,
-          .lcBackContent p {
-            font-size: 8px;
-          }
-
-          .lcTiny {
-            font-size: 5px;
-          }
-
-          .lcActions {
-            left: 16px;
-            right: 16px;
-            bottom: 10px;
-            gap: 2px;
-          }
-
-          .lcActions button {
-            height: 26px;
-            padding: 0;
-          }
-
-          .lcActions span {
-            display: none;
-          }
-
-          .lcStubHeart {
-            font-size: 23px;
-          }
-
-          .lcStubNo {
+          .couponTop strong {
             font-size: 12px;
           }
 
-          .lcBarcode {
-            width: 28px;
-            height: 37px;
+          .couponTop span {
+            font-size: 4px;
           }
 
-          .lcStubBrand {
-            font-size: 5px;
+          .couponInner {
+            left: 15px;
+            right: 15px;
+            top: 40px;
+            bottom: 14px;
+            padding: 10px 12px;
+          }
+
+          .couponInner h3,
+          .backContent h3 {
+            font-size: 15px;
+          }
+
+          .couponInner p,
+          .backContent p {
+            font-size: 7px;
+          }
+
+          .backContent {
+            inset: 39px 17px 13px;
           }
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .lcTicket,
-          .lcTicketScene {
+          .coupon3d,
+          .couponScene {
             transition: none;
           }
         }
@@ -532,22 +456,21 @@ export default function LoveCouponTicket({
   );
 }
 
-function TicketShape() {
+function CouponStub({ number }) {
   return (
-    <div className="lcShape" aria-hidden="true">
-      <i className="lcNotch left" />
-      <i className="lcNotch right" />
-    </div>
-  );
-}
+    <aside className="couponStub">
+      <span className="stubSpark">✦</span>
+      <span className="stubHeart">♡</span>
 
-function TicketStub({ number }) {
-  return (
-    <aside className="lcStub">
-      <div className="lcStubHeart">♡</div>
-      <div className="lcStubNo">No. {number}</div>
-      <div className="lcBarcode" />
-      <div className="lcStubBrand">WI♡ELI</div>
+      <span className="stubNumber">
+        No. {number}
+      </span>
+
+      <div className="barcode" />
+
+      <span className="stubLogo">
+        WI♡ELI
+      </span>
     </aside>
   );
 }
