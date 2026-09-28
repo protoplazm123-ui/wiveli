@@ -3,16 +3,21 @@
 import {
   Suspense,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import {
-  Environment,
+  Bounds,
+  useBounds,
   useAnimations,
   useGLTF,
 } from "@react-three/drei";
+import { clone } from "three/addons/utils/SkeletonUtils.js";
+
+const MODEL_URL = "/assets/new-boy.glb";
 
 const FALLBACK = {
   recipient: "Masha",
@@ -34,9 +39,7 @@ const FALLBACK = {
       place: "",
       date: "",
       time: "",
-      interaction: {
-        enabled: false,
-      },
+      interaction: { enabled: false },
     },
     {
       id: "movie",
@@ -62,163 +65,161 @@ const FALLBACK = {
 };
 
 const POSITIONS = [
-  { x: 67, y: 20, r: -8 },
-  { x: 80, y: 37, r: 7 },
-  { x: 65, y: 54, r: -4 },
-  { x: 84, y: 67, r: 9 },
-  { x: 72, y: 78, r: -7 },
-  { x: 91, y: 50, r: 4 },
-  { x: 55, y: 68, r: 6 },
-  { x: 88, y: 23, r: -5 },
+  { x: 81, y: 24, r: -8 },
+  { x: 88, y: 48, r: 7 },
+  { x: 77, y: 71, r: -4 },
+  { x: 91, y: 78, r: 9 },
+  { x: 68, y: 85, r: -7 },
+  { x: 92, y: 31, r: 4 },
+  { x: 56, y: 82, r: 6 },
+  { x: 69, y: 16, r: -5 },
 ];
 
-// Плавное закрытие и открытие глаза.
-function expressionPulse(phase, start, duration) {
-  if (phase < start || phase > start + duration) {
-    return 0;
-  }
-
-  return Math.sin(
-    ((phase - start) / duration) * Math.PI
-  ) ** 2;
-}
-
-function WiveliBoy() {
+function WiveliModel() {
   const group = useRef();
+  const bounds = useBounds();
+  const { size } = useThree();
+  const { scene: originalScene, animations } = useGLTF(MODEL_URL);
 
-  const { scene, animations } = useGLTF(
-    "/assets/wiveli-boy-animated.glb"
-  );
+  const scene = useMemo(() => {
+    const copy = clone(originalScene);
 
-  const { actions } = useAnimations(animations, group);
+    copy.traverse((object) => {
+      if (!object.isMesh) return;
 
-  const faceMeshes = useMemo(() => {
-    const meshes = [];
+      const prepareMaterial = (original) => {
+        const material = original.clone();
 
-    scene.traverse((object) => {
-      if (
-        object.isMesh &&
-        object.morphTargetDictionary &&
-        object.morphTargetInfluences
-      ) {
-        meshes.push(object);
+        // Сохраняем текстуры, убираем металлическую поверхность.
+        if ("metalness" in material) {
+          material.metalness = 0;
+        }
+
+        if ("roughness" in material) {
+          const name = material.name || "";
+          material.roughness = /EyeIris|EyeHighlight/i.test(name)
+            ? 0.4
+            : /HAIR/i.test(name)
+            ? 0.75
+            : 0.85;
+        }
+
+        if ("clearcoat" in material) {
+          material.clearcoat = 0;
+        }
+
+        material.needsUpdate = true;
+        return material;
+      };
+
+      if (object.material) {
+        object.material = Array.isArray(object.material)
+          ? object.material.map(prepareMaterial)
+          : prepareMaterial(object.material);
       }
+
+      // Не скрывать анимированную сетку из-за старых границ.
+      object.frustumCulled = false;
     });
 
-    return meshes;
-  }, [scene]);
+    return copy;
+  }, [originalScene]);
 
-  useEffect(() => {
-    const availableActions = Object.values(actions).filter(Boolean);
-    const animation = availableActions[0];
+  const { actions, mixer } = useAnimations(animations, group);
 
-    if (animation) {
-      animation.reset();
-      animation.fadeIn(0.3);
-      animation.play();
+  useLayoutEffect(() => {
+    const action = actions["Action"];
+
+    if (action) {
+      action.reset().play();
+      mixer.update(0);
     }
 
     return () => {
-      availableActions.forEach((action) => action.stop());
+      action?.stop();
     };
-  }, [actions]);
+  }, [actions, mixer]);
 
-  useFrame((state) => {
-    const time = state.clock.elapsedTime;
-
-    if (group.current) {
-      group.current.position.y =
-        -1.65 + Math.sin(time * 1.1) * 0.012;
-    }
-
-    // Подмигивание одним глазом раз в 11 секунд.
-    const winkPhase = time % 11;
-    const wink = expressionPulse(winkPhase, 7, 0.7);
-
-    // Во время подмигивания обычное моргание отключено.
-    const blink =
-      winkPhase >= 6.8 && winkPhase <= 8
-        ? 0
-        : expressionPulse(time % 4.6, 3.7, 0.28);
-
-    // Мягкая улыбка, немного сильнее при подмигивании.
-    const smile =
-      0.3 +
-      0.12 * (0.5 + 0.5 * Math.sin(time * 0.65)) +
-      wink * 0.18;
-
-    for (const mesh of faceMeshes) {
-      const setExpression = (name, value) => {
-        const index = mesh.morphTargetDictionary[name];
-
-        if (index !== undefined) {
-          mesh.morphTargetInfluences[index] = value;
-        }
-      };
-
-      setExpression("Fcl_EYE_Close", 0);
-      setExpression("Fcl_EYE_Close_L", Math.max(blink, wink));
-      setExpression("Fcl_EYE_Close_R", blink);
-      setExpression("Fcl_MTH_Joy", smile);
-      setExpression("Fcl_BRW_Joy", 0.1 + wink * 0.08);
-    }
-  });
+  useLayoutEffect(() => {
+    scene.updateMatrixWorld(true);
+    bounds.refresh(scene).clip().fit();
+  }, [bounds, scene, size.width, size.height]);
 
   return (
-    <group
-      ref={group}
-      position={[0, -1.65, 0]}
-      rotation={[0, 0.25, 0]}
-      scale={1.55}
-    >
+    <group ref={group}>
       <primitive object={scene} />
     </group>
   );
 }
 
-function CosmicBoyScene() {
+function NewBoyScene() {
   return (
-    <div className="owrHeroBoy">
+    <div className="owNewBoyCanvas" aria-hidden="true">
       <Canvas
-        dpr={[1, 1.6]}
+        dpr={[1, 1.5]}
         camera={{
-          position: [0, -0.35, 7.2],
-          fov: 30,
+          position: [0, 0, 7],
+          fov: 35,
         }}
         gl={{
           alpha: true,
           antialias: true,
         }}
+        onCreated={({ gl }) => {
+          gl.setClearColor(0x000000, 0);
+        }}
       >
-        <ambientLight intensity={0.8} />
-
-        <directionalLight
-          position={[4, 5, 5]}
-          intensity={1.6}
-          color="#ffe0c2"
+        <hemisphereLight
+          args={["#fff5ed", "#c9bddc", 1.5]}
         />
 
         <directionalLight
-          position={[-4, 1, 3]}
-          intensity={0.7}
-          color="#b7c5ff"
+          position={[3, 5, 6]}
+          intensity={2}
+          color="#fff0e3"
+        />
+
+        <directionalLight
+          position={[-4, 2, 4]}
+          intensity={0.8}
+          color="#e7e0ff"
         />
 
         <Suspense fallback={null}>
-          <WiveliBoy />
-          <Environment preset="city" />
+          <Bounds margin={1.2}>
+            <WiveliModel />
+          </Bounds>
         </Suspense>
       </Canvas>
     </div>
   );
 }
 
-useGLTF.preload("/assets/wiveli-boy-animated.glb");
+function CosmicWorld() {
+  return (
+    <div className="owrCosmicWorld">
+      <div className="owrCosmicGlow owrCosmicGlowOne" />
+      <div className="owrCosmicGlow owrCosmicGlowTwo" />
+      <div className="owrCosmicDust" />
+
+      <div className="owNewComposition">
+        <div className="owNewOpen">OPEN</div>
+        <NewBoyScene />
+      </div>
+
+      <div className="owrOrbit owrOrbitOne" />
+      <div className="owrOrbit owrOrbitTwo" />
+
+      <span className="owrCosmicSpark owrSparkOne">✦</span>
+      <span className="owrCosmicSpark owrSparkTwo">✧</span>
+      <span className="owrCosmicSpark owrSparkThree">✦</span>
+    </div>
+  );
+}
 
 export default function OpenWhenGiftPage() {
   const [gift, setGift] = useState(FALLBACK);
   const [loaded, setLoaded] = useState(false);
-
   const [opened, setOpened] = useState([]);
   const [responses, setResponses] = useState([]);
 
@@ -235,7 +236,7 @@ export default function OpenWhenGiftPage() {
       if (stored) {
         const parsed = JSON.parse(stored);
 
-        if (parsed?.moments?.length) {
+        if (Array.isArray(parsed?.moments) && parsed.moments.length) {
           setGift({
             ...FALLBACK,
             ...parsed,
@@ -247,21 +248,16 @@ export default function OpenWhenGiftPage() {
         }
       }
 
-      const openedStored = localStorage.getItem(
-        "wiveli-open-when-opened-v1"
+      const savedOpened = JSON.parse(
+        localStorage.getItem("wiveli-open-when-opened-v1") || "[]"
       );
 
-      if (openedStored) {
-        setOpened(JSON.parse(openedStored));
-      }
-
-      const responsesStored = localStorage.getItem(
-        "wiveli-open-when-responses-v1"
+      const savedResponses = JSON.parse(
+        localStorage.getItem("wiveli-open-when-responses-v1") || "[]"
       );
 
-      if (responsesStored) {
-        setResponses(JSON.parse(responsesStored));
-      }
+      if (Array.isArray(savedOpened)) setOpened(savedOpened);
+      if (Array.isArray(savedResponses)) setResponses(savedResponses);
     } catch (error) {
       console.error(error);
     }
@@ -281,7 +277,7 @@ export default function OpenWhenGiftPage() {
   const accent = gift.theme?.accent || "#8c63c7";
 
   const isOpened = (id) =>
-    opened.map(String).includes(String(id));
+    opened.some((item) => String(item) === String(id));
 
   const hasResponded = (id) =>
     responses.some(
@@ -290,9 +286,11 @@ export default function OpenWhenGiftPage() {
 
   const saveEvent = (event) => {
     try {
-      const current = JSON.parse(
+      const stored = JSON.parse(
         localStorage.getItem("wiveli-open-when-events-v1") || "[]"
       );
+
+      const current = Array.isArray(stored) ? stored : [];
 
       localStorage.setItem(
         "wiveli-open-when-events-v1",
@@ -309,16 +307,13 @@ export default function OpenWhenGiftPage() {
     setFlipped(false);
     setResponseSent(hasResponded(moment.id));
 
-    requestAnimationFrame(() => {
-      setFocused(true);
-    });
+    requestAnimationFrame(() => setFocused(true));
   };
 
   const markOpened = (moment) => {
     if (isOpened(moment.id)) return;
 
     const next = [...opened, moment.id];
-
     setOpened(next);
 
     try {
@@ -370,19 +365,19 @@ export default function OpenWhenGiftPage() {
     };
 
     const next = [...responses, response];
-
     setResponses(next);
     setResponseSent(true);
 
-    localStorage.setItem(
-      "wiveli-open-when-responses-v1",
-      JSON.stringify(next)
-    );
+    try {
+      localStorage.setItem(
+        "wiveli-open-when-responses-v1",
+        JSON.stringify(next)
+      );
+    } catch (error) {
+      console.error(error);
+    }
 
-    saveEvent({
-      ...response,
-      type: "RESPONSE",
-    });
+    saveEvent({ ...response, type: "RESPONSE" });
   };
 
   const returnCard = () => {
@@ -391,10 +386,7 @@ export default function OpenWhenGiftPage() {
 
     setTimeout(() => {
       setFocused(false);
-
-      setTimeout(() => {
-        setSelectedId(null);
-      }, 400);
+      setTimeout(() => setSelectedId(null), 400);
     }, 100);
   };
 
@@ -408,9 +400,7 @@ export default function OpenWhenGiftPage() {
     typeof customBackground === "string" &&
     customBackground.startsWith("data:video");
 
-  if (!loaded) {
-    return <main className="owrPage" />;
-  }
+  if (!loaded) return <main className="owrPage" />;
 
   return (
     <main
@@ -419,67 +409,27 @@ export default function OpenWhenGiftPage() {
       }`}
       style={{ "--owr-accent": accent }}
     >
-      {/* COSMIC WORLD */}
-
-      {theme === "cosmic" && (
-        <div className="owrCosmicWorld">
-          <div className="owrCosmicGlow owrCosmicGlowOne" />
-          <div className="owrCosmicGlow owrCosmicGlowTwo" />
-
-          <div className="owrCosmicDust" />
-
-          <div className="owrHeroTypography">
-            <div className="owrHeroOpen">OPEN</div>
-
-            <div className="owrHeroWhen">
-              <span>W</span>
-              <span>H</span>
-              <span>E</span>
-              <span>N</span>
-            </div>
-          </div>
-
-          <div className="owrBoyCloud">
-            <div className="owrCloudGlow" />
-            <div className="owrCloudBody" />
-          </div>
-
-          <CosmicBoyScene />
-
-          <div className="owrOrbit owrOrbitOne" />
-          <div className="owrOrbit owrOrbitTwo" />
-
-          <span className="owrCosmicSpark owrSparkOne">✦</span>
-          <span className="owrCosmicSpark owrSparkTwo">✧</span>
-          <span className="owrCosmicSpark owrSparkThree">✦</span>
-        </div>
-      )}
-
-      {/* CUSTOM BACKGROUND */}
+      {theme === "cosmic" && <CosmicWorld />}
 
       {theme === "custom" && customBackground && (
-        <>
-          {customIsVideo ? (
-            <video
-              className="owrBackground"
-              src={customBackground}
-              autoPlay
-              muted
-              loop
-              playsInline
-            />
-          ) : (
-            <div
-              className="owrBackground owrCustomImage"
-              style={{
-                backgroundImage: `url("${customBackground}")`,
-              }}
-            />
-          )}
-        </>
+        customIsVideo ? (
+          <video
+            className="owrBackground"
+            src={customBackground}
+            autoPlay
+            muted
+            loop
+            playsInline
+          />
+        ) : (
+          <div
+            className="owrBackground owrCustomImage"
+            style={{
+              backgroundImage: `url("${customBackground}")`,
+            }}
+          />
+        )
       )}
-
-      {/* OTHER WORLDS */}
 
       {theme !== "cosmic" &&
         !(theme === "custom" && customBackground) && (
@@ -490,11 +440,7 @@ export default function OpenWhenGiftPage() {
 
             {theme === "romantic" && (
               <div className="owrRomanticHearts">
-                <i>♡</i>
-                <i>♡</i>
-                <i>♡</i>
-                <i>♡</i>
-                <i>♡</i>
+                <i>♡</i><i>♡</i><i>♡</i><i>♡</i><i>♡</i>
               </div>
             )}
 
@@ -507,9 +453,7 @@ export default function OpenWhenGiftPage() {
 
             {theme === "dreamy" && (
               <div className="owrClouds">
-                <i />
-                <i />
-                <i />
+                <i /><i /><i />
               </div>
             )}
 
@@ -522,13 +466,10 @@ export default function OpenWhenGiftPage() {
       <div className="owrShade" />
       <div className="owrStars" />
 
-      {/* HEADER */}
-
       <header className="owrHeader">
         <a href="/" className="owrLogo">
           WI<span>♥</span>ELI
         </a>
-
         <span>
           {theme === "romantic"
             ? "MADE WITH LOVE"
@@ -544,7 +485,6 @@ export default function OpenWhenGiftPage() {
 
       <div className="owrHint">
         <span>FROM {gift.sender || "SOMEONE SPECIAL"}</span>
-
         <p>
           {theme === "romantic"
             ? "For every moment you need a little bit of me."
@@ -556,19 +496,13 @@ export default function OpenWhenGiftPage() {
         </p>
       </div>
 
-      {/* FLOATING CARDS */}
-
       <section className="owrUniverse">
         <div className="owrBurstPoint">
-          <i />
-          <i />
-          <i />
+          <i /><i /><i />
         </div>
 
         {gift.moments.map((moment, index) => {
-          const position =
-            POSITIONS[index % POSITIONS.length];
-
+          const position = POSITIONS[index % POSITIONS.length];
           const openedMoment = isOpened(moment.id);
 
           return (
@@ -595,7 +529,6 @@ export default function OpenWhenGiftPage() {
                       <span>♡</span>
                     </div>
                   )}
-
                   <div>
                     <small>OPENED ♡</small>
                     <strong>{moment.title}</strong>
@@ -606,7 +539,6 @@ export default function OpenWhenGiftPage() {
                   <div className="owrCardStar">
                     {theme === "tech" ? "◇" : "✦"}
                   </div>
-
                   <small>OPEN WHEN</small>
                   <strong>{moment.title}</strong>
                   <span>TAP TO OPEN</span>
@@ -620,13 +552,9 @@ export default function OpenWhenGiftPage() {
       {allOpened && !focused && (
         <div className="owrAllOpened">
           <span>YOU'VE OPENED THEM ALL.</span>
-          <p>
-            But they're still here whenever you need them. ♡
-          </p>
+          <p>But they're still here whenever you need them. ♡</p>
         </div>
       )}
-
-      {/* FOCUSED CARD */}
 
       {selected && (
         <section
@@ -658,8 +586,7 @@ export default function OpenWhenGiftPage() {
                     {String(
                       gift.moments.findIndex(
                         (item) =>
-                          String(item.id) ===
-                          String(selected.id)
+                          String(item.id) === String(selected.id)
                       ) + 1
                     ).padStart(2, "0")}
                   </span>
@@ -673,24 +600,18 @@ export default function OpenWhenGiftPage() {
                     <h1>{selected.title}</h1>
                   </div>
 
-                  <span className="owrTap">
-                    TAP TO TURN OVER
-                  </span>
+                  <span className="owrTap">TAP TO TURN OVER</span>
                 </div>
 
                 <div className="owrBigBack">
-                  <span className="owrBackLabel">
-                    JUST FOR YOU ♡
-                  </span>
+                  <span className="owrBackLabel">JUST FOR YOU ♡</span>
 
                   <p>
                     {selected.message ||
                       "There is something I wanted you to remember when you opened this."}
                   </p>
 
-                  {(selected.date ||
-                    selected.time ||
-                    selected.place) && (
+                  {(selected.date || selected.time || selected.place) && (
                     <div className="owrMeta">
                       {selected.date && (
                         <div>
@@ -698,14 +619,12 @@ export default function OpenWhenGiftPage() {
                           <strong>{selected.date}</strong>
                         </div>
                       )}
-
                       {selected.time && (
                         <div>
                           <span>TIME</span>
                           <strong>{selected.time}</strong>
                         </div>
                       )}
-
                       {selected.place && (
                         <div>
                           <span>PLACE</span>
@@ -722,18 +641,12 @@ export default function OpenWhenGiftPage() {
 
             {flipped && (
               <div className="owrAfterCard">
-                {(selected.photo ||
-                  selected.voice ||
-                  selected.video) && (
+                {(selected.photo || selected.voice || selected.video) && (
                   <button
                     type="button"
-                    onClick={() =>
-                      setShowExtras((value) => !value)
-                    }
+                    onClick={() => setShowExtras((value) => !value)}
                   >
-                    {showExtras
-                      ? "CLOSE EXTRAS ↑"
-                      : "THERE'S MORE ♡"}
+                    {showExtras ? "CLOSE EXTRAS ↑" : "THERE'S MORE ♡"}
                   </button>
                 )}
 
@@ -750,22 +663,17 @@ export default function OpenWhenGiftPage() {
             {flipped && selected.interaction?.enabled && (
               <div className="owrInteraction">
                 <span>♡ A LITTLE QUESTION</span>
-
                 <h2>
                   {selected.interaction.question ||
                     "WOULD YOU DO THIS WITH ME?"}
                 </h2>
-
                 <p>
                   {selected.interaction.text ||
                     "Maybe this deserves another memory."}
                 </p>
 
                 {!responseSent ? (
-                  <button
-                    type="button"
-                    onClick={sendResponse}
-                  >
+                  <button type="button" onClick={sendResponse}>
                     {selected.interaction.button ||
                       `TELL ${gift.sender?.toUpperCase()} ♡`}
                   </button>
@@ -774,9 +682,7 @@ export default function OpenWhenGiftPage() {
                     <strong>
                       SENT TO {gift.sender?.toUpperCase()} ♡
                     </strong>
-                    <small>
-                      They'll know you want this too.
-                    </small>
+                    <small>They'll know you want this too.</small>
                   </div>
                 )}
               </div>
@@ -805,11 +711,7 @@ export default function OpenWhenGiftPage() {
 
               {selected.video && (
                 <div className="owrVideo">
-                  <video
-                    src={selected.video}
-                    controls
-                    playsInline
-                  />
+                  <video src={selected.video} controls playsInline />
                 </div>
               )}
             </aside>
