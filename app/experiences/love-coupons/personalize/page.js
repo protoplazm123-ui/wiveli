@@ -163,12 +163,16 @@ export default function LoveCouponsPersonalize() {
         id: coupon.originalId,
       }));
 
-    const giftData = {
-      senderName: senderName.trim(),
-      recipientName: recipientName.trim(),
+   const giftData = {
+  senderName: senderName.trim(),
+  recipientName: recipientName.trim(),
 
-      couponIds: selectedCouponIds,
+  senderContact: {
+    type: "telegram",
+    value: senderTelegram.trim(),
+  },
 
+  couponIds: selectedCouponIds,
       customCoupons: selectedCustomCoupons,
 
       dailyLimit: Number(dailyLimit),
