@@ -30975,3 +30975,74 @@ main {
 .owrHeroBoy {
   top: -5% !important;
 }
+/* WIVELI — нежно-розовый фон */
+
+.owrPage.owrTheme-cosmic {
+  background:
+    radial-gradient(
+      ellipse at 22% 28%,
+      rgba(255, 255, 255, 0.85),
+      transparent 45%
+    ),
+    radial-gradient(
+      ellipse at 80% 20%,
+      rgba(235, 214, 255, 0.75),
+      transparent 48%
+    ),
+    linear-gradient(
+      145deg,
+      #fff1f5 0%,
+      #f8d5e3 50%,
+      #e8d9f5 100%
+    );
+}
+
+/* Убираем тёмное затемнение */
+.owrTheme-cosmic .owrShade {
+  background: none;
+}
+
+/* Мягкое розовое свечение */
+.owrTheme-cosmic .owrCosmicGlowOne {
+  background: rgba(255, 169, 202, 0.3);
+}
+
+.owrTheme-cosmic .owrCosmicGlowTwo {
+  background: rgba(190, 157, 226, 0.25);
+}
+
+/* Звёзды делаем едва заметными */
+.owrTheme-cosmic .owrCosmicDust {
+  opacity: 0.2;
+}
+
+.owrTheme-cosmic .owrStars {
+  opacity: 0.08;
+}
+
+/* Надписи — сливовый цвет для читаемости */
+.owrTheme-cosmic .owrHeroOpen,
+.owrTheme-cosmic .owrHeroWhen {
+  color: #79516e;
+  text-shadow: 0 3px 20px rgba(255, 255, 255, 0.4);
+}
+
+.owrTheme-cosmic .owrHeader,
+.owrTheme-cosmic .owrLogo,
+.owrTheme-cosmic .owrHint {
+  color: #704b65;
+}
+
+.owrTheme-cosmic .owrLogo span {
+  color: #c86b99;
+}
+
+/* Орбиты и маленькие звёздочки */
+.owrTheme-cosmic .owrOrbit {
+  border-color: rgba(145, 98, 138, 0.15);
+}
+
+.owrTheme-cosmic .owrCosmicSpark {
+  color: #b578a5;
+  text-shadow: 0 0 14px rgba(255, 255, 255, 0.9);
+}
