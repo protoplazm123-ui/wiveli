@@ -7,94 +7,96 @@ import {
   saveLoveCouponsGift,
 } from "../storage";
 
-import GiftDelivery from "./GiftDelivery";
-
 export default function LoveCouponsPersonalize() {
-  const [step, setStep] = useState(1);
-
   const [senderName, setSenderName] = useState("");
   const [recipientName, setRecipientName] = useState("");
-
+  const [senderTelegram, setSenderTelegram] = useState("");
   const [couponCount, setCouponCount] = useState(8);
-  const [selected, setSelected] = useState([]);
-  const [customCoupons, setCustomCoupons] = useState([]);
-
-  const [category, setCategory] = useState("all");
-
-  const [contactType, setContactType] = useState("Telegram");
-  const [contact, setContact] = useState("");
   const [dailyLimit, setDailyLimit] = useState(3);
 
+  const [selected, setSelected] = useState([]);
+  const [customCoupons, setCustomCoupons] = useState([]);
+  const [category, setCategory] = useState("all");
+
+  const [modal, setModal] = useState(null);
   const [editingCoupon, setEditingCoupon] = useState(null);
-  const [showDelivery, setShowDelivery] = useState(false);
+  const [editTab, setEditTab] = useState("message");
+
   const [creating, setCreating] = useState(false);
+  const [giftUrl, setGiftUrl] = useState("");
 
   const filteredCoupons = useMemo(() => {
     if (category === "all") return couponIdeas;
-
-    return couponIdeas.filter(
-      (coupon) => coupon.category === category
-    );
+    return couponIdeas.filter((c) => c.category === category);
   }, [category]);
 
-  const selectedCoupons = [
-    ...couponIdeas.filter((coupon) =>
-      selected.includes(coupon.id)
-    ),
-    ...customCoupons,
-  ];
+  const selectedCoupons = useMemo(() => {
+    return selected
+      .map((id) => {
+        return (
+          customCoupons.find((c) => c.originalId === id) ||
+          couponIdeas.find((c) => c.id === id)
+        );
+      })
+      .filter(Boolean);
+  }, [selected, customCoupons]);
 
   function toggleCoupon(id) {
     if (selected.includes(id)) {
-      setSelected((current) =>
-        current.filter((item) => item !== id)
-      );
+      setSelected((old) => old.filter((x) => x !== id));
       return;
     }
 
-    if (selectedCoupons.length >= couponCount) return;
+    if (selected.length >= couponCount) return;
+    setSelected((old) => [...old, id]);
+  }
 
-    setSelected((current) => [...current, id]);
+  function openEditor(coupon) {
+    const existing =
+      customCoupons.find((c) => c.originalId === coupon.id) || coupon;
+
+    setEditingCoupon({
+      ...existing,
+      originalId: coupon.id,
+      message: existing.message || "",
+      photoUrl: existing.photoUrl || "",
+      videoUrl: existing.videoUrl || "",
+      voiceUrl: existing.voiceUrl || "",
+      giftUrl: existing.giftUrl || "",
+      reminderEnabled: existing.reminderEnabled || false,
+    });
+
+    setEditTab("message");
+    setModal("edit");
   }
 
   function saveEditedCoupon() {
     if (!editingCoupon) return;
 
-    const existing = customCoupons.find(
-      (coupon) => coupon.originalId === editingCoupon.id
-    );
+    const saved = {
+      ...editingCoupon,
+      id: `custom-${editingCoupon.originalId}`,
+      custom: true,
+    };
 
-    if (existing) {
-      setCustomCoupons((current) =>
-        current.map((coupon) =>
-          coupon.originalId === editingCoupon.id
-            ? {
-                ...coupon,
-                title: editingCoupon.title,
-                subtitle: editingCoupon.subtitle,
-              }
-            : coupon
-        )
-      );
-    } else {
-      setSelected((current) =>
-        current.filter((id) => id !== editingCoupon.id)
-      );
+    setCustomCoupons((old) => [
+      ...old.filter(
+        (c) => c.originalId !== editingCoupon.originalId
+      ),
+      saved,
+    ]);
 
-      setCustomCoupons((current) => [
-        ...current,
-        {
-          id: `custom-${Date.now()}`,
-          originalId: editingCoupon.id,
-          title: editingCoupon.title,
-          subtitle: editingCoupon.subtitle,
-          category: "custom",
-          custom: true,
-        },
-      ]);
+    if (!selected.includes(editingCoupon.originalId)) {
+      if (selected.length < couponCount) {
+        setSelected((old) => [
+          ...old,
+          editingCoupon.originalId,
+        ]);
+      }
     }
 
     setEditingCoupon(null);
+    setModal("coupons");
   }
 
   async function createGift() {
@@ -102,15 +104,22 @@ export default function LoveCouponsPersonalize() {
 
     setCreating(true);
 
+    const enrichedCoupons = selectedCoupons.map((coupon) => ({
+      ...coupon,
+    }));
+
     const gift = createLoveCouponsGift({
       senderName,
       recipientName,
       selectedCouponIds: selected,
-      customCoupons,
-      contactType,
-      contact,
+      customCoupons: enrichedCoupons,
+      contactType: "Telegram",
+      contact: senderTelegram,
       dailyLimit,
     });
+
+    gift.senderTelegram = senderTelegram;
+    gift.couponDetails = enrichedCoupons;
 
     try {
       const response = await fetch("/api/gifts", {
@@ -127,29 +136,31 @@ export default function LoveCouponsPersonalize() {
       const data = await response.json();
 
       if (!response.ok || !data.id) {
-        throw new Error("Could not create gift");
+        throw new Error("Gift creation failed");
       }
 
-      saveLoveCouponsGift({
+      const savedGift = {
         ...gift,
         serverId: data.id,
-      });
+      };
 
-      setShowDelivery(true);
+      saveLoveCouponsGift(savedGift);
+
+      const url = `${window.location.origin}/gift/love-coupons/${data.id}`;
+
+      setGiftUrl(url);
+      setModal("send");
     } catch (error) {
       console.error(error);
-      alert("We couldn't create your gift ♡");
+      alert("Couldn't create the gift ♡");
     } finally {
       setCreating(false);
     }
   }
 
-  if (showDelivery) {
-    return (
-      <GiftDelivery
-        recipientName={recipientName}
-      />
-    );
+  async function copyLink() {
+    if (!giftUrl) return;
+    await navigator.clipboard.writeText(giftUrl);
   }
 
   return (
@@ -159,57 +170,30 @@ export default function LoveCouponsPersonalize() {
           WI♡ELI
         </a>
 
-        <div className="steps">
-          <button
-            className={step === 1 ? "active" : ""}
-            onClick={() => setStep(1)}
-          >
-            01 DETAILS
-          </button>
-
-          <span>—</span>
-
-          <button
-            className={step === 2 ? "active" : ""}
-            onClick={() => setStep(2)}
-          >
-            02 COUPONS
-          </button>
-
-          <span>—</span>
-
-          <button
-            className={step === 3 ? "active" : ""}
-            onClick={() => setStep(3)}
-          >
-            03 READY
-          </button>
-        </div>
+        <span className="centerTitle">
+          LOVE COUPON STUDIO
+        </span>
 
         <span className="brand">LOVE COUPONS</span>
       </header>
 
-      {step === 1 && (
-        <section className="workspace">
-          <div className="left">
-            <p className="eyebrow">
-              01 · MAKE IT PERSONAL
-            </p>
+      <section className="workspace">
+        <div className="formSide">
+          <p className="eyebrow">MAKE IT PERSONAL ♡</p>
 
-            <h1>
-              WHO'S THIS
-              <br />
-              <em>FOR?</em>
-            </h1>
+          <h1>
+            MAKE SOMETHING
+            <br />
+            <em>JUST FOR THEM.</em>
+          </h1>
 
-            <div className="fields">
+          <div className="fields">
+            <div className="two">
               <label>
                 YOUR NAME
                 <input
                   value={senderName}
-                  onChange={(e) =>
-                    setSenderName(e.target.value)
-                  }
+                  onChange={(e) => setSenderName(e.target.value)}
                   placeholder="Your name"
                 />
               </label>
@@ -224,104 +208,109 @@ export default function LoveCouponsPersonalize() {
                   placeholder="Their name"
                 />
               </label>
-
-              <div className="two">
-                <label>
-                  COUPONS
-                  <select
-                    value={couponCount}
-                    onChange={(e) =>
-                      setCouponCount(Number(e.target.value))
-                    }
-                  >
-                    <option value={6}>6</option>
-                    <option value={8}>8</option>
-                    <option value={10}>10</option>
-                    <option value={12}>12</option>
-                  </select>
-                </label>
-
-                <label>
-                  DAILY LIMIT
-                  <select
-                    value={dailyLimit}
-                    onChange={(e) =>
-                      setDailyLimit(e.target.value)
-                    }
-                  >
-                    <option value={1}>1 / day</option>
-                    <option value={2}>2 / day</option>
-                    <option value={3}>3 / day</option>
-                    <option value="unlimited">
-                      Unlimited
-                    </option>
-                  </select>
-                </label>
-              </div>
-
-              <div className="two">
-                <label>
-                  CONTACT
-                  <select
-                    value={contactType}
-                    onChange={(e) =>
-                      setContactType(e.target.value)
-                    }
-                  >
-                    <option>Telegram</option>
-                    <option>WhatsApp</option>
-                    <option>Instagram</option>
-                    <option>Email</option>
-                  </select>
-                </label>
-
-                <label>
-                  USERNAME / NUMBER
-                  <input
-                    value={contact}
-                    onChange={(e) =>
-                      setContact(e.target.value)
-                    }
-                    placeholder="@username"
-                  />
-                </label>
-              </div>
             </div>
 
-            <button
-              className="next"
-              disabled={!senderName || !recipientName}
-              onClick={() => setStep(2)}
-            >
-              CHOOSE COUPONS →
-            </button>
+            <label>
+              YOUR TELEGRAM
+              <input
+                value={senderTelegram}
+                onChange={(e) =>
+                  setSenderTelegram(e.target.value)
+                }
+                placeholder="@username"
+              />
+              <small className="hint">
+                We'll use this for coupon redemption
+                notifications.
+              </small>
+            </label>
+
+            <div className="two">
+              <label>
+                COUPONS
+                <select
+                  value={couponCount}
+                  onChange={(e) =>
+                    setCouponCount(Number(e.target.value))
+                  }
+                >
+                  <option value={6}>6</option>
+                  <option value={8}>8</option>
+                  <option value={10}>10</option>
+                  <option value={12}>12</option>
+                </select>
+              </label>
+
+              <label>
+                DAILY LIMIT
+                <select
+                  value={dailyLimit}
+                  onChange={(e) =>
+                    setDailyLimit(e.target.value)
+                  }
+                >
+                  <option value={1}>1 / day</option>
+                  <option value={2}>2 / day</option>
+                  <option value={3}>3 / day</option>
+                  <option value="unlimited">
+                    Unlimited
+                  </option>
+                </select>
+              </label>
+            </div>
           </div>
 
-          <MachinePreview
-            senderName={senderName}
-            recipientName={recipientName}
-          />
-        </section>
-      )}
+          <div className="mainActions">
+            <button
+              className="primary"
+              disabled={!senderName || !recipientName}
+              onClick={() => setModal("coupons")}
+            >
+              CHOOSE COUPONS
+              <span>→</span>
+            </button>
 
-      {step === 2 && (
-        <section className="couponStep">
-          <div className="couponTop">
-            <div>
-              <p className="eyebrow">
-                02 · PICK THEIR PROMISES
-              </p>
+            {selected.length > 0 && (
+              <button
+                className="outline"
+                onClick={() => setModal("preview")}
+              >
+                PREVIEW
+              </button>
+            )}
+          </div>
 
-              <h1>
-                CHOOSE
-                <br />
-                <em>THE COUPONS.</em>
-              </h1>
-            </div>
+          {selected.length > 0 && (
+            <p className="selectedText">
+              {selected.length} / {couponCount} coupons selected
+            </p>
+          )}
+        </div>
 
-            <div className="counter">
-              <strong>{selectedCoupons.length}</strong>
-              <span>/ {couponCount}</span>
+        <MachinePreview
+          senderName={senderName}
+          recipientName={recipientName}
+          coupons={selectedCoupons}
+          couponCount={couponCount}
+        />
+      </section>
+
+      {/* COUPONS */}
+
+      {modal === "coupons" && (
+        <Modal onClose={() => setModal(null)} wide>
+          <p className="eyebrow">CHOOSE THEIR PROMISES</p>
+
+          <div className="modalHeading">
+            <h2>
+              PICK THE
+              <br />
+              <em>COUPONS.</em>
+            </h2>
+
+            <div className="bigCounter">
+              {selected.length}
+              <span>/{couponCount}</span>
             </div>
           </div>
 
@@ -339,120 +328,287 @@ export default function LoveCouponsPersonalize() {
             ))}
           </div>
 
-          <div className="tickets">
+          <div className="ticketGrid">
             {filteredCoupons.map((coupon, index) => {
               const active = selected.includes(coupon.id);
 
+              const custom = customCoupons.find(
+                (c) => c.originalId === coupon.id
+              );
+
+              const display = custom || coupon;
+
               return (
-                <article
+                <PhysicalTicket
                   key={coupon.id}
-                  className={`ticket ${
-                    active ? "selected" : ""
-                  }`}
-                >
-                  <div
-                    className="ticketBody"
-                    onClick={() => toggleCoupon(coupon.id)}
-                  >
-                    <small>WI♡ELI · LOVE COUPON</small>
-
-                    <h3>{coupon.title}</h3>
-                    <p>{coupon.subtitle}</p>
-
-                    <span className="ticketNumber">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                  </div>
-
-                  <div className="ticketActions">
-                    <button
-                      onClick={() => toggleCoupon(coupon.id)}
-                    >
-                      {active ? "✓ SELECTED" : "+ ADD"}
-                    </button>
-
-                    <button
-                      onClick={() =>
-                        setEditingCoupon({ ...coupon })
-                      }
-                    >
-                      EDIT
-                    </button>
-                  </div>
-                </article>
+                  coupon={display}
+                  number={index + 1}
+                  selected={active}
+                  onSelect={() => toggleCoupon(coupon.id)}
+                  onEdit={() => openEditor(coupon)}
+                />
               );
             })}
           </div>
 
-          <div className="bottomBar">
-            <button onClick={() => setStep(1)}>
-              ← BACK
-            </button>
-
+          <div className="modalFooter">
             <span>
-              {selectedCoupons.length} OF {couponCount} SELECTED
+              {selected.length} OF {couponCount} SELECTED
             </span>
 
             <button
               className="primary"
-              disabled={!selectedCoupons.length}
-              onClick={() => setStep(3)}
+              disabled={!selected.length}
+              onClick={() => setModal("preview")}
             >
               PREVIEW GIFT →
             </button>
           </div>
-        </section>
+        </Modal>
       )}
 
-      {step === 3 && (
-        <section className="workspace ready">
-          <div className="left">
-            <p className="eyebrow">
-              03 · READY
-            </p>
+      {/* EDIT */}
 
-            <h1>
-              READY TO
-              <br />
-              <em>MAKE THEIR DAY?</em>
-            </h1>
+      {modal === "edit" && editingCoupon && (
+        <Modal
+          onClose={() => {
+            setEditingCoupon(null);
+            setModal("coupons");
+          }}
+        >
+          <p className="eyebrow">EDIT COUPON</p>
 
-            <div className="summary">
-              <div>
-                <small>FROM</small>
-                <strong>{senderName}</strong>
+          <h2 className="editTitle">
+            MAKE IT YOURS ♡
+          </h2>
+
+          <div className="editorTabs">
+            {[
+              ["message", "MESSAGE"],
+              ["photo", "PHOTO"],
+              ["video", "VIDEO"],
+              ["voice", "VOICE"],
+              ["gift", "GIFT"],
+              ["reminder", "REMIND ME"],
+            ].map(([id, label]) => (
+              <button
+                key={id}
+                className={editTab === id ? "active" : ""}
+                onClick={() => setEditTab(id)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          <div className="editTicket">
+            <small>WI♡ELI · LOVE COUPON</small>
+
+            <input
+              className="editTicketTitle"
+              value={editingCoupon.title}
+              onChange={(e) =>
+                setEditingCoupon({
+                  ...editingCoupon,
+                  title: e.target.value,
+                })
+              }
+            />
+
+            <input
+              className="editTicketSubtitle"
+              value={editingCoupon.subtitle}
+              onChange={(e) =>
+                setEditingCoupon({
+                  ...editingCoupon,
+                  subtitle: e.target.value,
+                })
+              }
+            />
+          </div>
+
+          {editTab === "message" && (
+            <div className="panel">
+              <label>
+                PERSONAL MESSAGE
+                <textarea
+                  value={editingCoupon.message}
+                  placeholder="Write something just for them ♡"
+                  onChange={(e) =>
+                    setEditingCoupon({
+                      ...editingCoupon,
+                      message: e.target.value,
+                    })
+                  }
+                />
+              </label>
+            </div>
+          )}
+
+          {editTab === "photo" && (
+            <AttachmentPanel
+              icon="◇"
+              title="ADD A PHOTO"
+              description="Add a photo they'll discover with this coupon."
+              value={editingCoupon.photoUrl}
+              placeholder="Photo URL"
+              onChange={(value) =>
+                setEditingCoupon({
+                  ...editingCoupon,
+                  photoUrl: value,
+                })
+              }
+            />
+          )}
+
+          {editTab === "video" && (
+            <AttachmentPanel
+              icon="▷"
+              title="ADD A VIDEO"
+              description="Add a private video or memory."
+              value={editingCoupon.videoUrl}
+              placeholder="Video URL"
+              onChange={(value) =>
+                setEditingCoupon({
+                  ...editingCoupon,
+                  videoUrl: value,
+                })
+              }
+            />
+          )}
+
+          {editTab === "voice" && (
+            <AttachmentPanel
+              icon="♪"
+              title="VOICE MESSAGE"
+              description="Add a voice message they'll hear when opening it."
+              value={editingCoupon.voiceUrl}
+              placeholder="Audio URL"
+              onChange={(value) =>
+                setEditingCoupon({
+                  ...editingCoupon,
+                  voiceUrl: value,
+                })
+              }
+            />
+          )}
+
+          {editTab === "gift" && (
+            <div className="panel">
+              <p className="panelTitle">
+                ATTACH A REAL GIFT ♡
+              </p>
+
+              <p className="panelText">
+                Cinema ticket, reservation, digital gift,
+                booking or any private link.
+              </p>
+
+              <label>
+                GIFT / TICKET LINK
+                <input
+                  value={editingCoupon.giftUrl}
+                  placeholder="https://..."
+                  onChange={(e) =>
+                    setEditingCoupon({
+                      ...editingCoupon,
+                      giftUrl: e.target.value,
+                    })
+                  }
+                />
+              </label>
+            </div>
+          )}
+
+          {editTab === "reminder" && (
+            <div className="panel reminderPanel">
+              <div className="switchRow">
+                <div>
+                  <strong>NOTIFY ME WHEN REDEEMED</strong>
+                  <p>
+                    Get a message when they choose this
+                    coupon.
+                  </p>
+                </div>
+
+                <button
+                  className={`switch ${
+                    editingCoupon.reminderEnabled
+                      ? "on"
+                      : ""
+                  }`}
+                  onClick={() =>
+                    setEditingCoupon({
+                      ...editingCoupon,
+                      reminderEnabled:
+                        !editingCoupon.reminderEnabled,
+                    })
+                  }
+                >
+                  <i />
+                </button>
               </div>
 
-              <div>
-                <small>FOR</small>
-                <strong>{recipientName}</strong>
-              </div>
-
-              <div>
-                <small>COUPONS</small>
-                <strong>{selectedCoupons.length}</strong>
-              </div>
-
-              <div>
-                <small>DAILY</small>
+              <div className="notifyPreview">
+                <small>TELEGRAM PREVIEW</small>
                 <strong>
-                  {dailyLimit === "unlimited"
-                    ? "∞"
-                    : dailyLimit}
+                  {recipientName || "Someone special"} redeemed
+                  “{editingCoupon.title}” ♡
                 </strong>
+                <span>
+                  Time to make this little promise happen.
+                </span>
               </div>
             </div>
+          )}
 
-            <div className="readyButtons">
-              <button
-                className="secondary"
-                onClick={() => setStep(2)}
-              >
-                ← EDIT
-              </button>
+          <button
+            className="primary full"
+            onClick={saveEditedCoupon}
+          >
+            SAVE COUPON ♡
+          </button>
+        </Modal>
+      )}
+
+      {/* PREVIEW */}
+
+      {modal === "preview" && (
+        <Modal onClose={() => setModal(null)} wide>
+          <p className="eyebrow">ONE LAST LOOK ♡</p>
+
+          <div className="previewLayout">
+            <div>
+              <h2>
+                THEIR LITTLE
+                <br />
+                <em>PROMISES.</em>
+              </h2>
+
+              <p className="previewCopy">
+                From <strong>{senderName}</strong>
+                <br />
+                for <strong>{recipientName}</strong>
+              </p>
+
+              <div className="previewStats">
+                <span>
+                  <small>COUPONS</small>
+                  <strong>{selected.length}</strong>
+                </span>
+
+                <span>
+                  <small>DAILY LIMIT</small>
+                  <strong>
+                    {dailyLimit === "unlimited"
+                      ? "∞"
+                      : dailyLimit}
+                  </strong>
+                </span>
+              </div>
 
               <button
-                className="next"
+                className="primary"
                 onClick={createGift}
                 disabled={creating}
               >
@@ -461,159 +617,226 @@ export default function LoveCouponsPersonalize() {
                   : "SEND GIFT →"}
               </button>
             </div>
-          </div>
 
-          <MachinePreview
-            senderName={senderName}
-            recipientName={recipientName}
-            coupons={selectedCoupons}
-          />
-        </section>
+            <MiniTicketRoll coupons={selectedCoupons} />
+          </div>
+        </Modal>
       )}
 
-      {editingCoupon && (
-        <div
-          className="modal"
-          onClick={() => setEditingCoupon(null)}
-        >
-          <div
-            className="modalCard"
-            onClick={(e) => e.stopPropagation()}
+      {/* SEND */}
+
+      {modal === "send" && (
+        <Modal onClose={() => setModal(null)} wide>
+          <p className="eyebrow">YOUR GIFT IS READY ♡</p>
+
+          <h2>
+            HOW SHOULD
+            <br />
+            <em>IT ARRIVE?</em>
+          </h2>
+
+          <div className="sendChoices">
+            <div className="sendChoice dark">
+              <small>01 · LET WIVELI DO IT</small>
+
+              <h3>
+                SEND IT
+                <br />
+                <em>FOR ME.</em>
+              </h3>
+
+              <p>
+                We'll send them a sweet message with their
+                private gift.
+              </p>
+
+              <button
+                onClick={() => setModal("sendForMe")}
+              >
+                CHOOSE THIS →
+              </button>
+            </div>
+
+            <div className="sendChoice">
+              <small>02 · KEEP THE MOMENT YOURS</small>
+
+              <h3>
+                I'LL SEND IT
+                <br />
+                <em>MYSELF.</em>
+              </h3>
+
+              <p>
+                Copy your private link and send it however
+                feels right.
+              </p>
+
+              <button onClick={() => setModal("link")}>
+                CHOOSE THIS →
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* SEND FOR ME */}
+
+      {modal === "sendForMe" && (
+        <Modal onClose={() => setModal("send")}>
+          <p className="eyebrow">SEND IT FOR ME</p>
+
+          <h2 className="editTitle">
+            WHERE SHOULD
+            <br />
+            WE SEND IT? ♡
+          </h2>
+
+          <div className="panel">
+            <label>
+              TELEGRAM / EMAIL
+              <input placeholder="@username or email" />
+            </label>
+
+            <label>
+              MESSAGE
+              <textarea
+                defaultValue={`Someone special sent you a little something ♡`}
+              />
+            </label>
+          </div>
+
+          <button
+            className="primary full"
+            onClick={() =>
+              alert(
+                "Delivery connection comes next — your private gift is already created ♡"
+              )
+            }
           >
-            <button
-              className="close"
-              onClick={() => setEditingCoupon(null)}
-            >
-              ×
-            </button>
-
-            <p className="eyebrow">EDIT COUPON</p>
-
-            <h2>MAKE IT YOURS ♡</h2>
-
-            <label>
-              TITLE
-              <input
-                value={editingCoupon.title}
-                onChange={(e) =>
-                  setEditingCoupon({
-                    ...editingCoupon,
-                    title: e.target.value,
-                  })
-                }
-              />
-            </label>
-
-            <label>
-              LITTLE NOTE
-              <input
-                value={editingCoupon.subtitle}
-                onChange={(e) =>
-                  setEditingCoupon({
-                    ...editingCoupon,
-                    subtitle: e.target.value,
-                  })
-                }
-              />
-            </label>
-
-            <button
-              className="next"
-              onClick={saveEditedCoupon}
-            >
-              SAVE COUPON ♡
-            </button>
-          </div>
-        </div>
+            SEND WITH WIVELI →
+          </button>
+        </Modal>
       )}
 
-      <style jsx>{`
+      {/* LINK */}
+
+      {modal === "link" && (
+        <Modal onClose={() => setModal("send")}>
+          <p className="eyebrow">PRIVATE GIFT LINK</p>
+
+          <h2 className="editTitle">
+            READY TO
+            <br />
+            SHARE ♡
+          </h2>
+
+          <div className="linkBox">{giftUrl}</div>
+
+          <button className="primary full" onClick={copyLink}>
+            COPY PRIVATE LINK
+          </button>
+
+          <a
+            className="previewLink"
+            href={giftUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            PREVIEW RECIPIENT GIFT →
+          </a>
+        </Modal>
+      )}
+
+      <style jsx global>{`
         * {
           box-sizing: border-box;
         }
 
+        body {
+          margin: 0;
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+          font: inherit;
+        }
+
         .page {
           min-height: 100svh;
+          overflow-x: hidden;
+          color: #5d0b18;
           background:
-            radial-gradient(circle at 70% 20%, #f9dfda, transparent 35%),
-            #efc6c3;
-          color: #570b17;
+            radial-gradient(
+              circle at 74% 28%,
+              rgba(255, 238, 233, 0.8),
+              transparent 32%
+            ),
+            #efc5c2;
           font-family: Georgia, "Times New Roman", serif;
         }
 
-        header {
+        .page header {
           height: 72px;
-          border-bottom: 1px solid rgba(87, 11, 23, 0.18);
           display: grid;
           grid-template-columns: 1fr auto 1fr;
           align-items: center;
-          padding: 0 42px;
+          padding: 0 40px;
+          border-bottom: 1px solid
+            rgba(93, 11, 24, 0.16);
         }
 
         .logo {
-          color: inherit;
+          color: #fff8f3;
           text-decoration: none;
           font-size: 22px;
-          font-weight: bold;
+          font-weight: 700;
+        }
+
+        .centerTitle,
+        .brand,
+        .eyebrow {
+          font-family: Arial, sans-serif;
+          font-size: 9px;
+          font-weight: 700;
+          letter-spacing: 0.17em;
         }
 
         .brand {
           justify-self: end;
-          font-size: 10px;
-          letter-spacing: 0.18em;
-          font-family: Arial, sans-serif;
-        }
-
-        .steps {
-          display: flex;
-          align-items: center;
-          gap: 14px;
-        }
-
-        .steps button {
-          border: 0;
-          background: transparent;
-          color: rgba(87, 11, 23, 0.4);
-          font: 10px Arial;
-          letter-spacing: 0.13em;
-          cursor: pointer;
-        }
-
-        .steps button.active {
-          color: #570b17;
-          font-weight: 700;
         }
 
         .workspace {
+          width: min(1240px, calc(100% - 50px));
           min-height: calc(100svh - 72px);
+          margin: auto;
           display: grid;
           grid-template-columns: 0.9fr 1.1fr;
-          max-width: 1320px;
-          margin: auto;
-          padding: 48px;
           gap: 70px;
           align-items: center;
         }
 
-        .left {
-          max-width: 520px;
+        .formSide {
+          max-width: 500px;
         }
 
         .eyebrow {
-          font: 700 10px Arial;
-          letter-spacing: 0.18em;
-          margin-bottom: 20px;
+          margin: 0 0 20px;
         }
 
-        h1 {
-          margin: 0 0 32px;
-          font-size: clamp(54px, 6vw, 94px);
-          line-height: 0.78;
+        .formSide h1,
+        .modalCard h2 {
+          margin: 0 0 30px;
+          font-size: clamp(48px, 5.4vw, 76px);
+          line-height: 0.83;
           letter-spacing: -0.055em;
           font-weight: 500;
         }
 
-        h1 em {
+        h1 em,
+        h2 em,
+        h3 em {
           font-weight: 400;
         }
 
@@ -622,411 +845,808 @@ export default function LoveCouponsPersonalize() {
           gap: 14px;
         }
 
+        .two {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+        }
+
         label {
           display: grid;
           gap: 7px;
-          font: 700 9px Arial;
+          font-family: Arial, sans-serif;
+          font-size: 8px;
+          font-weight: 700;
           letter-spacing: 0.13em;
         }
 
         input,
-        select {
+        select,
+        textarea {
           width: 100%;
-          height: 52px;
-          border: 1px solid rgba(87, 11, 23, 0.25);
-          background: rgba(255, 244, 241, 0.35);
+          color: #5d0b18;
+          border: 1px solid rgba(93, 11, 24, 0.22);
           border-radius: 10px;
-          padding: 0 15px;
-          color: #570b17;
-          font: 16px Georgia;
+          background: rgba(255, 244, 241, 0.38);
           outline: none;
         }
 
+        input,
+        select {
+          height: 50px;
+          padding: 0 14px;
+          font-family: Georgia, serif;
+          font-size: 15px;
+        }
+
+        textarea {
+          min-height: 105px;
+          resize: vertical;
+          padding: 14px;
+          font-family: Georgia, serif;
+          font-size: 15px;
+        }
+
         input:focus,
+        textarea:focus,
         select:focus {
-          border-color: #570b17;
+          border-color: #720f20;
         }
 
-        .two {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 14px;
+        .hint {
+          opacity: 0.55;
+          font-family: Georgia, serif;
+          font-size: 11px;
+          font-weight: 400;
+          letter-spacing: 0;
         }
 
-        .next,
-        .secondary {
-          height: 54px;
-          padding: 0 26px;
+        .mainActions {
+          display: flex;
+          gap: 10px;
+          margin-top: 22px;
+        }
+
+        .primary,
+        .outline {
+          min-height: 50px;
           border-radius: 100px;
+          padding: 0 24px;
           cursor: pointer;
-          font: 700 10px Arial;
-          letter-spacing: 0.14em;
+          font-family: Arial, sans-serif;
+          font-size: 9px;
+          font-weight: 700;
+          letter-spacing: 0.13em;
         }
 
-        .next {
-          margin-top: 24px;
+        .primary {
           border: 0;
-          background: #670d1b;
-          color: #f8dcd7;
+          background: #741020;
+          color: #fbe1dc;
         }
 
-        .next:disabled {
+        .primary:disabled {
           opacity: 0.35;
           cursor: default;
         }
 
-        .machineArea {
-          min-height: 590px;
+        .primary span {
+          margin-left: 25px;
+        }
+
+        .outline {
+          border: 1px solid #741020;
+          background: transparent;
+          color: #741020;
+        }
+
+        .selectedText {
+          margin-top: 13px;
+          font-size: 12px;
+          font-style: italic;
+        }
+
+        /* MACHINE */
+
+        .machinePreview {
+          position: relative;
+          min-height: 600px;
           display: flex;
           align-items: center;
           justify-content: center;
-          position: relative;
         }
 
-        .machine {
-          width: min(520px, 100%);
-          height: 315px;
-          border-radius: 34px;
-          background: linear-gradient(145deg, #7a1221, #4f0712);
-          box-shadow: 0 30px 60px rgba(76, 7, 18, 0.2);
+        .senderMachine {
+          position: relative;
+          z-index: 3;
+          width: min(530px, 100%);
+          height: 340px;
+          overflow: hidden;
+          border-radius: 32px;
           padding: 30px;
-          position: relative;
-          z-index: 2;
+          color: #f8d8d2;
+          background:
+            radial-gradient(
+              circle at 50% 10%,
+              #8d1b2b,
+              transparent 42%
+            ),
+            linear-gradient(145deg, #781323, #4b0711);
+          box-shadow:
+            0 35px 70px rgba(72, 5, 17, 0.22),
+            inset 0 1px rgba(255, 255, 255, 0.12);
         }
 
-        .machineTop {
+        .machineHeader {
           display: flex;
           justify-content: space-between;
-          color: #f5d4cf;
-          font: 700 10px Arial;
-          letter-spacing: 0.15em;
-        }
-
-        .machineLogo {
-          margin-top: 65px;
-          text-align: center;
-          color: #f7d8d2;
-          font-size: 46px;
-        }
-
-        .machineName {
-          text-align: center;
-          color: #f7d8d2;
-          opacity: 0.8;
-          margin-top: 10px;
-          font-style: italic;
-        }
-
-        .slot {
-          height: 13px;
-          border-radius: 20px;
-          background: #270209;
-          position: absolute;
-          left: 55px;
-          right: 55px;
-          bottom: 28px;
-        }
-
-        .sampleTickets {
-          position: absolute;
-          bottom: -95px;
-          width: 390px;
-          z-index: 1;
-        }
-
-        .sample {
-          background: #f8e5df;
-          min-height: 112px;
-          border: 1px solid #8b3944;
-          padding: 20px 25px;
-          position: relative;
-          margin-top: -1px;
-        }
-
-        .sample small {
-          font: 700 8px Arial;
+          font-family: Arial, sans-serif;
+          font-size: 9px;
+          font-weight: 700;
           letter-spacing: 0.14em;
         }
 
-        .sample strong {
-          display: block;
-          margin-top: 18px;
-          font-size: 20px;
+        .machineStatus {
+          display: flex;
+          gap: 7px;
+          align-items: center;
         }
 
-        .sample span {
+        .machineStatus i {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #efb5ae;
+        }
+
+        .machineHeart {
+          margin-top: 55px;
+          text-align: center;
+          font-size: 18px;
+        }
+
+        .machineFor {
+          margin-top: 12px;
+          text-align: center;
+        }
+
+        .machineFor small {
+          display: block;
+          font-family: Arial, sans-serif;
+          font-size: 8px;
+          letter-spacing: 0.15em;
+        }
+
+        .machineFor strong {
+          display: block;
+          margin-top: 7px;
+          font-size: 34px;
+          font-weight: 400;
+          font-style: italic;
+        }
+
+        .machineBottom {
+          position: absolute;
+          left: 30px;
+          right: 30px;
+          bottom: 28px;
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+        }
+
+        .machineCount small {
+          display: block;
+          font-family: Arial, sans-serif;
+          font-size: 7px;
+          letter-spacing: 0.14em;
+        }
+
+        .machineCount strong {
+          font-size: 30px;
+          font-weight: 400;
+        }
+
+        .machineCount span {
+          opacity: 0.5;
+          font-size: 15px;
+        }
+
+        .machineSlot {
+          width: 270px;
+          height: 13px;
+          border-radius: 20px;
+          background: #260108;
+          box-shadow: inset 0 2px 5px #160004;
+        }
+
+        .rollPreview {
+          position: absolute;
+          z-index: 2;
+          top: 420px;
+          width: 365px;
+        }
+
+        .rollTicket {
+          min-height: 118px;
+          padding: 17px 20px;
+          position: relative;
+          border: 1px solid #8b3944;
+          background: #f8e4de;
+          margin-top: -1px;
+        }
+
+        .rollTicket:before,
+        .physicalTicket:before {
+          content: "";
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: -1px;
+          border-top: 1px dashed #8b3944;
+        }
+
+        .rollTicket small,
+        .physicalTicket small {
+          font-family: Arial, sans-serif;
+          font-size: 7px;
+          font-weight: 700;
+          letter-spacing: 0.12em;
+        }
+
+        .rollTicket strong {
+          display: block;
+          margin-top: 19px;
+          font-size: 18px;
+        }
+
+        .rollTicket span {
           display: block;
           margin-top: 4px;
+          font-size: 11px;
           font-style: italic;
-          font-size: 12px;
         }
 
-        .couponStep {
-          max-width: 1320px;
-          margin: auto;
-          padding: 42px 48px 120px;
+        /* MODALS */
+
+        .modalOverlay {
+          position: fixed;
+          inset: 0;
+          z-index: 100;
+          display: grid;
+          place-items: center;
+          padding: 25px;
+          background: rgba(70, 20, 26, 0.42);
+          backdrop-filter: blur(12px);
         }
 
-        .couponTop {
+        .modalCard {
+          position: relative;
+          width: min(560px, 96vw);
+          max-height: 90svh;
+          overflow-y: auto;
+          padding: 36px;
+          border: 1px solid
+            rgba(93, 11, 24, 0.12);
+          border-radius: 18px;
+          background: #f2cfca;
+          box-shadow: 0 35px 100px
+            rgba(59, 4, 13, 0.28);
+        }
+
+        .modalCard.wide {
+          width: min(1080px, 96vw);
+        }
+
+        .closeModal {
+          position: absolute;
+          z-index: 3;
+          right: 20px;
+          top: 15px;
+          border: 0;
+          background: none;
+          color: #5d0b18;
+          font-size: 27px;
+          cursor: pointer;
+        }
+
+        .modalHeading {
           display: flex;
           justify-content: space-between;
           align-items: flex-end;
         }
 
-        .couponTop h1 {
-          font-size: 68px;
-          margin-bottom: 15px;
+        .modalHeading h2 {
+          font-size: 60px;
+          margin-bottom: 20px;
         }
 
-        .counter strong {
-          font-size: 62px;
-          font-weight: 400;
+        .bigCounter {
+          margin-bottom: 25px;
+          font-size: 52px;
         }
 
-        .counter span {
-          font-size: 22px;
+        .bigCounter span {
+          font-size: 18px;
         }
 
         .categories {
           display: flex;
-          gap: 8px;
+          gap: 6px;
           overflow-x: auto;
-          padding: 15px 0 25px;
+          padding-bottom: 16px;
         }
 
-        .categories button {
+        .categories button,
+        .editorTabs button {
           flex: 0 0 auto;
-          border: 1px solid rgba(87, 11, 23, 0.25);
-          background: transparent;
-          color: #570b17;
+          padding: 9px 14px;
+          border: 1px solid
+            rgba(93, 11, 24, 0.22);
           border-radius: 100px;
-          padding: 10px 17px;
+          background: transparent;
+          color: #5d0b18;
           cursor: pointer;
-          font: 700 9px Arial;
+          font-family: Arial, sans-serif;
+          font-size: 8px;
+          font-weight: 700;
+          letter-spacing: 0.09em;
           text-transform: uppercase;
-          letter-spacing: 0.1em;
         }
 
-        .categories button.active {
-          background: #670d1b;
-          color: #f7d8d2;
+        .categories button.active,
+        .editorTabs button.active {
+          background: #741020;
+          color: #f9ddd8;
         }
 
-        .tickets {
+        .ticketGrid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 14px;
+          gap: 10px;
         }
 
-        .ticket {
-          background: rgba(255, 241, 237, 0.55);
-          border: 1px solid rgba(87, 11, 23, 0.25);
-          border-radius: 14px;
-          overflow: hidden;
-          transition: 0.2s;
-        }
-
-        .ticket.selected {
-          background: #670d1b;
-          color: #f7d8d2;
-          transform: translateY(-3px);
-        }
-
-        .ticketBody {
-          min-height: 160px;
-          padding: 20px;
-          cursor: pointer;
+        .physicalTicket {
           position: relative;
+          min-height: 185px;
+          overflow: hidden;
+          border: 1px solid
+            rgba(93, 11, 24, 0.3);
+          border-radius: 10px;
+          background: #f8e4de;
+          transition: 0.18s;
         }
 
-        .ticketBody small {
-          font: 700 8px Arial;
-          letter-spacing: 0.12em;
+        .physicalTicket.selected {
+          color: #f9dcd7;
+          background: #741020;
+          transform: translateY(-2px);
         }
 
-        .ticketBody h3 {
-          max-width: 80%;
-          font-size: 22px;
-          line-height: 1;
-          margin: 30px 0 7px;
-        }
-
-        .ticketBody p {
-          margin: 0;
-          font-size: 13px;
-          font-style: italic;
+        .ticketMain {
+          min-height: 142px;
+          padding: 17px;
+          cursor: pointer;
         }
 
         .ticketNumber {
           position: absolute;
-          right: 18px;
-          top: 18px;
-          font-size: 12px;
+          right: 16px;
+          top: 16px;
+          font-size: 10px;
         }
 
-        .ticketActions {
+        .physicalTicket h3 {
+          margin: 30px 0 5px;
+          font-size: 19px;
+          line-height: 1;
+        }
+
+        .physicalTicket p {
+          margin: 0;
+          font-size: 11px;
+          font-style: italic;
+        }
+
+        .ticketExtras {
           display: flex;
+          gap: 5px;
+          margin-top: 11px;
+        }
+
+        .ticketExtras i {
+          display: inline-flex;
+          width: 21px;
+          height: 21px;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid currentColor;
+          border-radius: 50%;
+          font-size: 9px;
+          font-style: normal;
+        }
+
+        .ticketButtons {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
           border-top: 1px dashed currentColor;
         }
 
-        .ticketActions button {
-          flex: 1;
-          height: 38px;
+        .ticketButtons button {
+          height: 40px;
           border: 0;
-          border-right: 1px solid rgba(87, 11, 23, 0.18);
+          border-right: 1px solid
+            rgba(93, 11, 24, 0.2);
           background: transparent;
           color: inherit;
           cursor: pointer;
-          font: 700 8px Arial;
-          letter-spacing: 0.1em;
+          font-family: Arial, sans-serif;
+          font-size: 8px;
+          font-weight: 700;
+          letter-spacing: 0.08em;
         }
 
-        .bottomBar {
-          position: fixed;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          min-height: 76px;
-          background: rgba(239, 198, 195, 0.92);
-          backdrop-filter: blur(18px);
-          border-top: 1px solid rgba(87, 11, 23, 0.18);
-          padding: 10px 45px;
+        .modalFooter {
+          position: sticky;
+          bottom: -36px;
           display: flex;
-          align-items: center;
           justify-content: space-between;
-          z-index: 20;
+          align-items: center;
+          margin: 22px -36px -36px;
+          padding: 15px 36px;
+          background: rgba(242, 207, 202, 0.94);
+          backdrop-filter: blur(10px);
+          border-top: 1px solid
+            rgba(93, 11, 24, 0.15);
+          font-size: 11px;
         }
 
-        .bottomBar button {
-          border: 0;
-          background: transparent;
-          color: #570b17;
-          cursor: pointer;
-          font: 700 9px Arial;
-          letter-spacing: 0.12em;
+        /* EDITOR */
+
+        .editTitle {
+          font-size: 43px !important;
+          line-height: 0.9 !important;
         }
 
-        .bottomBar .primary {
-          background: #670d1b;
-          color: #f7d8d2;
-          padding: 17px 25px;
-          border-radius: 100px;
+        .editorTabs {
+          display: flex;
+          gap: 5px;
+          overflow-x: auto;
+          margin-bottom: 18px;
         }
 
-        .summary {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 10px;
+        .editTicket {
+          margin-bottom: 16px;
+          padding: 20px;
+          border: 1px solid #8b3944;
+          border-radius: 10px;
+          background: #f8e4de;
         }
 
-        .summary div {
-          min-height: 105px;
-          border: 1px solid rgba(87, 11, 23, 0.22);
-          border-radius: 14px;
-          padding: 17px;
-        }
-
-        .summary small {
-          display: block;
-          font: 700 8px Arial;
+        .editTicket small {
+          font-family: Arial, sans-serif;
+          font-size: 7px;
+          font-weight: 700;
           letter-spacing: 0.13em;
         }
 
-        .summary strong {
-          display: block;
-          font-size: 30px;
-          margin-top: 16px;
-          font-weight: 400;
-        }
-
-        .readyButtons {
-          display: flex;
-          gap: 10px;
-        }
-
-        .secondary {
-          margin-top: 24px;
-          border: 1px solid #670d1b;
-          background: transparent;
-          color: #670d1b;
-        }
-
-        .modal {
-          position: fixed;
-          inset: 0;
-          z-index: 100;
-          background: rgba(55, 4, 12, 0.45);
-          backdrop-filter: blur(10px);
-          display: grid;
-          place-items: center;
-          padding: 20px;
-        }
-
-        .modalCard {
-          width: min(520px, 100%);
-          background: #f2d0cc;
-          border-radius: 20px;
-          padding: 38px;
-          box-shadow: 0 30px 80px rgba(40, 0, 8, 0.3);
-          position: relative;
-        }
-
-        .modalCard h2 {
-          font-size: 42px;
-          margin: 0 0 28px;
-        }
-
-        .modalCard label {
-          margin-top: 15px;
-        }
-
-        .close {
-          position: absolute;
-          right: 20px;
-          top: 15px;
+        .editTicketTitle,
+        .editTicketSubtitle {
+          height: auto;
+          padding: 0;
           border: 0;
+          border-radius: 0;
           background: transparent;
-          color: #570b17;
-          font-size: 28px;
+        }
+
+        .editTicketTitle {
+          margin-top: 23px;
+          font-family: Georgia, serif;
+          font-size: 23px;
+          font-weight: 700;
+        }
+
+        .editTicketSubtitle {
+          margin-top: 6px;
+          font-family: Georgia, serif;
+          font-size: 13px;
+          font-style: italic;
+        }
+
+        .panel {
+          display: grid;
+          gap: 14px;
+          margin-bottom: 16px;
+          padding: 18px;
+          border: 1px solid
+            rgba(93, 11, 24, 0.17);
+          border-radius: 12px;
+          background: rgba(255, 246, 242, 0.28);
+        }
+
+        .attachmentPanel {
+          text-align: center;
+        }
+
+        .attachmentIcon {
+          display: grid;
+          width: 52px;
+          height: 52px;
+          margin: 0 auto;
+          place-items: center;
+          border: 1px solid #741020;
+          border-radius: 50%;
+          font-size: 22px;
+        }
+
+        .attachmentPanel h3,
+        .panelTitle {
+          margin: 3px 0;
+          font-family: Arial, sans-serif;
+          font-size: 10px;
+          letter-spacing: 0.12em;
+        }
+
+        .attachmentPanel p,
+        .panelText,
+        .switchRow p {
+          margin: 0;
+          opacity: 0.6;
+          font-size: 12px;
+          font-style: italic;
+        }
+
+        .full {
+          width: 100%;
+        }
+
+        .switchRow {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .switchRow strong {
+          font-family: Arial, sans-serif;
+          font-size: 9px;
+          letter-spacing: 0.1em;
+        }
+
+        .switch {
+          width: 46px;
+          height: 25px;
+          padding: 3px;
+          border: 1px solid #741020;
+          border-radius: 100px;
+          background: transparent;
           cursor: pointer;
         }
 
+        .switch i {
+          display: block;
+          width: 17px;
+          height: 17px;
+          border-radius: 50%;
+          background: #741020;
+          transition: 0.2s;
+        }
+
+        .switch.on {
+          background: #741020;
+        }
+
+        .switch.on i {
+          transform: translateX(19px);
+          background: #f9ddd8;
+        }
+
+        .notifyPreview {
+          display: grid;
+          gap: 8px;
+          padding: 16px;
+          border-radius: 10px;
+          color: #f9ddd8;
+          background: #741020;
+        }
+
+        .notifyPreview small {
+          font-family: Arial, sans-serif;
+          font-size: 7px;
+          letter-spacing: 0.13em;
+        }
+
+        .notifyPreview span {
+          opacity: 0.7;
+          font-size: 11px;
+        }
+
+        /* PREVIEW */
+
+        .previewLayout {
+          display: grid;
+          grid-template-columns: 0.8fr 1.2fr;
+          gap: 50px;
+          align-items: center;
+        }
+
+        .previewLayout h2 {
+          font-size: 58px;
+        }
+
+        .previewCopy {
+          font-size: 16px;
+          line-height: 1.5;
+        }
+
+        .previewStats {
+          display: flex;
+          gap: 10px;
+          margin: 25px 0;
+        }
+
+        .previewStats span {
+          min-width: 125px;
+          padding: 15px;
+          border: 1px solid
+            rgba(93, 11, 24, 0.2);
+          border-radius: 10px;
+        }
+
+        .previewStats small {
+          display: block;
+          font-family: Arial, sans-serif;
+          font-size: 7px;
+          letter-spacing: 0.1em;
+        }
+
+        .previewStats strong {
+          display: block;
+          margin-top: 8px;
+          font-size: 28px;
+        }
+
+        .miniRoll {
+          max-height: 520px;
+          overflow-y: auto;
+          padding: 10px;
+        }
+
+        .miniRoll .rollTicket {
+          min-height: 105px;
+        }
+
+        /* SEND */
+
+        .sendChoices {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+        }
+
+        .sendChoice {
+          min-height: 330px;
+          display: flex;
+          flex-direction: column;
+          padding: 28px;
+          border: 1px solid
+            rgba(93, 11, 24, 0.25);
+          border-radius: 16px;
+        }
+
+        .sendChoice.dark {
+          color: #f9dcd7;
+          background: #741020;
+        }
+
+        .sendChoice small {
+          font-family: Arial, sans-serif;
+          font-size: 7px;
+          font-weight: 700;
+          letter-spacing: 0.13em;
+        }
+
+        .sendChoice h3 {
+          margin: 60px 0 15px;
+          font-size: 42px;
+          line-height: 0.82;
+        }
+
+        .sendChoice p {
+          max-width: 330px;
+          font-size: 13px;
+        }
+
+        .sendChoice button {
+          margin-top: auto;
+          padding: 15px 0 0;
+          border: 0;
+          border-top: 1px solid currentColor;
+          background: transparent;
+          color: inherit;
+          text-align: left;
+          cursor: pointer;
+          font-family: Arial, sans-serif;
+          font-size: 8px;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+        }
+
+        .linkBox {
+          margin: 20px 0 12px;
+          padding: 16px;
+          overflow-wrap: anywhere;
+          border: 1px solid
+            rgba(93, 11, 24, 0.2);
+          border-radius: 10px;
+          background: rgba(255, 246, 242, 0.3);
+          font-size: 13px;
+        }
+
+        .previewLink {
+          display: block;
+          margin-top: 18px;
+          color: #5d0b18;
+          text-align: center;
+          font-family: Arial, sans-serif;
+          font-size: 8px;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+        }
+
         @media (max-width: 800px) {
-          header {
+          .page header {
             padding: 0 18px;
           }
 
-          .brand {
+          .centerTitle {
             display: none;
           }
 
           .workspace {
+            width: calc(100% - 36px);
             grid-template-columns: 1fr;
-            padding: 35px 20px 120px;
+            padding: 35px 0 100px;
           }
 
-          .machineArea {
-            min-height: 480px;
+          .machinePreview {
+            min-height: 510px;
           }
 
-          .tickets {
+          .senderMachine {
+            height: 300px;
+          }
+
+          .machineSlot {
+            width: 190px;
+          }
+
+          .rollPreview {
+            top: 385px;
+            width: 78%;
+          }
+
+          .two,
+          .previewLayout,
+          .sendChoices {
             grid-template-columns: 1fr;
           }
 
-          .couponStep {
-            padding: 35px 20px 120px;
+          .ticketGrid {
+            grid-template-columns: 1fr;
           }
 
-          .couponTop h1 {
-            font-size: 50px;
+          .modalCard {
+            padding: 28px 20px;
           }
 
-          .bottomBar {
-            padding: 10px 18px;
+          .modalHeading h2,
+          .previewLayout h2 {
+            font-size: 43px;
           }
 
-          .bottomBar span {
-            display: none;
+          .modalFooter {
+            margin: 20px -20px -28px;
+            padding: 12px 20px;
           }
         }
       `}</style>
@@ -1034,10 +1654,28 @@ export default function LoveCouponsPersonalize() {
   );
 }
 
+function Modal({ children, onClose, wide = false }) {
+  return (
+    <div className="modalOverlay" onMouseDown={onClose}>
+      <div
+        className={`modalCard ${wide ? "wide" : ""}`}
+        onMouseDown={(e) => e.stopPropagation()}
+      >
+        <button className="closeModal" onClick={onClose}>
+          ×
+        </button>
+
+        {children}
+      </div>
+    </div>
+  );
+}
+
 function MachinePreview({
   senderName,
   recipientName,
-  coupons = [],
+  coupons,
+  couponCount,
 }) {
   const examples =
     coupons.length > 0
@@ -1058,28 +1696,44 @@ function MachinePreview({
         ];
 
   return (
-    <div className="machineArea">
-      <div className="machine">
-        <div className="machineTop">
+    <div className="machinePreview">
+      <div className="senderMachine">
+        <div className="machineHeader">
           <span>WI♡ELI</span>
-          <span>LOVE COUPON MACHINE</span>
+
+          <span className="machineStatus">
+            <i />
+            LOVE COUPON MACHINE
+          </span>
         </div>
 
-        <div className="machineLogo">WI♡ELI</div>
+        <div className="machineHeart">♡</div>
 
-        <div className="machineName">
-          {recipientName
-            ? `made for ${recipientName}`
-            : "made for someone special"}
-          {senderName ? ` · by ${senderName}` : ""}
+        <div className="machineFor">
+          <small>MADE WITH LOVE FOR</small>
+          <strong>
+            {recipientName || "someone special"}
+          </strong>
         </div>
 
-        <div className="slot" />
+        <div className="machineBottom">
+          <div className="machineCount">
+            <small>COUPONS</small>
+            <strong>
+              {String(coupons.length).padStart(2, "0")}
+              <span>
+                /{String(couponCount).padStart(2, "0")}
+              </span>
+            </strong>
+          </div>
+
+          <div className="machineSlot" />
+        </div>
       </div>
 
-      <div className="sampleTickets">
+      <div className="rollPreview">
         {examples.map((coupon, index) => (
-          <div className="sample" key={index}>
+          <div className="rollTicket" key={index}>
             <small>
               WI♡ELI · LOVE COUPON ·{" "}
               {String(index + 1).padStart(2, "0")}
@@ -1090,6 +1744,91 @@ function MachinePreview({
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function PhysicalTicket({
+  coupon,
+  number,
+  selected,
+  onSelect,
+  onEdit,
+}) {
+  return (
+    <article
+      className={`physicalTicket ${
+        selected ? "selected" : ""
+      }`}
+    >
+      <div className="ticketMain" onClick={onSelect}>
+        <small>WI♡ELI · LOVE COUPON</small>
+
+        <span className="ticketNumber">
+          {String(number).padStart(2, "0")}
+        </span>
+
+        <h3>{coupon.title}</h3>
+        <p>{coupon.subtitle}</p>
+
+        <div className="ticketExtras">
+          {coupon.message && <i>✎</i>}
+          {coupon.photoUrl && <i>◇</i>}
+          {coupon.videoUrl && <i>▷</i>}
+          {coupon.voiceUrl && <i>♪</i>}
+          {coupon.giftUrl && <i>♥</i>}
+          {coupon.reminderEnabled && <i>↗</i>}
+        </div>
+      </div>
+
+      <div className="ticketButtons">
+        <button onClick={onSelect}>
+          {selected ? "✓ SELECTED" : "+ ADD"}
+        </button>
+
+        <button onClick={onEdit}>EDIT</button>
+      </div>
+    </article>
+  );
+}
+
+function AttachmentPanel({
+  icon,
+  title,
+  description,
+  value,
+  placeholder,
+  onChange,
+}) {
+  return (
+    <div className="panel attachmentPanel">
+      <span className="attachmentIcon">{icon}</span>
+      <h3>{title}</h3>
+      <p>{description}</p>
+
+      <input
+        value={value}
+        placeholder={placeholder}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </div>
+  );
+}
+
+function MiniTicketRoll({ coupons }) {
+  return (
+    <div className="miniRoll">
+      {coupons.map((coupon, index) => (
+        <div className="rollTicket" key={coupon.id || index}>
+          <small>
+            WI♡ELI · LOVE COUPON ·{" "}
+            {String(index + 1).padStart(2, "0")}
+          </small>
+
+          <strong>{coupon.title}</strong>
+          <span>{coupon.subtitle}</span>
+        </div>
+      ))}
     </div>
   );
 }
