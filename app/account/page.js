@@ -58,7 +58,27 @@ export default function AccountPage() {
       date: "TODAY",
     },
   ];
+async function connectTelegram() {
+  try {
+    const response = await fetch("/api/telegram/connect", {
+      method: "POST",
+    });
 
+    const data = await response.json();
+
+    if (!response.ok) {
+      alert(data.error || "Could not connect Telegram.");
+      return;
+    }
+
+    window.open(
+      `https://t.me/WIVELI_bot?start=${data.connectCode}`,
+      "_blank"
+    );
+  } catch {
+    alert("Could not connect Telegram.");
+  }
+}
   return (
     <main className="accountPage">
       <header>
@@ -243,6 +263,12 @@ export default function AccountPage() {
               </label>
 
               <button className="save">SAVE CHANGES</button>
+                    <button
+  className="telegramButton"
+  onClick={connectTelegram}
+>
+  CONNECT TELEGRAM →
+</button>
             </div>
           )}
         </section>
@@ -630,7 +656,19 @@ export default function AccountPage() {
           font-weight: 900;
           letter-spacing: 0.12em;
         }
-
+.telegramButton {
+  margin-top: 12px;
+  margin-left: 10px;
+  padding: 16px 25px;
+  border: 1px solid var(--wine);
+  border-radius: 100px;
+  background: transparent;
+  color: var(--wine);
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
         @media (max-width: 800px) {
           .account {
             grid-template-columns: 85px 1fr;
