@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
+const WIVELI_URL = "https://wiveli.vercel.app";
+
 const ALLOWED_GIFT_TYPES = [
   "love-coupons",
   "memory-box",
@@ -30,9 +32,7 @@ export async function POST(request) {
     const cookieStore = await cookies();
 
     const accessToken =
-      cookieStore.get(
-        "wiveli_access_token"
-      )?.value;
+      cookieStore.get("wiveli_access_token")?.value;
 
     if (!accessToken) {
       return NextResponse.json(
@@ -49,8 +49,7 @@ export async function POST(request) {
       {
         headers: {
           apikey: anonKey,
-          Authorization:
-            `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
         cache: "no-store",
       }
@@ -66,8 +65,7 @@ export async function POST(request) {
       );
     }
 
-    const user =
-      await userResponse.json();
+    const user = await userResponse.json();
 
     if (!user?.id) {
       return NextResponse.json(
@@ -87,9 +85,7 @@ export async function POST(request) {
     } = await request.json();
 
     if (
-      !ALLOWED_GIFT_TYPES.includes(
-        giftType
-      ) ||
+      !ALLOWED_GIFT_TYPES.includes(giftType) ||
       !giftData ||
       typeof giftData !== "object"
     ) {
@@ -101,10 +97,8 @@ export async function POST(request) {
 
     const serviceHeaders = {
       apikey: secretKey,
-      Authorization:
-        `Bearer ${secretKey}`,
-      "Content-Type":
-        "application/json",
+      Authorization: `Bearer ${secretKey}`,
+      "Content-Type": "application/json",
     };
 
     /* ===================================== */
@@ -118,8 +112,7 @@ export async function POST(request) {
 
         headers: {
           ...serviceHeaders,
-          Prefer:
-            "return=representation",
+          Prefer: "return=representation",
         },
 
         body: JSON.stringify({
@@ -146,9 +139,7 @@ export async function POST(request) {
       );
     }
 
-    const rows =
-      await giftResponse.json();
-
+    const rows = await giftResponse.json();
     const gift = rows?.[0];
 
     if (!gift?.id) {
@@ -162,10 +153,8 @@ export async function POST(request) {
     }
 
     /* ===================================== */
-    /* FIND RECIPIENT ACCOUNT                */
+    /* RECIPIENT                             */
     /* ===================================== */
-
-    let recipientUserId = null;
 
     const finalRecipientEmail =
       recipientEmail ||
@@ -174,14 +163,22 @@ export async function POST(request) {
 
     /*
       Recipient may not have a WIVELI
-      account yet. That's completely OK.
+      account yet.
 
-      When they connect/claim the gift later,
-      we'll attach their user_id.
+      user_id will be attached when
+      the recipient claims the gift.
     */
 
+    const recipientUserId = null;
+
     /* ===================================== */
-    /* SAVE PARTICIPANTS                     */
+    /* CLAIM TOKEN                           */
+    /* ===================================== */
+
+    const claimToken = crypto.randomUUID();
+
+    /* ===================================== */
+    /* PARTICIPANTS                          */
     /* ===================================== */
 
     const participants = [
@@ -192,43 +189,37 @@ export async function POST(request) {
 
         role: "sender",
 
-        email:
-          user.email || null,
+        email: user.email || null,
       },
 
       {
         gift_id: gift.id,
 
-        user_id:
-          recipientUserId,
+        user_id: recipientUserId,
 
         role: "recipient",
 
-        email:
-          finalRecipientEmail,
+        email: finalRecipientEmail,
+
+        claim_token: claimToken,
       },
     ];
 
-    const participantsResponse =
-      await fetch(
-        `${supabaseUrl}/rest/v1/gift_participants`,
-        {
-          method: "POST",
+    const participantsResponse = await fetch(
+      `${supabaseUrl}/rest/v1/gift_participants`,
+      {
+        method: "POST",
 
-          headers: {
-            ...serviceHeaders,
-            Prefer:
-              "return=representation",
-          },
+        headers: {
+          ...serviceHeaders,
+          Prefer: "return=representation",
+        },
 
-          body:
-            JSON.stringify(
-              participants
-            ),
+        body: JSON.stringify(participants),
 
-          cache: "no-store",
-        }
-      );
+        cache: "no-store",
+      }
+    );
 
     if (!participantsResponse.ok) {
       const errorText =
@@ -240,8 +231,8 @@ export async function POST(request) {
       );
 
       /*
-        Roll back the gift so we don't
-        leave a broken orphan gift.
+        Remove the gift if participant
+        creation failed.
       */
 
       await fetch(
@@ -264,6 +255,14 @@ export async function POST(request) {
     }
 
     /* ===================================== */
+    /* RECIPIENT LINK                        */
+    /* ===================================== */
+
+    const giftUrl =
+      `${WIVELI_URL}/gift/${gift.id}` +
+      `?claim=${claimToken}`;
+
+    /* ===================================== */
     /* SUCCESS                               */
     /* ===================================== */
 
@@ -277,11 +276,12 @@ export async function POST(request) {
       },
 
       recipient: {
-        connected:
-          Boolean(
-            recipientUserId
-          ),
+        connected: Boolean(recipientUserId),
       },
+
+      claimToken,
+
+      giftUrl,
     });
   } catch (error) {
     console.error(
@@ -291,8 +291,7 @@ export async function POST(request) {
 
     return NextResponse.json(
       {
-        error:
-          "Could not create gift.",
+        error: "Could not create gift.",
       },
       { status: 500 }
     );
