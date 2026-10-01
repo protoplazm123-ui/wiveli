@@ -59,13 +59,19 @@ export default function Home() {
           <a href="#about">About</a>
         </nav>
 
-        <div className="headerActions">
-          <button className="login">Log in</button>
+       <div className="headerActions">
+  <a className="login" href="/login">
+    Log in
+  </a>
 
-          <a className="primary small" href="#ideas">
-            Create a Gift →
-          </a>
-        </div>
+  <a className="signup" href="/signup">
+    Sign up
+  </a>
+
+  <a className="primary small" href="#ideas">
+    Create a Gift →
+  </a>
+</div>
       </header>
 
 
