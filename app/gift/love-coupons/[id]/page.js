@@ -125,7 +125,7 @@ if (!claimResponse.ok) {
       "Could not claim gift"
   );
 }
-
+}
         /*
           LOAD GIFT FROM SUPABASE
         */
