@@ -32,13 +32,7 @@ const experiences = [
     href: "/experiences/love-coupons",
   },
   {
-    title: "Memory Box",
-    tag: "KEEP THE GOOD STUFF",
-    text: "Collect photos, messages and favorite moments in one little place.",
-    symbol: "□",
-    href: "/experiences/memory-box",
-  },
-  {
+  
     title: "The Gift",
     tag: "ANSWER · UNLOCK · REVEAL",
     text: "Answer personal questions and unlock photos, letters, videos and real surprises.",
