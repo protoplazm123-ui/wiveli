@@ -91,24 +91,40 @@ export default function PrivateLoveCouponsGift() {
           const claimData =
             await claimResponse.json();
 
-          /*
-            Not logged in yet:
-            don't block opening the gift.
+        /*
+  NOT LOGGED IN
 
-            Later we'll preserve this link
-            through login/signup.
-          */
+  Preserve the complete private gift URL,
+  including the claim token,
+  and return here after login/signup.
+*/
 
-          if (
-            !claimResponse.ok &&
-            !claimData.requiresLogin
-          ) {
-            throw new Error(
-              claimData.error ||
-                "Could not claim gift"
-            );
-          }
-        }
+if (
+  !claimResponse.ok &&
+  claimData.requiresLogin
+) {
+  const giftUrl =
+    `/gift/love-coupons/${encodeURIComponent(
+      id
+    )}?claim=${encodeURIComponent(
+      claimToken
+    )}`;
+
+  window.location.replace(
+    `/login?next=${encodeURIComponent(
+      giftUrl
+    )}`
+  );
+
+  return;
+}
+
+if (!claimResponse.ok) {
+  throw new Error(
+    claimData.error ||
+      "Could not claim gift"
+  );
+}
 
         /*
           LOAD GIFT FROM SUPABASE
