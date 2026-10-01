@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+
 
 export default function SignUp() {
-  const searchParams = useSearchParams();
+ 
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,8 +12,17 @@ export default function SignUp() {
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
 
+function getLoginUrl() {
+  if (typeof window === "undefined") {
+    return "/login";
+  }
+
+  const params = new URLSearchParams(
+    window.location.search
+  );
+
   const nextUrl =
-    searchParams.get("next") || "/account";
+    params.get("next") || "/account";
 
   const safeNextUrl =
     nextUrl.startsWith("/") &&
@@ -21,10 +30,10 @@ export default function SignUp() {
       ? nextUrl
       : "/account";
 
-  const loginUrl =
-    `/login?next=${encodeURIComponent(
-      safeNextUrl
-    )}`;
+  return `/login?next=${encodeURIComponent(
+    safeNextUrl
+  )}`;
+}
 
   async function signUp(e) {
     e.preventDefault();
@@ -181,7 +190,14 @@ export default function SignUp() {
 
               <p className="loginText">
                 Already have an account?{" "}
-                <a href={loginUrl}>
+               <a
+  href="#"
+  onClick={(e) => {
+    e.preventDefault();
+    window.location.href =
+      getLoginUrl();
+  }}
+>
                   Log in
                 </a>
               </p>
@@ -206,7 +222,14 @@ export default function SignUp() {
 
               <strong>{email}</strong>
 
-              <a href={loginUrl}>
+              <a
+  href="#"
+  onClick={(e) => {
+    e.preventDefault();
+    window.location.href =
+      getLoginUrl();
+  }}
+>
                 GO TO LOG IN →
               </a>
             </div>
