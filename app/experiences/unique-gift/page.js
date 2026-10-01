@@ -20,78 +20,97 @@ export default function UniqueGiftPage() {
         </a>
       </header>
 
-      <section className="hero">
-        <div className="badge">✦ WIVELI BESPOKE</div>
+      <div className="stage">
+        {/* LEFT */}
+        <section className="hero">
+          <div className="badge">✦ WIVELI BESPOKE</div>
 
-        <p className="eyebrow">A GIFT THAT EXISTS ONLY ONCE</p>
+          <p className="eyebrow">A GIFT THAT EXISTS ONLY ONCE</p>
 
-        <h1>
-          YOUR WISH.
-          <br />
-          <em>OUR CREATION.</em>
-        </h1>
+          <h1>
+            YOUR WISH.
+            <br />
+            <em>OUR CREATION.</em>
+          </h1>
 
-        <p className="lead">
-          Tell us about someone special. Their story, their dreams,
-          the moments that matter — and the feeling you want them
-          to remember.
-        </p>
+          <p className="lead">
+            Tell us about someone special — their story,
+            their dreams and the moments that matter.
+          </p>
 
-        <p className="description">
-          Together with the WIVELI team, create a completely
-          individual gift designed for one person and one person only.
-          From the first idea to the final surprise, we help turn your
-          vision into an unforgettable experience.
-        </p>
+          <p className="description">
+            Together with the WIVELI team, create a completely
+            individual gift designed for one person and one person only.
+            From the first idea to the final surprise, we turn your
+            vision into an unforgettable experience.
+          </p>
 
-        <div className="actions">
-          <a className="primary" href="/experiences/unique-gift/request">
-            FILL OUT A REQUEST
-            <span>→</span>
-          </a>
+          <div className="actions">
+            <a
+              className="primary"
+              href="/experiences/unique-gift/request"
+            >
+              FILL OUT A REQUEST
+              <span>→</span>
+            </a>
 
-          <button
-            className="secondary"
-            onClick={() => setContactOpen(true)}
-          >
-            CONTACT WIVELI TEAM
-            <span>↗</span>
-          </button>
-        </div>
+            <button
+              className="secondary"
+              onClick={() => setContactOpen(true)}
+            >
+              CONTACT WIVELI TEAM
+              <span>↗</span>
+            </button>
+          </div>
 
-        <p className="note">
-          No idea has to be fully formed. Tell us what you feel —
-          we’ll help with the rest.
-        </p>
-      </section>
+          <p className="note">
+            No idea has to be fully formed. Tell us what you feel —
+            we’ll help with the rest.
+          </p>
+        </section>
 
-      <aside className="bespokeCard">
-        <span className="number">06</span>
+        {/* RIGHT */}
+        <aside className="bespokeCard">
+          <div className="cardTop">
+            <span>06</span>
+            <span>WIVELI BESPOKE</span>
+          </div>
 
-        <div className="star">✦</div>
+          <div className="starWrap">
+            <div className="star">✦</div>
+            <div className="starGlow" />
+          </div>
 
-        <p>WIVELI BESPOKE</p>
+          <div className="cardCopy">
+            <p>MADE JUST FOR THEM</p>
 
-        <h2>
-          Made for
-          <br />
-          one person.
-        </h2>
+            <h2>
+              Made for
+              <br />
+              one person.
+            </h2>
+          </div>
 
-        <div className="line" />
+          <div className="steps">
+            <div>
+              <span>01</span>
+              <p>Tell us about them</p>
+            </div>
 
-        <div className="steps">
-          <span>01</span>
-          <p>Tell us about them</p>
+            <div>
+              <span>02</span>
+              <p>Share your vision</p>
+            </div>
 
-          <span>02</span>
-          <p>Share your vision</p>
+            <div>
+              <span>03</span>
+              <p>We create it together</p>
+            </div>
+          </div>
+        </aside>
+      </div>
 
-          <span>03</span>
-          <p>We create it together</p>
-        </div>
-      </aside>
-
+      {/* CONTACT MODAL */}
       {contactOpen && (
         <div
           className="overlay"
@@ -174,36 +193,45 @@ export default function UniqueGiftPage() {
         :global(html),
         :global(body) {
           margin: 0;
-          overflow: hidden;
+          background: #0d0b0a;
         }
 
         .page {
+          --gold: #dfb55e;
+          --cream: #fff6e5;
+
           min-height: 100svh;
-          position: relative;
+          height: 100svh;
           overflow: hidden;
+          position: relative;
+
           background:
             radial-gradient(
-              circle at 72% 40%,
-              rgba(174, 122, 39, 0.16),
-              transparent 28%
+              circle at 77% 42%,
+              rgba(196, 137, 39, 0.15),
+              transparent 30%
             ),
             radial-gradient(
-              circle at 30% 90%,
-              rgba(110, 47, 60, 0.18),
+              circle at 17% 85%,
+              rgba(112, 42, 58, 0.13),
               transparent 35%
             ),
             #0d0b0a;
-          color: #f8f0df;
+
+          color: var(--cream);
           font-family: Arial, sans-serif;
         }
 
         header {
-          height: 82px;
+          height: 74px;
           padding: 0 5vw;
+
           display: flex;
           align-items: center;
           justify-content: space-between;
-          border-bottom: 1px solid rgba(238, 196, 105, 0.13);
+
+          border-bottom: 1px solid rgba(223, 181, 94, 0.14);
+
           position: relative;
           z-index: 10;
         }
@@ -218,243 +246,376 @@ export default function UniqueGiftPage() {
         }
 
         .logo span {
-          color: #e1b65e;
+          color: var(--gold);
         }
 
         .back {
-          color: rgba(255, 248, 232, 0.7);
+          color: rgba(255, 248, 232, 0.65);
           text-decoration: none;
-          font-size: 9px;
+          font-size: 8px;
           font-weight: 900;
-          letter-spacing: 0.14em;
+          letter-spacing: 0.16em;
         }
 
+        /* MAIN LAYOUT */
+
+        .stage {
+          height: calc(100svh - 74px);
+
+          width: min(1380px, 90vw);
+          margin: 0 auto;
+
+          display: grid;
+          grid-template-columns:
+            minmax(0, 1.45fr)
+            minmax(300px, 0.55fr);
+
+          gap: clamp(50px, 7vw, 120px);
+
+          align-items: center;
+        }
+
+        /* LEFT */
+
         .hero {
-          position: absolute;
-          left: 7vw;
-          top: 50%;
-          transform: translateY(-45%);
-          width: min(720px, 50vw);
-          z-index: 2;
+          min-width: 0;
+          max-width: 780px;
         }
 
         .badge {
-          display: inline-block;
-          margin-bottom: 28px;
-          padding: 9px 15px;
-          border: 1px solid rgba(226, 183, 91, 0.42);
+          display: inline-flex;
+          align-items: center;
+
+          padding: 8px 15px;
+          margin-bottom: clamp(18px, 2.2vh, 28px);
+
+          border: 1px solid rgba(223, 181, 94, 0.4);
           border-radius: 100px;
-          color: #e7bf6b;
-          background: rgba(226, 183, 91, 0.06);
+
+          background: rgba(223, 181, 94, 0.05);
+
+          color: #e9c46e;
+
           font-size: 8px;
           font-weight: 900;
           letter-spacing: 0.18em;
-          box-shadow: 0 0 25px rgba(226, 183, 91, 0.08);
+
+          box-shadow: 0 0 30px rgba(223, 181, 94, 0.06);
         }
 
         .eyebrow {
-          margin: 0 0 17px;
+          margin: 0 0 13px;
+
           color: #cba85d;
-          font-size: 9px;
+
+          font-size: 8px;
           font-weight: 900;
           letter-spacing: 0.2em;
         }
 
         h1 {
           margin: 0;
+
           font-family: Georgia, serif;
-          font-size: clamp(60px, 6.3vw, 108px);
-          line-height: 0.82;
+
+          font-size: clamp(56px, 6.2vw, 104px);
+          line-height: 0.83;
           letter-spacing: -0.055em;
+
           font-weight: 400;
         }
 
         h1 em {
-          color: #ddb55e;
+          color: var(--gold);
           font-weight: 400;
         }
 
         .lead {
-          max-width: 590px;
-          margin: 30px 0 0;
+          max-width: 570px;
+
+          margin: clamp(18px, 2.7vh, 28px) 0 0;
+
           font-family: Georgia, serif;
-          font-size: 18px;
+          font-size: clamp(15px, 1.2vw, 18px);
           line-height: 1.45;
+
           color: #eee2cc;
         }
 
         .description {
-          max-width: 590px;
-          margin: 16px 0 0;
-          color: rgba(255, 248, 232, 0.48);
-          font-size: 12px;
-          line-height: 1.7;
+          max-width: 570px;
+
+          margin: 12px 0 0;
+
+          color: rgba(255, 248, 232, 0.46);
+
+          font-size: 11px;
+          line-height: 1.65;
         }
 
         .actions {
           display: flex;
-          gap: 12px;
-          margin-top: 30px;
+          align-items: center;
+
+          gap: 10px;
+
+          margin-top: clamp(20px, 2.8vh, 28px);
         }
 
         .primary,
         .secondary {
-          min-width: 205px;
-          height: 52px;
-          padding: 0 22px;
+          height: 48px;
+
+          padding: 0 20px;
+
           border-radius: 100px;
+
           display: flex;
           align-items: center;
           justify-content: space-between;
-          gap: 20px;
-          text-decoration: none;
+
+          gap: 28px;
+
           cursor: pointer;
+          text-decoration: none;
+
+          font-family: Arial, sans-serif;
           font-size: 8px;
           font-weight: 900;
           letter-spacing: 0.12em;
+
+          white-space: nowrap;
         }
 
         .primary {
+          min-width: 210px;
+
           border: 1px solid #e0b45b;
-          background: #d7aa50;
+
+          background: #d9ad54;
           color: #17110a;
-          box-shadow: 0 0 35px rgba(221, 181, 94, 0.18);
+
+          box-shadow:
+            0 0 30px rgba(221, 181, 94, 0.16);
         }
 
         .secondary {
+          min-width: 225px;
+
           border: 1px solid rgba(226, 183, 91, 0.35);
+
           background: transparent;
           color: #e6c16f;
         }
 
+        .primary:hover,
+        .secondary:hover {
+          transform: translateY(-2px);
+        }
+
         .note {
-          margin: 17px 0 0;
-          color: rgba(255, 248, 232, 0.32);
+          margin: 14px 0 0;
+
+          color: rgba(255, 248, 232, 0.3);
+
           font-family: Georgia, serif;
-          font-size: 11px;
+          font-size: 10px;
           font-style: italic;
         }
 
+        /* RIGHT CARD */
+
         .bespokeCard {
-          position: absolute;
-          right: 7vw;
-          top: 50%;
-          transform: translateY(-45%);
-          width: min(390px, 30vw);
-          min-height: 540px;
-          padding: 34px;
-          border: 1px solid rgba(226, 183, 91, 0.27);
+          width: 100%;
+          max-width: 380px;
+          height: min(570px, 68vh);
+          min-height: 450px;
+
+          justify-self: end;
+
+          position: relative;
+
+          padding: 28px;
+
+          border: 1px solid rgba(226, 183, 91, 0.28);
+
           background:
             radial-gradient(
-              circle at 50% 32%,
-              rgba(230, 184, 88, 0.14),
-              transparent 30%
+              circle at 50% 34%,
+              rgba(230, 184, 88, 0.13),
+              transparent 31%
             ),
-            rgba(30, 23, 15, 0.62);
+            rgba(27, 21, 15, 0.55);
+
           box-shadow:
-            0 0 80px rgba(177, 123, 32, 0.08),
-            inset 0 0 70px rgba(255, 215, 128, 0.025);
+            0 0 90px rgba(177, 123, 32, 0.08),
+            inset 0 0 70px rgba(255, 215, 128, 0.02);
+
           backdrop-filter: blur(14px);
+
+          display: flex;
+          flex-direction: column;
         }
 
-        .number {
+        .cardTop {
+          display: flex;
+          justify-content: space-between;
+
           color: #cfa95c;
-          font-size: 9px;
+
+          font-size: 7px;
+          font-weight: 900;
+          letter-spacing: 0.16em;
+        }
+
+        .starWrap {
+          position: relative;
+
+          flex: 1;
+
+          display: grid;
+          place-items: center;
+
+          min-height: 100px;
+        }
+
+        .star {
+          position: relative;
+          z-index: 2;
+
+          color: #f4ce7b;
+
+          font-size: clamp(52px, 4vw, 70px);
+
+          text-shadow:
+            0 0 16px rgba(255, 214, 122, 0.9),
+            0 0 45px rgba(255, 194, 65, 0.5);
+        }
+
+        .starGlow {
+          width: 100px;
+          height: 100px;
+
+          position: absolute;
+
+          border-radius: 50%;
+
+          background: rgba(226, 177, 77, 0.16);
+
+          filter: blur(35px);
+        }
+
+        .cardCopy > p {
+          margin: 0 0 8px;
+
+          color: #cba85d;
+
+          font-size: 7px;
           font-weight: 900;
           letter-spacing: 0.18em;
         }
 
-        .star {
-          margin: 72px 0 50px;
-          text-align: center;
-          color: #f0ca78;
-          font-size: 65px;
-          text-shadow:
-            0 0 18px rgba(255, 214, 122, 0.8),
-            0 0 60px rgba(255, 194, 65, 0.4);
-        }
-
-        .bespokeCard > p {
-          margin: 0 0 8px;
-          color: #cba85d;
-          font-size: 8px;
-          font-weight: 900;
-          letter-spacing: 0.17em;
-        }
-
-        .bespokeCard h2 {
+        .cardCopy h2 {
           margin: 0;
+
           font-family: Georgia, serif;
-          font-size: 40px;
-          line-height: 0.95;
+
+          font-size: clamp(32px, 3vw, 43px);
+          line-height: 0.93;
+
           font-weight: 400;
         }
 
-        .line {
-          height: 1px;
-          margin: 30px 0 20px;
-          background: rgba(226, 183, 91, 0.17);
+        .steps {
+          margin-top: 25px;
+
+          border-top: 1px solid rgba(226, 183, 91, 0.17);
         }
 
-        .steps {
+        .steps > div {
+          min-height: 38px;
+
           display: grid;
-          grid-template-columns: 30px 1fr;
-          gap: 10px 12px;
+          grid-template-columns: 35px 1fr;
           align-items: center;
+
+          border-bottom: 1px solid rgba(226, 183, 91, 0.09);
         }
 
         .steps span {
           color: #cba85d;
-          font-size: 8px;
+
+          font-size: 7px;
           font-weight: 900;
         }
 
         .steps p {
           margin: 0;
+
           color: rgba(255, 248, 232, 0.62);
+
           font-family: Georgia, serif;
-          font-size: 12px;
+          font-size: 11px;
         }
+
+        /* BACKGROUND */
 
         .glow {
           position: absolute;
+
           border-radius: 50%;
+
           filter: blur(100px);
+
           pointer-events: none;
         }
 
         .glowOne {
-          width: 400px;
-          height: 400px;
-          right: 9%;
-          top: 25%;
+          width: 420px;
+          height: 420px;
+
+          right: 8%;
+          top: 20%;
+
           background: rgba(199, 142, 43, 0.08);
         }
 
         .glowTwo {
-          width: 330px;
-          height: 330px;
-          left: 20%;
-          bottom: -15%;
+          width: 350px;
+          height: 350px;
+
+          left: 10%;
+          bottom: -20%;
+
           background: rgba(116, 46, 61, 0.13);
         }
+
+        /* MODAL */
 
         .overlay {
           position: fixed;
           inset: 0;
           z-index: 100;
+
           display: grid;
           place-items: center;
+
           padding: 20px;
-          background: rgba(5, 4, 3, 0.82);
+
+          background: rgba(5, 4, 3, 0.84);
+
           backdrop-filter: blur(14px);
         }
 
         .contactModal {
           position: relative;
+
           width: min(520px, 100%);
-          padding: 42px;
+
+          padding: 40px;
+
           border: 1px solid rgba(226, 183, 91, 0.3);
+
           background:
             radial-gradient(
               circle at 90% 5%,
@@ -462,23 +623,33 @@ export default function UniqueGiftPage() {
               transparent 30%
             ),
             #17120d;
-          box-shadow: 0 35px 100px rgba(0, 0, 0, 0.5);
+
+          box-shadow:
+            0 35px 100px rgba(0, 0, 0, 0.55);
         }
 
         .close {
           position: absolute;
-          top: 16px;
-          right: 18px;
+
+          top: 14px;
+          right: 17px;
+
           border: 0;
+
           background: transparent;
+
           color: #d4b36d;
+
           cursor: pointer;
+
           font-size: 26px;
         }
 
         .modalEyebrow {
-          margin: 0 0 13px;
+          margin: 0 0 12px;
+
           color: #d4ad5d;
+
           font-size: 8px;
           font-weight: 900;
           letter-spacing: 0.18em;
@@ -486,67 +657,120 @@ export default function UniqueGiftPage() {
 
         .contactModal h2 {
           margin: 0;
+
           font-family: Georgia, serif;
-          font-size: 45px;
+
+          font-size: 44px;
           line-height: 0.94;
+
           font-weight: 400;
         }
 
         .modalText {
-          margin: 17px 0 24px;
+          margin: 16px 0 23px;
+
           color: rgba(255, 248, 232, 0.48);
+
           font-size: 12px;
         }
 
         .channels {
           display: grid;
           grid-template-columns: 1fr 1fr;
+
           gap: 8px;
         }
 
         .channels a {
-          min-height: 74px;
-          padding: 16px;
+          min-height: 72px;
+
+          padding: 15px;
+
           border: 1px solid rgba(226, 183, 91, 0.18);
+
           display: flex;
           flex-direction: column;
           justify-content: space-between;
+
           color: #f7ead0;
+
           text-decoration: none;
+
           transition: 0.2s ease;
         }
 
         .channels a:hover {
           border-color: rgba(226, 183, 91, 0.6);
+
           background: rgba(226, 183, 91, 0.06);
         }
 
         .channels strong {
           font-family: Georgia, serif;
+
           font-size: 17px;
           font-weight: 400;
         }
 
         .channels span {
           color: #c9a252;
+
           font-size: 7px;
           font-weight: 900;
           letter-spacing: 0.12em;
         }
 
         .modalBottom {
-          margin: 23px 0 8px;
+          margin: 22px 0 8px;
+
           color: rgba(255, 248, 232, 0.4);
+
           font-size: 10px;
         }
 
         .requestLink {
           color: #dfb55e;
+
           font-size: 8px;
           font-weight: 900;
           letter-spacing: 0.13em;
+
           text-decoration: none;
         }
+
+        /* SMALLER LAPTOP */
+
+        @media (max-height: 760px) and (min-width: 901px) {
+          .stage {
+            gap: 55px;
+          }
+
+          h1 {
+            font-size: clamp(54px, 5.5vw, 82px);
+          }
+
+          .badge {
+            margin-bottom: 15px;
+          }
+
+          .lead {
+            margin-top: 18px;
+          }
+
+          .description {
+            line-height: 1.5;
+          }
+
+          .actions {
+            margin-top: 18px;
+          }
+
+          .bespokeCard {
+            height: 520px;
+          }
+        }
+
+        /* MOBILE */
 
         @media (max-width: 900px) {
           :global(html),
@@ -555,35 +779,66 @@ export default function UniqueGiftPage() {
           }
 
           .page {
+            height: auto;
             min-height: 100svh;
-            padding-bottom: 50px;
+
+            overflow: visible;
+
+            padding-bottom: 40px;
+          }
+
+          header {
+            height: 64px;
+            padding: 0 24px;
+          }
+
+          .stage {
+            height: auto;
+
+            width: 100%;
+
+            padding: 45px 24px;
+
+            display: block;
           }
 
           .hero {
-            position: relative;
-            left: auto;
-            top: auto;
-            transform: none;
-            width: auto;
-            padding: 55px 25px 30px;
+            max-width: none;
           }
 
           h1 {
-            font-size: clamp(52px, 15vw, 80px);
+            font-size: clamp(51px, 14vw, 78px);
           }
 
           .actions {
             flex-direction: column;
+            align-items: stretch;
+          }
+
+          .primary,
+          .secondary {
+            width: 100%;
           }
 
           .bespokeCard {
-            position: relative;
-            right: auto;
-            top: auto;
-            transform: none;
-            width: auto;
-            min-height: 430px;
-            margin: 0 25px;
+            width: 100%;
+            max-width: none;
+            height: 470px;
+            min-height: 0;
+
+            margin-top: 45px;
+          }
+
+          .channels {
+            grid-template-columns: 1fr;
+          }
+
+          .contactModal {
+            padding: 34px 24px;
+          }
+
+          .contactModal h2 {
+            font-size: 38px;
           }
         }
       `}</style>
