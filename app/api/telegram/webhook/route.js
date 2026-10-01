@@ -5,8 +5,13 @@ const WIVELI_URL = "https://wiveli.vercel.app";
 export async function POST(request) {
   try {
     const update = await request.json();
-console.log("TELEGRAM UPDATE:", JSON.stringify(update));
-    // INLINE BUTTONS
+
+    console.log("TELEGRAM UPDATE:", JSON.stringify(update));
+
+    /* ======================================== */
+    /* INLINE BUTTONS                           */
+    /* ======================================== */
+
     if (update.callback_query) {
       await handleCallback(update.callback_query);
       return NextResponse.json({ ok: true });
@@ -21,13 +26,30 @@ console.log("TELEGRAM UPDATE:", JSON.stringify(update));
     const chatId = message.chat.id;
     const text = message.text?.trim() || "";
 
-    // START
+    /* ======================================== */
+    /* IGNORE GROUPS FOR NOW                    */
+    /* ======================================== */
+
+    if (
+      message.chat.type === "group" ||
+      message.chat.type === "supergroup"
+    ) {
+      return NextResponse.json({ ok: true });
+    }
+
+    /* ======================================== */
+    /* START                                    */
+    /* ======================================== */
+
     if (text.startsWith("/start")) {
       const parts = text.split(" ");
       const connectCode = parts[1];
 
       if (connectCode) {
-        const connected = await connectAccount(connectCode, message);
+        const connected = await connectAccount(
+          connectCode,
+          message
+        );
 
         if (!connected) {
           await sendMessage(
@@ -54,7 +76,32 @@ console.log("TELEGRAM UPDATE:", JSON.stringify(update));
       return NextResponse.json({ ok: true });
     }
 
-    // MY GIFTS
+    /* ======================================== */
+    /* CHECK PENDING ACTION                     */
+    /* ======================================== */
+
+    const connection =
+      await getTelegramConnectionByChat(chatId);
+
+    if (
+      connection?.pending_action &&
+      connection?.pending_event_id &&
+      text
+    ) {
+      const handled = await handlePendingAction(
+        connection,
+        text
+      );
+
+      if (handled) {
+        return NextResponse.json({ ok: true });
+      }
+    }
+
+    /* ======================================== */
+    /* MAIN MENU                                */
+    /* ======================================== */
+
     if (text === "🎁 MY GIFTS") {
       await sendMessage(
         chatId,
@@ -74,7 +121,6 @@ console.log("TELEGRAM UPDATE:", JSON.stringify(update));
       return NextResponse.json({ ok: true });
     }
 
-    // CREATE
     if (text === "✦ CREATE") {
       await sendMessage(
         chatId,
@@ -100,11 +146,10 @@ console.log("TELEGRAM UPDATE:", JSON.stringify(update));
       return NextResponse.json({ ok: true });
     }
 
-    // BESPOKE
     if (text === "💎 WIVELI BESPOKE") {
       await sendMessage(
         chatId,
-        "💎 <b>WIVELI BESPOKE</b>\n\n<b>Your wish. Our creation.</b>\n\nTell us about someone special and what you want them to feel. Together with the WIVELI team, we'll turn your idea into a completely unique experience.",
+        "💎 <b>WIVELI BESPOKE</b>\n\n<b>Your wish. Our creation.</b>\n\nTell us about someone special and what you want them to feel.",
         {
           inline_keyboard: [
             [
@@ -126,14 +171,11 @@ console.log("TELEGRAM UPDATE:", JSON.stringify(update));
       return NextResponse.json({ ok: true });
     }
 
-    // MY WIVELI
     if (text === "♡ MY WIVELI") {
       await showMyWiveli(chatId);
-
       return NextResponse.json({ ok: true });
     }
 
-    // FALLBACK
     await sendMainMenu(
       chatId,
       "What would you like to do? ♡"
@@ -141,11 +183,18 @@ console.log("TELEGRAM UPDATE:", JSON.stringify(update));
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error("Telegram webhook error:", error);
+    console.error(
+      "Telegram webhook error:",
+      error
+    );
 
     return NextResponse.json({ ok: true });
   }
 }
+
+/* ======================================== */
+/* GET                                      */
+/* ======================================== */
 
 export async function GET() {
   return NextResponse.json({
@@ -154,19 +203,85 @@ export async function GET() {
   });
 }
 
-/* -------------------------------- */
-/* CALLBACK BUTTONS                 */
-/* -------------------------------- */
+/* ======================================== */
+/* CALLBACKS                                */
+/* ======================================== */
 
 async function handleCallback(callback) {
   const chatId = callback.message?.chat?.id;
-  const data = callback.data;
+  const data = callback.data || "";
 
   if (!chatId) return;
 
   await answerCallback(callback.id);
 
-  // MY ACCOUNT
+  /* ACCEPT INVITATION */
+
+  if (data.startsWith("gift_accept:")) {
+    const eventId = data.replace(
+      "gift_accept:",
+      ""
+    );
+
+    await acceptGiftEvent(
+      eventId,
+      chatId
+    );
+
+    return;
+  }
+
+  /* SUGGEST ANOTHER TIME */
+
+  if (data.startsWith("gift_reschedule:")) {
+    const eventId = data.replace(
+      "gift_reschedule:",
+      ""
+    );
+
+    await setPendingAction(
+      chatId,
+      "reschedule",
+      eventId
+    );
+
+    await sendMessage(
+      chatId,
+      "♡ <b>SUGGEST ANOTHER TIME</b>\n\nSend the date, time or alternative you'd prefer.\n\nFor example:\n<code>October 14 · 7:30 PM</code>"
+    );
+
+    return;
+  }
+
+  /* REPLY TO GIFT MESSAGE */
+
+  if (data.startsWith("gift_reply:")) {
+    const eventId = data.replace(
+      "gift_reply:",
+      ""
+    );
+
+    await setPendingAction(
+      chatId,
+      "reply",
+      eventId
+    );
+
+    await sendMessage(
+      chatId,
+      "♡ <b>WRITE YOUR REPLY</b>\n\nSend your message here and WIVELI will deliver it for you."
+    );
+
+    return;
+  }
+
+  /* MY WIVELI */
+
+  if (data === "my_wiveli") {
+    await showMyWiveli(chatId);
+    return;
+  }
+
   if (data === "my_account") {
     await sendMessage(
       chatId,
@@ -192,7 +307,6 @@ async function handleCallback(callback) {
     return;
   }
 
-  // ORDERS
   if (data === "orders") {
     await sendMessage(
       chatId,
@@ -218,11 +332,10 @@ async function handleCallback(callback) {
     return;
   }
 
-  // NOTIFICATIONS
   if (data === "notifications") {
     await sendMessage(
       chatId,
-      "♢ <b>NOTIFICATIONS</b>\n\nWIVELI can send gift updates, delivery events and important account notifications directly here.",
+      "♢ <b>NOTIFICATIONS</b>\n\nGift updates, invitations and important WIVELI events can appear directly here.",
       {
         inline_keyboard: [
           [
@@ -238,11 +351,10 @@ async function handleCallback(callback) {
     return;
   }
 
-  // CONTACT TEAM
   if (data === "contact_team") {
     await sendMessage(
       chatId,
-      "♡ <b>WIVELI CONCIERGE</b>\n\nTell us what you need help with.\n\nDirect conversation with the WIVELI team will live right here inside your assistant.",
+      "♡ <b>WIVELI CONCIERGE</b>\n\nDirect conversation with the WIVELI team is being prepared here.",
       {
         inline_keyboard: [
           [
@@ -260,19 +372,220 @@ async function handleCallback(callback) {
         ],
       }
     );
+  }
+}
+
+/* ======================================== */
+/* ACCEPT EVENT                             */
+/* ======================================== */
+
+async function acceptGiftEvent(
+  eventId,
+  chatId
+) {
+  const connection =
+    await getTelegramConnectionByChat(chatId);
+
+  if (!connection?.user_id) {
+    await sendMessage(
+      chatId,
+      "Please connect your WIVELI account first ♡"
+    );
 
     return;
   }
 
-  // BACK TO MY WIVELI
-  if (data === "my_wiveli") {
-    await showMyWiveli(chatId);
+  const event = await getGiftEvent(eventId);
+
+  if (!event) {
+    await sendMessage(
+      chatId,
+      "This invitation could not be found."
+    );
+
+    return;
   }
+
+  /* Security: only target can accept */
+
+  if (
+    event.target_user_id !==
+    connection.user_id
+  ) {
+    await sendMessage(
+      chatId,
+      "This invitation isn't assigned to this account."
+    );
+
+    return;
+  }
+
+  await updateGiftEvent(eventId, {
+    status: "accepted",
+    responded_at:
+      new Date().toISOString(),
+  });
+
+  await sendMessage(
+    chatId,
+    "♡ <b>IT'S A DATE</b>\n\nYour response has been sent."
+  );
+
+  await notifyOtherParticipant(
+    event,
+    connection.user_id,
+    "♡ <b>IT'S A DATE</b>\n\nYour invitation was accepted."
+  );
 }
 
-/* -------------------------------- */
-/* MY WIVELI                        */
-/* -------------------------------- */
+/* ======================================== */
+/* PENDING TEXT RESPONSE                    */
+/* ======================================== */
+
+async function handlePendingAction(
+  connection,
+  text
+) {
+  const event =
+    await getGiftEvent(
+      connection.pending_event_id
+    );
+
+  if (!event) {
+    await clearPendingAction(
+      connection.id
+    );
+
+    return false;
+  }
+
+  /* Security */
+
+  if (
+    event.target_user_id !==
+    connection.user_id
+  ) {
+    await clearPendingAction(
+      connection.id
+    );
+
+    return false;
+  }
+
+  /* RESCHEDULE */
+
+  if (
+    connection.pending_action ===
+    "reschedule"
+  ) {
+    await updateGiftEvent(event.id, {
+      status: "reschedule_proposed",
+
+      responded_at:
+        new Date().toISOString(),
+
+      data: {
+        ...(event.data || {}),
+        suggested_time: text,
+      },
+    });
+
+    await notifyOtherParticipant(
+      event,
+      connection.user_id,
+      `♡ <b>A NEW TIME WAS SUGGESTED</b>\n\n${escapeHtml(
+        text
+      )}`
+    );
+
+    await clearPendingAction(
+      connection.id
+    );
+
+    await sendMessage(
+      connection.telegram_chat_id,
+      "♡ Your suggestion has been sent."
+    );
+
+    return true;
+  }
+
+  /* REPLY */
+
+  if (
+    connection.pending_action ===
+    "reply"
+  ) {
+    await notifyOtherParticipant(
+      event,
+      connection.user_id,
+      `♡ <b>FROM YOUR WIVELI GIFT</b>\n\n“${escapeHtml(
+        text
+      )}”`
+    );
+
+    await clearPendingAction(
+      connection.id
+    );
+
+    await sendMessage(
+      connection.telegram_chat_id,
+      "♡ Your reply has been delivered."
+    );
+
+    return true;
+  }
+
+  return false;
+}
+
+/* ======================================== */
+/* SEND TO OTHER PARTICIPANT                */
+/* ======================================== */
+
+async function notifyOtherParticipant(
+  event,
+  currentUserId,
+  text
+) {
+  let otherUserId;
+
+  if (
+    currentUserId ===
+    event.target_user_id
+  ) {
+    otherUserId =
+      event.actor_user_id;
+  } else {
+    otherUserId =
+      event.target_user_id;
+  }
+
+  if (!otherUserId) return false;
+
+  const telegram =
+    await getTelegramByUserId(
+      otherUserId
+    );
+
+  if (
+    !telegram?.telegram_chat_id ||
+    !telegram?.connected
+  ) {
+    return false;
+  }
+
+  await sendMessage(
+    telegram.telegram_chat_id,
+    text
+  );
+
+  return true;
+}
+
+/* ======================================== */
+/* MY WIVELI                               */
+/* ======================================== */
 
 async function showMyWiveli(chatId) {
   await sendMessage(
@@ -315,75 +628,223 @@ async function showMyWiveli(chatId) {
   );
 }
 
-/* -------------------------------- */
-/* ACCOUNT CONNECTION               */
-/* -------------------------------- */
+/* ======================================== */
+/* DATABASE HELPERS                         */
+/* ======================================== */
 
-async function connectAccount(connectCode, message) {
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const secretKey = process.env.SUPABASE_SECRET_KEY;
-
-  if (!supabaseUrl || !secretKey) {
-    throw new Error("Supabase is not configured.");
-  }
-
-  const response = await fetch(
-    `${supabaseUrl}/rest/v1/telegram_connections?connect_code=eq.${encodeURIComponent(
-      connectCode
-    )}&connected=eq.false&select=*`,
-    {
-      headers: {
-        apikey: secretKey,
-        Authorization: `Bearer ${secretKey}`,
-      },
-      cache: "no-store",
-    }
+async function getGiftEvent(eventId) {
+  const rows = await supabaseRequest(
+    `/rest/v1/gift_events?id=eq.${encodeURIComponent(
+      eventId
+    )}&select=*&limit=1`
   );
 
-  if (!response.ok) {
-    throw new Error("Could not read Telegram connection.");
-  }
+  return rows?.[0] || null;
+}
 
-  const connections = await response.json();
-  const connection = connections?.[0];
+async function updateGiftEvent(
+  eventId,
+  data
+) {
+  return supabaseRequest(
+    `/rest/v1/gift_events?id=eq.${encodeURIComponent(
+      eventId
+    )}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    }
+  );
+}
 
-  if (!connection) return false;
+async function getTelegramConnectionByChat(
+  chatId
+) {
+  const rows = await supabaseRequest(
+    `/rest/v1/telegram_connections?telegram_chat_id=eq.${encodeURIComponent(
+      chatId
+    )}&connected=eq.true&select=*&limit=1`
+  );
 
-  const updateResponse = await fetch(
-    `${supabaseUrl}/rest/v1/telegram_connections?id=eq.${connection.id}`,
+  return rows?.[0] || null;
+}
+
+async function getTelegramByUserId(
+  userId
+) {
+  const rows = await supabaseRequest(
+    `/rest/v1/telegram_connections?user_id=eq.${encodeURIComponent(
+      userId
+    )}&connected=eq.true&select=*&limit=1`
+  );
+
+  return rows?.[0] || null;
+}
+
+async function setPendingAction(
+  chatId,
+  action,
+  eventId
+) {
+  return supabaseRequest(
+    `/rest/v1/telegram_connections?telegram_chat_id=eq.${encodeURIComponent(
+      chatId
+    )}`,
     {
       method: "PATCH",
 
-      headers: {
-        apikey: secretKey,
-        Authorization: `Bearer ${secretKey}`,
-        "Content-Type": "application/json",
-      },
+      body: JSON.stringify({
+        pending_action: action,
+        pending_event_id: eventId,
+      }),
+    }
+  );
+}
+
+async function clearPendingAction(
+  connectionId
+) {
+  return supabaseRequest(
+    `/rest/v1/telegram_connections?id=eq.${encodeURIComponent(
+      connectionId
+    )}`,
+    {
+      method: "PATCH",
 
       body: JSON.stringify({
-        telegram_chat_id: message.chat.id,
-        telegram_user_id: message.from?.id || null,
-        telegram_username: message.from?.username || null,
+        pending_action: null,
+        pending_event_id: null,
+      }),
+    }
+  );
+}
+
+/* ======================================== */
+/* ACCOUNT CONNECTION                       */
+/* ======================================== */
+
+async function connectAccount(
+  connectCode,
+  message
+) {
+  const connections =
+    await supabaseRequest(
+      `/rest/v1/telegram_connections?connect_code=eq.${encodeURIComponent(
+        connectCode
+      )}&connected=eq.false&select=*`
+    );
+
+  const connection =
+    connections?.[0];
+
+  if (!connection) return false;
+
+  await supabaseRequest(
+    `/rest/v1/telegram_connections?id=eq.${connection.id}`,
+    {
+      method: "PATCH",
+
+      body: JSON.stringify({
+        telegram_chat_id:
+          message.chat.id,
+
+        telegram_user_id:
+          message.from?.id || null,
+
+        telegram_username:
+          message.from?.username ||
+          null,
 
         connected: true,
-        connected_at: new Date().toISOString(),
+
+        connected_at:
+          new Date().toISOString(),
+
         connect_code: null,
       }),
     }
   );
 
-  if (!updateResponse.ok) {
-    throw new Error("Could not save Telegram connection.");
-  }
-
   return true;
 }
 
-/* -------------------------------- */
-/* MAIN MENU                        */
-/* -------------------------------- */
+/* ======================================== */
+/* SUPABASE                                 */
+/* ======================================== */
 
-async function sendMainMenu(chatId, text) {
+async function supabaseRequest(
+  path,
+  options = {}
+) {
+  const supabaseUrl =
+    process.env.SUPABASE_URL;
+
+  const secretKey =
+    process.env.SUPABASE_SECRET_KEY;
+
+  if (
+    !supabaseUrl ||
+    !secretKey
+  ) {
+    throw new Error(
+      "Supabase is not configured."
+    );
+  }
+
+  const response = await fetch(
+    `${supabaseUrl}${path}`,
+    {
+      ...options,
+
+      headers: {
+        apikey: secretKey,
+
+        Authorization:
+          `Bearer ${secretKey}`,
+
+        "Content-Type":
+          "application/json",
+
+        Prefer:
+          "return=representation",
+
+        ...(options.headers || {}),
+      },
+
+      cache: "no-store",
+    }
+  );
+
+  if (!response.ok) {
+    const error =
+      await response.text();
+
+    console.error(
+      "Supabase error:",
+      error
+    );
+
+    throw new Error(
+      "Supabase request failed."
+    );
+  }
+
+  const text =
+    await response.text();
+
+  if (!text) return [];
+
+  return JSON.parse(text);
+}
+
+/* ======================================== */
+/* MAIN MENU                                */
+/* ======================================== */
+
+async function sendMainMenu(
+  chatId,
+  text
+) {
   return sendTelegram({
     chat_id: chatId,
 
@@ -394,14 +855,23 @@ async function sendMainMenu(chatId, text) {
     reply_markup: {
       keyboard: [
         [
-          { text: "🎁 MY GIFTS" },
-          { text: "✦ CREATE" },
+          {
+            text: "🎁 MY GIFTS",
+          },
+          {
+            text: "✦ CREATE",
+          },
         ],
         [
-          { text: "💎 WIVELI BESPOKE" },
+          {
+            text:
+              "💎 WIVELI BESPOKE",
+          },
         ],
         [
-          { text: "♡ MY WIVELI" },
+          {
+            text: "♡ MY WIVELI",
+          },
         ],
       ],
 
@@ -411,9 +881,9 @@ async function sendMainMenu(chatId, text) {
   });
 }
 
-/* -------------------------------- */
-/* TELEGRAM                         */
-/* -------------------------------- */
+/* ======================================== */
+/* TELEGRAM                                 */
+/* ======================================== */
 
 async function sendMessage(
   chatId,
@@ -427,17 +897,21 @@ async function sendMessage(
   };
 
   if (inlineKeyboard) {
-    payload.reply_markup = inlineKeyboard;
+    payload.reply_markup =
+      inlineKeyboard;
   }
 
   return sendTelegram(payload);
 }
 
 async function sendTelegram(payload) {
-  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const token =
+    process.env.TELEGRAM_BOT_TOKEN;
 
   if (!token) {
-    throw new Error("Telegram bot token is missing.");
+    throw new Error(
+      "Telegram bot token is missing."
+    );
   }
 
   const response = await fetch(
@@ -446,24 +920,33 @@ async function sendTelegram(payload) {
       method: "POST",
 
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type":
+          "application/json",
       },
 
-      body: JSON.stringify(payload),
+      body:
+        JSON.stringify(payload),
     }
   );
 
-  const data = await response.json();
+  const result =
+    await response.json();
 
-  if (!data.ok) {
-    console.error("Telegram API error:", data);
+  if (!result.ok) {
+    console.error(
+      "Telegram API error:",
+      result
+    );
   }
 
-  return data;
+  return result;
 }
 
-async function answerCallback(callbackQueryId) {
-  const token = process.env.TELEGRAM_BOT_TOKEN;
+async function answerCallback(
+  callbackQueryId
+) {
+  const token =
+    process.env.TELEGRAM_BOT_TOKEN;
 
   if (!token) return;
 
@@ -473,12 +956,26 @@ async function answerCallback(callbackQueryId) {
       method: "POST",
 
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type":
+          "application/json",
       },
 
       body: JSON.stringify({
-        callback_query_id: callbackQueryId,
+        callback_query_id:
+          callbackQueryId,
       }),
     }
   );
+}
+
+/* ======================================== */
+/* HELPERS                                  */
+/* ======================================== */
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
 }
