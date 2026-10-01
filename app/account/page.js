@@ -87,7 +87,7 @@ async function connectTelegram() {
         </a>
 
         <div className="headerRight">
-          <a href="/create">CREATE A GIFT</a>
+          <a href="/experiences/love-coupons/personalize">CREATE A GIFT</a>
           <button>LOG OUT</button>
         </div>
       </header>
@@ -156,7 +156,7 @@ async function connectTelegram() {
                   </h1>
                 </div>
 
-                <a className="createButton" href="/create">
+                <a className="createButton" href="/experiences/love-coupons/personalize">
                   + CREATE A GIFT
                 </a>
               </div>
@@ -700,3 +700,4 @@ async function connectTelegram() {
     </main>
   );
 }
+

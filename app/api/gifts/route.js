@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-const WIVELI_URL = "https://wiveli.vercel.app";
-
 const ALLOWED_GIFT_TYPES = [
   "love-coupons",
   "memory-box",
@@ -190,6 +188,8 @@ export async function POST(request) {
         role: "sender",
 
         email: user.email || null,
+
+        claim_token: null,
       },
 
       {
@@ -258,9 +258,12 @@ export async function POST(request) {
     /* RECIPIENT LINK                        */
     /* ===================================== */
 
-    const giftUrl =
-      `${WIVELI_URL}/gift/${gift.id}` +
-      `?claim=${claimToken}`;
+    const giftBaseUrl =
+      giftType === "love-coupons"
+        ? `${new URL(request.url).origin}/gift/love-coupons/${encodeURIComponent(gift.id)}`
+        : `https://wiveli.vercel.app/gift/${gift.id}`;
+
+    const giftUrl = `${giftBaseUrl}?claim=${encodeURIComponent(claimToken)}`;
 
     /* ===================================== */
     /* SUCCESS                               */

@@ -25,6 +25,8 @@ export default function LoveCouponsPersonalize() {
 
   const [creating, setCreating] = useState(false);
   const [giftUrl, setGiftUrl] = useState("");
+  const [createError, setCreateError] = useState("");
+  const [requiresLogin, setRequiresLogin] = useState(false);
 
   const filteredCoupons = useMemo(() => {
     if (category === "all") return couponIdeas;
@@ -133,11 +135,14 @@ export default function LoveCouponsPersonalize() {
   };
 
  const createGift = async () => {
+  if (creating) return;
   if (!senderName.trim()) return;
   if (!recipientName.trim()) return;
   if (!selectedCoupons.length) return;
 
   setCreating(true);
+  setCreateError("");
+  setRequiresLogin(false);
 
   try {
     /*
@@ -195,11 +200,15 @@ export default function LoveCouponsPersonalize() {
       }),
     });
 
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
+
+    if (response.status === 401) {
+      setRequiresLogin(true);
+    }
 
     if (!response.ok || !data.success || !data.id) {
       throw new Error(
-        data.error || "Could not create gift"
+        data.error || `Could not create gift (HTTP ${response.status}). Please try again.`
       );
     }
 
@@ -208,24 +217,26 @@ export default function LoveCouponsPersonalize() {
       Supabase is the real source of truth.
     */
 
-    saveLoveCouponsGift({
-      ...giftData,
-      serverId: data.id,
-    });
+    // A blocked/full browser cache must not hide a successfully saved gift.
+    try {
+      saveLoveCouponsGift({
+        ...giftData,
+        serverId: data.id,
+      });
+    } catch (cacheError) {
+      console.warn("Could not cache gift:", cacheError);
+    }
 
     const url =
-      typeof window !== "undefined"
-        ? `${window.location.origin}/gift/love-coupons/${data.id}`
-        : `/gift/love-coupons/${data.id}`;
+      `${window.location.origin}/gift/love-coupons/${encodeURIComponent(data.id)}` +
+      (data.claimToken ? `?claim=${encodeURIComponent(data.claimToken)}` : "");
 
     setGiftUrl(url);
     setModal("send");
   } catch (error) {
     console.error("Failed to create gift:", error);
 
-    alert(
-      "Could not create the gift. Please try again ♡"
-    );
+    setCreateError(error.message || "Could not create the gift. Please try again ♡");
   } finally {
     setCreating(false);
   }
@@ -888,6 +899,21 @@ export default function LoveCouponsPersonalize() {
                 little promises, waiting
                 to be opened.
               </p>
+
+              {createError && (
+                <div role="alert">
+                  <p>{createError}</p>
+                  {requiresLogin && (
+                    <p>
+                      <a href="/login" target="_blank" rel="noopener noreferrer">
+                        Sign in in a new tab
+                      </a>
+                      {" "}then return here and click Create gift again.
+                      Your selections will stay in this tab.
+                    </p>
+                  )}
+                </div>
+              )}
 
               <button
                 className="primary full"
@@ -3679,3 +3705,4 @@ function MiniTicketRoll({ coupons = [] }) {
     </div>
   );
 }
+
