@@ -5,6 +5,13 @@ const WIVELI_URL = "https://wiveli.vercel.app";
 export async function POST(request) {
   try {
     const update = await request.json();
+
+    // INLINE BUTTONS
+    if (update.callback_query) {
+      await handleCallback(update.callback_query);
+      return NextResponse.json({ ok: true });
+    }
+
     const message = update?.message;
 
     if (!message?.chat?.id) {
@@ -14,20 +21,13 @@ export async function POST(request) {
     const chatId = message.chat.id;
     const text = message.text?.trim() || "";
 
-    // =========================
-    // /START
-    // =========================
-
+    // START
     if (text.startsWith("/start")) {
       const parts = text.split(" ");
       const connectCode = parts[1];
 
-      // Если пришли из WIVELI через персональную ссылку
       if (connectCode) {
-        const connected = await connectAccount(
-          connectCode,
-          message
-        );
+        const connected = await connectAccount(connectCode, message);
 
         if (!connected) {
           await sendMessage(
@@ -40,34 +40,30 @@ export async function POST(request) {
 
         await sendMainMenu(
           chatId,
-          "Telegram connected ♡\n\nWelcome to WIVELI. Your account is now connected."
+          "♡ <b>Welcome to WIVELI</b>\n\nYour account is connected.\nYour WIVELI Assistant is ready."
         );
 
         return NextResponse.json({ ok: true });
       }
 
-      // Обычный /start
       await sendMainMenu(
         chatId,
-        "Welcome to WIVELI ♡\n\nMeaningful gifts, memories and experiences — made for someone special."
+        "♡ <b>Welcome to WIVELI</b>\n\nYour personal assistant for meaningful gifts, memories and experiences."
       );
 
       return NextResponse.json({ ok: true });
     }
 
-    // =========================
     // MY GIFTS
-    // =========================
-
-    if (text === "🎁 My Gifts") {
+    if (text === "🎁 MY GIFTS") {
       await sendMessage(
         chatId,
-        "🎁 <b>My Gifts</b>\n\nYour WIVELI gifts and their delivery status will appear here.",
+        "🎁 <b>MY GIFTS</b>\n\nEverything you've created or received through WIVELI lives here.",
         {
           inline_keyboard: [
             [
               {
-                text: "Open My Account",
+                text: "OPEN MY GIFTS →",
                 url: `${WIVELI_URL}/account`,
               },
             ],
@@ -78,77 +74,22 @@ export async function POST(request) {
       return NextResponse.json({ ok: true });
     }
 
-    // =========================
-    // CREATE A GIFT
-    // =========================
-
-    if (text === "✨ Create a Gift") {
+    // CREATE
+    if (text === "✦ CREATE") {
       await sendMessage(
         chatId,
-        "✨ <b>Create a Gift</b>\n\nChoose an experience and turn it into something made just for them.",
+        "✦ <b>CREATE A GIFT</b>\n\nChoose an experience and make it personal.",
         {
           inline_keyboard: [
             [
               {
-                text: "Create on WIVELI →",
+                text: "EXPLORE EXPERIENCES →",
                 url: `${WIVELI_URL}/#ideas`,
               },
             ],
-          ],
-        }
-      );
-
-      return NextResponse.json({ ok: true });
-    }
-
-    // =========================
-    // UNIQUE GIFT
-    // =========================
-
-    if (text === "💎 Unique Gift") {
-      await sendMessage(
-        chatId,
-        "💎 <b>WIVELI BESPOKE</b>\n\n<b>Your wish. Our creation.</b>\n\nTell us about someone special and the experience you want to give them. Our team will help turn your idea into a completely unique gift.",
-        {
-          inline_keyboard: [
             [
               {
-                text: "✨ Tell Us Your Idea",
-                url: `${WIVELI_URL}/experiences/unique-gift`,
-              },
-            ],
-            [
-              {
-                text: "💬 Contact WIVELI Team",
-                callback_data: "contact_team",
-              },
-            ],
-          ],
-        }
-      );
-
-      return NextResponse.json({ ok: true });
-    }
-
-    // =========================
-    // CONTACT TEAM
-    // =========================
-
-    if (text === "💬 Contact WIVELI Team") {
-      await sendMessage(
-        chatId,
-        "💬 <b>WIVELI Concierge</b>\n\nNeed help, have an idea or want to create something completely unique?\n\nChoose how you'd like to contact us:",
-        {
-          inline_keyboard: [
-            [
-              {
-                text: "✉️ Write to the Team",
-                callback_data: "contact_team",
-              },
-            ],
-            [
-              {
-                text: "✨ Unique Gift Request",
+                text: "✦ WIVELI BESPOKE",
                 url: `${WIVELI_URL}/experiences/unique-gift`,
               },
             ],
@@ -159,20 +100,23 @@ export async function POST(request) {
       return NextResponse.json({ ok: true });
     }
 
-    // =========================
-    // PAYMENTS
-    // =========================
-
-    if (text === "💳 Payments & Orders") {
+    // BESPOKE
+    if (text === "💎 WIVELI BESPOKE") {
       await sendMessage(
         chatId,
-        "💳 <b>Payments & Orders</b>\n\nView your orders, payment status and purchase history in your WIVELI account.",
+        "💎 <b>WIVELI BESPOKE</b>\n\n<b>Your wish. Our creation.</b>\n\nTell us about someone special and what you want them to feel. Together with the WIVELI team, we'll turn your idea into a completely unique experience.",
         {
           inline_keyboard: [
             [
               {
-                text: "View Orders →",
-                url: `${WIVELI_URL}/account`,
+                text: "✦ START YOUR REQUEST",
+                url: `${WIVELI_URL}/experiences/unique-gift`,
+              },
+            ],
+            [
+              {
+                text: "♡ TALK TO WIVELI",
+                callback_data: "contact_team",
               },
             ],
           ],
@@ -182,56 +126,17 @@ export async function POST(request) {
       return NextResponse.json({ ok: true });
     }
 
-    // =========================
-    // ACCOUNT
-    // =========================
-
-    if (text === "👤 My Account") {
-      await sendMessage(
-        chatId,
-        "👤 <b>My WIVELI</b>\n\nManage your profile, gifts, orders and notifications.",
-        {
-          inline_keyboard: [
-            [
-              {
-                text: "Open My Account →",
-                url: `${WIVELI_URL}/account`,
-              },
-            ],
-          ],
-        }
-      );
+    // MY WIVELI
+    if (text === "♡ MY WIVELI") {
+      await showMyWiveli(chatId);
 
       return NextResponse.json({ ok: true });
     }
 
-    // =========================
-    // OPEN WIVELI
-    // =========================
-
-    if (text === "🌐 Open WIVELI") {
-      await sendMessage(
-        chatId,
-        "Open WIVELI ♡",
-        {
-          inline_keyboard: [
-            [
-              {
-                text: "Open WIVELI →",
-                url: WIVELI_URL,
-              },
-            ],
-          ],
-        }
-      );
-
-      return NextResponse.json({ ok: true });
-    }
-
-    // Неизвестное сообщение
+    // FALLBACK
     await sendMainMenu(
       chatId,
-      "Choose what you'd like to do ♡"
+      "What would you like to do? ♡"
     );
 
     return NextResponse.json({ ok: true });
@@ -242,11 +147,6 @@ export async function POST(request) {
   }
 }
 
-
-// =====================================================
-// CALLBACK BUTTONS
-// =====================================================
-
 export async function GET() {
   return NextResponse.json({
     ok: true,
@@ -254,10 +154,170 @@ export async function GET() {
   });
 }
 
+/* -------------------------------- */
+/* CALLBACK BUTTONS                 */
+/* -------------------------------- */
 
-// =====================================================
-// CONNECT TELEGRAM ACCOUNT
-// =====================================================
+async function handleCallback(callback) {
+  const chatId = callback.message?.chat?.id;
+  const data = callback.data;
+
+  if (!chatId) return;
+
+  await answerCallback(callback.id);
+
+  // MY ACCOUNT
+  if (data === "my_account") {
+    await sendMessage(
+      chatId,
+      "♡ <b>MY ACCOUNT</b>\n\nManage your WIVELI profile and connected services.",
+      {
+        inline_keyboard: [
+          [
+            {
+              text: "OPEN ACCOUNT →",
+              url: `${WIVELI_URL}/account`,
+            },
+          ],
+          [
+            {
+              text: "← BACK",
+              callback_data: "my_wiveli",
+            },
+          ],
+        ],
+      }
+    );
+
+    return;
+  }
+
+  // ORDERS
+  if (data === "orders") {
+    await sendMessage(
+      chatId,
+      "◌ <b>ORDERS & PAYMENTS</b>\n\nView your purchases, payment status and gift history.",
+      {
+        inline_keyboard: [
+          [
+            {
+              text: "VIEW ORDERS →",
+              url: `${WIVELI_URL}/account`,
+            },
+          ],
+          [
+            {
+              text: "← BACK",
+              callback_data: "my_wiveli",
+            },
+          ],
+        ],
+      }
+    );
+
+    return;
+  }
+
+  // NOTIFICATIONS
+  if (data === "notifications") {
+    await sendMessage(
+      chatId,
+      "♢ <b>NOTIFICATIONS</b>\n\nWIVELI can send gift updates, delivery events and important account notifications directly here.",
+      {
+        inline_keyboard: [
+          [
+            {
+              text: "← BACK",
+              callback_data: "my_wiveli",
+            },
+          ],
+        ],
+      }
+    );
+
+    return;
+  }
+
+  // CONTACT TEAM
+  if (data === "contact_team") {
+    await sendMessage(
+      chatId,
+      "♡ <b>WIVELI CONCIERGE</b>\n\nTell us what you need help with.\n\nDirect conversation with the WIVELI team will live right here inside your assistant.",
+      {
+        inline_keyboard: [
+          [
+            {
+              text: "✦ WIVELI BESPOKE",
+              url: `${WIVELI_URL}/experiences/unique-gift`,
+            },
+          ],
+          [
+            {
+              text: "← BACK",
+              callback_data: "my_wiveli",
+            },
+          ],
+        ],
+      }
+    );
+
+    return;
+  }
+
+  // BACK TO MY WIVELI
+  if (data === "my_wiveli") {
+    await showMyWiveli(chatId);
+  }
+}
+
+/* -------------------------------- */
+/* MY WIVELI                        */
+/* -------------------------------- */
+
+async function showMyWiveli(chatId) {
+  await sendMessage(
+    chatId,
+    "♡ <b>MY WIVELI</b>\n\nYour personal space for gifts, orders and support.",
+    {
+      inline_keyboard: [
+        [
+          {
+            text: "♡ MY ACCOUNT",
+            callback_data: "my_account",
+          },
+        ],
+        [
+          {
+            text: "◌ ORDERS & PAYMENTS",
+            callback_data: "orders",
+          },
+        ],
+        [
+          {
+            text: "♢ NOTIFICATIONS",
+            callback_data: "notifications",
+          },
+        ],
+        [
+          {
+            text: "♡ CONTACT WIVELI TEAM",
+            callback_data: "contact_team",
+          },
+        ],
+        [
+          {
+            text: "OPEN WIVELI →",
+            url: WIVELI_URL,
+          },
+        ],
+      ],
+    }
+  );
+}
+
+/* -------------------------------- */
+/* ACCOUNT CONNECTION               */
+/* -------------------------------- */
 
 async function connectAccount(connectCode, message) {
   const supabaseUrl = process.env.SUPABASE_URL;
@@ -287,9 +347,7 @@ async function connectAccount(connectCode, message) {
   const connections = await response.json();
   const connection = connections?.[0];
 
-  if (!connection) {
-    return false;
-  }
+  if (!connection) return false;
 
   const updateResponse = await fetch(
     `${supabaseUrl}/rest/v1/telegram_connections?id=eq.${connection.id}`,
@@ -309,7 +367,6 @@ async function connectAccount(connectCode, message) {
 
         connected: true,
         connected_at: new Date().toISOString(),
-
         connect_code: null,
       }),
     }
@@ -322,10 +379,9 @@ async function connectAccount(connectCode, message) {
   return true;
 }
 
-
-// =====================================================
-// MAIN BOT MENU
-// =====================================================
+/* -------------------------------- */
+/* MAIN MENU                        */
+/* -------------------------------- */
 
 async function sendMainMenu(chatId, text) {
   return sendTelegram({
@@ -338,39 +394,14 @@ async function sendMainMenu(chatId, text) {
     reply_markup: {
       keyboard: [
         [
-          {
-            text: "🎁 My Gifts",
-          },
-          {
-            text: "✨ Create a Gift",
-          },
+          { text: "🎁 MY GIFTS" },
+          { text: "✦ CREATE" },
         ],
-
         [
-          {
-            text: "💎 Unique Gift",
-          },
+          { text: "💎 WIVELI BESPOKE" },
         ],
-
         [
-          {
-            text: "💬 Contact WIVELI Team",
-          },
-        ],
-
-        [
-          {
-            text: "💳 Payments & Orders",
-          },
-          {
-            text: "👤 My Account",
-          },
-        ],
-
-        [
-          {
-            text: "🌐 Open WIVELI",
-          },
+          { text: "♡ MY WIVELI" },
         ],
       ],
 
@@ -380,10 +411,9 @@ async function sendMainMenu(chatId, text) {
   });
 }
 
-
-// =====================================================
-// SEND MESSAGE
-// =====================================================
+/* -------------------------------- */
+/* TELEGRAM                         */
+/* -------------------------------- */
 
 async function sendMessage(
   chatId,
@@ -402,11 +432,6 @@ async function sendMessage(
 
   return sendTelegram(payload);
 }
-
-
-// =====================================================
-// TELEGRAM API
-// =====================================================
 
 async function sendTelegram(payload) {
   const token = process.env.TELEGRAM_BOT_TOKEN;
@@ -435,4 +460,25 @@ async function sendTelegram(payload) {
   }
 
   return data;
+}
+
+async function answerCallback(callbackQueryId) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+
+  if (!token) return;
+
+  await fetch(
+    `https://api.telegram.org/bot${token}/answerCallbackQuery`,
+    {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({
+        callback_query_id: callbackQueryId,
+      }),
+    }
+  );
 }
