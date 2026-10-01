@@ -1,13 +1,30 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function SignUp() {
+  const searchParams = useSearchParams();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
+
+  const nextUrl =
+    searchParams.get("next") || "/account";
+
+  const safeNextUrl =
+    nextUrl.startsWith("/") &&
+    !nextUrl.startsWith("//")
+      ? nextUrl
+      : "/account";
+
+  const loginUrl =
+    `/login?next=${encodeURIComponent(
+      safeNextUrl
+    )}`;
 
   async function signUp(e) {
     e.preventDefault();
@@ -16,36 +33,49 @@ export default function SignUp() {
     setSuccess(false);
 
     if (!email.trim() || !password) {
-      setMessage("Enter your email and password.");
+      setMessage(
+        "Enter your email and password."
+      );
       return;
     }
 
     if (password.length < 8) {
-      setMessage("Password must be at least 8 characters.");
+      setMessage(
+        "Password must be at least 8 characters."
+      );
       return;
     }
 
     setLoading(true);
 
     try {
-      const response = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email.trim(),
-          password,
-        }),
-      });
+      const response = await fetch(
+        "/api/auth/signup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            email: email.trim(),
+            password,
+          }),
+        }
+      );
 
-      const data = await response.json();
+      const data =
+        await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Could not create account.");
+        throw new Error(
+          data.error ||
+            "Could not create account."
+        );
       }
 
       setSuccess(true);
+
       setMessage(
         "Check your inbox. We sent you a confirmation email ♡"
       );
@@ -70,7 +100,9 @@ export default function SignUp() {
 
       <section className="signupStage">
         <div className="copy">
-          <p className="eyebrow">WELCOME TO WIVELI</p>
+          <p className="eyebrow">
+            WELCOME TO WIVELI
+          </p>
 
           <h1>
             MAKE SOMETHING
@@ -79,15 +111,18 @@ export default function SignUp() {
           </h1>
 
           <p className="lead">
-            Create an account to make, save and share gifts
-            made for the people who matter most.
+            Create an account to make,
+            save and share gifts made for
+            the people who matter most.
           </p>
         </div>
 
         <div className="signupCard">
           {!success ? (
             <>
-              <p className="mini">CREATE YOUR ACCOUNT</p>
+              <p className="mini">
+                CREATE YOUR ACCOUNT
+              </p>
 
               <h2>
                 Nice to
@@ -104,7 +139,11 @@ export default function SignUp() {
                     autoComplete="email"
                     placeholder="you@email.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) =>
+                      setEmail(
+                        e.target.value
+                      )
+                    }
                   />
                 </label>
 
@@ -116,15 +155,24 @@ export default function SignUp() {
                     autoComplete="new-password"
                     placeholder="At least 8 characters"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) =>
+                      setPassword(
+                        e.target.value
+                      )
+                    }
                   />
                 </label>
 
                 {message && (
-                  <p className="message">{message}</p>
+                  <p className="message">
+                    {message}
+                  </p>
                 )}
 
-                <button disabled={loading} type="submit">
+                <button
+                  disabled={loading}
+                  type="submit"
+                >
                   {loading
                     ? "CREATING ACCOUNT..."
                     : "CREATE ACCOUNT →"}
@@ -133,14 +181,20 @@ export default function SignUp() {
 
               <p className="loginText">
                 Already have an account?{" "}
-                <a href="/login">Log in</a>
+                <a href={loginUrl}>
+                  Log in
+                </a>
               </p>
             </>
           ) : (
             <div className="success">
-              <div className="heart">♡</div>
+              <div className="heart">
+                ♡
+              </div>
 
-              <p className="mini">ONE LAST STEP</p>
+              <p className="mini">
+                ONE LAST STEP
+              </p>
 
               <h2>
                 Check your
@@ -152,7 +206,9 @@ export default function SignUp() {
 
               <strong>{email}</strong>
 
-              <a href="/login">GO TO LOG IN →</a>
+              <a href={loginUrl}>
+                GO TO LOG IN →
+              </a>
             </div>
           )}
         </div>
@@ -177,6 +233,7 @@ export default function SignUp() {
           --ink: #292322;
 
           min-height: 100svh;
+
           background:
             radial-gradient(
               circle at 75% 35%,
@@ -184,6 +241,7 @@ export default function SignUp() {
               transparent 32%
             ),
             var(--cream);
+
           color: var(--ink);
           font-family: Arial, sans-serif;
         }
@@ -191,15 +249,20 @@ export default function SignUp() {
         header {
           height: 82px;
           padding: 0 5vw;
+
           display: flex;
           align-items: center;
           justify-content: space-between;
-          border-bottom: 1px solid rgba(41, 35, 34, 0.12);
+
+          border-bottom:
+            1px solid
+            rgba(41, 35, 34, 0.12);
         }
 
         .logo {
           color: var(--ink);
           text-decoration: none;
+
           font-family: Georgia, serif;
           font-weight: 700;
           font-size: 23px;
@@ -213,6 +276,7 @@ export default function SignUp() {
         .back {
           color: var(--ink);
           text-decoration: none;
+
           font-size: 9px;
           font-weight: 800;
           letter-spacing: 0.14em;
@@ -221,8 +285,11 @@ export default function SignUp() {
         .signupStage {
           height: calc(100svh - 82px);
           padding: 5vh 7vw;
+
           display: grid;
-          grid-template-columns: 1.1fr 0.9fr;
+          grid-template-columns:
+            1.1fr 0.9fr;
+
           align-items: center;
           gap: 8vw;
         }
@@ -234,7 +301,9 @@ export default function SignUp() {
         .eyebrow,
         .mini {
           margin: 0 0 18px;
+
           color: var(--wine);
+
           font-size: 9px;
           font-weight: 900;
           letter-spacing: 0.18em;
@@ -242,8 +311,15 @@ export default function SignUp() {
 
         h1 {
           margin: 0;
+
           font-family: Georgia, serif;
-          font-size: clamp(58px, 7vw, 115px);
+          font-size:
+            clamp(
+              58px,
+              7vw,
+              115px
+            );
+
           line-height: 0.84;
           letter-spacing: -0.055em;
           font-weight: 400;
@@ -257,7 +333,9 @@ export default function SignUp() {
         .lead {
           max-width: 490px;
           margin: 30px 0 0;
+
           color: #6d615e;
+
           font-family: Georgia, serif;
           font-size: 17px;
           line-height: 1.55;
@@ -266,14 +344,24 @@ export default function SignUp() {
         .signupCard {
           width: min(440px, 100%);
           padding: 42px;
-          background: rgba(255, 250, 245, 0.92);
-          border: 1px solid rgba(41, 35, 34, 0.1);
+
+          background:
+            rgba(255, 250, 245, 0.92);
+
+          border:
+            1px solid
+            rgba(41, 35, 34, 0.1);
+
           border-radius: 24px;
-          box-shadow: 0 35px 80px rgba(75, 45, 48, 0.12);
+
+          box-shadow:
+            0 35px 80px
+            rgba(75, 45, 48, 0.12);
         }
 
         h2 {
           margin: 0 0 30px;
+
           font-family: Georgia, serif;
           font-size: 48px;
           line-height: 0.92;
@@ -289,6 +377,7 @@ export default function SignUp() {
         label span {
           display: block;
           margin-bottom: 7px;
+
           font-size: 8px;
           font-weight: 900;
           letter-spacing: 0.15em;
@@ -297,11 +386,18 @@ export default function SignUp() {
         input {
           width: 100%;
           padding: 15px 16px;
+
           outline: none;
-          border: 1px solid rgba(41, 35, 34, 0.17);
+
+          border:
+            1px solid
+            rgba(41, 35, 34, 0.17);
+
           border-radius: 10px;
+
           background: var(--paper);
           color: var(--ink);
+
           font-size: 14px;
         }
 
@@ -313,11 +409,15 @@ export default function SignUp() {
           width: 100%;
           margin-top: 22px;
           padding: 17px;
+
           border: 0;
           border-radius: 100px;
+
           background: var(--wine);
           color: white;
+
           cursor: pointer;
+
           font-size: 9px;
           font-weight: 900;
           letter-spacing: 0.13em;
@@ -330,15 +430,19 @@ export default function SignUp() {
 
         .message {
           margin: 14px 0 0;
+
           color: var(--wine);
+
           font-size: 12px;
           line-height: 1.4;
         }
 
         .loginText {
           margin: 20px 0 0;
+
           text-align: center;
           color: #7b6c68;
+
           font-size: 11px;
         }
 
@@ -354,12 +458,17 @@ export default function SignUp() {
         .heart {
           width: 72px;
           height: 72px;
+
           margin: 0 auto 22px;
+
           border-radius: 50%;
+
           display: grid;
           place-items: center;
+
           background: var(--pink);
           color: var(--wine);
+
           font-family: Georgia, serif;
           font-size: 30px;
         }
@@ -370,6 +479,7 @@ export default function SignUp() {
 
         .success p:not(.mini) {
           color: #71625f;
+
           font-family: Georgia, serif;
           line-height: 1.5;
         }
@@ -382,11 +492,16 @@ export default function SignUp() {
 
         .success a {
           display: inline-block;
+
           padding: 16px 24px;
+
           border-radius: 100px;
+
           background: var(--wine);
           color: white;
+
           text-decoration: none;
+
           font-size: 9px;
           font-weight: 900;
           letter-spacing: 0.13em;
@@ -398,7 +513,9 @@ export default function SignUp() {
           }
 
           .signupStage {
-            height: calc(100svh - 65px);
+            height:
+              calc(100svh - 65px);
+
             grid-template-columns: 1fr;
             padding: 25px;
           }
