@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireParticipant, notifySender, GiftError } from "../../../../lib/gift-telegram";
 
 function isValidTimeZone(value) {
   if (!value || typeof value !== "string") {
@@ -79,6 +80,7 @@ function makePublicGift(gift) {
 export async function POST(request, { params }) {
   try {
     const { id } = await params;
+    await requireParticipant(id, "recipient");
 
     const supabaseUrl =
       process.env.SUPABASE_URL;
@@ -137,6 +139,7 @@ export async function POST(request, { params }) {
 
         headers: {
           apikey: secretKey,
+          Authorization: `Bearer ${secretKey}`,
         },
 
         cache: "no-store",
@@ -221,8 +224,6 @@ export async function POST(request, { params }) {
       in makePublicGift().
     */
 
-    const senderContact =
-      storedGift.senderContact || null;
 
     if (!allowedCouponIds.has(couponId)) {
       return NextResponse.json(
@@ -371,14 +372,13 @@ export async function POST(request, { params }) {
     */
 
     const updateResponse = await fetch(
-      `${supabaseUrl}/rest/v1/gifts?id=eq.${encodeURIComponent(
-        id
-      )}&gift_type=eq.love-coupons`,
+      `${supabaseUrl}/rest/v1/rpc/wiveli_save_redemption`,
       {
-        method: "PATCH",
+        method: "POST",
 
         headers: {
           apikey: secretKey,
+          Authorization: `Bearer ${secretKey}`,
 
           "Content-Type":
             "application/json",
@@ -388,7 +388,9 @@ export async function POST(request, { params }) {
         },
 
         body: JSON.stringify({
-          gift_data: updatedGift,
+          p_gift_id: id,
+          p_expected: storedGift,
+          p_updated: updatedGift,
         }),
 
         cache: "no-store",
@@ -418,67 +420,23 @@ export async function POST(request, { params }) {
       return NextResponse.json(
         {
           success: false,
-          error: "Gift not found.",
+          error: "The gift changed while saving. Please try again.",
         },
-        { status: 404 }
+        { status: 409 }
       );
     }
 
-    /*
-      8. REMIND ME notification hook.
-
-      At this point the coupon has
-      successfully been redeemed.
-
-      We check whether THIS coupon has
-      reminderEnabled and whether the
-      sender supplied a Telegram contact.
-
-      Actual Telegram delivery will be
-      connected once WIVELI has a bot
-      authorization flow and stores
-      the sender's Telegram chat_id.
-
-      Telegram bots cannot reliably send
-      a first message using only @username.
-    */
-
-    if (
-      reminderEnabled &&
-      senderContact?.type === "telegram"
-    ) {
-      console.log(
-        "Coupon reminder requested:",
-        {
-          giftId: id,
-
-          couponId,
-
-          couponTitle:
-            customCoupon?.title || "",
-
-          senderTelegram:
-            senderContact.value || "",
-
-          recipientName:
-            storedGift.recipientName || "",
-
-          redeemedAt:
-            redemption.redeemedAt,
-        }
-      );
-
-      /*
-        FUTURE TELEGRAM DELIVERY:
-
-        Once senderContact contains a
-        Telegram chat_id, this is where
-        the Telegram Bot API call belongs.
-
-        Never put the Telegram bot token
-        directly in this file.
-        Keep it in an environment variable.
-      */
+    // Telegram failures must not undo an already saved redemption.
+    let notification = { sent: false };
+    if (reminderEnabled) {
+      try {
+        notification = await notifySender({
+          giftId: id, gift: updatedGift, redemption,
+          origin: new URL(request.url).origin,
+        });
+      } catch {
+        notification = { sent: false, retryAvailable: true };
+      }
     }
 
     /*
@@ -492,6 +450,7 @@ export async function POST(request, { params }) {
       success: true,
 
       redemption,
+      notification,
 
       giftData:
         makePublicGift(updatedGift),
@@ -505,10 +464,10 @@ export async function POST(request, { params }) {
     return NextResponse.json(
       {
         success: false,
-        error:
-          "Could not redeem coupon.",
+        error: error instanceof GiftError ? error.message : "Could not redeem coupon.",
       },
-      { status: 500 }
+      { status: error.status || 500 }
     );
   }
 }
+

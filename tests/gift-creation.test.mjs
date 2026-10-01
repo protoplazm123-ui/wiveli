@@ -63,6 +63,7 @@ async function client({ status = 200, cacheFails = false, invalidJson = false } 
     setCreateError: value => state.error = value,
     setRequiresLogin: value => state.requiresLogin = value,
     setGiftUrl: value => state.url = value,
+    setCreatedGiftId: value => state.giftId = value,
     setModal: value => state.modal = value,
     window: { location: { origin: "https://preview.example" } },
     console: { error() {}, warn() {} },
@@ -100,3 +101,4 @@ test("non-JSON server failure shows HTTP status and releases loading state", asy
   assert.match(state.error, /HTTP 502/);
   assert.equal(state.creating, false);
 });
+

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import TelegramGiftDelivery from "../../../components/TelegramGiftDelivery";
 import { couponIdeas, couponCategories } from "../coupons";
 import LoveCouponTicket from "../../../gift/love-coupons/LoveCouponTicket";
 import {
@@ -11,7 +12,6 @@ import {
 export default function LoveCouponsPersonalize() {
   const [senderName, setSenderName] = useState("");
   const [recipientName, setRecipientName] = useState("");
-  const [senderTelegram, setSenderTelegram] = useState("");
   const [couponCount, setCouponCount] = useState(8);
   const [dailyLimit, setDailyLimit] = useState(3);
 
@@ -25,6 +25,7 @@ export default function LoveCouponsPersonalize() {
 
   const [creating, setCreating] = useState(false);
   const [giftUrl, setGiftUrl] = useState("");
+  const [createdGiftId, setCreatedGiftId] = useState("");
   const [createError, setCreateError] = useState("");
   const [requiresLogin, setRequiresLogin] = useState(false);
 
@@ -172,10 +173,6 @@ export default function LoveCouponsPersonalize() {
   senderName: senderName.trim(),
   recipientName: recipientName.trim(),
 
-  senderContact: {
-    type: "telegram",
-    value: senderTelegram.trim(),
-  },
 
   couponIds: selectedCouponIds,
       customCoupons: selectedCustomCoupons,
@@ -231,6 +228,7 @@ export default function LoveCouponsPersonalize() {
       `${window.location.origin}/gift/love-coupons/${encodeURIComponent(data.id)}` +
       (data.claimToken ? `?claim=${encodeURIComponent(data.claimToken)}` : "");
 
+    setCreatedGiftId(data.id);
     setGiftUrl(url);
     setModal("send");
   } catch (error) {
@@ -388,24 +386,11 @@ export default function LoveCouponsPersonalize() {
                 />
               </label>
 
-              <label>
-                YOUR TELEGRAM
-                <input
-                  value={senderTelegram}
-                  onChange={(event) =>
-                    setSenderTelegram(
-                      event.target.value
-                    )
-                  }
-                  placeholder="@username"
-                />
-
-                <small>
-                  Optional for now. We can
-                  use it later for coupon
-                  notifications.
-                </small>
-              </label>
+              <p>
+                Want coupon notifications from WIVELI?{' '}
+                <a href="/account" target="_blank" rel="noopener noreferrer">Connect your Telegram</a>
+                {" "}and press Start in the bot. Return here to keep creating your gift.
+              </p>
 
               <div className="smallGrid">
                 <label>
@@ -791,6 +776,10 @@ export default function LoveCouponsPersonalize() {
               {editTab ===
                 "reminder" && (
                 <div className="panel">
+                  <p>
+                    <a href="/account" target="_blank" rel="noopener noreferrer">Connect your Telegram in your WIVELI account</a>
+                    {" "}and press Start in the bot to receive these updates.
+                  </p>
                   <div className="reminderCard">
                     <div>
                       <span className="reminderHeart">
@@ -805,8 +794,8 @@ export default function LoveCouponsPersonalize() {
 
                         <p>
                           We&apos;ll use
-                          your contact
-                          details later to
+                          your connected
+                          Telegram to
                           let you know when
                           this promise is
                           redeemed.
@@ -934,6 +923,11 @@ export default function LoveCouponsPersonalize() {
           </div>
         </Modal>
       )}
+      {modal === "telegram-delivery" && (
+        <Modal onClose={() => setModal("send")}>
+          <TelegramGiftDelivery giftId={createdGiftId} onBack={() => setModal("send")} />
+        </Modal>
+      )}
       {/* SEND */}
 
       {modal === "send" && (
@@ -987,6 +981,7 @@ export default function LoveCouponsPersonalize() {
               <button
                 className="sendChoice"
                 type="button"
+                onClick={() => setModal("telegram-delivery")}
               >
                 <span>02</span>
 
@@ -3705,4 +3700,5 @@ function MiniTicketRoll({ coupons = [] }) {
     </div>
   );
 }
+
 

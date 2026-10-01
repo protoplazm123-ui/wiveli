@@ -3,12 +3,15 @@
 import { useEffect, useState } from "react";
 
 export default function RedemptionResult({
+  giftId,
   coupon,
   redemption,
   senderName,
   onBack,
 }) {
   const [shareStatus, setShareStatus] = useState("");
+  const [sending, setSending] = useState(false);
+  const [notified, setNotified] = useState(false);
   useEffect(() => {
   window.scrollTo({
     top: 0,
@@ -20,33 +23,26 @@ export default function RedemptionResult({
   if (!coupon || !redemption) return null;
 
   async function handleTellSender() {
-    const message =
-      `I just redeemed "${coupon.title}" on WIVELI ♡\n` +
-      `Redemption code: ${redemption.code}`;
-
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: "WIVELI Love Coupon",
-          text: message,
-        });
-
-        setShareStatus("READY TO SEND ♡");
-        return;
-      }
-
-      await navigator.clipboard.writeText(message);
-      setShareStatus("MESSAGE COPIED ✓");
-    } catch (error) {
-      if (error?.name !== "AbortError") {
-        try {
-          await navigator.clipboard.writeText(message);
-          setShareStatus("MESSAGE COPIED ✓");
-        } catch {
-          setShareStatus("COPY THE CODE ABOVE ♡");
-        }
-      }
+    if (sending || notified) return;
+    if (!giftId) {
+      setShareStatus("Open the original private gift link to notify the sender.");
+      return;
     }
+    setSending(true);
+    setShareStatus("");
+    try {
+      const response = await fetch(`/api/gifts/${encodeURIComponent(giftId)}/notify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ couponId: redemption.couponId }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.error || "Could not notify the sender.");
+      setNotified(true);
+      setShareStatus(data.alreadySent ? "THE SENDER WAS ALREADY NOTIFIED ♡" : "SENT BY THE WIVELI BOT ♡");
+    } catch (error) {
+      setShareStatus(error.message || "Could not notify the sender.");
+    } finally { setSending(false); }
   }
 
   return (
@@ -158,8 +154,8 @@ export default function RedemptionResult({
             </strong>
 
             <p>
-              Share the good news — this promise
-              has officially been claimed.
+              The WIVELI bot will notify the sender
+              that you used this coupon.
             </p>
           </div>
 
@@ -167,8 +163,9 @@ export default function RedemptionResult({
             type="button"
             className="tellButton"
             onClick={handleTellSender}
+            disabled={sending || notified}
           >
-            TELL{" "}
+            {sending ? "SENDING TO " : notified ? "NOTIFIED " : "TELL "}
             {senderName
               ? senderName.toUpperCase()
               : "THEM"}{" "}
@@ -177,7 +174,7 @@ export default function RedemptionResult({
         </div>
 
         {shareStatus && (
-          <p className="shareStatus">
+          <p className="shareStatus" role="status" aria-live="polite">
             {shareStatus}
           </p>
         )}
@@ -1450,3 +1447,4 @@ export default function RedemptionResult({
     </main>
   );
 }
+

@@ -517,6 +517,7 @@ if (!claimResponse.ok) {
   if (screen === "redeemed") {
     return (
       <RedemptionResult
+        giftId={id}
         coupon={
           redeemedCoupon
         }
@@ -956,3 +957,4 @@ if (!claimResponse.ok) {
     </main>
   );
 }
+
