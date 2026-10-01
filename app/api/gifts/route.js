@@ -1,36 +1,95 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 const ALLOWED_GIFT_TYPES = [
   "love-coupons",
   "memory-box",
   "the-gift",
+  "our-story",
+  "open-when",
 ];
 
 export async function POST(request) {
   try {
     const supabaseUrl = process.env.SUPABASE_URL;
     const secretKey = process.env.SUPABASE_SECRET_KEY;
+    const anonKey =
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-    if (!supabaseUrl || !secretKey) {
+    if (!supabaseUrl || !secretKey || !anonKey) {
       return NextResponse.json(
         { error: "Server is not configured." },
         { status: 500 }
       );
     }
 
-    const body = await request.json();
+    /* ===================================== */
+    /* CURRENT WIVELI USER                   */
+    /* ===================================== */
+
+    const cookieStore = await cookies();
+
+    const accessToken =
+      cookieStore.get(
+        "wiveli_access_token"
+      )?.value;
+
+    if (!accessToken) {
+      return NextResponse.json(
+        {
+          error:
+            "Please sign in before creating a gift.",
+        },
+        { status: 401 }
+      );
+    }
+
+    const userResponse = await fetch(
+      `${supabaseUrl}/auth/v1/user`,
+      {
+        headers: {
+          apikey: anonKey,
+          Authorization:
+            `Bearer ${accessToken}`,
+        },
+        cache: "no-store",
+      }
+    );
+
+    if (!userResponse.ok) {
+      return NextResponse.json(
+        {
+          error:
+            "Your session has expired. Please sign in again.",
+        },
+        { status: 401 }
+      );
+    }
+
+    const user =
+      await userResponse.json();
+
+    if (!user?.id) {
+      return NextResponse.json(
+        { error: "Could not identify user." },
+        { status: 401 }
+      );
+    }
+
+    /* ===================================== */
+    /* REQUEST                               */
+    /* ===================================== */
 
     const {
       giftType,
       giftData,
-      senderUserId = null,
-      recipientUserId = null,
-      senderEmail = null,
       recipientEmail = null,
-    } = body;
+    } = await request.json();
 
     if (
-      !ALLOWED_GIFT_TYPES.includes(giftType) ||
+      !ALLOWED_GIFT_TYPES.includes(
+        giftType
+      ) ||
       !giftData ||
       typeof giftData !== "object"
     ) {
@@ -40,15 +99,17 @@ export async function POST(request) {
       );
     }
 
-    const headers = {
+    const serviceHeaders = {
       apikey: secretKey,
-      Authorization: `Bearer ${secretKey}`,
-      "Content-Type": "application/json",
+      Authorization:
+        `Bearer ${secretKey}`,
+      "Content-Type":
+        "application/json",
     };
 
-    /* ====================================== */
-    /* CREATE GIFT                            */
-    /* ====================================== */
+    /* ===================================== */
+    /* CREATE GIFT                           */
+    /* ===================================== */
 
     const giftResponse = await fetch(
       `${supabaseUrl}/rest/v1/gifts`,
@@ -56,8 +117,9 @@ export async function POST(request) {
         method: "POST",
 
         headers: {
-          ...headers,
-          Prefer: "return=representation",
+          ...serviceHeaders,
+          Prefer:
+            "return=representation",
         },
 
         body: JSON.stringify({
@@ -70,10 +132,11 @@ export async function POST(request) {
     );
 
     if (!giftResponse.ok) {
-      const errorText = await giftResponse.text();
+      const errorText =
+        await giftResponse.text();
 
       console.error(
-        "Could not save gift:",
+        "Create gift error:",
         errorText
       );
 
@@ -83,91 +146,142 @@ export async function POST(request) {
       );
     }
 
-    const rows = await giftResponse.json();
+    const rows =
+      await giftResponse.json();
+
     const gift = rows?.[0];
 
     if (!gift?.id) {
       return NextResponse.json(
-        { error: "Gift was created without an ID." },
+        {
+          error:
+            "Gift was created without an ID.",
+        },
         { status: 500 }
       );
     }
 
-    /* ====================================== */
-    /* PARTICIPANTS                           */
-    /* ====================================== */
+    /* ===================================== */
+    /* FIND RECIPIENT ACCOUNT                */
+    /* ===================================== */
 
-    const participants = [];
+    let recipientUserId = null;
 
-    // SENDER
-    participants.push({
-      gift_id: gift.id,
-      user_id: senderUserId || null,
-      role: "sender",
-      email:
-        senderEmail ||
-        giftData.senderEmail ||
-        null,
-    });
+    const finalRecipientEmail =
+      recipientEmail ||
+      giftData.recipientEmail ||
+      null;
 
-    // RECIPIENT
-    participants.push({
-      gift_id: gift.id,
-      user_id: recipientUserId || null,
-      role: "recipient",
-      email:
-        recipientEmail ||
-        giftData.recipientEmail ||
-        null,
-    });
+    /*
+      Recipient may not have a WIVELI
+      account yet. That's completely OK.
 
-    const participantResponse = await fetch(
-      `${supabaseUrl}/rest/v1/gift_participants`,
+      When they connect/claim the gift later,
+      we'll attach their user_id.
+    */
+
+    /* ===================================== */
+    /* SAVE PARTICIPANTS                     */
+    /* ===================================== */
+
+    const participants = [
       {
-        method: "POST",
+        gift_id: gift.id,
 
-        headers: {
-          ...headers,
-          Prefer: "return=representation",
-        },
+        user_id: user.id,
 
-        body: JSON.stringify(participants),
+        role: "sender",
 
-        cache: "no-store",
-      }
-    );
+        email:
+          user.email || null,
+      },
 
-    if (!participantResponse.ok) {
+      {
+        gift_id: gift.id,
+
+        user_id:
+          recipientUserId,
+
+        role: "recipient",
+
+        email:
+          finalRecipientEmail,
+      },
+    ];
+
+    const participantsResponse =
+      await fetch(
+        `${supabaseUrl}/rest/v1/gift_participants`,
+        {
+          method: "POST",
+
+          headers: {
+            ...serviceHeaders,
+            Prefer:
+              "return=representation",
+          },
+
+          body:
+            JSON.stringify(
+              participants
+            ),
+
+          cache: "no-store",
+        }
+      );
+
+    if (!participantsResponse.ok) {
       const errorText =
-        await participantResponse.text();
+        await participantsResponse.text();
 
       console.error(
-        "Could not save gift participants:",
+        "Create participants error:",
         errorText
       );
 
       /*
-       * Gift уже создан.
-       * Не говорим клиенту, что всё успешно,
-       * если связь участников не сохранилась.
-       */
+        Roll back the gift so we don't
+        leave a broken orphan gift.
+      */
+
+      await fetch(
+        `${supabaseUrl}/rest/v1/gifts?id=eq.${encodeURIComponent(
+          gift.id
+        )}`,
+        {
+          method: "DELETE",
+          headers: serviceHeaders,
+        }
+      );
+
       return NextResponse.json(
         {
           error:
-            "Gift was created, but participants could not be saved.",
-          id: gift.id,
+            "Could not connect gift participants.",
         },
         { status: 500 }
       );
     }
 
-    /* ====================================== */
-    /* SUCCESS                                */
-    /* ====================================== */
+    /* ===================================== */
+    /* SUCCESS                               */
+    /* ===================================== */
 
     return NextResponse.json({
       success: true,
+
       id: gift.id,
+
+      sender: {
+        userId: user.id,
+      },
+
+      recipient: {
+        connected:
+          Boolean(
+            recipientUserId
+          ),
+      },
     });
   } catch (error) {
     console.error(
@@ -176,7 +290,10 @@ export async function POST(request) {
     );
 
     return NextResponse.json(
-      { error: "Could not create gift." },
+      {
+        error:
+          "Could not create gift.",
+      },
       { status: 500 }
     );
   }
