@@ -39,6 +39,14 @@ const experiences = [
     symbol: "✦",
     href: "/experiences/the-gift/personalize",
   },
+  {
+  title: "Unique Gift",
+  tag: "WIVELI BESPOKE · MADE JUST FOR THEM",
+  text: "Your wish. Our creation. Let our team create a completely unique experience for someone special.",
+  symbol: "✦",
+  href: "/experiences/unique-gift",
+  premium: true,
+},
 ];
 
 export default function Home() {
