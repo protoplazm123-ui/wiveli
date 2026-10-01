@@ -6,7 +6,10 @@ import {
   useState,
 } from "react";
 
-import { useParams } from "next/navigation";
+import {
+  useParams,
+  useSearchParams,
+} from "next/navigation";
 
 import CouponCollection from "../CouponCollection";
 import TicketPrinter from "../TicketPrinter";
@@ -20,7 +23,11 @@ import {
 
 export default function PrivateLoveCouponsGift() {
   const params = useParams();
+  const searchParams = useSearchParams();
+
   const id = params?.id;
+  const claimToken =
+    searchParams.get("claim");
 
   const redeemingRef = useRef(false);
 
@@ -47,7 +54,7 @@ export default function PrivateLoveCouponsGift() {
   ] = useState(null);
 
   /*
-    LOAD THE GIFT FROM SUPABASE
+    LOAD + CLAIM GIFT
   */
 
   useEffect(() => {
@@ -55,6 +62,58 @@ export default function PrivateLoveCouponsGift() {
 
     async function loadGift() {
       try {
+        /*
+          If this is a private recipient link,
+          connect the logged-in WIVELI account
+          to this gift.
+        */
+
+        if (claimToken) {
+          const claimResponse =
+            await fetch(
+              `/api/gifts/${encodeURIComponent(
+                id
+              )}/claim`,
+              {
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json",
+                },
+
+                body: JSON.stringify({
+                  claimToken,
+                }),
+              }
+            );
+
+          const claimData =
+            await claimResponse.json();
+
+          /*
+            Not logged in yet:
+            don't block opening the gift.
+
+            Later we'll preserve this link
+            through login/signup.
+          */
+
+          if (
+            !claimResponse.ok &&
+            !claimData.requiresLogin
+          ) {
+            throw new Error(
+              claimData.error ||
+                "Could not claim gift"
+            );
+          }
+        }
+
+        /*
+          LOAD GIFT FROM SUPABASE
+        */
+
         const response = await fetch(
           `/api/gifts/${encodeURIComponent(
             id
@@ -92,13 +151,8 @@ export default function PrivateLoveCouponsGift() {
         setGift(loadedGift);
 
         /*
-          We can still keep a local copy
-          for the prototype.
-
-          IMPORTANT:
-          redemptions are no longer
-          decided by localStorage.
-          Supabase is the source of truth.
+          Local copy is only cache.
+          Supabase is source of truth.
         */
 
         saveLoveCouponsGift(
@@ -106,6 +160,7 @@ export default function PrivateLoveCouponsGift() {
         );
       } catch (loadError) {
         console.error(
+          "Load gift error:",
           loadError
         );
 
@@ -116,10 +171,10 @@ export default function PrivateLoveCouponsGift() {
     }
 
     loadGift();
-  }, [id]);
+  }, [id, claimToken]);
 
   /*
-    LOADING SCREEN
+    LOADING
   */
 
   if (!ready) {
@@ -134,40 +189,29 @@ export default function PrivateLoveCouponsGift() {
         <style jsx>{`
           .status {
             min-height: 100svh;
-
             display: grid;
             place-content: center;
-
             text-align: center;
-
             padding: 24px;
-
             background: #f3cbc8;
             color: #4c0710;
-
             font-family:
-              Georgia,
-              serif;
+              Georgia, serif;
           }
 
           span {
             font-size: 16px;
-
-            letter-spacing:
-              0.15em;
+            letter-spacing: 0.15em;
           }
 
           h1 {
-            margin:
-              18px 0 0;
-
+            margin: 18px 0 0;
             font-size:
               clamp(
                 36px,
                 7vw,
                 64px
               );
-
             font-weight: 400;
           }
         `}</style>
@@ -176,7 +220,7 @@ export default function PrivateLoveCouponsGift() {
   }
 
   /*
-    ERROR SCREEN
+    ERROR
   */
 
   if (error || !gift) {
@@ -197,50 +241,36 @@ export default function PrivateLoveCouponsGift() {
         <style jsx>{`
           .status {
             min-height: 100svh;
-
             display: grid;
             place-content: center;
-
             text-align: center;
-
             padding: 24px;
-
             background: #f3cbc8;
             color: #4c0710;
-
             font-family:
-              Georgia,
-              serif;
+              Georgia, serif;
           }
 
           span {
             font-size: 16px;
-
-            letter-spacing:
-              0.15em;
+            letter-spacing: 0.15em;
           }
 
           h1 {
-            margin:
-              18px 0 10px;
-
+            margin: 18px 0 10px;
             font-size:
               clamp(
                 36px,
                 7vw,
                 64px
               );
-
             font-weight: 400;
           }
 
           p {
             margin: 0;
-
             font-family:
-              Arial,
-              sans-serif;
-
+              Arial, sans-serif;
             font-size: 14px;
           }
         `}</style>
@@ -249,7 +279,7 @@ export default function PrivateLoveCouponsGift() {
   }
 
   /*
-    BUILD THE COUPON LIST
+    COUPONS
   */
 
   const readyMadeCoupons =
@@ -270,16 +300,6 @@ export default function PrivateLoveCouponsGift() {
 
   /*
     SERVER-SIDE REDEMPTION
-
-    This now calls:
-    /api/gifts/[id]/redeem
-
-    The server checks:
-    - coupon belongs to gift
-    - already redeemed
-    - daily limit
-    - redemption code
-    - saves result to Supabase
   */
 
   async function handleRedeem(
@@ -344,14 +364,7 @@ export default function PrivateLoveCouponsGift() {
           serverId: id,
         };
 
-        setGift(
-          updatedGift
-        );
-
-        /*
-          Local copy is only a cache now.
-          Supabase remains authoritative.
-        */
+        setGift(updatedGift);
 
         saveLoveCouponsGift(
           updatedGift
@@ -374,10 +387,6 @@ export default function PrivateLoveCouponsGift() {
 
       /*
         ALREADY REDEEMED
-
-        Server returns the original
-        redemption, so we can still
-        show its real code.
       */
 
       if (
@@ -391,9 +400,7 @@ export default function PrivateLoveCouponsGift() {
             serverId: id,
           };
 
-          setGift(
-            updatedGift
-          );
+          setGift(updatedGift);
 
           saveLoveCouponsGift(
             updatedGift
@@ -429,9 +436,7 @@ export default function PrivateLoveCouponsGift() {
             serverId: id,
           };
 
-          setGift(
-            updatedGift
-          );
+          setGift(updatedGift);
 
           saveLoveCouponsGift(
             updatedGift
@@ -515,7 +520,7 @@ export default function PrivateLoveCouponsGift() {
   }
 
   /*
-    COUPON COLLECTION
+    COLLECTION
   */
 
   if (screen === "collection") {
@@ -613,15 +618,12 @@ export default function PrivateLoveCouponsGift() {
 
       <style jsx>{`
         * {
-          box-sizing:
-            border-box;
+          box-sizing: border-box;
         }
 
         .gift {
           min-height: 100svh;
-
           position: relative;
-
           overflow: hidden;
 
           background:
@@ -637,11 +639,8 @@ export default function PrivateLoveCouponsGift() {
 
         .grain {
           position: absolute;
-
           inset: 0;
-
           opacity: 0.13;
-
           pointer-events: none;
 
           background-image:
@@ -654,8 +653,7 @@ export default function PrivateLoveCouponsGift() {
                   0.3
                 )
                 0 1px,
-              transparent
-                1px 4px
+              transparent 1px 4px
             );
 
           mix-blend-mode:
@@ -664,17 +662,12 @@ export default function PrivateLoveCouponsGift() {
 
         header {
           position: relative;
-
           z-index: 2;
-
           height: 76px;
-
           padding: 0 5vw;
 
           display: flex;
-
           align-items: center;
-
           justify-content:
             space-between;
 
@@ -690,11 +683,9 @@ export default function PrivateLoveCouponsGift() {
 
         .logo {
           font-family:
-            Georgia,
-            serif;
+            Georgia, serif;
 
           font-weight: 700;
-
           font-size: 21px;
 
           letter-spacing:
@@ -711,27 +702,21 @@ export default function PrivateLoveCouponsGift() {
         .intro {
           min-height:
             calc(
-              100svh -
-              76px
+              100svh - 76px
             );
 
           padding:
             50px 24px;
 
           display: flex;
-
-          flex-direction:
-            column;
+          flex-direction: column;
 
           align-items: center;
-
-          justify-content:
-            center;
+          justify-content: center;
 
           text-align: center;
 
           position: relative;
-
           z-index: 2;
         }
 
@@ -740,7 +725,6 @@ export default function PrivateLoveCouponsGift() {
           height: 48px;
 
           display: grid;
-
           place-items: center;
 
           border:
@@ -754,7 +738,8 @@ export default function PrivateLoveCouponsGift() {
 
           border-radius: 50%;
 
-          margin-bottom: 34px;
+          margin-bottom:
+            34px;
 
           font-size: 24px;
         }
@@ -764,7 +749,6 @@ export default function PrivateLoveCouponsGift() {
             0 0 16px;
 
           font-size: 9px;
-
           font-weight: 700;
 
           letter-spacing:
@@ -775,8 +759,7 @@ export default function PrivateLoveCouponsGift() {
           margin: 0;
 
           font-family:
-            Georgia,
-            serif;
+            Georgia, serif;
 
           font-size:
             clamp(
@@ -802,7 +785,6 @@ export default function PrivateLoveCouponsGift() {
             31px 0 34px;
 
           font-size: 15px;
-
           line-height: 1.6;
 
           color:
@@ -834,7 +816,8 @@ export default function PrivateLoveCouponsGift() {
           background:
             #f6d5d0;
 
-          color: #4d0711;
+          color:
+            #4d0711;
 
           font-weight: 800;
 
@@ -843,7 +826,8 @@ export default function PrivateLoveCouponsGift() {
 
           display: flex;
 
-          align-items: center;
+          align-items:
+            center;
 
           justify-content:
             space-between;
@@ -865,7 +849,8 @@ export default function PrivateLoveCouponsGift() {
         }
 
         .mini {
-          margin-top: 55px;
+          margin-top:
+            55px;
 
           display: flex;
 
@@ -890,8 +875,7 @@ export default function PrivateLoveCouponsGift() {
           position: absolute;
 
           font-family:
-            Georgia,
-            serif;
+            Georgia, serif;
 
           color:
             rgba(
@@ -901,7 +885,8 @@ export default function PrivateLoveCouponsGift() {
               0.13
             );
 
-          pointer-events: none;
+          pointer-events:
+            none;
         }
 
         .one {
