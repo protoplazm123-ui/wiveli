@@ -313,9 +313,16 @@ export default function Home() {
           {experiences.map((experience, index) => (
 
             <article
-              className="experienceCard"
-              key={experience.title}
-            >
+  className={`experienceCard ${
+    experience.premium ? "experienceCardPremium" : ""
+  }`}
+  key={experience.title}
+>
+  {experience.premium && (
+    <div className="premiumBadge">
+      ✦ WIVELI BESPOKE
+    </div>
+  )}
 
               <div className="experienceVisual">
 
