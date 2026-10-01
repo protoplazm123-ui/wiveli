@@ -5,7 +5,7 @@ const WIVELI_URL = "https://wiveli.vercel.app";
 export async function POST(request) {
   try {
     const update = await request.json();
-
+console.log("TELEGRAM UPDATE:", JSON.stringify(update));
     // INLINE BUTTONS
     if (update.callback_query) {
       await handleCallback(update.callback_query);
