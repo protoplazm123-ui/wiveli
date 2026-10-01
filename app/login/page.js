@@ -1,28 +1,45 @@
 "use client";
 
 import { useState } from "react";
-import {
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const nextUrl =
-    searchParams.get("next") || "/account";
+  function getSafeNextUrl() {
+    if (typeof window === "undefined") {
+      return "/account";
+    }
 
-  const safeNextUrl =
-    nextUrl.startsWith("/") &&
-    !nextUrl.startsWith("//")
-      ? nextUrl
-      : "/account";
+    const params = new URLSearchParams(
+      window.location.search
+    );
+
+    const nextUrl =
+      params.get("next") || "/account";
+
+    if (
+      nextUrl.startsWith("/") &&
+      !nextUrl.startsWith("//")
+    ) {
+      return nextUrl;
+    }
+
+    return "/account";
+  }
+
+  function getSignupUrl() {
+    const nextUrl = getSafeNextUrl();
+
+    return `/signup?next=${encodeURIComponent(
+      nextUrl
+    )}`;
+  }
 
   async function login(e) {
     e.preventDefault();
@@ -43,12 +60,10 @@ export default function LoginPage() {
         "/api/auth/login",
         {
           method: "POST",
-
           headers: {
             "Content-Type":
               "application/json",
           },
-
           body: JSON.stringify({
             email: email.trim(),
             password,
@@ -66,7 +81,10 @@ export default function LoginPage() {
         );
       }
 
-      router.push(safeNextUrl);
+      const nextUrl =
+        getSafeNextUrl();
+
+      router.push(nextUrl);
       router.refresh();
     } catch (error) {
       setMessage(error.message);
@@ -175,9 +193,13 @@ export default function LoginPage() {
           <p className="signupText">
             New to WIVELI?{" "}
             <a
-              href={`/signup?next=${encodeURIComponent(
-                safeNextUrl
-              )}`}
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+
+                window.location.href =
+                  getSignupUrl();
+              }}
             >
               Create an account
             </a>
