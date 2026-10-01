@@ -17,6 +17,18 @@ export async function POST(request, { params }) {
       );
     }
 
+    /* CLAIM TOKEN */
+
+    const body = await request.json();
+    const claimToken = body?.claimToken;
+
+    if (!claimToken) {
+      return NextResponse.json(
+        { error: "Claim token is required." },
+        { status: 400 }
+      );
+    }
+
     /* CURRENT USER */
 
     const cookieStore = await cookies();
@@ -57,12 +69,14 @@ export async function POST(request, { params }) {
 
     const user = await userResponse.json();
 
-    /* FIND RECIPIENT */
+    /* FIND RECIPIENT + VERIFY TOKEN */
 
     const participantResponse = await fetch(
       `${supabaseUrl}/rest/v1/gift_participants?gift_id=eq.${encodeURIComponent(
         giftId
-      )}&role=eq.recipient&select=*`,
+      )}&role=eq.recipient&claim_token=eq.${encodeURIComponent(
+        claimToken
+      )}&select=*`,
       {
         headers: {
           apikey: secretKey,
@@ -73,9 +87,7 @@ export async function POST(request, { params }) {
     );
 
     if (!participantResponse.ok) {
-      throw new Error(
-        "Could not load gift recipient."
-      );
+      throw new Error("Could not load gift recipient.");
     }
 
     const participants =
@@ -85,8 +97,11 @@ export async function POST(request, { params }) {
 
     if (!recipient) {
       return NextResponse.json(
-        { error: "Gift recipient not found." },
-        { status: 404 }
+        {
+          error:
+            "This gift link is invalid or has expired.",
+        },
+        { status: 403 }
       );
     }
 
@@ -97,6 +112,7 @@ export async function POST(request, { params }) {
         return NextResponse.json({
           success: true,
           alreadyClaimed: true,
+          giftId,
         });
       }
 
@@ -114,7 +130,9 @@ export async function POST(request, { params }) {
     const claimResponse = await fetch(
       `${supabaseUrl}/rest/v1/gift_participants?id=eq.${encodeURIComponent(
         recipient.id
-      )}&user_id=is.null`,
+      )}&user_id=is.null&claim_token=eq.${encodeURIComponent(
+        claimToken
+      )}`,
       {
         method: "PATCH",
 
@@ -136,18 +154,11 @@ export async function POST(request, { params }) {
     );
 
     if (!claimResponse.ok) {
-      throw new Error(
-        "Could not claim gift."
-      );
+      throw new Error("Could not claim gift.");
     }
 
     const claimedRows =
       await claimResponse.json();
-
-    /*
-      Prevent two accounts claiming
-      the same gift at the same moment.
-    */
 
     if (!claimedRows?.length) {
       return NextResponse.json(
@@ -165,10 +176,7 @@ export async function POST(request, { params }) {
       recipientUserId: user.id,
     });
   } catch (error) {
-    console.error(
-      "Claim gift error:",
-      error
-    );
+    console.error("Claim gift error:", error);
 
     return NextResponse.json(
       { error: "Could not claim gift." },
