@@ -1,3 +1,4 @@
+import { validateCouponAttachments } from "../../lib/coupon-attachments";
 import { NextResponse } from "next/server";
 import { requireSession } from "../../lib/session";
 
@@ -49,6 +50,8 @@ export async function POST(request) {
         { status: 400 }
       );
     }
+
+    if (giftType === "love-coupons") validateCouponAttachments(giftData, user.id);
 
     const serviceHeaders = {
       apikey: secretKey,
@@ -251,10 +254,11 @@ export async function POST(request) {
 
     return NextResponse.json(
       {
-        error: error.status === 401 ? error.message : "Could not create gift.",
+        error: error.status === 401 || error.status === 400 ? error.message : "Could not create gift.",
       },
       { status: error.status || 500 }
     );
   }
 }
+
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import CouponAttachmentUpload from "../../../components/CouponAttachmentUpload";
 import TelegramGiftDelivery from "../../../components/TelegramGiftDelivery";
 import { couponIdeas, couponCategories } from "../coupons";
 import LoveCouponTicket from "../../../gift/love-coupons/LoveCouponTicket";
@@ -23,6 +24,7 @@ export default function LoveCouponsPersonalize() {
   const [editingCoupon, setEditingCoupon] = useState(null);
   const [editTab, setEditTab] = useState("message");
 
+  const [uploadBusy, setUploadBusy] = useState(false);
   const [creating, setCreating] = useState(false);
   const [giftUrl, setGiftUrl] = useState("");
   const [createdGiftId, setCreatedGiftId] = useState("");
@@ -92,7 +94,7 @@ export default function LoveCouponsPersonalize() {
   };
 
   const saveEditedCoupon = () => {
-    if (!editingCoupon) return;
+    if (!editingCoupon || uploadBusy) return;
 
     setCustomCoupons((current) => {
       const exists = current.some(
@@ -610,6 +612,7 @@ export default function LoveCouponsPersonalize() {
         editingCoupon && (
           <Modal
             onClose={() => {
+              if (uploadBusy) return;
               setEditingCoupon(null);
               setModal("coupons");
             }}
@@ -637,6 +640,7 @@ export default function LoveCouponsPersonalize() {
                 ([id, label]) => (
                   <button
                     key={id}
+                    disabled={uploadBusy}
                     className={
                       editTab === id
                         ? "active"
@@ -703,6 +707,14 @@ export default function LoveCouponsPersonalize() {
 
               {editTab === "photo" && (
                 <AttachmentPanel
+                  kind="photo"
+                  attachment={editingCoupon.attachments?.photo}
+                  onBusy={setUploadBusy}
+                  onAttachment={file => setEditingCoupon(previous => {
+                    const attachments = {...previous.attachments};
+                    if (file) attachments.photo = file; else delete attachments.photo;
+                    return {...previous, attachments, photoUrl: ""};
+                  })}
                   icon="◇"
                   title="ADD A PHOTO"
                   description="Add a photo that belongs with this promise."
@@ -711,9 +723,9 @@ export default function LoveCouponsPersonalize() {
                   }
                   placeholder="Paste photo URL"
                   onChange={(value) =>
-                    setEditingCoupon({
-                      ...editingCoupon,
-                      photoUrl: value,
+                    setEditingCoupon(previous => {
+                      const attachments = {...previous.attachments}; delete attachments.photo;
+                      return {...previous, attachments, photoUrl: value};
                     })
                   }
                 />
@@ -721,6 +733,14 @@ export default function LoveCouponsPersonalize() {
 
               {editTab === "video" && (
                 <AttachmentPanel
+                  kind="video"
+                  attachment={editingCoupon.attachments?.video}
+                  onBusy={setUploadBusy}
+                  onAttachment={file => setEditingCoupon(previous => {
+                    const attachments = {...previous.attachments};
+                    if (file) attachments.video = file; else delete attachments.video;
+                    return {...previous, attachments, videoUrl: ""};
+                  })}
                   icon="▷"
                   title="ADD A VIDEO"
                   description="Attach a video to reveal when the coupon is opened."
@@ -729,9 +749,9 @@ export default function LoveCouponsPersonalize() {
                   }
                   placeholder="Paste video URL"
                   onChange={(value) =>
-                    setEditingCoupon({
-                      ...editingCoupon,
-                      videoUrl: value,
+                    setEditingCoupon(previous => {
+                      const attachments = {...previous.attachments}; delete attachments.video;
+                      return {...previous, attachments, videoUrl: value};
                     })
                   }
                 />
@@ -739,6 +759,14 @@ export default function LoveCouponsPersonalize() {
 
               {editTab === "voice" && (
                 <AttachmentPanel
+                  kind="voice"
+                  attachment={editingCoupon.attachments?.voice}
+                  onBusy={setUploadBusy}
+                  onAttachment={file => setEditingCoupon(previous => {
+                    const attachments = {...previous.attachments};
+                    if (file) attachments.voice = file; else delete attachments.voice;
+                    return {...previous, attachments, voiceUrl: ""};
+                  })}
                   icon="♪"
                   title="VOICE NOTE"
                   description="Add a voice message for this coupon."
@@ -747,9 +775,9 @@ export default function LoveCouponsPersonalize() {
                   }
                   placeholder="Paste audio URL"
                   onChange={(value) =>
-                    setEditingCoupon({
-                      ...editingCoupon,
-                      voiceUrl: value,
+                    setEditingCoupon(previous => {
+                      const attachments = {...previous.attachments}; delete attachments.voice;
+                      return {...previous, attachments, voiceUrl: value};
                     })
                   }
                 />
@@ -757,6 +785,14 @@ export default function LoveCouponsPersonalize() {
 
               {editTab === "gift" && (
                 <AttachmentPanel
+                  kind="gift"
+                  attachment={editingCoupon.attachments?.gift}
+                  onBusy={setUploadBusy}
+                  onAttachment={file => setEditingCoupon(previous => {
+                    const attachments = {...previous.attachments};
+                    if (file) attachments.gift = file; else delete attachments.gift;
+                    return {...previous, attachments, giftUrl: ""};
+                  })}
                   icon="♥"
                   title="ADD A REAL GIFT"
                   description="Add a ticket, reservation, gift card or any private link."
@@ -765,9 +801,9 @@ export default function LoveCouponsPersonalize() {
                   }
                   placeholder="Paste private gift link"
                   onChange={(value) =>
-                    setEditingCoupon({
-                      ...editingCoupon,
-                      giftUrl: value,
+                    setEditingCoupon(previous => {
+                      const attachments = {...previous.attachments}; delete attachments.gift;
+                      return {...previous, attachments, giftUrl: value};
                     })
                   }
                 />
@@ -842,6 +878,7 @@ export default function LoveCouponsPersonalize() {
 
             <button
               className="primary full"
+              disabled={uploadBusy}
               onClick={
                 saveEditedCoupon
               }
@@ -2294,6 +2331,7 @@ function Modal({
 }
 
 function AttachmentPanel({
+  kind, attachment, onAttachment, onBusy,
   icon,
   title,
   description,
@@ -2311,7 +2349,8 @@ function AttachmentPanel({
         <strong>{title}</strong>
 
         <p>{description}</p>
-
+        <CouponAttachmentUpload kind={kind} attachment={attachment} onChange={onAttachment} onBusy={onBusy} />
+        <label>OR ADD A LINK</label>
         <input
           value={value || ""}
           onChange={(event) =>
@@ -2383,7 +2422,11 @@ function AttachmentPanel({
           line-height: 1.45;
         }
 
+        .attachmentCopy { min-width: 0; }
+        .attachmentCopy label { font: 700 9px Arial,sans-serif; letter-spacing: .1em; margin: 18px 0 10px; }
         .attachmentCopy input {
+          min-width: 0;
+          font-size: 16px;
           margin: 0;
         }
 
@@ -3702,6 +3745,7 @@ function MiniTicketRoll({ coupons = [] }) {
     </div>
   );
 }
+
 
 
 

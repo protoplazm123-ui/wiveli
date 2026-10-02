@@ -31,6 +31,7 @@ function api({ loggedIn = true, participantsFail = false } = {}) {
     },
   });
   vm.runInContext(readFileSync(new URL("../app/lib/session.js", import.meta.url), "utf8").replace(/^import .*;\n/gm, "").replaceAll("export ", ""), context);
+  vm.runInContext(readFileSync(new URL("../app/lib/coupon-attachments.js", import.meta.url), "utf8").replaceAll("export ", ""), context);
   vm.runInContext(route, context);
   return { calls, run: () => context.POST({ url: "https://preview.example/api/gifts", json: async () => ({ giftType: "love-coupons", giftData: { senderName: "Julia" } }) }) };
 }

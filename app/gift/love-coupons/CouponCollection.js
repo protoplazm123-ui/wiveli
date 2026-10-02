@@ -1,11 +1,13 @@
 "use client";
 
+import CouponMedia from "../../components/CouponMedia";
 import { useState } from "react";
 
 export default function CouponCollection({
   coupons = [],
   gift,
   onRedeem,
+  claimToken,
 }) {
   const [recipientResponse, setRecipientResponse] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -117,12 +119,9 @@ export default function CouponCollection({
                   coupon.special ? "special" : ""
                 } ${isRedeemed ? "redeemed" : ""}`}
                 key={coupon.id}
-                disabled={isRedeemed}
                 onClick={() => {
-                  if (!isRedeemed) {
-                    setRecipientResponse({});
-                    setSelectedCoupon(coupon);
-                  }
+                  setRecipientResponse({});
+                  setSelectedCoupon(coupon);
                 }}
               >
                 <span className="ticketInnerFrame" />
@@ -143,6 +142,7 @@ export default function CouponCollection({
                   <h2>{coupon.title}</h2>
 
                   <p>{coupon.subtitle}</p>
+                  {(Object.keys(coupon.attachments || {}).length > 0 || coupon.photoUrl || coupon.videoUrl || coupon.giftUrl || coupon.voiceUrl) && <span className="attachmentHint">A SURPRISE INSIDE ↗</span>}
 
                   {isRedeemed && (
                     <div className="redeemedStamp">
@@ -235,6 +235,7 @@ export default function CouponCollection({
                 <h2>{selectedCoupon.title}</h2>
 
                 <p>{selectedCoupon.subtitle}</p>
+                <CouponMedia key={selectedCoupon.id} coupon={selectedCoupon} giftId={gift?.serverId || gift?.id} claimToken={claimToken} />
 
                 <div className="bigTicketFor">
                   <span>
@@ -260,100 +261,6 @@ export default function CouponCollection({
               </div>
             </div>
 <div className="couponExtras">
-  <p className="extrasLabel">
-    SOMETHING EXTRA FOR YOU ♡
-  </p>
-
-  <div className="extrasButtons">
-    <button
-      type="button"
-      className={
-        selectedCoupon.photoUrl
-          ? "extraButton active"
-          : "extraButton"
-      }
-      disabled={!selectedCoupon.photoUrl}
-      onClick={() => {
-        if (selectedCoupon.photoUrl) {
-          window.open(
-            selectedCoupon.photoUrl,
-            "_blank",
-            "noopener,noreferrer"
-          );
-        }
-      }}
-    >
-      <span>◇</span>
-      PHOTO
-    </button>
-
-    <button
-      type="button"
-      className={
-        selectedCoupon.videoUrl
-          ? "extraButton active"
-          : "extraButton"
-      }
-      disabled={!selectedCoupon.videoUrl}
-      onClick={() => {
-        if (selectedCoupon.videoUrl) {
-          window.open(
-            selectedCoupon.videoUrl,
-            "_blank",
-            "noopener,noreferrer"
-          );
-        }
-      }}
-    >
-      <span>▷</span>
-      VIDEO
-    </button>
-
-    <button
-      type="button"
-      className={
-        selectedCoupon.voiceUrl
-          ? "extraButton active"
-          : "extraButton"
-      }
-      disabled={!selectedCoupon.voiceUrl}
-      onClick={() => {
-        if (selectedCoupon.voiceUrl) {
-          window.open(
-            selectedCoupon.voiceUrl,
-            "_blank",
-            "noopener,noreferrer"
-          );
-        }
-      }}
-    >
-      <span>♪</span>
-      VOICE
-    </button>
-
-    <button
-      type="button"
-      className={
-        selectedCoupon.giftUrl
-          ? "extraButton active"
-          : "extraButton"
-      }
-      disabled={!selectedCoupon.giftUrl}
-      onClick={() => {
-        if (selectedCoupon.giftUrl) {
-          window.open(
-            selectedCoupon.giftUrl,
-            "_blank",
-            "noopener,noreferrer"
-          );
-        }
-      }}
-    >
-      <span>♡</span>
-      GIFT
-    </button>
-  </div>
-
   {selectedCoupon.message && (
     <div className="couponMessage">
       <small>A NOTE FOR YOU</small>
@@ -364,7 +271,7 @@ export default function CouponCollection({
     </div>
   )}
 </div>
-            {leftToday === 0 && !unlimited ? (
+            {redeemedIds.has(selectedCoupon.id) ? (<p className="question">This promise has been kept ♡ Your attachments are still here.</p>) : leftToday === 0 && !unlimited ? (
               <>
                 <p className="question">
                   You've used all your coupons for today ♡
@@ -1423,9 +1330,14 @@ footer {
           .extrasButtons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
           .sectionTop { letter-spacing: .08em; }
         }
+      
+        .attachmentHint { display: block; margin: 12px 0; font: 700 8px/1.5 Arial,sans-serif; letter-spacing: .1em; }
+        .ticket.redeemed { cursor: pointer; }
+        .bigTicket { transform: none; }
       `}</style>
     </main>
   );
 }
+
 
 

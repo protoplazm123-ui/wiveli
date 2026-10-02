@@ -487,6 +487,7 @@ export default function PrivateLoveCouponsGift() {
   if (screen === "collection") {
     return (
       <CouponCollection
+        claimToken={claimToken}
         coupons={
           selectedCoupons
         }
@@ -901,4 +902,5 @@ export default function PrivateLoveCouponsGift() {
     </main>
   );
 }
+
 
