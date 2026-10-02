@@ -1,5 +1,7 @@
 "use client";
 
+import HomeAccount from "./components/HomeAccount";
+
 import WiveliHero from "./components/WiveliHero";
 
 const experiences = [
@@ -68,19 +70,20 @@ export default function Home() {
         </nav>
 
        <div className="headerActions">
-  <a className="login" href="/login">
-    Log in
-  </a>
-
-  <a className="signup" href="/signup">
-    Sign up
-  </a>
+  <HomeAccount />
 
   <a className="primary small" href="#ideas">
     Create a Gift →
   </a>
 </div>
       </header>
+      <style jsx>{`
+        @media (max-width: 600px) {
+          .header { height: auto; min-height: 76px; flex-wrap: wrap; gap: 12px; padding-top: 12px; padding-bottom: 12px; }
+          .headerActions { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 10px; max-width: 100%; }
+          .headerActions .primary.small { font-size: 10px; padding: 12px; white-space: nowrap; }
+        }
+      `}</style>
 
 
       {/* ================= HERO ================= */}
@@ -501,3 +504,4 @@ export default function Home() {
     </main>
   );
 }
+
