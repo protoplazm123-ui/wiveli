@@ -15,6 +15,10 @@ export async function GET(request) {
       const gift = gifts.find(g => g.id === row.gift_id);
       const redemption = gift ? giftDetails(gift).redemptions.find(r => r.couponId === row.coupon_id) : null;
       const wish = gift?.gift_type === "wish-note" ? gift.gift_data?.wishes?.find(w=>w.id===row.coupon_id) : null;
+      if(gift?.gift_type === "open-when" && ['letter-opened','letter-response'].includes(row.kind)){
+        const letter=gift.gift_data.moments?.find(m=>m.id===row.coupon_id),response=gift.gift_data.responses?.find(r=>r.momentId===row.coupon_id);
+        return {id:row.event_key,giftId:row.gift_id,readAt:row.read_at,date:row.occurred_at,title:row.kind==='letter-opened'?'A letter was opened ♡':'A reply to your letter ♡',text:`${gift.gift_data.recipient||'Your recipient'} ${row.kind==='letter-opened'?'opened':'replied to'} “${letter?.title||'your letter'}”.`,letterResponse:row.kind==='letter-response'?response:null};
+      }
       return {id: row.event_key, giftId: row.gift_id, readAt: row.read_at, date: row.occurred_at,
         title: row.kind === "opened" ? "Your gift was opened ♡" : row.kind === "wish-created" ? "A new wish for you ♡" : row.kind === "wish-completed" ? "A wish became a memory ♡" : "A coupon was used ♡",
         text: `${gift?.gift_data?.recipientName || "Your recipient"} ${row.kind === "opened" ? "opened your gift." : wish ? (row.kind === "wish-created" ? "made a wish." : "completed a wish.") : "used " + (redemption?.title || "a Love Coupon") + "."}`,
@@ -32,4 +36,5 @@ export async function PATCH(request) {
     return NextResponse.json({success: true});
   } catch (error) { return NextResponse.json({error: error.message}, {status: error.status || 500}); }
 }
+
 

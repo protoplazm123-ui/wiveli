@@ -34,7 +34,7 @@ export async function GET(request, { params }) {
 
     let publicGift;
 
-    if (row.gift_type === "our-story") {
+    if (["our-story","open-when"].includes(row.gift_type)) {
       await requireGiftAccess(request,id,true);
       publicGift = stored;
     } else if (row.gift_type === "wish-note") {
@@ -90,6 +90,7 @@ export async function GET(request, { params }) {
     );
   }
 }
+
 
 
 

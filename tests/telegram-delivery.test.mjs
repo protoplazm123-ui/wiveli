@@ -276,3 +276,17 @@ test("Our Story invitation opens Our Story without signup", async () => {
   assert.equal((await webhook(update)).status, 200);
   assert.equal(s.sends(), 1);
 });
+
+test("Open When invitation opens Open When without signup", async () => {
+  const s = setup({ user: "sender", giftType: "open-when" });
+  const invitation = await s.route("deliver", "GET")();
+  assert.equal(invitation.body.inviteUrl, `https://t.me/WIVELI_bot?start=gift_${CLAIM_TOKEN}`);
+  const webhook = s.route("webhook");
+  const update = { message: { chat: { id: 22, type: "private" }, from: { id: 22, username: "sam_user" }, text: `/start gift_${CLAIM_TOKEN}` } };
+  assert.equal((await webhook(update)).status, 200);
+  assert.equal(s.sends(), 1);
+  assert.match(s.payloads[0].text, /Julia/);
+  assert.equal(s.payloads[0].reply_markup.inline_keyboard[0][0].url, `https://site.test/gift/open-when/${GIFT_ID}?claim=${CLAIM_TOKEN}`);
+  assert.equal((await webhook(update)).status, 200);
+  assert.equal(s.sends(), 1);
+});

@@ -235,9 +235,10 @@ export default function AccountPage() {
                   </div>
                   {detailError && <p role="alert">{detailError}</p>}
                   {!detail && !detailError && <p role="status">Loading history…</p>}
+                  {detail?.giftType === "open-when" && <section className="giftHistory"><p className="small">OPEN WHEN…</p><h2>For {detail.recipientName}</h2><p>{detail.openedCount} / {detail.letterCount} letters opened · {detail.responseCount} replies</p><a href={`/gift/open-when/${detail.id}`} target="_blank" rel="noopener noreferrer">VIEW YOUR LETTERS →</a>{detail.letters.map(letter=><article className="giftCard" key={letter.id}><div><h3>{letter.title}</h3><p>{letter.openedAt?'Opened: '+formatDate(letter.openedAt):'Not opened yet'}</p>{letter.response&&<div><p>{letter.response.message}</p><p>Replied: {formatDate(letter.response.createdAt)}</p>{['note','date','time','place'].map(key=>letter.response[key]&&<p key={key}><strong>{key}: </strong>{letter.response[key]}</p>)}</div>}</div></article>)}</section>}
                   {detail?.giftType === "our-story" && <section className="giftHistory"><p className="small">OUR STORY</p><h2>For {detail.recipientName}</h2><p>{detail.viewedCount} / {detail.memoryCount} memories viewed</p><a href={`/gift/our-story/${detail.id}`} target="_blank" rel="noopener noreferrer">OPEN YOUR STORY →</a>{detail.memories.map(m=><article className="giftCard" key={m.id}><div><h3>{m.title}</h3><p>{m.date}{m.place?' · '+m.place:''}</p><p>{m.viewedAt?'Viewed: '+new Date(m.viewedAt).toLocaleString():'Not viewed yet'}</p></div></article>)}</section>}
                   {detail?.giftType === "wish-note" && <WishAccountDetail gift={detail}/>}
-                  {detail && !["wish-note","our-story"].includes(detail.giftType) && <>
+                  {detail && !["wish-note","our-story","open-when"].includes(detail.giftType) && <>
                     <div className="historyHero">
                       <div><p className="historyEyebrow">LOVE COUPONS · YOUR GIFT</p><h2>For <em>{detail.recipientName}.</em></h2><p className="historySubtitle">Little promises, brought to life.</p></div>
                       <div className="historyCount"><span>{detail.redeemedCount}<i> / {detail.couponCount}</i></span><p>COUPONS USED</p></div>
@@ -267,7 +268,7 @@ export default function AccountPage() {
                 {!loading && !error && !gifts.length && <p>Your gifts will appear here after you create one.</p>}
                 {gifts.map(gift => <div className="gift" key={gift.id}>
                   <div className="giftIcon">♡</div>
-                  <div className="giftInfo"><p className="small">{gift.giftType?.replaceAll("-", " ").toUpperCase()}</p><h3>For {gift.recipientName}</h3><p>{gift.giftType === "our-story" ? `${gift.viewedCount} / ${gift.memoryCount} memories viewed` : gift.giftType === "wish-note" ? `${gift.createdCount} / ${gift.wishCount} wishes · ${gift.completedCount} completed` : `${gift.redeemedCount} / ${gift.couponCount} used`}</p></div>
+                  <div className="giftInfo"><p className="small">{gift.giftType?.replaceAll("-", " ").toUpperCase()}</p><h3>For {gift.recipientName}</h3><p>{gift.giftType === "open-when" ? `${gift.openedCount} / ${gift.letterCount} letters opened · ${gift.responseCount} replies` : gift.giftType === "our-story" ? `${gift.viewedCount} / ${gift.memoryCount} memories viewed` : gift.giftType === "wish-note" ? `${gift.createdCount} / ${gift.wishCount} wishes · ${gift.completedCount} completed` : `${gift.redeemedCount} / ${gift.couponCount} used`}</p></div>
                   <div className="giftDate"><span>CREATED</span>{formatDate(gift.createdAt)}</div>
                   <button className="view" onClick={() => setSelectedId(gift.id)}>VIEW →</button>
                 </div>)}
@@ -305,6 +306,7 @@ export default function AccountPage() {
                 {messages.map(message => <details className="inboxMessage" key={message.id} onToggle={event => { if (event.currentTarget.open) openMessage(message); }}>
                   <summary><span>{!message.readAt ? "● " : ""}{message.title}</span><small>{formatDate(message.date)}</small></summary>
                   <p>{message.text}</p>
+                  {message.letterResponse && <div><p>{message.letterResponse.message}</p>{['note','date','time','place'].map(key=>message.letterResponse[key]&&<p key={key}><strong>{key}: </strong>{message.letterResponse[key]}</p>)}</div>}
                   {message.wish && <p>{message.wish.text}<br/>{message.wish.date} {message.wish.time}{message.wish.place ? " · " + message.wish.place : ""}</p>}
                   {message.redemption && <div><p>Used: {formatDate(message.redemption.redeemedAt)}</p><p>Code: {message.redemption.code}</p>
                     {[["choice", "Choice"], ["date", "Planned date"], ["time", "Planned time"], ["place", "Where"], ["note", "Message"], ["timeZone", "Time zone"]].map(([key,label]) => message.redemption.recipientResponse?.[key] && <p key={key}><strong>{label}: </strong>{message.redemption.recipientResponse[key]}</p>)}
@@ -860,6 +862,7 @@ export default function AccountPage() {
     </main>
   );
 }
+
 
 
 

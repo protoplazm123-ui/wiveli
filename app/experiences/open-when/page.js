@@ -1,7 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
+import CouponAttachmentUpload from '../../components/CouponAttachmentUpload';
+import TelegramGiftDelivery from '../../components/TelegramGiftDelivery';
 const IDEAS = [
   { id:"miss", category:"LOVE", title:"YOU MISS ME", symbol:"♡", text:"A little piece of you for when the distance feels bigger." },
   { id:"sleep", category:"COMFORT", title:"YOU CAN'T SLEEP", symbol:"☾", text:"Something soft for the late nights." },
@@ -90,13 +92,6 @@ const INTERACTIONS = [
   },
 ];
 
-function readFile(file, done) {
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => done(reader.result);
-  reader.readAsDataURL(file);
-}
-
 function createMoment(idea) {
   return {
     id:`${idea.id}-${Date.now()}`,
@@ -122,8 +117,8 @@ function createMoment(idea) {
 
 export default function OpenWhenPage() {
   const [filter,setFilter] = useState("ALL");
-  const [recipient,setRecipient] = useState("Masha");
-  const [sender,setSender] = useState("Alex");
+  const [recipient,setRecipient] = useState("");
+  const [sender,setSender] = useState("");
 
   const [moments,setMoments] = useState([]);
   const [selectedIdea,setSelectedIdea] = useState(null);
@@ -243,37 +238,21 @@ export default function OpenWhenPage() {
     );
   };
 
-  const preview = () => {
-    try{
-      localStorage.setItem(
-        "wiveli-open-when-v2",
-        JSON.stringify({
-          recipient:recipient || "Someone special",
-          sender:sender || "Someone special",
-
-          theme:{
-            id:theme,
-            accent:customColor,
-            customBackground,
-          },
-
-          moments,
-        })
-      );
-
-      localStorage.removeItem("wiveli-open-when-opened-v1");
-      localStorage.removeItem("wiveli-open-when-responses-v1");
-      localStorage.removeItem("wiveli-open-when-events-v1");
-
-    }catch(error){
-      console.error(error);
-    }
-
-    window.location.href="/gift/open-when";
+  const [ready,setReady]=useState(false),[error,setError]=useState(''),[busy,setBusy]=useState(false),[created,setCreated]=useState(null),[uploads,setUploads]=useState({});
+  const uploadBusy=Object.values(uploads).some(Boolean);
+  const draft={recipient,sender,moments,theme:{id:theme,accent:customColor,customBackground}};
+  useEffect(()=>{try{const d=JSON.parse(localStorage.getItem('wiveli-open-when-cloud-v1')||'null');if(d){setRecipient(d.recipient||'');setSender(d.sender||'');setMoments(d.moments||[]);setTheme(d.theme?.id||'cosmic');setCustomColor(d.theme?.accent||'#8c63c7');setCustomBackground(d.theme?.customBackground||null);setCreated(d.created||null);}}catch{setError('Could not restore the draft.');}setReady(true);},[]);
+  useEffect(()=>{if(ready)try{localStorage.setItem('wiveli-open-when-cloud-v1',JSON.stringify({...draft,created}));}catch{setError('Could not save the draft in this browser.');}},[ready,recipient,sender,moments,theme,customColor,customBackground,created]);
+  const upload=(key,kind,value,onChange)=><CouponAttachmentUpload key={key} kind={kind} attachment={value} onChange={onChange} onBusy={value=>setUploads(old=>({...old,[key]:value}))} saveHint="Uploaded. Save this moment, then create your gift."/>;
+  const preview=async()=>{
+    if(busy||uploadBusy||!ready)return;setBusy(true);setError('');
+    try{const r=await fetch('/api/gifts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({giftType:'open-when',giftData:draft})});const d=await r.json();if(!r.ok)throw Error(d.error||'Could not create gift.');setCreated(d);}catch(e){setError(e.message);}finally{setBusy(false);}
   };
+  if(created)return <main className="owcPage"><section style={{maxWidth:720,margin:'40px auto',padding:24}}><h1>Your letters are ready ♡</h1><a href={created.giftUrl} target="_blank" rel="noopener noreferrer">VIEW YOUR GIFT →</a><label style={{display:'block',margin:'24px 0'}}>PRIVATE GIFT LINK<input style={{display:'block',width:'100%',padding:12,fontSize:16}} value={created.giftUrl} readOnly onFocus={e=>e.target.select()}/></label><TelegramGiftDelivery giftType="open-when" giftId={created.id} recipientName={recipient} senderName={sender} onBack={()=>window.location.assign('/account')}/><button onClick={()=>setCreated(null)}>EDIT A NEW COPY</button></section></main>;
 
   return(
     <main className="owcPage">
+      {(error||uploadBusy)&&<p role="status" className="cloudNotice">{error||"Uploading… Please wait before leaving this editor."}</p>}
 
       <header className="owcHeader">
         <a href="/" className="owcLogo">
@@ -284,10 +263,9 @@ export default function OpenWhenPage() {
 
         <button
           type="button"
-          onClick={preview}
-          disabled={!moments.length}
+          disabled={busy||uploadBusy||!ready||!moments.length} onClick={preview}
         >
-          PREVIEW AS THEM →
+          CREATE YOUR GIFT →
         </button>
       </header>
 
@@ -474,26 +452,7 @@ export default function OpenWhenPage() {
               </div>
             </label>
 
-            <label className="owcCustomUpload">
-              <span>BACKGROUND PHOTO / VIDEO</span>
-
-              <strong>
-                {customBackground
-                  ? "BACKGROUND ADDED ✓"
-                  : "+ UPLOAD YOUR WORLD"}
-              </strong>
-
-              <input
-                type="file"
-                accept="image/*,video/*"
-                onChange={(e)=>
-                  readFile(
-                    e.target.files?.[0],
-                    (value)=>setCustomBackground(value)
-                  )
-                }
-              />
-            </label>
+            <div><p>BACKGROUND PHOTO</p>{upload('background-photo','photo',customBackground?.mimeType?.startsWith('image/')?customBackground:null,setCustomBackground)}<p>OR BACKGROUND VIDEO</p>{upload('background-video','video',customBackground?.mimeType?.startsWith('video/')?customBackground:null,setCustomBackground)}</div>
 
           </div>
         )}
@@ -529,9 +488,9 @@ export default function OpenWhenPage() {
           <button
             type="button"
             className="owcPreviewButton"
-            onClick={preview}
+            disabled={busy||uploadBusy||!ready} onClick={preview}
           >
-            PREVIEW GIFT →
+            CREATE GIFT →
           </button>
         </div>
       )}
@@ -627,7 +586,7 @@ export default function OpenWhenPage() {
             <button
               type="button"
               className="owcClose"
-              onClick={()=>setEditingId(null)}
+              disabled={uploadBusy||busy} onClick={()=>setEditingId(null)}
             >
               ×
             </button>
@@ -697,63 +656,7 @@ export default function OpenWhenPage() {
 
                 </div>
 
-                <div className="owcMediaRow">
-
-                  <label>
-                    <b>{editing.photo ? "✓" : "▣"}</b>
-                    <span>
-                      {editing.photo ? "PHOTO ADDED" : "ADD PHOTO"}
-                    </span>
-
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e)=>
-                        readFile(
-                          e.target.files?.[0],
-                          (value)=>updateMoment("photo",value)
-                        )
-                      }
-                    />
-                  </label>
-
-                  <label>
-                    <b>{editing.voice ? "✓" : "◉"}</b>
-                    <span>
-                      {editing.voice ? "VOICE ADDED" : "ADD VOICE"}
-                    </span>
-
-                    <input
-                      type="file"
-                      accept="audio/*"
-                      onChange={(e)=>
-                        readFile(
-                          e.target.files?.[0],
-                          (value)=>updateMoment("voice",value)
-                        )
-                      }
-                    />
-                  </label>
-
-                  <label>
-                    <b>{editing.video ? "✓" : "▶"}</b>
-                    <span>
-                      {editing.video ? "VIDEO ADDED" : "ADD VIDEO"}
-                    </span>
-
-                    <input
-                      type="file"
-                      accept="video/*"
-                      onChange={(e)=>
-                        readFile(
-                          e.target.files?.[0],
-                          (value)=>updateMoment("video",value)
-                        )
-                      }
-                    />
-                  </label>
-
-                </div>
+                <div className="cloudUploads">{['photo','video','voice','gift'].map(kind=><div key={kind}><p>{kind.toUpperCase()}</p>{upload(`${editing.id}-${kind}`,kind,editing[kind],file=>updateMoment(kind,file))}</div>)}</div>
 
               </div>
 
@@ -858,7 +761,7 @@ export default function OpenWhenPage() {
 
               <button
                 type="button"
-                onClick={()=>setEditingId(null)}
+                disabled={uploadBusy||busy} onClick={()=>setEditingId(null)}
               >
                 SAVE MOMENT ♡
               </button>
@@ -868,6 +771,8 @@ export default function OpenWhenPage() {
         </div>
       )}
 
+      <style jsx>{`.cloudNotice{position:relative;z-index:300;padding:16px;background:#fff4ee;color:#653441;}.cloudUploads{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;}.cloudUploads p{font:700 10px Arial,sans-serif;letter-spacing:.1em;}@media(max-width:600px){.cloudUploads{grid-template-columns:1fr;}}`}</style>
     </main>
   );
 }
+

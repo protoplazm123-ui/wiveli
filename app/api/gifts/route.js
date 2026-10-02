@@ -1,3 +1,4 @@
+import { normalizeOpenWhen } from "../../lib/open-when";
 import { normalizeStory } from "../../lib/our-story";
 import { normalizeWishGift } from "../../lib/wish-note";
 import { validateCouponAttachments } from "../../lib/coupon-attachments";
@@ -54,6 +55,7 @@ export async function POST(request) {
       );
     }
 
+    if (giftType === "open-when") giftData=normalizeOpenWhen(giftData,user.id);
     if (giftType === "our-story") giftData = normalizeStory(giftData,user.id);
     if (giftType === "wish-note") giftData = normalizeWishGift(giftData, user.id);
     if (giftType === "love-coupons") validateCouponAttachments(giftData, user.id);
@@ -224,7 +226,7 @@ export async function POST(request) {
     /* ===================================== */
 
     const giftBaseUrl =
-      ["love-coupons", "wish-note", "our-story"].includes(giftType)
+      ["love-coupons", "wish-note", "our-story", "open-when"].includes(giftType)
         ? `${new URL(request.url).origin}/gift/${giftType}/${encodeURIComponent(gift.id)}`
         : `https://wiveli.vercel.app/gift/${gift.id}`;
 
@@ -265,6 +267,7 @@ export async function POST(request) {
     );
   }
 }
+
 
 
 

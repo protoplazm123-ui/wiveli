@@ -313,7 +313,7 @@ function CosmicWorld({ onReady, onError }) {
   );
 }
 
-export default function OpenWhenGiftPage() {
+export default function OpenWhenGiftPage({giftId=null}) {
   const [gift, setGift] = useState(FALLBACK);
   const [loaded, setLoaded] = useState(false);
   const [modelReady, setModelReady] = useState(false);
@@ -335,41 +335,22 @@ export default function OpenWhenGiftPage() {
     setModelError(true);
   }, []);
 
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem("wiveli-open-when-v2");
-
-      if (stored) {
-        const parsed = JSON.parse(stored);
-
-        if (Array.isArray(parsed?.moments) && parsed.moments.length) {
-          setGift({
-            ...FALLBACK,
-            ...parsed,
-            theme: {
-              ...FALLBACK.theme,
-              ...(parsed.theme || {}),
-            },
-          });
-        }
-      }
-
-      const savedOpened = JSON.parse(
-        localStorage.getItem("wiveli-open-when-opened-v1") || "[]"
-      );
-
-      const savedResponses = JSON.parse(
-        localStorage.getItem("wiveli-open-when-responses-v1") || "[]"
-      );
-
-      if (Array.isArray(savedOpened)) setOpened(savedOpened);
-      if (Array.isArray(savedResponses)) setResponses(savedResponses);
-    } catch (error) {
-      console.error(error);
-    }
-
-    setLoaded(true);
-  }, []);
+  const [claimToken,setClaimToken]=useState(''),[error,setError]=useState(''),[notice,setNotice]=useState(''),[saving,setSaving]=useState(false),[refresh,setRefresh]=useState(0);
+  const savingRef=useRef(false);
+  const [reply,setReply]=useState({note:'',date:'',time:'',place:''});
+  useEffect(()=>{
+    if(!giftId){setLoaded(true);return;}
+    const token=new URLSearchParams(window.location.search).get('claim')||'';setClaimToken(token);let live=true;const controller=new AbortController();setError('');
+    fetch(`/api/gifts/${encodeURIComponent(giftId)}/open-when/media`,{headers:token?{'x-wiveli-gift-token':token}:{},cache:'no-store',signal:controller.signal}).then(async r=>{const d=await r.json();if(!r.ok)throw Error(d.error||'Could not open this gift.');return d;}).then(d=>{if(!live)return;setGift(d.gift);setOpened((d.gift.openedMoments||[]).map(x=>x.momentId));setResponses(d.gift.responses||[]);setLoaded(true);setNotice(d.failed?'Some files did not load. Please use Refresh files.':'');fetch(`/api/gifts/${encodeURIComponent(giftId)}/opened`,{method:'POST',headers:token?{'x-wiveli-gift-token':token}:{}}).catch(()=>{});}).catch(e=>{if(live)setError(e.message);});
+    const timer=setTimeout(()=>{if(live)setRefresh(v=>v+1);},45*60*1000);
+    return()=>{live=false;controller.abort();clearTimeout(timer);};
+  },[giftId,refresh]);
+  useEffect(()=>{if(!loaded||modelReady||modelError)return;const timer=setTimeout(()=>setModelError(true),15000);return()=>clearTimeout(timer);},[loaded,modelReady,modelError]);
+  async function saveAction(action,momentId){
+    if(!giftId)return {preview:true};
+    const r=await fetch(`/api/gifts/${encodeURIComponent(giftId)}/open-when/events`,{method:'POST',headers:{'Content-Type':'application/json',...(claimToken?{'x-wiveli-gift-token':claimToken}:{})},body:JSON.stringify({action,momentId:String(momentId),...(action==='respond'?reply:{})})});const d=await r.json();if(!r.ok)throw Error(d.error||'Could not save. Please try again.');
+    if(d.openedMoments)setOpened(d.openedMoments.map(x=>x.momentId));if(d.responses)setResponses(d.responses);return d;
+  }
 
   const selected = useMemo(
     () =>
@@ -381,7 +362,7 @@ export default function OpenWhenGiftPage() {
 
   const theme = gift.theme?.id || "cosmic";
   const accent = gift.theme?.accent || "#8c63c7";
-  const pageReady = loaded && (theme !== "cosmic" || modelReady);
+  const pageReady = loaded && (theme !== "cosmic" || modelReady || modelError);
 
   const isOpened = (id) =>
     opened.some((item) => String(item) === String(id));
@@ -389,23 +370,8 @@ export default function OpenWhenGiftPage() {
   const hasResponded = (id) =>
     responses.some((item) => String(item.momentId) === String(id));
 
-  const saveEvent = (event) => {
-    try {
-      const stored = JSON.parse(
-        localStorage.getItem("wiveli-open-when-events-v1") || "[]"
-      );
-      const current = Array.isArray(stored) ? stored : [];
-
-      localStorage.setItem(
-        "wiveli-open-when-events-v1",
-        JSON.stringify([...current, event])
-      );
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const chooseMoment = (moment) => {
+    if(savingRef.current)return;setReply({note:'',date:'',time:'',place:''});setNotice('');
     setSelectedId(moment.id);
     setShowExtras(false);
     setFlipped(false);
@@ -413,77 +379,21 @@ export default function OpenWhenGiftPage() {
     requestAnimationFrame(() => setFocused(true));
   };
 
-  const markOpened = (moment) => {
-    if (isOpened(moment.id)) return;
-
-    const next = [...opened, moment.id];
-    setOpened(next);
-
-    try {
-      localStorage.setItem(
-        "wiveli-open-when-opened-v1",
-        JSON.stringify(next)
-      );
-    } catch (error) {
-      console.error(error);
-    }
-
-    saveEvent({
-      id: `opened-${moment.id}-${Date.now()}`,
-      type: "OPENED",
-      momentId: moment.id,
-      momentTitle: moment.title,
-      recipient: gift.recipient,
-      sender: gift.sender,
-      message: `${gift.recipient} opened "${moment.title}" ♡`,
-      createdAt: new Date().toISOString(),
-    });
+  const flipCard=async()=>{
+    if(!selected||savingRef.current)return;
+    if(flipped){setFlipped(false);return;}
+    if(isOpened(selected.id)){setFlipped(true);return;}
+    savingRef.current=true;setSaving(true);setNotice('');
+    try{const d=await saveAction('open',selected.id);if(d.preview)setOpened(old=>[...old,selected.id]);setFlipped(true);}catch(e){setNotice(e.message);}finally{savingRef.current=false;setSaving(false);}
   };
-
-  const flipCard = () => {
-    if (!selected) return;
-
-    if (!flipped) {
-      setFlipped(true);
-      markOpened(selected);
-    } else {
-      setFlipped(false);
-    }
-  };
-
-  const sendResponse = () => {
-    if (!selected?.interaction?.enabled) return;
-    if (hasResponded(selected.id) || responseSent) return;
-
-    const response = {
-      id: `response-${selected.id}-${Date.now()}`,
-      momentId: selected.id,
-      momentTitle: selected.title,
-      recipient: gift.recipient,
-      sender: gift.sender,
-      message:
-        selected.interaction.response ||
-        `${gift.recipient} wants to do this with you ♡`,
-      createdAt: new Date().toISOString(),
-    };
-
-    const next = [...responses, response];
-    setResponses(next);
-    setResponseSent(true);
-
-    try {
-      localStorage.setItem(
-        "wiveli-open-when-responses-v1",
-        JSON.stringify(next)
-      );
-    } catch (error) {
-      console.error(error);
-    }
-
-    saveEvent({ ...response, type: "RESPONSE" });
+  const sendResponse=async()=>{
+    if(!selected?.interaction?.enabled||hasResponded(selected.id)||responseSent||savingRef.current)return;
+    savingRef.current=true;setSaving(true);setNotice('');
+    try{const d=await saveAction('respond',selected.id);if(d.preview){setNotice('Preview only — no reply was sent.');}else{setResponseSent(true);setNotice('Your reply was saved in the sender’s Inbox.');}}catch(e){setNotice(e.message);}finally{savingRef.current=false;setSaving(false);}
   };
 
   const returnCard = () => {
+    if(savingRef.current)return;
     setShowExtras(false);
     setFlipped(false);
 
@@ -500,13 +410,16 @@ export default function OpenWhenGiftPage() {
   const customBackground = gift.theme?.customBackground;
   const customIsVideo =
     typeof customBackground === "string" &&
-    customBackground.startsWith("data:video");
+    (gift.theme?.backgroundMimeType?.startsWith("video/") || customBackground.startsWith("data:video"));
 
+  if(error)return <main style={{padding:40}}><h1>Could not open your gift</h1><p>{error}</p><button onClick={()=>setRefresh(v=>v+1)}>TRY AGAIN</button></main>;
   if (!loaded) return <LoadingScreen />;
 
   return (
     <>
       {!pageReady && <LoadingScreen failed={modelError} />}
+      {(notice||saving||!giftId)&&<div className="owCloudStatus" role="status">{saving?'Saving…':notice||'DEMO PREVIEW · Nothing is sent.'}</div>}
+      <style jsx>{`.owCloudStatus{position:fixed;z-index:10000;bottom:16px;left:5%;width:90%;box-sizing:border-box;background:#fff8f2;color:#693743;padding:14px;border:1px solid #d8c2c2;border-radius:16px;font:14px/1.5 Arial,sans-serif;}.owReplyFields{display:grid;gap:12px;text-align:left;margin:20px 0;}.owReplyFields input,.owReplyFields textarea{box-sizing:border-box;width:100%;padding:12px;border:1px solid #bba8b7;border-radius:10px;background:#fffaf7;color:#59333f;font:16px/1.4 Arial,sans-serif;}.owReplyFields label{font:12px Arial,sans-serif;}`}</style>
 
       <main
         className={`owrPage owrTheme-${theme} ${
@@ -518,7 +431,7 @@ export default function OpenWhenGiftPage() {
           visibility: pageReady ? "visible" : "hidden",
         }}
       >
-        {theme === "cosmic" && (
+        {theme === "cosmic" && !modelError && (
           <CosmicWorld
             onReady={handleModelReady}
             onError={handleModelError}
@@ -598,7 +511,7 @@ export default function OpenWhenGiftPage() {
         </header>
 
         <div className="owrHint">
-          <span>FROM {gift.sender || "SOMEONE SPECIAL"}</span>
+          <span>FROM {gift.sender || "SOMEONE SPECIAL"}</span>{giftId&&<button disabled={saving} onClick={()=>setRefresh(v=>v+1)}>REFRESH FILES ↻</button>}
           <p>
             {theme === "romantic"
               ? "For every moment you need a little bit of me."
@@ -759,7 +672,7 @@ export default function OpenWhenGiftPage() {
                 <div className="owrAfterCard">
                   {(selected.photo ||
                     selected.voice ||
-                    selected.video) && (
+                    selected.video || selected.gift) && (
                     <button
                       type="button"
                       onClick={() => setShowExtras((value) => !value)}
@@ -791,10 +704,10 @@ export default function OpenWhenGiftPage() {
                   </p>
 
                   {!responseSent ? (
-                    <button type="button" onClick={sendResponse}>
+                    <div>{['note','date','time','place'].map(key=><label className="owReplyFields" key={key}>{key.toUpperCase()} (OPTIONAL){key==='note'?<textarea value={reply.note} maxLength={2000} onChange={e=>setReply(old=>({...old,note:e.target.value}))}/>:<input type={key==='date'?'date':key==='time'?'time':'text'} maxLength={300} value={reply[key]} onChange={e=>setReply(old=>({...old,[key]:e.target.value}))}/>}</label>)}<button type="button" disabled={saving} onClick={sendResponse}>
                       {selected.interaction.button ||
                         `TELL ${gift.sender?.toUpperCase()} ♡`}
-                    </button>
+                    </button></div>
                   ) : (
                     <div className="owrSent">
                       <strong>
@@ -827,6 +740,7 @@ export default function OpenWhenGiftPage() {
                   </div>
                 )}
 
+                {selected.gift && <div>{selected.giftMimeType?.startsWith('image/')?<img src={selected.gift} alt="Your gift" style={{width:'100%',objectFit:'contain'}}/>:<object data={selected.gift} type="application/pdf" style={{width:'100%',height:360}} aria-label="Gift certificate"><p>Open your certificate below.</p></object>}<a href={selected.gift} target="_blank" rel="noopener noreferrer">OPEN CERTIFICATE ↗</a></div>}
                 {selected.video && (
                   <div className="owrVideo">
                     <video src={selected.video} controls playsInline />
@@ -840,3 +754,4 @@ export default function OpenWhenGiftPage() {
     </>
   );
 }
+
