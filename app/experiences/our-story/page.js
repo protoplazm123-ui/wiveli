@@ -404,11 +404,7 @@ const copyLink=async()=>{
       </main>
     );
   }
-          />
-        </section>
-      </main>
-    );
-  }
+
 
   return (
     <main className="osePage">
