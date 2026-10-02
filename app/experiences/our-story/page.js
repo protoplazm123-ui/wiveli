@@ -115,19 +115,20 @@ export default function OurStoryEditor() {
 
   const [ready,setReady]=useState(false),[error,setError]=useState(''),[busy,setBusy]=useState(false),[created,setCreated]=useState(null);
   const [uploads,setUploads]=useState({}),[previewUrls,setPreviewUrls]=useState({});
+  const [copied,setCopied]=useState(false);
 
   const uploadBusy=Object.values(uploads).some(Boolean);
-const [copied,setCopied]=useState(false);
 
-const copyLink=async()=>{
-  try{
-    await navigator.clipboard.writeText(created.giftUrl);
-    setCopied(true);
-    setTimeout(()=>setCopied(false),2000);
-  }catch{
-    setError('Could not copy. Select the link and copy it manually.');
-  }
-};
+  const copyLink=async()=>{
+    try{
+      await navigator.clipboard.writeText(created.giftUrl);
+      setCopied(true);
+      setTimeout(()=>setCopied(false),2000);
+    }catch{
+      setError('Could not copy. Select the link and copy it manually.');
+    }
+  };
+
   const state={
     recipient,
     sender,
@@ -212,6 +213,20 @@ const copyLink=async()=>{
       return;
     }
 
+    if(!recipient.trim()||!sender.trim()){
+      setError('Fill in both names on step 1.');
+      setStep(1);
+      return;
+    }
+
+    const emptyIndex=memories.findIndex(m=>!(m.title||'').trim());
+
+    if(emptyIndex!==-1){
+      setError(`Memory ${String(emptyIndex+1).padStart(2,'0')} needs a title.`);
+      setStep(2);
+      return;
+    }
+
     setBusy(true);
     setError('');
 
@@ -261,7 +276,37 @@ const copyLink=async()=>{
     }
   };
 
-   if(created){
+  const errorToast = error ? (
+    <p
+      role="alert"
+      onClick={()=>setError('')}
+      title="Click to dismiss"
+      style={{
+        position: "fixed",
+        left: "50%",
+        bottom: "80px",
+        transform: "translateX(-50%)",
+        zIndex: 99999,
+        width: "min(560px, calc(100vw - 40px))",
+        padding: "16px 20px",
+        background: "#741020",
+        color: "#fff",
+        borderRadius: "14px",
+        font: "14px/1.5 Arial, sans-serif",
+        textAlign: "center",
+        boxShadow: "0 10px 40px rgba(0,0,0,.4)",
+        cursor: "pointer",
+      }}
+    >
+      {error}
+    </p>
+  ) : null;
+
+  /* ============================================= */
+  /* STORY CREATED                                 */
+  /* ============================================= */
+
+  if(created){
     return (
       <main className="osePage">
 
@@ -324,6 +369,7 @@ const copyLink=async()=>{
 
           <div className="doneCard deliveryWrap">
             <TelegramGiftDelivery
+              variant="dark"
               giftType="our-story"
               giftId={created.id}
               recipientName={recipient}
@@ -335,6 +381,8 @@ const copyLink=async()=>{
           </div>
 
         </section>
+
+        {errorToast}
 
         <style jsx>{`
           .doneCard{
@@ -405,18 +453,19 @@ const copyLink=async()=>{
     );
   }
 
+  /* ============================================= */
+  /* EDITOR                                        */
+  /* ============================================= */
 
   return (
     <main className="osePage">
 
-      {(error||uploadBusy)&&(
+      {uploadBusy&&(
         <p
           role="status"
           style={{padding:20}}
         >
-          {error||
-            "Uploading your files… Please wait before continuing."
-          }
+          Uploading your files… Please wait before continuing.
         </p>
       )}
 
@@ -1106,77 +1155,44 @@ const copyLink=async()=>{
           {step === 5 && "PREVIEW"}
         </span>
 
-                      {step < 5 ? (
+        {step < 5 ? (
+
           <button
             type="button"
             className="oseContinue"
-            disabled={uploadBusy || busy || !ready}
+            disabled={
+              uploadBusy ||
+              busy ||
+              !ready
+            }
             onClick={() =>
-              setStep((current) => Math.min(5, current + 1))
+              setStep((current) =>
+                Math.min(5, current + 1)
+              )
             }
           >
             CONTINUE →
           </button>
+
         ) : (
+
           <button
             type="button"
             className="oseContinue"
-            disabled={busy || !ready}
+            disabled={busy||!ready}
             onClick={saveStory}
           >
-            {busy ? "CREATING…" : "CREATE OUR STORY ♡"}
+            {busy
+              ? "CREATING…"
+              : "CREATE OUR STORY ♡"
+            }
           </button>
+
         )}
-      </nav>
-
-      {error && (
-        <p
-          role="alert"
-          style={{
-            position: "fixed",
-            left: "50%",
-            bottom: "80px",
-            transform: "translateX(-50%)",
-            zIndex: 99999,
-            width: "min(560px, calc(100vw - 40px))",
-            padding: "16px 20px",
-            background: "#741020",
-            color: "#fff",
-            borderRadius: "14px",
-            font: "14px/1.5 Arial, sans-serif",
-            textAlign: "center",
-            boxShadow: "0 10px 40px rgba(0,0,0,.4)",
-          }}
-        >
-          {error}
-        </p>
-      )}
-      </nav>
-
-      {error && (
-        <p
-          role="alert"
-          style={{
-            position: "fixed",
-            left: "50%",
-            bottom: "80px",
-            transform: "translateX(-50%)",
-            zIndex: 99999,
-            width: "min(560px, calc(100vw - 40px))",
-            padding: "16px 20px",
-            background: "#741020",
-            color: "#fff",
-            borderRadius: "14px",
-            font: "14px/1.5 Arial, sans-serif",
-            textAlign: "center",
-            boxShadow: "0 10px 40px rgba(0,0,0,.4)",
-          }}
-        >
-          {error}
-        </p>
-      )}
 
       </nav>
+
+      {errorToast}
 
       <style jsx>{`
         .storyUploads{
