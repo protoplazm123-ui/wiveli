@@ -4,19 +4,23 @@ import { webcrypto } from "node:crypto";
 import test from "node:test";
 import assert from "node:assert/strict";
 
+const GIFT_ID = "11111111-1111-4111-8111-111111111111";
+const CLAIM_TOKEN = "22222222-2222-4222-8222-222222222222";
 const read = path => readFileSync(new URL("../" + path, import.meta.url), "utf8");
 const clean = source => source.replace(/^import .*;\n/gm, "").replaceAll("export ", "");
 function setup(options = {}) {
   const messages = new Map();
   let sends = 0, patches = 0;
+  const payloads = [];
+  const invitations = new Map();
   const gift = {
     senderName: "Julia", recipientName: "Sam", couponIds: ["dinner"],
     customCoupons: [{ id: "dinner", title: "<Dinner>", reminderEnabled: options.remind ?? true }],
     dailyLimit: 3, redemptions: options.redeemed === false ? [] : [{ couponId: "dinner", code: "LOVE-1234" }],
   };
   const participants = [
-    { role: "sender", user_id: "sender", gift_id: "gift" },
-    { role: "recipient", user_id: "recipient", gift_id: "gift", claim_token: "private-token" },
+    { role: "sender", user_id: "sender", gift_id: GIFT_ID },
+    { role: "recipient", user_id: "recipient", gift_id: GIFT_ID, claim_token: CLAIM_TOKEN },
   ];
   const connection = { user_id: "recipient", connected: true, telegram_chat_id: 22, telegram_username: "sam_user" };
   const response = (value, status = 200) => ({
@@ -33,14 +37,29 @@ function setup(options = {}) {
       const u = new URL(url), body = init.body ? JSON.parse(init.body) : {};
       if (u.pathname === "/auth/v1/user") return response({ id: options.user || "recipient" });
       if (u.hostname === "api.telegram.org") {
+        if (u.pathname.endsWith("/getMe")) return response({ ok: true, result: { username: "WIVELI_bot" } });
+        if (u.pathname.endsWith("/answerCallbackQuery")) return response({ ok: true });
         if (u.pathname.endsWith("/getChat")) return response({ ok: true, result: { type: "private", username: options.changedUsername ? "someone_else" : "sam_user" } });
         sends++;
+        payloads.push(body);
         if (options.timeout) throw Error("Network timeout");
         if (options.blocked) return response({ ok: false }, 403);
         assert.equal(body.parse_mode, undefined, "User text must not be interpreted as HTML");
         return response({ ok: true, result: { message_id: 55 } });
       }
-      if (u.pathname.endsWith("/gift_participants")) return response(participants);
+      if (u.pathname.endsWith("/gift_participants")) {
+        const token = u.searchParams.get("claim_token");
+        return response(participants.filter(p => (!token || "eq." + p.claim_token === token) && (!u.searchParams.get("role") || "eq." + p.role === u.searchParams.get("role"))));
+      }
+      if (u.pathname.endsWith("/wiveli_gift_invitations")) {
+        if (init.method === "POST") { invitations.set(body.gift_id, body); return response([body]); }
+        const row = invitations.get(u.searchParams.get("gift_id")?.slice(3));
+        return response(row ? [row] : []);
+      }
+      if (u.pathname.endsWith("/wiveli_telegram_contacts")) {
+        if (init.method === "POST") return response([body]);
+        return response(options.disconnected ? [] : [connection]);
+      }
       if (u.pathname.endsWith("/telegram_connections")) {
         if (options.disconnected) return response([]);
         if (u.searchParams.get("user_id") === "eq.sender") return response([{ ...connection, user_id: "sender", telegram_chat_id: 11 }]);
@@ -73,11 +92,12 @@ function setup(options = {}) {
   });
   vm.runInContext(clean(read("app/lib/gift-telegram.js")), context);
   const helper = vm.runInContext("({ sendOnce, notifySender })", context);
+  context.sendGiftOnce = helper.sendOnce;
   return {
-    messages, gift, helper, sends: () => sends, patches: () => patches,
-    route(name) {
-      vm.runInContext(clean(read(`app/api/gifts/[id]/${name}/route.js`)), context);
-      return (body = {}) => context.POST({ url: `https://site.test/api/gifts/gift/${name}`, json: async () => body }, { params: Promise.resolve({ id: "gift" }) });
+    messages, gift, helper, payloads, invitations, sends: () => sends, patches: () => patches,
+    route(name, method = "POST") {
+      vm.runInContext(clean(read(name === "webhook" ? "app/api/telegram/webhook/route.js" : name === "read" ? "app/api/gifts/[id]/route.js" : `app/api/gifts/[id]/${name}/route.js`)), context);
+      return (body = {}) => context[method]({ url: `https://site.test/api/gifts/${GIFT_ID}/${name}`, headers: { get: name => name === "x-wiveli-gift-token" ? options.guestToken || null : null }, json: async () => body }, { params: Promise.resolve({ id: GIFT_ID }) });
     },
   };
 }
@@ -154,4 +174,63 @@ test("automatic reminder respects coupon toggle; failed concurrent save never no
   const conflict = setup({ redeemed: false, conflict: true });
   assert.equal((await conflict.route("redeem")({ couponId: "dinner" })).status, 409);
   assert.equal(conflict.sends(), 0);
+});
+
+test("guest can read, redeem and notify without a WIVELI account", async () => {
+  const s = setup({ anonymous: true, guestToken: CLAIM_TOKEN, redeemed: false });
+  assert.equal((await s.route("read", "GET")()).status, 200);
+  assert.equal((await s.route("redeem")({ couponId: "dinner" })).status, 200);
+  assert.equal((await s.route("notify")({ couponId: "dinner" })).status, 200);
+  assert.equal(s.sends(), 1);
+});
+test("missing or incorrect private token cannot read, redeem or notify", async () => {
+  for (const token of [undefined, "33333333-3333-4333-8333-333333333333"]) {
+    for (const name of ["read", "redeem", "notify", "opened"]) {
+      const s = setup({ anonymous: true, guestToken: token });
+      const result = await s.route(name, name === "read" ? "GET" : "POST")({ couponId: "dinner" });
+      assert.ok([401,403].includes(result.status));
+      assert.equal(s.sends(), 0);
+    }
+  }
+});
+test("first opening notifies sender once; coupon use is a separate notification", async () => {
+  const s = setup({ anonymous: true, guestToken: CLAIM_TOKEN });
+  const opened = s.route("opened");
+  assert.equal((await opened()).status, 200);
+  assert.equal((await opened()).body.alreadySent, true);
+  assert.equal(s.sends(), 1);
+  assert.equal((await s.route("notify")({ couponId: "dinner" })).status, 200);
+  assert.equal(s.sends(), 2);
+});
+test("signed-in sender preview does not trigger opening notification", async () => {
+  const s = setup({ user: "sender", guestToken: CLAIM_TOKEN });
+  const result = await s.route("opened")();
+  assert.equal(result.body.preview, true);
+  assert.equal(s.sends(), 0);
+});
+test("sender invitation leads from bot Start directly to gift without signup", async () => {
+  const s = setup({ user: "sender" });
+  const invitation = await s.route("deliver", "GET")();
+  assert.equal(invitation.body.inviteUrl, `https://t.me/WIVELI_bot?start=gift_${CLAIM_TOKEN}`);
+  const webhook = s.route("webhook");
+  const update = { message: { chat: { id: 22, type: "private" }, from: { id: 22, username: "sam_user" }, text: `/start gift_${CLAIM_TOKEN}` } };
+  assert.equal((await webhook(update)).status, 200);
+  assert.equal(s.sends(), 1);
+  assert.match(s.payloads[0].text, /Julia/);
+  assert.equal(s.payloads[0].reply_markup.inline_keyboard[0][0].url, `https://site.test/gift/love-coupons/${GIFT_ID}?claim=${CLAIM_TOKEN}`);
+  assert.equal((await webhook(update)).status, 200);
+  assert.equal(s.sends(), 1);
+});
+test("direct bot gift Start button is bound to its destination chat", async () => {
+  const s = setup({ user: "sender" });
+  assert.equal((await s.route("deliver")({ recipientUsername: "sam_user" })).status, 200);
+  assert.equal(s.payloads[0].reply_markup.inline_keyboard[0][0].callback_data, `gift_start:${GIFT_ID}`);
+  const webhook = s.route("webhook");
+  const result = await webhook({ callback_query: {
+    id: "callback", from: { id: 22 }, message: { chat: { id: 22, type: "private" } },
+    data: `gift_start:${GIFT_ID}`,
+  } });
+  assert.equal(result.status, 200);
+  assert.equal(s.sends(), 2);
+  assert.match(s.payloads[1].reply_markup.inline_keyboard[0][0].url, /claim=/);
 });

@@ -52,6 +52,29 @@ export async function requireParticipant(id, role) {
   return { user, participants };
 }
 
+// The private gift link is a bearer credential. No recipient account is needed.
+// Sender contact details and Telegram credentials are never returned by this check.
+export async function requireGiftAccess(request, id, allowSender = false) {
+  const token = request.headers.get("x-wiveli-gift-token");
+  if (token) {
+    if (!/^[A-Za-z0-9_-]{16,128}$/.test(token)) {
+      throw new GiftError("This private gift link is invalid.", 403);
+    }
+    const participants = await giftParticipants(id);
+    if (!participants.some(p => p.role === "recipient" && p.claim_token === token)) {
+      throw new GiftError("This private gift link is invalid or expired.", 403);
+    }
+    return { participants };
+  }
+  // Existing account-linked gifts continue working without a token.
+  const user = await currentUser();
+  const participants = await giftParticipants(id);
+  if (!participants.some(p => p.user_id === user.id && (p.role === "recipient" || (allowSender && p.role === "sender")))) {
+    throw new GiftError("Please open the original private gift link.", 403);
+  }
+  return { participants };
+}
+
 export async function connectionForUser(userId) {
   if (!userId) return null;
   const rows = await database(`telegram_connections?user_id=eq.${encodeURIComponent(userId)}&connected=eq.true&select=*&limit=1`);
@@ -81,16 +104,19 @@ export async function telegram(method, payload = {}) {
 
 // A unique database key prevents double-clicks and automatic/manual reminders
 // from sending the same message twice. Uncertain deliveries are not retried.
-export async function sendOnce({ key, giftId, userId, payload }) {
+export async function sendOnce({ key, giftId, userId, payload, origin = null }) {
   if (!process.env.TELEGRAM_BOT_TOKEN) throw new GiftError("WIVELI Telegram bot is not configured.");
   let reserved = await database("wiveli_telegram_messages?on_conflict=message_key", {
     method: "POST", headers: { Prefer: "resolution=ignore-duplicates,return=representation" },
-    body: JSON.stringify({ message_key: key, gift_id: giftId, target_user_id: userId, status: "sending" }),
+    body: JSON.stringify({ message_key: key, gift_id: giftId, target_user_id: userId || null, target_chat_id: String(payload.chat_id), delivery_origin: origin, status: "sending" }),
   });
   const filter = `message_key=eq.${encodeURIComponent(key)}`;
   if (!reserved.length) {
-    const [existing] = await database(`wiveli_telegram_messages?${filter}&select=status,target_user_id`);
-    if (existing?.target_user_id !== userId) throw new GiftError("This gift has already been addressed to another recipient.", 409);
+    const [existing] = await database(`wiveli_telegram_messages?${filter}&select=status,target_user_id,target_chat_id`);
+    const sameTarget = existing?.target_chat_id != null
+      ? String(existing.target_chat_id) === String(payload.chat_id)
+      : Boolean(userId) && existing?.target_user_id === userId;
+    if (!sameTarget) throw new GiftError("This gift has already been addressed to another recipient.", 409);
     if (existing?.status === "sent") return { sent: true, alreadySent: true };
     if (existing?.status !== "failed") throw new GiftError("Delivery is processing or awaiting confirmation. Check the bot chat; a duplicate message will not be sent.", 409);
     reserved = await database(`wiveli_telegram_messages?${filter}&status=eq.failed`, {
@@ -127,5 +153,20 @@ export async function notifySender({ giftId, gift, redemption, origin }) {
     key: `redeemed:${giftId}:${redemption.couponId}`, giftId, userId: sender.user_id,
     payload: { chat_id: connection.telegram_chat_id, text,
       reply_markup: { inline_keyboard: [[{ text: "OPEN WIVELI →", url: origin + "/account" }]] } },
+  });
+}
+
+export async function notifyGiftOpened({ giftId, gift, origin }) {
+  const participants = await giftParticipants(giftId);
+  const sender = participants.find(p => p.role === "sender");
+  const connection = await connectionForUser(sender?.user_id);
+  if (!connection?.telegram_chat_id) throw new GiftError("The sender needs to connect Telegram first.", 409);
+  return sendOnce({
+    key: `opened:${giftId}`, giftId, userId: sender.user_id,
+    payload: {
+      chat_id: connection.telegram_chat_id,
+      text: `♡ WIVELI\n\n${String(gift.recipientName || "Your recipient").slice(0,100)} opened your gift from ${String(gift.senderName || "you").slice(0,100)}.`,
+      reply_markup: { inline_keyboard: [[{ text: "OPEN WIVELI →", url: origin + "/account" }]] },
+    },
   });
 }

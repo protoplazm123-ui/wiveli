@@ -3,10 +3,33 @@
 import { useState } from "react";
 
 export default function TelegramGiftDelivery({ giftId, onBack }) {
+  const [inviteUrl, setInviteUrl] = useState("");
+  const [inviteBusy, setInviteBusy] = useState(false);
+  const [inviteMessage, setInviteMessage] = useState("");
   const [username, setUsername] = useState("");
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
   const [message, setMessage] = useState("");
+
+  async function createInvitation() {
+    if (inviteBusy) return;
+    setInviteBusy(true);
+    setInviteMessage("");
+    try {
+      const response = await fetch(`/api/gifts/${encodeURIComponent(giftId)}/deliver`, { cache: "no-store" });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.error || "Could not create invitation.");
+      setInviteUrl(data.inviteUrl);
+    } catch (error) { setInviteMessage(error.message); }
+    finally { setInviteBusy(false); }
+  }
+
+  async function copyInvitation() {
+    try {
+      await navigator.clipboard.writeText(`I made a gift for you ♡ Open this invitation and press Start — WIVELI will show you your gift. No registration needed.\n${inviteUrl}`);
+      setInviteMessage("INVITATION COPIED ♡ Send it to your person in any messenger.");
+    } catch { setInviteMessage("Select and copy the invitation link below."); }
+  }
 
   async function deliver(event) {
     event.preventDefault();
@@ -31,8 +54,21 @@ export default function TelegramGiftDelivery({ giftId, onBack }) {
     <section className="delivery">
       <p className="eyebrow">SEND FROM WIVELI</p>
       <h2>A LITTLE SURPRISE<br /><em>IN TELEGRAM.</em></h2>
-      <p>The WIVELI bot will send your gift with an Open your gift button.</p>
-      <p>First, your recipient needs to connect Telegram in their WIVELI account and press Start in the bot.</p>
+      <p>Send a personal invitation. They open the bot, press Start, and receive your gift — no WIVELI account needed.</p>
+      {!inviteUrl ? (
+        <button type="button" onClick={createInvitation} disabled={inviteBusy}>
+          {inviteBusy ? "PREPARING…" : "CREATE BOT INVITATION ♡"}
+        </button>
+      ) : (
+        <div>
+          <label htmlFor="bot-invitation">PRIVATE BOT INVITATION</label>
+          <input id="bot-invitation" value={inviteUrl} readOnly onFocus={e => e.target.select()} />
+          <button type="button" onClick={copyInvitation}>COPY INVITATION ♡</button>
+        </div>
+      )}
+      {inviteMessage && <p role="status">{inviteMessage}</p>}
+      <hr />
+      <p>Already using the WIVELI bot? You can also send the gift directly to their Telegram username.</p>
       <form onSubmit={deliver}>
         <label htmlFor="recipient-telegram">RECIPIENT&apos;S TELEGRAM USERNAME</label>
         <input id="recipient-telegram" value={username} onChange={e => setUsername(e.target.value)}

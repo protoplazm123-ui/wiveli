@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 export default function RedemptionResult({
   giftId,
+  claimToken,
   coupon,
   redemption,
   senderName,
@@ -33,7 +34,7 @@ export default function RedemptionResult({
     try {
       const response = await fetch(`/api/gifts/${encodeURIComponent(giftId)}/notify`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...(claimToken ? { "x-wiveli-gift-token": claimToken } : {}) },
         body: JSON.stringify({ couponId: redemption.couponId }),
       });
       const data = await response.json();

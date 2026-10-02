@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireParticipant, notifySender, GiftError } from "../../../../lib/gift-telegram";
+import { requireGiftAccess, notifySender, GiftError } from "../../../../lib/gift-telegram";
 
 function isValidTimeZone(value) {
   if (!value || typeof value !== "string") {
@@ -80,7 +80,7 @@ function makePublicGift(gift) {
 export async function POST(request, { params }) {
   try {
     const { id } = await params;
-    await requireParticipant(id, "recipient");
+    await requireGiftAccess(request, id);
 
     const supabaseUrl =
       process.env.SUPABASE_URL;

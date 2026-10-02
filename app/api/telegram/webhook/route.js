@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
+import { sendOnce as sendGiftOnce } from "../../../lib/gift-telegram";
 
 const WIVELI_URL = "https://wiveli.vercel.app";
 
 export async function POST(request) {
   try {
+    const webhookSecret = process.env.TELEGRAM_WEBHOOK_SECRET;
+    if (webhookSecret && request.headers.get("x-telegram-bot-api-secret-token") !== webhookSecret) {
+      return NextResponse.json({ ok: false }, { status: 403 });
+    }
     const update = await request.json();
-
-    console.log("TELEGRAM UPDATE:", JSON.stringify(update));
 
     /* ======================================== */
     /* INLINE BUTTONS                           */
@@ -37,13 +40,66 @@ export async function POST(request) {
       return NextResponse.json({ ok: true });
     }
 
+    // Remember Telegram chats independently from WIVELI accounts.
+    // Receiving a private message means this person has already opened the bot.
+    if (message.chat.type === "private" && message.from?.id === message.chat.id) {
+      await supabaseRequest("/rest/v1/wiveli_telegram_contacts?on_conflict=telegram_chat_id", {
+        method: "POST",
+        headers: { Prefer: "resolution=merge-duplicates,return=representation" },
+        body: JSON.stringify({
+          telegram_chat_id: message.chat.id,
+          telegram_user_id: message.from.id,
+          telegram_username: message.from.username || null,
+          updated_at: new Date().toISOString(),
+        }),
+      });
+    }
+
     /* ======================================== */
     /* START                                    */
     /* ======================================== */
 
     if (text.startsWith("/start")) {
-      const parts = text.split(" ");
+      const parts = text.split(/\s+/);
       const connectCode = parts[1];
+
+      if (connectCode?.startsWith("gift_")) {
+        const token = connectCode.slice(5);
+        if (!/^[0-9a-f-]{36}$/i.test(token)) {
+          await sendMessage(chatId, "This gift invitation is invalid.");
+          return NextResponse.json({ ok: true });
+        }
+        const [recipient] = await supabaseRequest(
+          `/rest/v1/gift_participants?claim_token=eq.${encodeURIComponent(token)}&role=eq.recipient&select=gift_id&limit=1`
+        );
+        if (!recipient) {
+          await sendMessage(chatId, "This gift invitation is invalid or expired.");
+          return NextResponse.json({ ok: true });
+        }
+        const giftId = recipient.gift_id;
+        const [invitation] = await supabaseRequest(
+          `/rest/v1/wiveli_gift_invitations?gift_id=eq.${encodeURIComponent(giftId)}&select=origin&limit=1`
+        );
+        const [gift] = await supabaseRequest(
+          `/rest/v1/gifts?id=eq.${encodeURIComponent(giftId)}&gift_type=eq.love-coupons&select=gift_data&limit=1`
+        );
+        if (!gift || !invitation?.origin) {
+          await sendMessage(chatId, "Please ask the sender for a new invitation link.");
+          return NextResponse.json({ ok: true });
+        }
+        await sendGiftOnce({
+          key: `gift-invite:${giftId}:${chatId}`, giftId, userId: null,
+          payload: {
+            chat_id: chatId,
+            text: `You received a WIVELI gift from ${String(gift.gift_data?.senderName || "someone special").slice(0,100)} ♡\n\nOpen your gift below — no registration needed.`,
+            reply_markup: { inline_keyboard: [[{
+              text: "OPEN YOUR GIFT ♡",
+              url: `${invitation.origin}/gift/love-coupons/${encodeURIComponent(giftId)}?claim=${encodeURIComponent(token)}`,
+            }]] },
+          },
+        });
+        return NextResponse.json({ ok: true });
+      }
 
       if (connectCode) {
         const connected = await connectAccount(
@@ -188,7 +244,7 @@ export async function POST(request) {
       error
     );
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: false }, { status: 500 });
   }
 }
 
@@ -214,6 +270,34 @@ async function handleCallback(callback) {
   if (!chatId) return;
 
   await answerCallback(callback.id);
+
+  // START on the gift message opens the gift without creating a website account.
+  if (data.startsWith("gift_start:")) {
+    if (callback.message?.chat?.type !== "private" || callback.from?.id !== chatId) return;
+    const giftId = data.slice("gift_start:".length);
+    if (!/^[0-9a-f-]{36}$/i.test(giftId)) return;
+    const [delivery] = await supabaseRequest(
+      `/rest/v1/wiveli_telegram_messages?message_key=eq.${encodeURIComponent(`gift:${giftId}`)}&status=eq.sent&select=target_chat_id,delivery_origin`
+    );
+    if (!delivery || String(delivery.target_chat_id) !== String(chatId)) {
+      await sendMessage(chatId, "This gift is not available in this chat yet. Please try again shortly.");
+      return;
+    }
+    const [recipient] = await supabaseRequest(
+      `/rest/v1/gift_participants?gift_id=eq.${encodeURIComponent(giftId)}&role=eq.recipient&select=claim_token&limit=1`
+    );
+    if (!recipient?.claim_token || !delivery.delivery_origin) return;
+    const giftUrl = `${delivery.delivery_origin}/gift/love-coupons/${encodeURIComponent(giftId)}?claim=${encodeURIComponent(recipient.claim_token)}`;
+    await sendGiftOnce({
+      key: `gift-open:${giftId}`, giftId, userId: null,
+      payload: {
+        chat_id: chatId,
+        text: "Your WIVELI gift is ready ♡\n\nOpen it below — no registration needed.",
+        reply_markup: { inline_keyboard: [[{ text: "OPEN YOUR GIFT ♡", url: giftUrl }]] },
+      },
+    });
+    return;
+  }
 
   /* ACCEPT INVITATION */
 
@@ -979,3 +1063,4 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
 }
+

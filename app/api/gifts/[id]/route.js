@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireGiftAccess, GiftError } from "../../../lib/gift-telegram";
 
 export async function GET(request, { params }) {
   try {
@@ -34,6 +35,7 @@ export async function GET(request, { params }) {
     let publicGift;
 
     if (row.gift_type === "love-coupons") {
+      await requireGiftAccess(request, id, true);
       publicGift = {
         senderName: stored.senderName || "",
         recipientName: stored.recipientName || "",
@@ -77,8 +79,9 @@ export async function GET(request, { params }) {
     console.error(error);
 
     return NextResponse.json(
-      { error: "Could not load gift." },
-      { status: 500 }
+      { error: error instanceof GiftError ? error.message : "Could not load gift." },
+      { status: error.status || 500 }
     );
   }
 }
+

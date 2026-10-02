@@ -62,70 +62,7 @@ export default function PrivateLoveCouponsGift() {
 
     async function loadGift() {
       try {
-        /*
-          If this is a private recipient link,
-          connect the logged-in WIVELI account
-          to this gift.
-        */
-
-        if (claimToken) {
-          const claimResponse =
-            await fetch(
-              `/api/gifts/${encodeURIComponent(
-                id
-              )}/claim`,
-              {
-                method: "POST",
-
-                headers: {
-                  "Content-Type":
-                    "application/json",
-                },
-
-                body: JSON.stringify({
-                  claimToken,
-                }),
-              }
-            );
-
-          const claimData =
-            await claimResponse.json();
-
-        /*
-  NOT LOGGED IN
-
-  Preserve the complete private gift URL,
-  including the claim token,
-  and return here after login/signup.
-*/
-
-if (
-  !claimResponse.ok &&
-  claimData.requiresLogin
-) {
-  const giftUrl =
-    `/gift/love-coupons/${encodeURIComponent(
-      id
-    )}?claim=${encodeURIComponent(
-      claimToken
-    )}`;
-
-  window.location.replace(
-    `/login?next=${encodeURIComponent(
-      giftUrl
-    )}`
-  );
-
-  return;
-}
-
-if (!claimResponse.ok) {
-  throw new Error(
-    claimData.error ||
-      "Could not claim gift"
-  );
-}
-}
+        // Possession of the private link authorizes the recipient without signup.
         /*
           LOAD GIFT FROM SUPABASE
         */
@@ -136,6 +73,8 @@ if (!claimResponse.ok) {
           )}`,
           {
             cache: "no-store",
+            headers: claimToken ? { "x-wiveli-gift-token": claimToken } : {},
+            referrerPolicy: "no-referrer",
           }
         );
 
@@ -166,14 +105,19 @@ if (!claimResponse.ok) {
 
         setGift(loadedGift);
 
+        // Opening notifications are independent from viewing/redeeming the gift.
+        // Failure must never block the recipient; the server deduplicates retries.
+        fetch(`/api/gifts/${encodeURIComponent(id)}/opened`, {
+          method: "POST",
+          headers: claimToken ? { "x-wiveli-gift-token": claimToken } : {},
+        }).catch(() => {});
+
         /*
           Local copy is only cache.
           Supabase is source of truth.
         */
 
-        saveLoveCouponsGift(
-          loadedGift
-        );
+        try { saveLoveCouponsGift(loadedGift); } catch { /* Optional cache. */ }
       } catch (loadError) {
         console.error(
           "Load gift error:",
@@ -353,7 +297,7 @@ if (!claimResponse.ok) {
           headers: {
             "Content-Type":
               "application/json",
-          },
+            ...(claimToken ? { "x-wiveli-gift-token": claimToken } : {}),          },
 
           body: JSON.stringify({
             couponId: coupon.id,
@@ -382,9 +326,7 @@ if (!claimResponse.ok) {
 
         setGift(updatedGift);
 
-        saveLoveCouponsGift(
-          updatedGift
-        );
+        try { saveLoveCouponsGift(updatedGift); } catch { /* Optional cache. */ }
 
         setRedeemedCoupon(
           coupon
@@ -518,6 +460,7 @@ if (!claimResponse.ok) {
     return (
       <RedemptionResult
         giftId={id}
+        claimToken={claimToken}
         coupon={
           redeemedCoupon
         }
@@ -957,4 +900,3 @@ if (!claimResponse.ok) {
     </main>
   );
 }
-
