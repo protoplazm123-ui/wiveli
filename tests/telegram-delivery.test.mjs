@@ -35,6 +35,7 @@ function setup(options = {}) {
     NextResponse: { json: (body, init) => ({ body, status: init?.status || 200 }) },
     fetch: async (url, init = {}) => {
       const u = new URL(url), body = init.body ? JSON.parse(init.body) : {};
+      if (u.pathname.endsWith("/wiveli_account_events")) return response([body]);
       if (u.pathname === "/auth/v1/user") return response({ id: options.user || "recipient" });
       if (u.hostname === "api.telegram.org") {
         if (u.pathname.endsWith("/getMe")) return response({ ok: true, result: { username: "WIVELI_bot" } });
@@ -90,6 +91,7 @@ function setup(options = {}) {
       throw Error("Unexpected fetch: " + url);
     },
   });
+  vm.runInContext(clean(read("app/lib/session.js")), context);
   vm.runInContext(clean(read("app/lib/gift-telegram.js")), context);
   vm.runInContext(clean(read("app/lib/recipient-response.js")), context);
   const helper = vm.runInContext("({ sendOnce, notifySender })", context);

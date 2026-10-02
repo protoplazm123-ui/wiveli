@@ -1,3 +1,4 @@
+import { setSessionCookies } from "../../../lib/session";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
@@ -51,9 +52,9 @@ export async function POST(request) {
       );
     }
 
-    return NextResponse.json({
-      success: true,
-    });
+    const result = NextResponse.json({success: true, authenticated: Boolean(data.access_token && data.refresh_token)});
+    if (data.access_token && data.refresh_token) setSessionCookies(result.cookies, data);
+    return result;
   } catch (error) {
     console.error("Signup error:", error);
 
@@ -63,3 +64,4 @@ export async function POST(request) {
     );
   }
 }
+

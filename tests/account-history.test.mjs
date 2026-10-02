@@ -13,13 +13,13 @@ test('answers are trimmed, whitelisted and validated',()=>{
  assert.equal(Object.keys(c.normalizeRecipientResponse(undefined)).length,0);
 });
 test('history retains answers and use time, resolves titles and excludes used coupons',()=>{
- const c=context();vm.runInContext(clean(read('lib/account-gifts.js')),c);
+ const c=context();vm.runInContext(clean(read('lib/session.js')),c);vm.runInContext(clean(read('lib/account-gifts.js')),c);
  const gift=c.giftDetails({id:'one',gift_data:{couponIds:['movie','dinner'],redemptions:[{couponId:'movie',redeemedAt:'2026-10-02T12:00:00Z',recipientResponse:{choice:'Film',date:'2026-10-05',place:'Cinema',secret:'hidden'}}]}});
  assert.equal(gift.redemptions[0].title,'Movie night');assert.equal(gift.redemptions[0].recipientResponse.place,'Cinema');assert.equal(gift.redemptions[0].recipientResponse.secret,undefined);assert.equal(gift.unusedCoupons.length,1);assert.equal(gift.redemptions[0].redeemedAt,'2026-10-02T12:00:00Z');
  assert.equal(c.giftDetails({gift_data:{}}).redemptions.length,0);
 });
 test('unauthenticated account cannot read storage',async()=>{
- const c=context({cookies:async()=>({get:()=>undefined}),fetch:()=>{throw Error('must not fetch')}});vm.runInContext(clean(read('lib/account-gifts.js')),c);
+ const c=context({cookies:async()=>({get:()=>undefined}),fetch:()=>{throw Error('must not fetch')}});vm.runInContext(clean(read('lib/session.js')),c);vm.runInContext(clean(read('lib/account-gifts.js')),c);
  await assert.rejects(c.accountUser(),e=>e.status===401);
 });
 test('detail requires sender membership before reading gift',async()=>{
@@ -29,7 +29,7 @@ test('detail requires sender membership before reading gift',async()=>{
 });
 test('list contains only sender gifts sorted newest first',async()=>{
  const c=context({accountUser:async()=>({id:'owner',email:'x@y'}),accountRows:async p=>p.startsWith('gift_participants')?[{gift_id:'a'},{gift_id:'b'}]:[{id:'a',gift_data:{createdAt:'2026-01-01'}},{id:'b',gift_data:{createdAt:'2026-10-01'}},{id:'intruder',gift_data:{}}]});
- vm.runInContext(clean(read('lib/account-gifts.js')),c);
+ vm.runInContext(clean(read('lib/session.js')),c);vm.runInContext(clean(read('lib/account-gifts.js')),c);
  // Replace storage/auth with mocks after loading shared projection.
  c.accountUser=async()=>({id:'owner',email:'x@y'});c.accountRows=async p=>p.startsWith('gift_participants')?[{gift_id:'a'},{gift_id:'b'}]:[{id:'a',gift_data:{createdAt:'2026-01-01'}},{id:'b',gift_data:{createdAt:'2026-10-01'}},{id:'intruder',gift_data:{}}];
  vm.runInContext(clean(read('api/account/gifts/route.js')),c);

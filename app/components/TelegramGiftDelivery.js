@@ -83,6 +83,12 @@ export default function TelegramGiftDelivery({ giftId, onBack }) {
         Then enable Remind me on a coupon, or let the recipient use Tell the sender after redeeming it.</p>
       <button type="button" onClick={onBack} disabled={busy}>← BACK TO GIFT LINK</button>
       <style jsx>{`
+        .delivery { display: block; box-sizing: border-box; width: 100%; min-width: 0; height: auto; min-height: 0; padding: 0; position: relative; overflow-wrap: anywhere; }
+        .delivery form, .delivery > div { display: block; width: 100%; min-width: 0; margin: 0; padding: 0; position: static; }
+        .delivery input { min-width: 0; max-width: 100%; font-size: 16px; color: #741020; }
+        .delivery button { max-width: 100%; height: auto; white-space: normal; overflow-wrap: anywhere; }
+        .delivery h2 { overflow-wrap: normal; }
+
         .delivery { max-width: 620px; margin: auto; color: #741020; }
         .eyebrow, label { font: bold 10px Arial, sans-serif; letter-spacing: .13em; }
         h2 { font: 48px/.95 Georgia, serif; margin: 24px 0; }
@@ -98,3 +104,4 @@ export default function TelegramGiftDelivery({ giftId, onBack }) {
     </section>
   );
 }
+

@@ -2156,7 +2156,7 @@ function Modal({
   wide = false,
 }) {
   return (
-    <div className="modalBackdrop">
+    <div className="modalBackdrop" role="dialog" aria-modal="true">
       <div
         className={
           wide
@@ -2199,6 +2199,8 @@ function Modal({
         .modalCard {
           position: relative;
 
+          box-sizing: border-box;
+          min-width: 0;
           width: min(1050px, 100%);
 
           max-height:
@@ -2271,13 +2273,13 @@ function Modal({
           }
 
           .modalCard {
-            max-height: none;
-
-            padding:
-              58px
-              20px
-              35px;
-
+            box-sizing: border-box;
+            width: 100%;
+            min-width: 0;
+            max-height: calc(100dvh - 24px);
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            padding: 58px 20px 35px;
             border-radius: 18px;
           }
 
@@ -3700,5 +3702,6 @@ function MiniTicketRoll({ coupons = [] }) {
     </div>
   );
 }
+
 
 

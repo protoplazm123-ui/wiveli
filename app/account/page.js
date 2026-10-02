@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import TelegramConnect from "../components/TelegramConnect";
 
 export default function AccountPage() {
   const [profile, setProfile] = useState({
@@ -9,6 +11,18 @@ export default function AccountPage() {
     avatar: "",
   });
 
+  const [draft, setDraft] = useState({name: "", email: "", avatar: ""});
+  const dirty = useRef(false);
+  const photoInput = useRef(null);
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [profileReady, setProfileReady] = useState(false);
+  const [profileMessage, setProfileMessage] = useState("");
+  const [profileError, setProfileError] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [inboxError, setInboxError] = useState("");
+  const [inboxLoading, setInboxLoading] = useState(true);
+  const [nextOffset, setNextOffset] = useState(null);
   const [activeTab, setActiveTab] = useState("gifts");
 
   const [gifts, setGifts] = useState([]);
@@ -30,7 +44,7 @@ export default function AccountPage() {
         if (cancelled) return;
         setUnauthorized(res.status === 401);
         if (!res.ok) { setGifts([]); throw new Error(data.error || "Could not load gifts."); }
-        setProfile(data.profile); setGifts(data.gifts);
+        setGifts(data.gifts);
       } catch (e) { if (!cancelled) setError(e.message); }
       finally { if (!cancelled) setLoading(false); }
     }
@@ -55,35 +69,74 @@ export default function AccountPage() {
   }, [selectedId, revision]);
   const formatDate = value => value ? new Intl.DateTimeFormat(undefined, {dateStyle: "medium", timeStyle: "short"}).format(new Date(value)) : "Date unavailable";
 
-  const messages = [
-    {
-      id: 1,
-      title: "Welcome to WIVELI ♡",
-      text: "Your account is ready. Everything you create will live here.",
-      date: "TODAY",
-    },
-  ];
-async function connectTelegram() {
-  try {
-    const response = await fetch("/api/telegram/connect", {
-      method: "POST",
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      alert(data.error || "Could not connect Telegram.");
-      return;
-    }
-
-    window.open(
-      `https://t.me/WIVELI_bot?start=${data.connectCode}`,
-      "_blank"
-    );
-  } catch {
-    alert("Could not connect Telegram.");
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/account/profile", {cache: "no-store"}).then(async res => {
+      const data = await res.json();
+      if (!res.ok) { if (res.status === 401 && !cancelled) setUnauthorized(true); throw new Error(data.error || "Could not load profile."); }
+      if (!cancelled) { setUnauthorized(false); setProfile(data.profile); if (!dirty.current) setDraft(data.profile); setProfileReady(true); setProfileError(""); }
+    }).catch(e => { if (!cancelled) { setProfileError(e.message); setProfileReady(false); } });
+    return () => { cancelled = true; };
+  }, [revision]);
+  useEffect(() => {
+    let cancelled = false;
+    setInboxLoading(true);
+    fetch("/api/account/inbox", {cache: "no-store"}).then(async res => {
+      const data = await res.json(); if (!res.ok) throw new Error(data.error || "Could not load Inbox.");
+      if (!cancelled) { setMessages(data.messages); setNextOffset(data.nextOffset); setInboxError(""); }
+    }).catch(e => { if (!cancelled) setInboxError(e.message); }).finally(() => { if (!cancelled) setInboxLoading(false); });
+    return () => { cancelled = true; };
+  }, [revision]);
+  function editProfile(key, value) { dirty.current = true; setDraft(previous => ({...previous, [key]: value})); setProfileMessage(""); }
+  async function saveProfile(event) {
+    event.preventDefault(); setSaving(true); setProfileMessage(""); setProfileError("");
+    try {
+      const res = await fetch("/api/account/profile", {method: "PUT", headers: {"Content-Type": "application/json"}, body: JSON.stringify(draft)});
+      const data = await res.json(); if (!res.ok) { if (res.status === 401) setUnauthorized(true); throw new Error(data.error || "Could not save profile."); }
+      setProfile(data.profile); setDraft(data.profile); dirty.current = false;
+      setProfileMessage(data.emailConfirmationRequired ? `Profile saved. Confirm the email change using the messages sent to your email addresses. Pending email: ${data.pendingEmail}` : "Your profile has been saved ♡");
+    } catch(e) { setProfileError(e.message); } finally { setSaving(false); }
   }
-}
+  async function uploadPhoto(event) {
+    const file = event.target.files?.[0]; event.target.value = ""; if (!file) return;
+    setUploading(true); setProfileError("");
+    let objectUrl;
+    try {
+      if (!/^image\/(jpeg|png|webp|heic|heif)$/.test(file.type) || file.size > 20 * 1024 * 1024) throw new Error("Choose a photo smaller than 20 MB (JPG, PNG or WebP recommended).");
+      objectUrl = URL.createObjectURL(file);
+      const image = new Image();
+      await new Promise((resolve, reject) => { image.onload = resolve; image.onerror = () => reject(new Error("This photo cannot be opened. Please choose a JPG or PNG.")); image.src = objectUrl; });
+      const scale = Math.min(1, 512 / Math.max(image.width, image.height));
+      const canvas = document.createElement("canvas"); canvas.width = Math.max(1, Math.round(image.width * scale)); canvas.height = Math.max(1, Math.round(image.height * scale));
+      const context = canvas.getContext("2d"); context.fillStyle = "#fffaf5"; context.fillRect(0,0,canvas.width,canvas.height); context.drawImage(image,0,0,canvas.width,canvas.height);
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", .85));
+      if (!blob) throw new Error("Could not prepare photo.");
+      const form = new FormData(); form.append("photo", blob, "profile.jpg");
+      const res = await fetch("/api/account/avatar", {method: "POST", body: form}); const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Could not upload photo.");
+      editProfile("avatar", data.avatar); setProfileMessage("Photo uploaded. Press Save changes to use it.");
+    } catch(e) { setProfileError(e.message); } finally { if (objectUrl) URL.revokeObjectURL(objectUrl); setUploading(false); }
+  }
+  async function openMessage(message) {
+    if (message.readAt) return;
+    try {
+      const res = await fetch("/api/account/inbox", {method: "PATCH", headers: {"Content-Type": "application/json"}, body: JSON.stringify({id: message.id})});
+      if (!res.ok) throw new Error("Could not mark the message as read.");
+      setMessages(previous => previous.map(m => m.id === message.id ? {...m, readAt: new Date().toISOString()} : m));
+    } catch(e) { setInboxError(e.message); }
+  }
+  async function loadMoreMessages() {
+    setInboxLoading(true);
+    try {
+      const res = await fetch(`/api/account/inbox?offset=${nextOffset}`, {cache: "no-store"}); const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Could not load messages.");
+      setMessages(previous => [...previous, ...data.messages.filter(m => !previous.some(old => old.id === m.id))]); setNextOffset(data.nextOffset);
+    } catch(e) { setInboxError(e.message); } finally { setInboxLoading(false); }
+  }
+  async function logout() {
+    const res = await fetch("/api/auth/logout", {method: "POST"});
+    if (res.ok) window.location.assign("/login"); else setProfileError("Could not log out. Please try again.");
+  }
   return (
     <main className="accountPage">
       <header>
@@ -93,7 +146,7 @@ async function connectTelegram() {
 
         <div className="headerRight">
           <a href="/experiences/love-coupons/personalize">CREATE A GIFT</a>
-          <button>LOG OUT</button>
+          <button onClick={logout}>LOG OUT</button>
         </div>
       </header>
 
@@ -151,6 +204,9 @@ async function connectTelegram() {
         </aside>
 
         <section className="content">
+          {unauthorized && <p className="sessionNotice" role="alert">Your session ended. <a href="/login?next=%2Faccount">Sign in again</a> to manage your profile and gifts.</p>}
+          {!unauthorized && profileReady && activeTab !== "profile" && <TelegramConnect />}
+
           {activeTab === "gifts" && (
             <>
               <div className="contentHeader">
@@ -225,69 +281,47 @@ async function connectTelegram() {
                 </div>
               </div>
 
+              <button className="view" onClick={() => setRevision(v => v + 1)}>REFRESH ↻</button>
+              {inboxLoading && <p role="status">Loading messages…</p>}
+              {inboxError && <p role="alert">{inboxError}</p>}
+              {!inboxLoading && !inboxError && !messages.length && <p>No updates yet. Gift openings and coupon uses will appear here.</p>}
               <div className="messages">
-                {messages.map((message) => (
-                  <div className="message" key={message.id}>
-                    <div className="messageHeart">♥</div>
-
-                    <div>
-                      <p className="small">{message.date}</p>
-                      <h3>{message.title}</h3>
-                      <p>{message.text}</p>
-                    </div>
-                  </div>
-                ))}
+                {messages.map(message => <details className="inboxMessage" key={message.id} onToggle={event => { if (event.currentTarget.open) openMessage(message); }}>
+                  <summary><span>{!message.readAt ? "● " : ""}{message.title}</span><small>{formatDate(message.date)}</small></summary>
+                  <p>{message.text}</p>
+                  {message.redemption && <div><p>Used: {formatDate(message.redemption.redeemedAt)}</p><p>Code: {message.redemption.code}</p>
+                    {[["choice", "Choice"], ["date", "Planned date"], ["time", "Planned time"], ["place", "Where"], ["note", "Message"], ["timeZone", "Time zone"]].map(([key,label]) => message.redemption.recipientResponse?.[key] && <p key={key}><strong>{label}: </strong>{message.redemption.recipientResponse[key]}</p>)}
+                  </div>}
+                  <button className="view" onClick={() => { setSelectedId(message.giftId); setActiveTab("gifts"); }}>VIEW GIFT →</button>
+                </details>)}
               </div>
+              {nextOffset !== null && <button className="view" disabled={inboxLoading} onClick={loadMoreMessages}>LOAD MORE</button>}
+
             </>
           )}
 
           {activeTab === "profile" && (
             <div className="profileSettings">
-              <p className="small">YOUR DETAILS</p>
-
-              <h1>
-                YOUR <em>PROFILE.</em>
-              </h1>
-
-              <div className="photoUpload">
-                <div className="bigAvatar">
-                  {profile.avatar ? (
-                    <img src={profile.avatar} alt="" />
-                  ) : (
-                    profile.name?.charAt(0)?.toUpperCase() || "♡"
-                  )}
-                </div>
-
-                <button>CHANGE PHOTO</button>
-              </div>
-
-              <label>
-                NAME
-                <input
-                  value={profile.name}
-                  onChange={(e) =>
-                    setProfile({
-                      ...profile,
-                      name: e.target.value,
-                    })
-                  }
-                />
-              </label>
-
-              <label>
-                EMAIL
-                <input value={profile.email} disabled />
-              </label>
-
-              <button className="save">SAVE CHANGES</button>
-                    <button
-  className="telegramButton"
-  onClick={connectTelegram}
->
-  CONNECT TELEGRAM →
-</button>
+              <p className="small">YOUR DETAILS</p><h1>YOUR <em>PROFILE.</em></h1>
+              {profileError && <p role="alert">{profileError}</p>}
+              {profileMessage && <p role="status">{profileMessage}</p>}
+              <form onSubmit={saveProfile}>
+                <fieldset disabled={!profileReady || saving || uploading || unauthorized}>
+                  <div className="photoUpload">
+                    <div className="bigAvatar">{draft.avatar ? <img src={draft.avatar} alt="Profile preview"/> : draft.name?.charAt(0)?.toUpperCase() || "♡"}</div>
+                    <input ref={photoInput} type="file" accept="image/*" hidden onChange={uploadPhoto}/>
+                    <button type="button" onClick={() => photoInput.current?.click()}>{uploading ? "UPLOADING…" : "CHANGE PHOTO"}</button>
+                  </div>
+                  <label>NAME<input value={draft.name} onChange={e => editProfile("name", e.target.value)} required maxLength={100} autoComplete="name"/></label>
+                  <label>EMAIL<input type="email" value={draft.email} onChange={e => editProfile("email", e.target.value)} required maxLength={254} autoComplete="email"/></label>
+                  <p>Email changes may require confirmation. Your current email stays active until confirmation is complete.</p>
+                  <button type="submit" className="save">{saving ? "SAVING…" : "SAVE CHANGES"}</button>
+                </fieldset>
+              </form>
+              <TelegramConnect />
             </div>
           )}
+
         </section>
       </section>
 
@@ -736,9 +770,23 @@ async function connectTelegram() {
           .contentHeader { flex-wrap: wrap; gap: 20px; }
           .historyCard { padding: 18px; }
         }
+      
+        fieldset { padding: 0; margin: 0; border: 0; min-width: 0; }
+        fieldset:disabled { opacity: .6; }
+        .profileSettings input { font-size: 16px; min-width: 0; }
+        .profileSettings input[hidden] { display: none; }
+        .profileSettings p, .sessionNotice { line-height: 1.6; overflow-wrap: anywhere; }
+        .photoUpload { flex-wrap: wrap; gap: 20px; }
+        .inboxMessage { padding: 22px; border: 1px solid #e6ded8; border-radius: 18px; background: #fffaf5; margin: 15px 0; overflow-wrap: anywhere; }
+        .inboxMessage summary { cursor: pointer; line-height: 1.5; }
+        .inboxMessage small { display: block; margin-top: 8px; }
+        .inboxMessage p { white-space: pre-wrap; line-height: 1.6; }
+        .bigAvatar img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+        @media(max-width: 600px) { .profileSettings h1 { font-size: clamp(32px, 9vw, 52px); } .photoUpload { padding: 20px; } .bigAvatar { width: 80px; height: 80px; flex-shrink: 0; } }
       `}</style>
     </main>
   );
 }
+
 
 

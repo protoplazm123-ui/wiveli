@@ -25,7 +25,7 @@ export default function LoginPage() {
 
     if (
       nextUrl.startsWith("/") &&
-      !nextUrl.startsWith("//")
+      !nextUrl.startsWith("//") && !nextUrl.includes("\\")
     ) {
       return nextUrl;
     }
@@ -84,7 +84,15 @@ export default function LoginPage() {
       const nextUrl =
         getSafeNextUrl();
 
-      router.push(nextUrl);
+      let destination = nextUrl;
+      if (!nextUrl.startsWith("/onboarding")) {
+        try {
+          const status = await fetch("/api/telegram/connect", {cache: "no-store"});
+          const connection = await status.json();
+          if (status.ok && !connection.connected) destination = `/onboarding?next=${encodeURIComponent(nextUrl)}`;
+        } catch { /* The account page offers connection retry. */ }
+      }
+      router.push(destination);
       router.refresh();
     } catch (error) {
       setMessage(error.message);
@@ -569,3 +577,4 @@ export default function LoginPage() {
     </main>
   );
 }
+

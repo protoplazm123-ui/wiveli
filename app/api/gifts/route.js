@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { requireSession } from "../../lib/session";
 
 const ALLOWED_GIFT_TYPES = [
   "love-coupons",
@@ -27,50 +27,7 @@ export async function POST(request) {
     /* CURRENT WIVELI USER                   */
     /* ===================================== */
 
-    const cookieStore = await cookies();
-
-    const accessToken =
-      cookieStore.get("wiveli_access_token")?.value;
-
-    if (!accessToken) {
-      return NextResponse.json(
-        {
-          error:
-            "Please sign in before creating a gift.",
-        },
-        { status: 401 }
-      );
-    }
-
-    const userResponse = await fetch(
-      `${supabaseUrl}/auth/v1/user`,
-      {
-        headers: {
-          apikey: anonKey,
-          Authorization: `Bearer ${accessToken}`,
-        },
-        cache: "no-store",
-      }
-    );
-
-    if (!userResponse.ok) {
-      return NextResponse.json(
-        {
-          error:
-            "Your session has expired. Please sign in again.",
-        },
-        { status: 401 }
-      );
-    }
-
-    const user = await userResponse.json();
-
-    if (!user?.id) {
-      return NextResponse.json(
-        { error: "Could not identify user." },
-        { status: 401 }
-      );
-    }
+    const { user } = await requireSession();
 
     /* ===================================== */
     /* REQUEST                               */
@@ -294,9 +251,10 @@ export async function POST(request) {
 
     return NextResponse.json(
       {
-        error: "Could not create gift.",
+        error: error.status === 401 ? error.message : "Could not create gift.",
       },
-      { status: 500 }
+      { status: error.status || 500 }
     );
   }
 }
+

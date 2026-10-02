@@ -26,12 +26,12 @@ function getLoginUrl() {
 
   const safeNextUrl =
     nextUrl.startsWith("/") &&
-    !nextUrl.startsWith("//")
+    !nextUrl.startsWith("//") && !nextUrl.includes("\\")
       ? nextUrl
       : "/account";
 
   return `/login?next=${encodeURIComponent(
-    safeNextUrl
+    "/onboarding?next=" + encodeURIComponent(safeNextUrl)
   )}`;
 }
 
@@ -83,10 +83,16 @@ function getLoginUrl() {
         );
       }
 
+      if (data.authenticated) {
+        const raw = new URLSearchParams(window.location.search).get("next") || "/account";
+        const next = raw.startsWith("/") && !raw.startsWith("//") && !raw.includes("\\") ? raw : "/account";
+        window.location.assign(`/onboarding?next=${encodeURIComponent(next)}`);
+        return;
+      }
       setSuccess(true);
 
       setMessage(
-        "Check your inbox. We sent you a confirmation email ♡"
+        "Check your email to confirm your account. Then sign in to connect Telegram and receive gift updates ♡"
       );
     } catch (error) {
       setMessage(error.message);
@@ -119,6 +125,7 @@ function getLoginUrl() {
             <em>MEANINGFUL.</em>
           </h1>
 
+          <p className="lead">After registration, connect Telegram by opening the WIVELI bot and pressing Start. Gift updates will appear in your account and the bot. </p>
           <p className="lead">
             Create an account to make,
             save and share gifts made for
@@ -556,3 +563,4 @@ function getLoginUrl() {
     </main>
   );
 }
+

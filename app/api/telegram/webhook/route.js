@@ -811,45 +811,10 @@ async function connectAccount(
   connectCode,
   message
 ) {
-  const connections =
-    await supabaseRequest(
-      `/rest/v1/telegram_connections?connect_code=eq.${encodeURIComponent(
-        connectCode
-      )}&connected=eq.false&select=*`
-    );
-
-  const connection =
-    connections?.[0];
-
-  if (!connection) return false;
-
-  await supabaseRequest(
-    `/rest/v1/telegram_connections?id=eq.${connection.id}`,
-    {
-      method: "PATCH",
-
-      body: JSON.stringify({
-        telegram_chat_id:
-          message.chat.id,
-
-        telegram_user_id:
-          message.from?.id || null,
-
-        telegram_username:
-          message.from?.username ||
-          null,
-
-        connected: true,
-
-        connected_at:
-          new Date().toISOString(),
-
-        connect_code: null,
-      }),
-    }
-  );
-
-  return true;
+  if (message.chat?.type !== "private" || !/^[a-f0-9]{48}$/.test(connectCode)) return false;
+  return Boolean(await supabaseRequest("/rest/v1/rpc/wiveli_connect_telegram", {
+    method: "POST", body: JSON.stringify({p_code: connectCode, p_chat_id: message.chat.id, p_telegram_user_id: message.from?.id || null, p_username: message.from?.username || null}),
+  }));
 }
 
 /* ======================================== */
@@ -1063,4 +1028,5 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
 }
+
 

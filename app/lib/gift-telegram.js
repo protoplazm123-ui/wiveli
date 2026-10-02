@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { requireSession } from "./session";
 import { couponIdeas } from "../experiences/love-coupons/coupons";
 
 export class GiftError extends Error {
@@ -23,18 +23,8 @@ export async function database(path, options = {}) {
 }
 
 export async function currentUser() {
-  const token = (await cookies()).get("wiveli_access_token")?.value;
-  if (!token) throw new GiftError("Please sign in to WIVELI.", 401);
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) throw new GiftError("Authentication is not configured.");
-  const response = await fetch(url + "/auth/v1/user", {
-    headers: { apikey: key, Authorization: `Bearer ${token}` }, cache: "no-store",
-  });
-  if (!response.ok) throw new GiftError("Please sign in again.", 401);
-  const user = await response.json();
-  if (!user.id) throw new GiftError("Please sign in again.", 401);
-  return user;
+  try { return (await requireSession()).user; }
+  catch (error) { throw new GiftError(error.message, error.status || 500); }
 }
 
 export async function giftParticipants(id) {
@@ -170,3 +160,4 @@ export async function notifyGiftOpened({ giftId, gift, origin }) {
     },
   });
 }
+
