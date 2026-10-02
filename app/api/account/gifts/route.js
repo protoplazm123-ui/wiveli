@@ -18,7 +18,7 @@ export async function GET() {
       const rows = await accountRows(`gifts?id=in.(${encodeURIComponent(values)})&select=id,gift_type,gift_data`);
       for (const row of rows) {
         if (!ids.has(row.id)) continue;
-        const { redemptions, unusedCoupons, ...summary } = giftDetails(row);
+        const { redemptions, unusedCoupons, wishes, ...summary } = giftDetails(row);
         gifts.push(summary);
       }
     }
@@ -36,3 +36,4 @@ export async function GET() {
       { status: error.status || 500, headers: { "Cache-Control": "private, no-store" } });
   }
 }
+

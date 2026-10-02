@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useWishDraft } from "../../../lib/use-wish-draft";
+import CouponAttachmentUpload from "../../../components/CouponAttachmentUpload";
+import WishNoteMedia from "../../../components/WishNoteMedia";
 
 const styles = [
   {
@@ -30,26 +33,12 @@ const styles = [
 ];
 
 export default function WishNoteDesign() {
-  const [selectedStyle, setSelectedStyle] = useState("soft");
-  const [photoPreview, setPhotoPreview] = useState(null);
-  const [caption, setCaption] = useState("one of my favorite memories ♡");
-
-  const activeStyle =
-    styles.find((style) => style.id === selectedStyle) || styles[0];
-
-  const handlePhoto = (event) => {
-    const file = event.target.files?.[0];
-
-    if (!file) return;
-
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      setPhotoPreview(reader.result);
-    };
-
-    reader.readAsDataURL(file);
-  };
+  const {draft,change,error}=useWishDraft();
+  const [uploadStates,setUploadStates]=useState({});
+  const uploadBusy=Object.values(uploadStates).some(Boolean);
+  const selectedStyle=draft.style,caption=draft.caption;
+  const setSelectedStyle=v=>change('style',v),setCaption=v=>change('caption',v);
+  const activeStyle=styles.find(style=>style.id===selectedStyle)||styles[0];
 
   return (
     <main className={`designPage design-${selectedStyle}`}>
@@ -144,37 +133,9 @@ export default function WishNoteDesign() {
               </div>
             </div>
 
-            <label className="photoUpload">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handlePhoto}
-              />
+            {error && <p role="alert">{error}</p>}
+            {['photo','video','voice','gift'].map(kind=><div key={kind} style={{marginBottom:24}}><h3>{kind==='gift'?'Certificate or ticket':kind.toUpperCase()}</h3><CouponAttachmentUpload kind={kind} attachment={draft.attachments[kind]} onBusy={value=>setUploadStates(previous=>({...previous,[kind]:value}))} saveHint="Saved in your Wish Note draft." onChange={file=>change('attachments',previous=>{const next={...previous};if(file)next[kind]=file;else delete next[kind];return next;})}/></div>)}
 
-              {photoPreview ? (
-                <img
-                  src={photoPreview}
-                  alt="Gift preview"
-                />
-              ) : (
-                <div className="photoUploadEmpty">
-                  <strong>+</strong>
-                  <span>ADD A PHOTO</span>
-                  <small>JPG, PNG or HEIC</small>
-                </div>
-              )}
-            </label>
-
-            {photoPreview && (
-              <label className="changePhotoButton">
-                Change photo
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handlePhoto}
-                />
-              </label>
-            )}
           </div>
 
           <div className="editorSection">
@@ -219,7 +180,7 @@ export default function WishNoteDesign() {
 
             <a
               className="primary"
-              href="/experiences/wish-note/delivery"
+              href="/experiences/wish-note/preview" onClick={event=>{if(uploadBusy)event.preventDefault();}}
             >
               Continue to Delivery →
             </a>
@@ -256,14 +217,8 @@ export default function WishNoteDesign() {
               </h2>
 
               <div className="designGiftPhoto">
-                {photoPreview ? (
-                  <img
-                    src={photoPreview}
-                    alt="Selected memory"
-                  />
-                ) : (
-                  <span>YOUR MEMORY</span>
-                )}
+                {draft.attachments.photo ? <WishNoteMedia preview={{photo:draft.attachments.photo}}/> : <span>YOUR MEMORY</span>}
+
               </div>
 
               <p className="designGiftCaption">
@@ -285,3 +240,4 @@ export default function WishNoteDesign() {
     </main>
   );
 }
+

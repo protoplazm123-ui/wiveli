@@ -8,7 +8,7 @@ const route = readFileSync(new URL("../app/api/gifts/route.js", import.meta.url)
 const page = readFileSync(new URL("../app/experiences/love-coupons/personalize/page.js", import.meta.url), "utf8");
 const action = page.slice(page.indexOf("const createGift ="), page.indexOf("  const copyGiftLink"));
 
-function api({ loggedIn = true, participantsFail = false } = {}) {
+function api({ loggedIn = true, participantsFail = false, giftType = "love-coupons", giftData = { senderName: "Julia" } } = {}) {
   const calls = [];
   const context = vm.createContext({
     URL, crypto: { randomUUID: () => "claim-token" }, console: { error() {} },
@@ -32,8 +32,9 @@ function api({ loggedIn = true, participantsFail = false } = {}) {
   });
   vm.runInContext(readFileSync(new URL("../app/lib/session.js", import.meta.url), "utf8").replace(/^import .*;\n/gm, "").replaceAll("export ", ""), context);
   vm.runInContext(readFileSync(new URL("../app/lib/coupon-attachments.js", import.meta.url), "utf8").replaceAll("export ", ""), context);
+  vm.runInContext(readFileSync(new URL("../app/lib/wish-note.js", import.meta.url), "utf8").replace(/^import .*;\n/gm, "").replaceAll("export ", ""), context);
   vm.runInContext(route, context);
-  return { calls, run: () => context.POST({ url: "https://preview.example/api/gifts", json: async () => ({ giftType: "love-coupons", giftData: { senderName: "Julia" } }) }) };
+  return { calls, run: () => context.POST({ url: "https://preview.example/api/gifts", json: async () => ({ giftType, giftData }) }) };
 }
 
 test("gift saves and recipient link keeps origin, route and claim token", async () => {
@@ -104,3 +105,9 @@ test("non-JSON server failure shows HTTP status and releases loading state", asy
   assert.equal(state.creating, false);
 });
 
+
+test("Wish Note creation saves settings and returns its own private recipient route", async () => {
+ const s=api({giftType:"wish-note",giftData:{senderName:"Julia",recipientName:"Sam",wishCount:24,categories:["A","B","C","D","E","F"],wishes:[{text:"Forged history"}]}});
+ const r=await s.run();assert.equal(r.status,200);assert.equal(r.body.giftUrl,"https://preview.example/gift/wish-note/gift-123?claim=claim-token");
+ const saved=JSON.parse(s.calls.find(c=>c.url.endsWith("/gifts")).body);assert.equal(saved.gift_type,"wish-note");assert.deepEqual(saved.gift_data.wishes,[]);
+});

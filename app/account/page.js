@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import WishAccountDetail from "../components/WishAccountDetail";
 import TelegramConnect from "../components/TelegramConnect";
 
 export default function AccountPage() {
@@ -145,7 +146,7 @@ export default function AccountPage() {
         </a>
 
         <div className="headerRight">
-          <a href="/experiences/love-coupons/personalize">CREATE A GIFT</a>
+          <a href="/#ideas">CREATE A GIFT</a>
           <button onClick={logout}>LOG OUT</button>
         </div>
       </header>
@@ -217,7 +218,7 @@ export default function AccountPage() {
                   </h1>
                 </div>
 
-                <a className="createButton" href="/experiences/love-coupons/personalize">
+                <a className="createButton" href="/#ideas">
                   + CREATE A GIFT
                 </a>
               </div>
@@ -234,7 +235,8 @@ export default function AccountPage() {
                   </div>
                   {detailError && <p role="alert">{detailError}</p>}
                   {!detail && !detailError && <p role="status">Loading history…</p>}
-                  {detail && <>
+                  {detail?.giftType === "wish-note" && <WishAccountDetail gift={detail}/>}
+                  {detail && detail.giftType !== "wish-note" && <>
                     <div className="historyHero">
                       <div><p className="historyEyebrow">LOVE COUPONS · YOUR GIFT</p><h2>For <em>{detail.recipientName}.</em></h2><p className="historySubtitle">Little promises, brought to life.</p></div>
                       <div className="historyCount"><span>{detail.redeemedCount}<i> / {detail.couponCount}</i></span><p>COUPONS USED</p></div>
@@ -264,7 +266,7 @@ export default function AccountPage() {
                 {!loading && !error && !gifts.length && <p>Your gifts will appear here after you create one.</p>}
                 {gifts.map(gift => <div className="gift" key={gift.id}>
                   <div className="giftIcon">♡</div>
-                  <div className="giftInfo"><p className="small">{gift.giftType?.replaceAll("-", " ").toUpperCase()}</p><h3>For {gift.recipientName}</h3><p>{gift.redeemedCount} / {gift.couponCount} used</p></div>
+                  <div className="giftInfo"><p className="small">{gift.giftType?.replaceAll("-", " ").toUpperCase()}</p><h3>For {gift.recipientName}</h3><p>{gift.giftType === "wish-note" ? `${gift.createdCount} / ${gift.wishCount} wishes · ${gift.completedCount} completed` : `${gift.redeemedCount} / ${gift.couponCount} used`}</p></div>
                   <div className="giftDate"><span>CREATED</span>{formatDate(gift.createdAt)}</div>
                   <button className="view" onClick={() => setSelectedId(gift.id)}>VIEW →</button>
                 </div>)}
@@ -302,6 +304,7 @@ export default function AccountPage() {
                 {messages.map(message => <details className="inboxMessage" key={message.id} onToggle={event => { if (event.currentTarget.open) openMessage(message); }}>
                   <summary><span>{!message.readAt ? "● " : ""}{message.title}</span><small>{formatDate(message.date)}</small></summary>
                   <p>{message.text}</p>
+                  {message.wish && <p>{message.wish.text}<br/>{message.wish.date} {message.wish.time}{message.wish.place ? " · " + message.wish.place : ""}</p>}
                   {message.redemption && <div><p>Used: {formatDate(message.redemption.redeemedAt)}</p><p>Code: {message.redemption.code}</p>
                     {[["choice", "Choice"], ["date", "Planned date"], ["time", "Planned time"], ["place", "Where"], ["note", "Message"], ["timeZone", "Time zone"]].map(([key,label]) => message.redemption.recipientResponse?.[key] && <p key={key}><strong>{label}: </strong>{message.redemption.recipientResponse[key]}</p>)}
                   </div>}
@@ -856,6 +859,7 @@ export default function AccountPage() {
     </main>
   );
 }
+
 
 
 

@@ -1,9 +1,11 @@
+import { normalizeWishGift } from "../../lib/wish-note";
 import { validateCouponAttachments } from "../../lib/coupon-attachments";
 import { NextResponse } from "next/server";
 import { requireSession } from "../../lib/session";
 
 const ALLOWED_GIFT_TYPES = [
   "love-coupons",
+  "wish-note",
   "memory-box",
   "the-gift",
   "our-story",
@@ -34,7 +36,7 @@ export async function POST(request) {
     /* REQUEST                               */
     /* ===================================== */
 
-    const {
+    let {
       giftType,
       giftData,
       recipientEmail = null,
@@ -51,6 +53,7 @@ export async function POST(request) {
       );
     }
 
+    if (giftType === "wish-note") giftData = normalizeWishGift(giftData, user.id);
     if (giftType === "love-coupons") validateCouponAttachments(giftData, user.id);
 
     const serviceHeaders = {
@@ -219,8 +222,8 @@ export async function POST(request) {
     /* ===================================== */
 
     const giftBaseUrl =
-      giftType === "love-coupons"
-        ? `${new URL(request.url).origin}/gift/love-coupons/${encodeURIComponent(gift.id)}`
+      ["love-coupons", "wish-note"].includes(giftType)
+        ? `${new URL(request.url).origin}/gift/${giftType}/${encodeURIComponent(gift.id)}`
         : `https://wiveli.vercel.app/gift/${gift.id}`;
 
     const giftUrl = `${giftBaseUrl}?claim=${encodeURIComponent(claimToken)}`;
@@ -260,5 +263,6 @@ export async function POST(request) {
     );
   }
 }
+
 
 

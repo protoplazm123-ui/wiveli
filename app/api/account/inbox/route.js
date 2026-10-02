@@ -14,10 +14,11 @@ export async function GET(request) {
     const messages = page.map(row => {
       const gift = gifts.find(g => g.id === row.gift_id);
       const redemption = gift ? giftDetails(gift).redemptions.find(r => r.couponId === row.coupon_id) : null;
+      const wish = gift?.gift_type === "wish-note" ? gift.gift_data?.wishes?.find(w=>w.id===row.coupon_id) : null;
       return {id: row.event_key, giftId: row.gift_id, readAt: row.read_at, date: row.occurred_at,
-        title: row.kind === "opened" ? "Your gift was opened ♡" : "A coupon was used ♡",
-        text: `${gift?.gift_data?.recipientName || "Your recipient"} ${row.kind === "opened" ? "opened your gift." : "used " + (redemption?.title || "a Love Coupon") + "."}`,
-        redemption};
+        title: row.kind === "opened" ? "Your gift was opened ♡" : row.kind === "wish-created" ? "A new wish for you ♡" : row.kind === "wish-completed" ? "A wish became a memory ♡" : "A coupon was used ♡",
+        text: `${gift?.gift_data?.recipientName || "Your recipient"} ${row.kind === "opened" ? "opened your gift." : wish ? (row.kind === "wish-created" ? "made a wish." : "completed a wish.") : "used " + (redemption?.title || "a Love Coupon") + "."}`,
+        redemption, wish: wish ? {text:wish.text,date:wish.date,time:wish.time,place:wish.place} : null};
     });
     return NextResponse.json({messages, nextOffset: rows.length > 50 ? offset + 50 : null}, {headers: {"Cache-Control": "private, no-store"}});
   } catch (error) { return NextResponse.json({error: error.message || "Could not load Inbox."}, {status: error.status || 500}); }
@@ -31,3 +32,4 @@ export async function PATCH(request) {
     return NextResponse.json({success: true});
   } catch (error) { return NextResponse.json({error: error.message}, {status: error.status || 500}); }
 }
+

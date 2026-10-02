@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useWishDraft } from "../../../lib/use-wish-draft";
+import WishNoteMedia from "../../../components/WishNoteMedia";
 
 export default function WishNotePreview() {
+  const {draft}=useWishDraft();
   const [device, setDevice] = useState("mobile");
 
   return (
@@ -54,25 +57,25 @@ export default function WishNotePreview() {
 
           <div className="wnPreviewDetail">
             <small>FOR</small>
-            <strong>Sophie ♡</strong>
+            <strong>{draft.recipientName} ♡</strong>
             <a href="/experiences/wish-note/personalize">EDIT</a>
           </div>
 
           <div className="wnPreviewDetail">
             <small>FROM</small>
-            <strong>Alex</strong>
+            <strong>{draft.senderName}</strong>
             <a href="/experiences/wish-note/personalize">EDIT</a>
           </div>
 
           <div className="wnPreviewDetail">
             <small>WISHES</small>
-            <strong>24 wishes</strong>
+            <strong>{draft.isCustom ? draft.customWishCount : draft.wishCount} wishes</strong>
             <a href="/experiences/wish-note/personalize">EDIT</a>
           </div>
 
           <div className="wnPreviewDetail">
             <small>STYLE</small>
-            <strong>Soft Pink</strong>
+            <strong>{{soft:"Soft Pink",minimal:"Minimal",film:"Retro Film",dark:"Dark Romance"}[draft.style]}</strong>
             <a href="/experiences/wish-note/design">EDIT</a>
           </div>
 
@@ -80,7 +83,7 @@ export default function WishNotePreview() {
             <small>MESSAGE</small>
 
             <p>
-              “Your wishes, our plans, and memories waiting to happen.”
+              “{draft.message}”
             </p>
           </div>
 
@@ -127,10 +130,11 @@ export default function WishNotePreview() {
 
               <div className="wnPreviewScreenTop">
                 <span>365 DAYS OF HAPPINESS</span>
-                <span>MADE FOR SOPHIE ♡</span>
+                <span>MADE FOR {draft.recipientName} ♡</span>
               </div>
 
 
+              <WishNoteMedia preview={draft.attachments}/>
               <div className="wnPreviewScreenCenter">
 
                 <small>A LITTLE SOMETHING FOR YOU</small>
@@ -142,9 +146,7 @@ export default function WishNotePreview() {
                 </h2>
 
                 <p>
-                  Your wishes, our plans,
-                  <br />
-                  and memories waiting to happen.
+                  {draft.message}
                 </p>
 
               </div>
@@ -154,10 +156,10 @@ export default function WishNotePreview() {
 
                 <div>
                   <small>FROM</small>
-                  <strong>Alex ♡</strong>
+                  <strong>{draft.senderName} ♡</strong>
                 </div>
 
-                <a href="/gift/wish-note">
+                <a href="/gift/wish-note?preview=1" target="_blank" rel="noopener noreferrer">
                   MAKE A WISH <span>♡</span>
                 </a>
 
@@ -169,7 +171,7 @@ export default function WishNotePreview() {
 
 
           <p className="wnPreviewHint">
-            ♡ Clicking the button opens the real recipient experience
+            ♡ This opens a preview. Create your gift on the next step to save and send it.
           </p>
 
         </div>
@@ -202,3 +204,4 @@ export default function WishNotePreview() {
     </main>
   );
 }
+

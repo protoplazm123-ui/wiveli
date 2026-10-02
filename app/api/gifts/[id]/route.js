@@ -34,7 +34,10 @@ export async function GET(request, { params }) {
 
     let publicGift;
 
-    if (row.gift_type === "love-coupons") {
+    if (row.gift_type === "wish-note") {
+      await requireGiftAccess(request, id, true);
+      publicGift = {senderName:stored.senderName||"",recipientName:stored.recipientName||"",message:stored.message||"",wishCount:stored.wishCount||24,categories:stored.categories||[],style:stored.style||"soft",caption:stored.caption||"",attachments:stored.attachments||{},wishes:stored.wishes||[],createdAt:stored.createdAt||null};
+    } else if (row.gift_type === "love-coupons") {
       await requireGiftAccess(request, id, true);
       publicGift = {
         senderName: stored.senderName || "",
@@ -74,7 +77,7 @@ export async function GET(request, { params }) {
       id: row.id,
       giftType: row.gift_type,
       giftData: publicGift,
-    });
+    }, {headers:{"Cache-Control":"private, no-store"}});
   } catch (error) {
     console.error(error);
 
@@ -84,4 +87,5 @@ export async function GET(request, { params }) {
     );
   }
 }
+
 

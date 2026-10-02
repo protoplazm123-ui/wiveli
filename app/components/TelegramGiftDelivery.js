@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 
-export default function TelegramGiftDelivery({ giftId, onBack }) {
+export default function TelegramGiftDelivery({ giftId, onBack, senderName = "", recipientName = "", giftType = "love-coupons" }) {
+  const [invitationText, setInvitationText] = useState("");
   const [inviteUrl, setInviteUrl] = useState("");
   const [inviteBusy, setInviteBusy] = useState(false);
   const [inviteMessage, setInviteMessage] = useState("");
@@ -20,13 +21,14 @@ export default function TelegramGiftDelivery({ giftId, onBack }) {
       const data = await response.json();
       if (!response.ok || !data.success) throw new Error(data.error || "Could not create invitation.");
       setInviteUrl(data.inviteUrl);
+      setInvitationText(`${recipientName ? recipientName + ", " : ""}у меня для тебя особенный подарок ♡\nЯ создал(а) его специально для тебя.\n\nНажми на ссылку и затем Start в боте WIVELI — там тебя ждёт подарок. Регистрация не нужна.\n${data.inviteUrl}${senderName ? "\n\nС любовью, " + senderName : ""}`);
     } catch (error) { setInviteMessage(error.message); }
     finally { setInviteBusy(false); }
   }
 
   async function copyInvitation() {
     try {
-      await navigator.clipboard.writeText(`I made a gift for you ♡ Open this invitation and press Start — WIVELI will show you your gift. No registration needed.\n${inviteUrl}`);
+      await navigator.clipboard.writeText(invitationText);
       setInviteMessage("INVITATION COPIED ♡ Send it to your person in any messenger.");
     } catch { setInviteMessage("Select and copy the invitation link below."); }
   }
@@ -61,6 +63,9 @@ export default function TelegramGiftDelivery({ giftId, onBack }) {
         </button>
       ) : (
         <div>
+          <label htmlFor="invitation-message">YOUR PERSONAL INVITATION — EDIT BEFORE SENDING</label>
+          <textarea id="invitation-message" value={invitationText} onChange={e=>setInvitationText(e.target.value)} rows={9}/>
+          <p>Copy this message and send it privately to your person. Nothing is sent automatically.</p>
           <label htmlFor="bot-invitation">PRIVATE BOT INVITATION</label>
           <input id="bot-invitation" value={inviteUrl} readOnly onFocus={e => e.target.select()} />
           <button type="button" onClick={copyInvitation}>COPY INVITATION ♡</button>
@@ -79,10 +84,11 @@ export default function TelegramGiftDelivery({ giftId, onBack }) {
         </button>
       </form>
       {message && <p role="status" aria-live="polite">{message}</p>}
-      <p>To receive coupon updates yourself, <a href="/account" target="_blank" rel="noopener noreferrer">connect your Telegram in your account</a>.
-        Then enable Remind me on a coupon, or let the recipient use Tell the sender after redeeming it.</p>
-      <button type="button" onClick={onBack} disabled={busy}>← BACK TO GIFT LINK</button>
+      <p>To receive gift updates yourself, <a href="/account" target="_blank" rel="noopener noreferrer">connect your Telegram in your account</a>.
+        {giftType === "wish-note" ? "Wish Note openings, new wishes and completed wishes appear in your Inbox; your connected bot also sends notifications." : "Then enable Remind me on a coupon, or let the recipient use Tell the sender after redeeming it."}</p>
+      <button type="button" onClick={onBack} disabled={busy}>{giftType === "wish-note" ? "← OPEN YOUR ACCOUNT" : "← BACK TO GIFT LINK"}</button>
       <style jsx>{`
+        textarea { display:block; box-sizing:border-box; width:100%; min-height:190px; resize:vertical; margin:12px 0; padding:16px; border:1px solid #a96b72; border-radius:12px; color:#741020; background:#fff4f0; font:16px/1.5 Georgia,serif; }
         .delivery { display: block; box-sizing: border-box; width: 100%; min-width: 0; height: auto; min-height: 0; padding: 0; position: relative; overflow-wrap: anywhere; }
         .delivery form, .delivery > div { display: block; width: 100%; min-width: 0; margin: 0; padding: 0; position: static; }
         .delivery input { min-width: 0; max-width: 100%; font-size: 16px; color: #741020; }
@@ -104,4 +110,5 @@ export default function TelegramGiftDelivery({ giftId, onBack }) {
     </section>
   );
 }
+
 

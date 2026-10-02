@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import CouponAttachmentUpload from "../../components/CouponAttachmentUpload";
+import WishNoteMedia from "../../components/WishNoteMedia";
+import { EMPTY_WISH_DRAFT, WISH_DRAFT_KEY } from "../../lib/use-wish-draft";
 import CuteCalendar from "../../components/CuteCalendar";
 
-const STORAGE_KEY = "wiveli-wish-note-v1";
-const TOTAL_WISHES = 24;
 
-const categories = [
+
+const defaultCategories = [
   {
     id: "dream",
     name: "Dream Together",
@@ -50,7 +52,14 @@ const pad = (number) => String(number).padStart(2, "0");
 const toDateValue = (date) =>
   `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 
-export default function WishNoteGift() {
+export default function WishNoteGift({giftId = null}) {
+  const [gift,setGift]=useState(null),[claimToken,setClaimToken]=useState("");
+  const [loadError,setLoadError]=useState(""),[actionError,setActionError]=useState(""),[saving,setSaving]=useState(false);
+  const [uploadStates,setUploadStates]=useState({});
+  const uploadBusy=Object.values(uploadStates).some(Boolean);
+  const pendingWishId=useRef(null),savingRef=useRef(false);
+  const TOTAL_WISHES=gift?.wishCount||24;
+  const categories=defaultCategories.map((c,i)=>({...c,name:gift?.categories?.[i]||c.name}));
   const [loaded, setLoaded] = useState(false);
 
   const [step, setStep] = useState("card");
@@ -76,54 +85,24 @@ export default function WishNoteGift() {
      ========================================================= */
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-
-      if (saved) {
-        const parsed = JSON.parse(saved);
-
-        if (Array.isArray(parsed.wishes)) {
-          /*
-            Compatibility with wishes created before
-            we introduced explicit "completed".
-          */
-          const normalized = parsed.wishes.map((wish) => ({
-            ...wish,
-            completed:
-              typeof wish.completed === "boolean"
-                ? wish.completed
-                : Boolean(wish.memory),
-          }));
-
-          setWishes(normalized);
-        }
-      }
-    } catch (error) {
-      console.error("Could not load Wish Note:", error);
+    let cancelled=false;const controller=new AbortController();
+    const token=new URLSearchParams(window.location.search).get("claim")||"";setClaimToken(token);
+    if(!giftId){
+      try{const draft={...EMPTY_WISH_DRAFT,...JSON.parse(localStorage.getItem(WISH_DRAFT_KEY)||"{}")};setGift({...draft,wishCount:draft.isCustom?Number(draft.customWishCount):draft.wishCount});}catch{setGift(EMPTY_WISH_DRAFT);}
+      setLoaded(true);return;
     }
+    setLoaded(false);setLoadError("");
+    fetch(`/api/gifts/${encodeURIComponent(giftId)}`,{cache:"no-store",headers:token?{"x-wiveli-gift-token":token}:{},signal:controller.signal})
+      .then(async res=>{const data=await res.json();if(!res.ok||data.giftType!=="wish-note")throw Error(data.error||"Could not open this Wish Note. Please use the original private link.");return data.giftData;})
+      .then(data=>{if(cancelled)return;setGift(data);setWishes(data.wishes||[]);setLoaded(true);fetch(`/api/gifts/${encodeURIComponent(giftId)}/opened`,{method:"POST",headers:token?{"x-wiveli-gift-token":token}:{}}).catch(()=>{});})
+      .catch(e=>{if(!cancelled)setLoadError(e.message);});
+    return()=>{cancelled=true;controller.abort();};
+  },[giftId]);
 
-    setLoaded(true);
-  }, []);
-
-  /* =========================================================
-     SAVE
-     ========================================================= */
-
-  useEffect(() => {
-    if (!loaded) return;
-
-    try {
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify({
-          wishes,
-          updatedAt: new Date().toISOString(),
-        })
-      );
-    } catch (error) {
-      console.error("Could not save Wish Note:", error);
-    }
-  }, [wishes, loaded]);
+  async function saveAction(body) {
+    const res=await fetch(`/api/gifts/${encodeURIComponent(giftId)}/wish-note`,{method:"POST",headers:{"Content-Type":"application/json",...(claimToken?{"x-wiveli-gift-token":claimToken}:{})},body:JSON.stringify(body)});
+    const data=await res.json();if(!res.ok)throw Error(data.error||"Could not save your wish.");setWishes(data.wishes);return data.wish;
+  }
 
   /* =========================================================
      COUNTERS
@@ -163,6 +142,9 @@ export default function WishNoteGift() {
   };
 
   const closeEverything = () => {
+    if(savingRef.current||uploadBusy)return;
+    setActionError("");
+    pendingWishId.current=null;
     resetForm();
 
     setOpenedWish(null);
@@ -176,46 +158,18 @@ export default function WishNoteGift() {
      CREATE WISH
      ========================================================= */
 
-  const saveWish = () => {
-    if (!selectedCategory) return;
-    if (!wishText.trim()) return;
-    if (!wishDate) return;
-
-    if (createdCount >= TOTAL_WISHES) {
-      setStep("limit");
-      return;
-    }
-
-    const newWish = {
-      id: `${Date.now()}-${Math.random()
-        .toString(16)
-        .slice(2)}`,
-
-      category: selectedCategory,
-
-      text: wishText.trim(),
-      date: wishDate,
-      time: wishTime,
-      place: wishPlace.trim(),
-
-      createdAt: new Date().toISOString(),
-
-      completed: false,
-      completedAt: null,
-
-      memory: null,
-    };
-
-    setWishes((current) => [
-      ...current,
-      newWish,
-    ]);
-
-    setOpenedWish(newWish);
-
-    resetForm();
-
-    setStep("success");
+  const saveWish = async () => {
+    if(savingRef.current||!selectedCategory||!wishText.trim()||!wishDate)return;
+    if(createdCount>=TOTAL_WISHES){setStep("limit");return;}
+    savingRef.current=true;setSaving(true);setActionError("");
+    pendingWishId.current ||= crypto.randomUUID();
+    try {
+      const body={action:"create",wishId:pendingWishId.current,categoryId:selectedCategory.id,text:wishText.trim(),date:wishDate,time:wishTime,place:wishPlace.trim(),timeZone:Intl.DateTimeFormat().resolvedOptions().timeZone||"UTC"};
+      let newWish;
+      if(giftId)newWish=await saveAction(body);
+      else {newWish={...body,id:body.wishId,category:selectedCategory,createdAt:new Date().toISOString(),completed:false,memory:null};setWishes(previous=>[...previous,newWish]);}
+      setOpenedWish(newWish);pendingWishId.current=null;resetForm();setStep("success");
+    }catch(e){setActionError(e.message);}finally{savingRef.current=false;setSaving(false);}
   };
 
   /* =========================================================
@@ -229,7 +183,7 @@ export default function WishNoteGift() {
       wish.memory?.note || ""
     );
 
-    setMemoryFiles([]);
+    setMemoryFiles(wish.memory?.files || []);
 
     setStep("wish-detail");
   };
@@ -238,61 +192,15 @@ export default function WishNoteGift() {
      MEMORY / COMPLETE
      ========================================================= */
 
-  const saveMemory = () => {
-    if (!openedWish) return;
-
-    /*
-      We do NOT store actual media bytes in localStorage.
-
-      For now we only remember metadata.
-      Real files will later go to cloud storage.
-    */
-
-    const fileInfo = memoryFiles.map((file) => ({
-      name: file.name,
-      type: file.type,
-      size: file.size,
-    }));
-
-    const memory = {
-      note: memoryNote.trim(),
-
-      files:
-        fileInfo.length > 0
-          ? fileInfo
-          : openedWish.memory?.files || [],
-
-      createdAt:
-        openedWish.memory?.createdAt ||
-        new Date().toISOString(),
-
-      updatedAt: new Date().toISOString(),
-    };
-
-    const completedAt =
-      openedWish.completedAt ||
-      new Date().toISOString();
-
-    const updatedWish = {
-      ...openedWish,
-
-      memory,
-
-      completed: true,
-      completedAt,
-    };
-
-    setWishes((current) =>
-      current.map((wish) =>
-        wish.id === openedWish.id
-          ? updatedWish
-          : wish
-      )
-    );
-
-    setOpenedWish(updatedWish);
-
-    setStep("memory-saved");
+  const saveMemory = async () => {
+    if(!openedWish||savingRef.current||uploadBusy)return;
+    savingRef.current=true;setSaving(true);setActionError("");
+    try {
+      let updatedWish;
+      if(giftId)updatedWish=await saveAction({action:"memory",wishId:openedWish.id,note:memoryNote.trim(),files:memoryFiles});
+      else {updatedWish={...openedWish,completed:true,completedAt:new Date().toISOString(),memory:{note:memoryNote.trim(),files:[],updatedAt:new Date().toISOString()}};setWishes(previous=>previous.map(w=>w.id===openedWish.id?updatedWish:w));}
+      setOpenedWish(updatedWish);setStep("memory-saved");
+    }catch(e){setActionError(e.message);}finally{savingRef.current=false;setSaving(false);}
   };
 
   /* =========================================================
@@ -371,8 +279,12 @@ export default function WishNoteGift() {
      RENDER
      ========================================================= */
 
+  if(!loaded)return <main style={{padding:40}}><p role={loadError?"alert":"status"}>{loadError||"Opening your Wish Note…"}</p>{loadError&&<button onClick={()=>window.location.reload()}>TRY AGAIN</button>}</main>;
   return (
-    <main className="wishExperience">
+    <main className={`wishExperience wishStyle-${gift?.style || "soft"}`}>
+      {!giftId && <p className="wishNotice">PREVIEW ONLY · Nothing here is sent or saved to an account.</p>}
+      {(actionError||saving) && <div className="wishActionNotice" role={actionError?"alert":"status"}>{actionError||"Saving…"}{actionError&&<button onClick={()=>setActionError("")}>CLOSE</button>}</div>}
+      <style jsx>{`.wishNotice{position:relative;z-index:2;padding:12px;text-align:center;font:12px Arial,sans-serif;}.wishActionNotice{position:fixed;z-index:10000;bottom:20px;left:5%;width:90%;box-sizing:border-box;background:#fffaf5;color:#692f3c;padding:16px;border:1px solid #bc9098;border-radius:16px;box-shadow:0 4px 30px #0002;}.wishActionNotice button{margin-left:12px;}.wishGiftExtras{position:relative;max-width:820px;margin:24px auto;padding:20px;border-radius:20px;background:#fff8f2;color:#692f3c;}.wishStyle-minimal{background:#f3f0e9;}.wishStyle-film{background:#e7d8bd;}.wishStyle-dark{background:#271d26;}.wishOpeningPhoto{overflow:auto;}.wishOpeningPhotoShade{pointer-events:none;}`}</style>
 
       <div className="wishExperienceGlow wishExperienceGlowOne" />
       <div className="wishExperienceGlow wishExperienceGlowTwo" />
@@ -399,9 +311,9 @@ export default function WishNoteGift() {
 
         <div className="wishOpeningPhoto">
 
-          <div className="wishOpeningPhotoPlaceholder">
+          {gift?.attachments?.photo ? (giftId ? <WishNoteMedia giftId={giftId} claimToken={claimToken} photoOnly/> : <WishNoteMedia preview={{photo:gift.attachments.photo}}/>) : <div className="wishOpeningPhotoPlaceholder">
             <span>YOUR MEMORY</span>
-          </div>
+          </div>}
 
           <div className="wishOpeningPhotoShade" />
 
@@ -416,7 +328,7 @@ export default function WishNoteGift() {
             </span>
 
             <span>
-              MADE FOR SOPHIE ♡
+              MADE FOR {gift?.recipientName || "YOU"} ♡
             </span>
 
           </div>
@@ -451,7 +363,7 @@ export default function WishNoteGift() {
 
               {wishes.length
                 ? `${completedCount} / ${TOTAL_WISHES} wishes completed.`
-                : "Your wishes, our plans, and memories waiting to happen."}
+                : gift?.message || "Your wishes, our plans, and memories waiting to happen."}
 
             </p>
 
@@ -461,7 +373,7 @@ export default function WishNoteGift() {
 
             <div>
               <small>FROM</small>
-              <strong>Alex ♡</strong>
+              <strong>{gift?.senderName || "Someone special"} ♡</strong>
             </div>
 
             <button
@@ -489,6 +401,8 @@ export default function WishNoteGift() {
         </div>
 
       </section>
+
+      {step === "card" && Object.keys(gift?.attachments||{}).some(kind=>kind!=="photo") && <details className="wishGiftExtras"><summary>SOMETHING EXTRA FOR YOU ♡</summary>{giftId?<WishNoteMedia giftId={giftId} claimToken={claimToken} excludePhoto/>:<WishNoteMedia preview={Object.fromEntries(Object.entries(gift.attachments).filter(([kind])=>kind!=="photo"))}/>}</details>}
 
       {/* =====================================================
           CALENDAR / BOOK BUTTONS
@@ -984,6 +898,7 @@ export default function WishNoteGift() {
                 <button
                   type="button"
                   className="wishSendButton"
+                  disabled={saving}
                   onClick={saveWish}
                 >
 
@@ -1387,6 +1302,7 @@ export default function WishNoteGift() {
                       THIS BECAME A MEMORY ♡
                     </p>
 
+                    {giftId && <WishNoteMedia giftId={giftId} wishId={openedWish.id} claimToken={claimToken} revision={openedWish.memory?.updatedAt}/>}
                     <blockquote>
                       {openedWish
                         .memory
@@ -1504,42 +1420,7 @@ export default function WishNoteGift() {
 
                 </div>
 
-                <label className="wishMemoryUpload">
-
-                  <input
-                    type="file"
-                    multiple
-                    accept="image/*,video/*,audio/*"
-                    onChange={(event) =>
-                      setMemoryFiles(
-                        Array.from(
-                          event.target
-                            .files || []
-                        )
-                      )
-                    }
-                  />
-
-                  <span>＋</span>
-
-                  <strong>
-                    PHOTO · VIDEO · VOICE
-                  </strong>
-
-                  <small>
-
-                    {memoryFiles.length
-                      ? `${memoryFiles.length} selected`
-                      : openedWish
-                          .memory
-                          ?.files
-                          ?.length
-                      ? `${openedWish.memory.files.length} previously selected`
-                      : "Choose memories from this day"}
-
-                  </small>
-
-                </label>
+                {giftId ? ['photo','video','voice','gift'].map(kind=><div key={kind}><p>{kind.toUpperCase()}</p><CouponAttachmentUpload kind={kind} attachment={memoryFiles.find(file=>file.kind===kind)} endpoint={`/api/gifts/${encodeURIComponent(giftId)}/wish-note/uploads`} headers={claimToken?{"x-wiveli-gift-token":claimToken}:{}} onBusy={value=>setUploadStates(previous=>({...previous,[kind]:value}))} saveHint="Uploaded. Save this memory to attach it to the wish." onChange={file=>setMemoryFiles(previous=>[...previous.filter(f=>f.kind!==kind),...(file?[{...file,kind}]:[])])}/></div>) : <p>File uploads become available in the saved gift.</p>}
 
                 <label className="wishMainInput">
 
@@ -1569,6 +1450,7 @@ export default function WishNoteGift() {
                 <button
                   type="button"
                   className="wishContinueButton"
+                  disabled={saving||uploadBusy}
                   onClick={saveMemory}
                 >
 
@@ -1579,9 +1461,7 @@ export default function WishNoteGift() {
                 </button>
 
                 <p className="wishMemoryStorageNotice">
-                  Media is currently in preview mode.
-                  Actual photo, video and voice files
-                  will be stored when cloud storage is connected.
+                  Your files will stay with this wish after you save the memory.
                 </p>
 
               </div>
@@ -1878,3 +1758,4 @@ export default function WishNoteGift() {
     </main>
   );
 }
+

@@ -23,6 +23,10 @@ export async function accountRows(path) {
 
 export function giftDetails(row) {
   const data = row.gift_data || {};
+  if (row.gift_type === "wish-note") {
+    const wishes = Array.isArray(data.wishes) ? data.wishes : [];
+    return {id:row.id,giftType:row.gift_type,recipientName:data.recipientName||"Your recipient",senderName:data.senderName||"",createdAt:validDate(data.createdAt),wishCount:data.wishCount||24,createdCount:wishes.length,completedCount:wishes.filter(w=>w.completed).length,wishes,redemptions:[],unusedCoupons:[],couponCount:0,redeemedCount:0};
+  }
   const custom = Array.isArray(data.customCoupons) ? data.customCoupons : [];
   const ids = [...new Set([
     ...(Array.isArray(data.couponIds) ? data.couponIds : []),
@@ -50,4 +54,5 @@ export function giftDetails(row) {
 function validDate(value) {
   return typeof value === "string" && Number.isFinite(Date.parse(value)) ? value : null;
 }
+
 

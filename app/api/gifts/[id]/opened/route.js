@@ -11,7 +11,7 @@ export async function POST(request, { params }) {
     if (viewer && participants.some(p => p.role === "sender" && p.user_id === viewer.id)) {
       return NextResponse.json({ success: true, preview: true });
     }
-    const [row] = await database(`gifts?id=eq.${encodeURIComponent(id)}&gift_type=eq.love-coupons&select=gift_data&limit=1`);
+    const [row] = await database(`gifts?id=eq.${encodeURIComponent(id)}&gift_type=in.(love-coupons,wish-note)&select=gift_data&limit=1`);
     if (!row) throw new GiftError("Gift not found.", 404);
     const sender = participants.find(p => p.role === "sender");
     if (sender?.user_id) await database("wiveli_account_events?on_conflict=event_key", {
@@ -26,4 +26,5 @@ export async function POST(request, { params }) {
     return NextResponse.json({ error: error instanceof GiftError ? error.message : "Could not notify the sender." }, { status: error.status || 500 });
   }
 }
+
 

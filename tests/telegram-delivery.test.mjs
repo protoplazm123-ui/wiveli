@@ -73,7 +73,7 @@ function setup(options = {}) {
           assert.ok(body.p_expected);
           Object.assign(gift, body.p_updated);
         }
-        return response([{ id: "gift", gift_type: "love-coupons", gift_data: JSON.parse(JSON.stringify(gift)) }]);
+        return response([{ id: "gift", gift_type: options.giftType || "love-coupons", gift_data: JSON.parse(JSON.stringify(gift)) }]);
       }
       if (u.pathname.endsWith("/wiveli_telegram_messages")) {
         const key = init.method === "POST" ? body.message_key : u.searchParams.get("message_key")?.slice(3);
@@ -94,6 +94,7 @@ function setup(options = {}) {
   vm.runInContext(clean(read("app/lib/session.js")), context);
   vm.runInContext(clean(read("app/lib/gift-telegram.js")), context);
   vm.runInContext(clean(read("app/lib/recipient-response.js")), context);
+  vm.runInContext(clean(read("app/lib/gift-links.js")), context);
   const helper = vm.runInContext("({ sendOnce, notifySender })", context);
   context.sendGiftOnce = helper.sendOnce;
   return {
@@ -246,4 +247,18 @@ test("guest answers persist with redemption and invalid answers do not write", a
  assert.equal((await run({couponId:"dinner",timeZone:"UTC",recipientResponse:{choice:"Film",date:"2026-10-05",time:"19:30",place:"Cinema",note:"See you"}})).status,200);
  assert.equal(s.gift.redemptions[0].recipientResponse.place,"Cinema");
  assert.equal(s.gift.redemptions[0].recipientResponse.timeZone,"UTC");
+});
+
+test("Wish Note invitation opens Wish Note without signup", async () => {
+  const s = setup({ user: "sender", giftType: "wish-note" });
+  const invitation = await s.route("deliver", "GET")();
+  assert.equal(invitation.body.inviteUrl, `https://t.me/WIVELI_bot?start=gift_${CLAIM_TOKEN}`);
+  const webhook = s.route("webhook");
+  const update = { message: { chat: { id: 22, type: "private" }, from: { id: 22, username: "sam_user" }, text: `/start gift_${CLAIM_TOKEN}` } };
+  assert.equal((await webhook(update)).status, 200);
+  assert.equal(s.sends(), 1);
+  assert.match(s.payloads[0].text, /Julia/);
+  assert.equal(s.payloads[0].reply_markup.inline_keyboard[0][0].url, `https://site.test/gift/wish-note/${GIFT_ID}?claim=${CLAIM_TOKEN}`);
+  assert.equal((await webhook(update)).status, 200);
+  assert.equal(s.sends(), 1);
 });

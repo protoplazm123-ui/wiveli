@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useWishDraft } from "../../../lib/use-wish-draft";
 
 const defaultCategories = [
   "Dream Together",
@@ -15,22 +15,13 @@ const categorySymbols = ["♡", "✦", "♥", "☺", "∞", "✉"];
 const wishOptions = [12, 24, 52, 100, 365];
 
 export default function WishNotePersonalize() {
-  const [recipient, setRecipient] = useState("Sophie");
-  const [sender, setSender] = useState("Alex");
-
-  const [message, setMessage] = useState(
-    "I made this little place for your wishes, dreams and all the things we still have to do together."
-  );
-
-  const [wishCount, setWishCount] = useState(24);
-  const [customWishCount, setCustomWishCount] = useState("");
-  const [isCustom, setIsCustom] = useState(false);
-
-  const [categories, setCategories] = useState(defaultCategories);
+  const {draft,change,ready,error}=useWishDraft();
+  const recipient=draft.recipientName,sender=draft.senderName,message=draft.message,wishCount=draft.wishCount,customWishCount=draft.customWishCount,isCustom=draft.isCustom,categories=draft.categories;
+  const setRecipient=v=>change('recipientName',v),setSender=v=>change('senderName',v),setMessage=v=>change('message',v),setWishCount=v=>change('wishCount',v),setCustomWishCount=v=>change('customWishCount',v),setIsCustom=v=>change('isCustom',v),setCategories=v=>change('categories',v);
 
   const finalWishCount =
     isCustom && customWishCount
-      ? Math.max(1, Number(customWishCount))
+      ? Math.min(365, Math.max(1, Number(customWishCount)))
       : wishCount;
 
   const selectWishCount = (count) => {
@@ -47,6 +38,7 @@ export default function WishNotePersonalize() {
 
   return (
     <main className="wnPersonalizePage">
+      {error && <p role="alert">{error}</p>}
       {/* BACKGROUND */}
       <div className="wnPersonalizeGlow wnPersonalizeGlowOne" />
       <div className="wnPersonalizeGlow wnPersonalizeGlowTwo" />
@@ -367,6 +359,7 @@ export default function WishNotePersonalize() {
             <a
               className="wnContinueButton"
               href="/experiences/wish-note/design"
+              onClick={event=>{if(!ready||!recipient.trim()||!sender.trim()||categories.some(c=>!c.trim())){event.preventDefault();alert("Enter both names and all six categories first.");}}}
             >
               Continue
               <span>→</span>
@@ -465,3 +458,4 @@ export default function WishNotePersonalize() {
     </main>
   );
 }
+
