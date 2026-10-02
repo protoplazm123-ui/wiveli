@@ -117,7 +117,17 @@ export default function OurStoryEditor() {
   const [uploads,setUploads]=useState({}),[previewUrls,setPreviewUrls]=useState({});
 
   const uploadBusy=Object.values(uploads).some(Boolean);
+const [copied,setCopied]=useState(false);
 
+const copyLink=async()=>{
+  try{
+    await navigator.clipboard.writeText(created.giftUrl);
+    setCopied(true);
+    setTimeout(()=>setCopied(false),2000);
+  }catch{
+    setError('Could not copy. Select the link and copy it manually.');
+  }
+};
   const state={
     recipient,
     sender,
@@ -251,52 +261,149 @@ export default function OurStoryEditor() {
     }
   };
 
-  if(created){
+   if(created){
     return (
       <main className="osePage">
-        <section
-          style={{
-            maxWidth:720,
-            margin:'40px auto',
-            padding:24
-          }}
-        >
-          <h1>Your story is ready ♡</h1>
 
-          <button
-            type="button"
-            onClick={()=>setCreated(null)}
-          >
-            EDIT A NEW COPY
-          </button>
+        <header className="oseHeader">
+          <a href="/" className="oseLogo">
+            WI<span>♥</span>ELI
+          </a>
+          <div />
+          <a href="/account">← MY ACCOUNT</a>
+        </header>
 
-          <p>
-            Your recipient can open it without registering.
-          </p>
+        <section className="oseStep">
 
-          <label>
-            PRIVATE GIFT LINK
+          <div className="oseIntro">
+            <p>OUR STORY · READY</p>
+            <h1>
+              YOUR STORY
+              <br />
+              <em>IS READY. ♡</em>
+            </h1>
+            <span>
+              Your recipient can open it without registering.
+            </span>
+          </div>
 
-            <input
-              style={{
-                width:'100%',
-                padding:12,
-                fontSize:16
-              }}
-              readOnly
-              value={created.giftUrl}
-              onFocus={e=>e.target.select()}
+          <div className="doneCard">
+            <p className="doneLabel">PRIVATE GIFT LINK</p>
+
+            <div className="doneRow">
+              <input
+                readOnly
+                value={created.giftUrl}
+                onFocus={e=>e.target.select()}
+              />
+              <button
+                type="button"
+                className="oseContinue"
+                onClick={copyLink}
+              >
+                {copied ? "COPIED ✓" : "COPY LINK"}
+              </button>
+            </div>
+
+            <div className="doneActions">
+              <a
+                href={created.giftUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                OPEN STORY ↗
+              </a>
+              <button
+                type="button"
+                onClick={()=>setCreated(null)}
+              >
+                EDIT A NEW COPY
+              </button>
+            </div>
+          </div>
+
+          <div className="doneCard deliveryWrap">
+            <TelegramGiftDelivery
+              giftType="our-story"
+              giftId={created.id}
+              recipientName={recipient}
+              senderName={sender}
+              onBack={()=>
+                window.location.assign('/account')
+              }
             />
-          </label>
+          </div>
 
-          <TelegramGiftDelivery
-            giftType="our-story"
-            giftId={created.id}
-            recipientName={recipient}
-            senderName={sender}
-            onBack={()=>
-              window.location.assign('/account')
-            }
+        </section>
+
+        <style jsx>{`
+          .doneCard{
+            max-width:760px;
+            margin:0 auto 24px;
+            padding:28px;
+            border:1px solid rgba(184,152,242,.2);
+            border-radius:24px;
+            background:linear-gradient(
+              180deg,
+              rgba(255,255,255,.05),
+              rgba(255,255,255,.015)
+            );
+            color:#f3eefc;
+          }
+
+          .doneLabel{
+            margin:0 0 14px;
+            font:700 10px Arial,sans-serif;
+            letter-spacing:.2em;
+            color:#b898f2;
+          }
+
+          .doneRow{
+            display:flex;
+            gap:12px;
+            align-items:center;
+            flex-wrap:wrap;
+          }
+
+          .doneRow input{
+            flex:1 1 280px;
+            min-width:0;
+            padding:14px 16px;
+            border:1px solid rgba(255,255,255,.14);
+            border-radius:14px;
+            background:rgba(255,255,255,.04);
+            color:#fff;
+            font:14px Arial,sans-serif;
+          }
+
+          .doneActions{
+            display:flex;
+            gap:24px;
+            flex-wrap:wrap;
+            margin-top:18px;
+          }
+
+          .doneActions a,
+          .doneActions button{
+            padding:0;
+            border:0;
+            background:none;
+            color:#b898f2;
+            font:700 11px Arial,sans-serif;
+            letter-spacing:.14em;
+            text-decoration:none;
+            cursor:pointer;
+          }
+
+          .doneActions a:hover,
+          .doneActions button:hover{
+            color:#fff;
+          }
+        `}</style>
+
+      </main>
+    );
+  }
           />
         </section>
       </main>
