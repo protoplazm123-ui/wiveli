@@ -235,8 +235,9 @@ export default function AccountPage() {
                   </div>
                   {detailError && <p role="alert">{detailError}</p>}
                   {!detail && !detailError && <p role="status">Loading history…</p>}
+                  {detail?.giftType === "our-story" && <section className="giftHistory"><p className="small">OUR STORY</p><h2>For {detail.recipientName}</h2><p>{detail.viewedCount} / {detail.memoryCount} memories viewed</p><a href={`/gift/our-story/${detail.id}`} target="_blank" rel="noopener noreferrer">OPEN YOUR STORY →</a>{detail.memories.map(m=><article className="giftCard" key={m.id}><div><h3>{m.title}</h3><p>{m.date}{m.place?' · '+m.place:''}</p><p>{m.viewedAt?'Viewed: '+new Date(m.viewedAt).toLocaleString():'Not viewed yet'}</p></div></article>)}</section>}
                   {detail?.giftType === "wish-note" && <WishAccountDetail gift={detail}/>}
-                  {detail && detail.giftType !== "wish-note" && <>
+                  {detail && !["wish-note","our-story"].includes(detail.giftType) && <>
                     <div className="historyHero">
                       <div><p className="historyEyebrow">LOVE COUPONS · YOUR GIFT</p><h2>For <em>{detail.recipientName}.</em></h2><p className="historySubtitle">Little promises, brought to life.</p></div>
                       <div className="historyCount"><span>{detail.redeemedCount}<i> / {detail.couponCount}</i></span><p>COUPONS USED</p></div>
@@ -266,7 +267,7 @@ export default function AccountPage() {
                 {!loading && !error && !gifts.length && <p>Your gifts will appear here after you create one.</p>}
                 {gifts.map(gift => <div className="gift" key={gift.id}>
                   <div className="giftIcon">♡</div>
-                  <div className="giftInfo"><p className="small">{gift.giftType?.replaceAll("-", " ").toUpperCase()}</p><h3>For {gift.recipientName}</h3><p>{gift.giftType === "wish-note" ? `${gift.createdCount} / ${gift.wishCount} wishes · ${gift.completedCount} completed` : `${gift.redeemedCount} / ${gift.couponCount} used`}</p></div>
+                  <div className="giftInfo"><p className="small">{gift.giftType?.replaceAll("-", " ").toUpperCase()}</p><h3>For {gift.recipientName}</h3><p>{gift.giftType === "our-story" ? `${gift.viewedCount} / ${gift.memoryCount} memories viewed` : gift.giftType === "wish-note" ? `${gift.createdCount} / ${gift.wishCount} wishes · ${gift.completedCount} completed` : `${gift.redeemedCount} / ${gift.couponCount} used`}</p></div>
                   <div className="giftDate"><span>CREATED</span>{formatDate(gift.createdAt)}</div>
                   <button className="view" onClick={() => setSelectedId(gift.id)}>VIEW →</button>
                 </div>)}
@@ -859,6 +860,7 @@ export default function AccountPage() {
     </main>
   );
 }
+
 
 
 

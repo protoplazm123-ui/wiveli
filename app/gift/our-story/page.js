@@ -85,7 +85,7 @@ function formatDate(value) {
     .toUpperCase();
 }
 
-export default function OurStoryGift() {
+export default function OurStoryGift({giftId=null}) {
   const [gift, setGift] = useState(fallbackGift);
   const [loaded, setLoaded] = useState(false);
 
@@ -98,35 +98,19 @@ export default function OurStoryGift() {
 
   const journeyRef = useRef(null);
 
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem(
-        "wiveli-our-story-v1"
-      );
-
-      if (saved) {
-        const parsed = JSON.parse(saved);
-
-        if (
-          parsed &&
-          Array.isArray(parsed.memories) &&
-          parsed.memories.length
-        ) {
-          setGift({
-            ...fallbackGift,
-            ...parsed,
-          });
-        }
-      }
-    } catch (error) {
-      console.error(
-        "Could not load Our Story:",
-        error
-      );
-    }
-
-    setLoaded(true);
-  }, []);
+  const [claimToken,setClaimToken]=useState(''),[error,setError]=useState(''),[notice,setNotice]=useState('');
+  const [refresh,setRefresh]=useState(0);
+  useEffect(()=>{
+    if(!giftId){setLoaded(true);return;}
+    const token=new URLSearchParams(window.location.search).get('claim')||'';setClaimToken(token);let live=true;const controller=new AbortController();setError('');
+    fetch(`/api/gifts/${encodeURIComponent(giftId)}/our-story/media`,{headers:token?{'x-wiveli-gift-token':token}:{},cache:'no-store',signal:controller.signal}).then(async r=>{const d=await r.json();if(!r.ok)throw Error(d.error||'Could not open this story.');return d;}).then(d=>{if(!live)return;setGift(d.gift);setVisited((d.gift.views||[]).map(v=>v.memoryId));setLoaded(true);setNotice(d.failed?'Some files could not load. Use Refresh files to try again.':'');fetch(`/api/gifts/${encodeURIComponent(giftId)}/opened`,{method:'POST',headers:token?{'x-wiveli-gift-token':token}:{}}).catch(()=>{});}).catch(e=>{if(live)setError(e.message);});
+    const timer=setTimeout(()=>{if(live)setRefresh(v=>v+1);},45*60*1000);
+    return()=>{live=false;controller.abort();clearTimeout(timer);};
+  },[giftId,refresh]);
+  async function recordView(memory){
+    if(!giftId)return;
+    try{const r=await fetch(`/api/gifts/${encodeURIComponent(giftId)}/our-story/progress`,{method:'POST',headers:{'Content-Type':'application/json',...(claimToken?{'x-wiveli-gift-token':claimToken}:{})},body:JSON.stringify({memoryId:String(memory.id)})});const d=await r.json();if(!r.ok)throw Error(d.error);if(d.views)setVisited(d.views.map(v=>v.memoryId));}catch{setNotice('The memory is open, but its viewed status could not be saved. Reopen it to retry.');}
+  }
 
   const stars = useMemo(
     () =>
@@ -158,6 +142,7 @@ export default function OurStoryGift() {
 
   const openMemory = (memory) => {
     setActiveMemory(memory);
+    recordView(memory);
 
     setVisited((current) =>
       current.includes(memory.id)
@@ -214,9 +199,12 @@ export default function OurStoryGift() {
     }, 180);
   };
 
+  if(error)return <main style={{padding:40}}><h1>Could not open your story</h1><p>{error}</p><button onClick={()=>setRefresh(v=>v+1)}>TRY AGAIN</button></main>;
   if (!loaded) {
     return (
       <main className="osgPage">
+
+
         <div className="osgLoading">♡</div>
       </main>
     );
@@ -227,6 +215,8 @@ export default function OurStoryGift() {
       className={`osgPage osgTheme-${gift.theme}`}
       style={themeStyle}
     >
+      <div className="storyAccessNotice">{!giftId&&<p>DEMO PREVIEW · Create and send your own story from the editor.</p>}{notice&&<p role="status">{notice}</p>}{giftId&&<button type="button" onClick={()=>{setActiveMemory(null);setRefresh(v=>v+1);}}>REFRESH FILES ↻</button>}</div>
+      <style jsx>{`.storyAccessNotice{position:relative;z-index:30;padding:12px;text-align:center;font:12px/1.5 Arial,sans-serif;}.storyAccessNotice button{border:1px solid currentColor;border-radius:20px;background:transparent;color:inherit;padding:10px;cursor:pointer;}`}</style>
       <div
         className="osgBackground"
         aria-hidden="true"
@@ -677,6 +667,8 @@ export default function OurStoryGift() {
                 “{activeMemory.text}”
               </blockquote>
 
+              {activeMemory.gift && <div>{activeMemory.giftMimeType?.startsWith('image/')?<img src={activeMemory.gift} alt="Your gift" style={{width:'100%',maxHeight:450,objectFit:'contain'}}/>:<object data={activeMemory.gift} type="application/pdf" style={{width:'100%',height:360}} aria-label="Gift certificate"><p>Open your certificate below.</p></object>}<a href={activeMemory.gift} target="_blank" rel="noopener noreferrer" style={{display:'block',padding:16,color:'inherit'}}>OPEN YOUR CERTIFICATE / GIFT ↗</a></div>}
+              {activeMemory.photo && activeMemory.video && <img src={activeMemory.photo} alt={activeMemory.title} style={{width:'100%',maxHeight:400,objectFit:'contain'}}/>}
               {activeMemory.voice && (
                 <audio
                   className="osgRealAudio"
@@ -747,3 +739,4 @@ export default function OurStoryGift() {
     </main>
   );
 }
+

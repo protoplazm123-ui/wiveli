@@ -34,7 +34,10 @@ export async function GET(request, { params }) {
 
     let publicGift;
 
-    if (row.gift_type === "wish-note") {
+    if (row.gift_type === "our-story") {
+      await requireGiftAccess(request,id,true);
+      publicGift = stored;
+    } else if (row.gift_type === "wish-note") {
       await requireGiftAccess(request, id, true);
       publicGift = {senderName:stored.senderName||"",recipientName:stored.recipientName||"",message:stored.message||"",wishCount:stored.wishCount||24,categories:stored.categories||[],style:stored.style||"soft",caption:stored.caption||"",attachments:stored.attachments||{},wishes:stored.wishes||[],createdAt:stored.createdAt||null};
     } else if (row.gift_type === "love-coupons") {
@@ -87,5 +90,6 @@ export async function GET(request, { params }) {
     );
   }
 }
+
 
 

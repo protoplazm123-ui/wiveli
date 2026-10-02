@@ -33,6 +33,7 @@ function api({ loggedIn = true, participantsFail = false, giftType = "love-coupo
   vm.runInContext(readFileSync(new URL("../app/lib/session.js", import.meta.url), "utf8").replace(/^import .*;\n/gm, "").replaceAll("export ", ""), context);
   vm.runInContext(readFileSync(new URL("../app/lib/coupon-attachments.js", import.meta.url), "utf8").replaceAll("export ", ""), context);
   vm.runInContext(readFileSync(new URL("../app/lib/wish-note.js", import.meta.url), "utf8").replace(/^import .*;\n/gm, "").replaceAll("export ", ""), context);
+  vm.runInContext(readFileSync(new URL("../app/lib/our-story.js", import.meta.url), "utf8").replace(/^import .*;\n/gm, "").replaceAll("export ", ""), context);
   vm.runInContext(route, context);
   return { calls, run: () => context.POST({ url: "https://preview.example/api/gifts", json: async () => ({ giftType, giftData }) }) };
 }
@@ -111,3 +112,5 @@ test("Wish Note creation saves settings and returns its own private recipient ro
  const r=await s.run();assert.equal(r.status,200);assert.equal(r.body.giftUrl,"https://preview.example/gift/wish-note/gift-123?claim=claim-token");
  const saved=JSON.parse(s.calls.find(c=>c.url.endsWith("/gifts")).body);assert.equal(saved.gift_type,"wish-note");assert.deepEqual(saved.gift_data.wishes,[]);
 });
+
+test("Our Story creates a private route and persists canonical sender and recipient names", async()=>{const a=api({giftType:"our-story",giftData:{sender:"Julia",recipient:"Sam",memories:[{id:1,title:"A day"}]}});const r=await a.run();assert.equal(r.status,200);assert.equal(r.body.giftUrl,"https://preview.example/gift/our-story/gift-123?claim=claim-token");const gift=JSON.parse(a.calls.find(c=>c.url.endsWith("/gifts")).body).gift_data;assert.equal(gift.senderName,"Julia");assert.deepEqual(gift.views,[]);});

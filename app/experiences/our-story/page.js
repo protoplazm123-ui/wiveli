@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
+import StoryUpload from '../../components/StoryUpload';
+import TelegramGiftDelivery from '../../components/TelegramGiftDelivery';
 const themes = [
   {
     id: "stars",
@@ -45,23 +47,11 @@ function createMemory(id = Date.now()) {
   };
 }
 
-function readAsDataURL(file, callback) {
-  if (!file) return;
-
-  const reader = new FileReader();
-
-  reader.onload = () => {
-    callback(reader.result);
-  };
-
-  reader.readAsDataURL(file);
-}
-
 export default function OurStoryEditor() {
   const [step, setStep] = useState(1);
 
-  const [recipient, setRecipient] = useState("Sophie");
-  const [sender, setSender] = useState("Alex");
+  const [recipient, setRecipient] = useState("");
+  const [sender, setSender] = useState("");
   const [letter, setLetter] = useState(defaultLetter);
   const [openingPhoto, setOpeningPhoto] = useState(null);
 
@@ -122,75 +112,23 @@ export default function OurStoryEditor() {
     setMemories(next);
   };
 
-  const handleMemoryMedia = (id, files) => {
-    const list = Array.from(files || []);
-
-    list.forEach((file) => {
-      if (file.type.startsWith("image/")) {
-        readAsDataURL(file, (value) => {
-          updateMemory(id, "photo", value);
-        });
-      }
-
-      if (file.type.startsWith("video/")) {
-        /*
-          Video is previewed in this browser session.
-          Large videos should later go to cloud storage.
-        */
-        updateMemory(
-          id,
-          "video",
-          URL.createObjectURL(file)
-        );
-      }
-    });
+  const [ready,setReady]=useState(false),[error,setError]=useState(''),[busy,setBusy]=useState(false),[created,setCreated]=useState(null);
+  const [uploads,setUploads]=useState({}),[previewUrls,setPreviewUrls]=useState({});
+  const uploadBusy=Object.values(uploads).some(Boolean);
+  const state={recipient,sender,openingLetter:letter,openingPhoto,memories,theme,customColor,customBackground,finalMessage};
+  useEffect(()=>{try{const d=JSON.parse(localStorage.getItem('wiveli-story-draft-v2')||'null');if(d){setCreated(d.created||null);setRecipient(d.recipient||'');setSender(d.sender||'');setLetter(d.openingLetter||'');setOpeningPhoto(d.openingPhoto||null);setMemories(d.memories||[]);setTheme(d.theme||'stars');setCustomColor(d.customColor||'#5d347f');setCustomBackground(d.customBackground||null);setFinalMessage(d.finalMessage||'');}}catch{setError('Could not restore the draft.');}setReady(true);},[]);
+  useEffect(()=>{if(ready)try{localStorage.setItem('wiveli-story-draft-v2',JSON.stringify({...state,created}));}catch{setError('Could not save the draft in this browser.');}},[ready,created,recipient,sender,letter,openingPhoto,memories,theme,customColor,customBackground,finalMessage]);
+  const uploader=(key,kind,value,change)=> <StoryUpload key={key} kind={kind} attachment={value} onChange={change} onBusy={v=>setUploads(old=>({...old,[key]:v}))} onPreview={url=>setPreviewUrls(old=>({...old,[key]:url}))}/>;
+  const saveStory=async()=>{
+   if(busy||uploadBusy||!ready)return;setBusy(true);setError('');
+   try{const res=await fetch('/api/gifts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({giftType:'our-story',giftData:state})});const d=await res.json();if(!res.ok)throw Error(d.error||'Could not create story.');setCreated(d);}
+   catch(e){setError(e.message);}finally{setBusy(false);}
   };
-
-  const handleVoice = (id, file) => {
-    if (!file) return;
-
-    updateMemory(
-      id,
-      "voice",
-      URL.createObjectURL(file)
-    );
-  };
-
-  const saveStory = () => {
-    const story = {
-      version: 1,
-      recipient: recipient.trim() || "You",
-      sender: sender.trim() || "Someone special",
-      openingLetter: letter.trim() || defaultLetter,
-      openingPhoto,
-      theme,
-      customColor,
-      customBackground,
-      finalMessage,
-      memories: memories.map((memory) => ({
-        ...memory,
-        title: memory.title.trim() || "A Memory",
-        place: memory.place.trim() || "Somewhere special",
-        text:
-          memory.text.trim() ||
-          "A moment worth remembering.",
-      })),
-    };
-
-    try {
-      localStorage.setItem(
-        "wiveli-our-story-v1",
-        JSON.stringify(story)
-      );
-    } catch (error) {
-      console.error("Could not save Our Story:", error);
-    }
-
-    window.location.href = "/gift/our-story";
-  };
+  if(created)return <main className="osePage"><section style={{maxWidth:720,margin:'40px auto',padding:24}}><h1>Your story is ready ♡</h1><button type="button" onClick={()=>setCreated(null)}>EDIT A NEW COPY</button><p>Your recipient can open it without registering.</p><label>PRIVATE GIFT LINK<input style={{width:'100%',padding:12,fontSize:16}} readOnly value={created.giftUrl} onFocus={e=>e.target.select()}/></label><TelegramGiftDelivery giftType="our-story" giftId={created.id} recipientName={recipient} senderName={sender} onBack={()=>window.location.assign('/account')}/></section></main>;
 
   return (
     <main className="osePage">
+      {(error||uploadBusy)&&<p role="status" style={{padding:20}}>{error||"Uploading your files… Please wait before continuing."}</p>}
       <header className="oseHeader">
         <a href="/" className="oseLogo">
           WI<span>♥</span>ELI
@@ -265,26 +203,7 @@ export default function OurStoryEditor() {
                 />
               </label>
 
-              <label className="oseUpload">
-                <span>
-                  {openingPhoto
-                    ? "✓ OPENING PHOTO ADDED"
-                    : "＋ ADD OPENING PHOTO"}
-                </span>
-
-                <small>JPG / PNG</small>
-
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) =>
-                    readAsDataURL(
-                      e.target.files?.[0],
-                      setOpeningPhoto
-                    )
-                  }
-                />
-              </label>
+              {uploader('opening','photo',openingPhoto,setOpeningPhoto)}
             </div>
 
             <div className="oseLetterPreview">
@@ -296,7 +215,7 @@ export default function OurStoryEditor() {
                 <div
                   className="osePreviewPhoto osePreviewPhotoReal"
                   style={{
-                    backgroundImage: `url(${openingPhoto})`,
+                    backgroundImage: `url(${previewUrls.opening||""})`,
                   }}
                 />
               ) : (
@@ -446,47 +365,7 @@ export default function OurStoryEditor() {
                     rows={5}
                   />
 
-                  <div className="oseMediaRow">
-                    <label className="oseMiniUpload">
-                      <strong>▣</strong>
-                      <span>
-                        {memory.photo || memory.video
-                          ? "MEDIA ✓"
-                          : "PHOTO / VIDEO"}
-                      </span>
-
-                      <input
-                        type="file"
-                        accept="image/*,video/*"
-                        onChange={(e) =>
-                          handleMemoryMedia(
-                            memory.id,
-                            e.target.files
-                          )
-                        }
-                      />
-                    </label>
-
-                    <label className="oseMiniUpload">
-                      <strong>◉</strong>
-                      <span>
-                        {memory.voice
-                          ? "VOICE ✓"
-                          : "VOICE MEMORY"}
-                      </span>
-
-                      <input
-                        type="file"
-                        accept="audio/*"
-                        onChange={(e) =>
-                          handleVoice(
-                            memory.id,
-                            e.target.files?.[0]
-                          )
-                        }
-                      />
-                    </label>
-                  </div>
+                  <div className="storyUploads">{['photo','video','voice','gift'].map(kind=><div key={kind}><p>{kind.toUpperCase()}</p>{uploader(`${memory.id}-${kind}`,kind,memory[kind],file=>updateMemory(memory.id,kind,file))}</div>)}</div>
                 </div>
               </article>
             ))}
@@ -568,34 +447,13 @@ export default function OurStoryEditor() {
 
           {theme === "custom" && (
             <div className="oseThemeOptions">
-              <label className="oseUpload">
-                <span>
-                  {customBackground
-                    ? "✓ YOUR WORLD ADDED"
-                    : "＋ UPLOAD YOUR WORLD"}
-                </span>
-
-                <small>
-                  Map, photo or illustration
-                </small>
-
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) =>
-                    readAsDataURL(
-                      e.target.files?.[0],
-                      setCustomBackground
-                    )
-                  }
-                />
-              </label>
+              {uploader('background','photo',customBackground,setCustomBackground)}
 
               {customBackground && (
                 <div
                   className="oseCustomPreview"
                   style={{
-                    backgroundImage: `url(${customBackground})`,
+                    backgroundImage: `url(${previewUrls.background||""})`,
                   }}
                 >
                   <span>01</span>
@@ -662,7 +520,7 @@ export default function OurStoryEditor() {
                   : theme === "custom" &&
                     customBackground
                   ? {
-                      backgroundImage: `linear-gradient(rgba(8,6,12,.4),rgba(8,6,12,.75)),url(${customBackground})`,
+                      backgroundImage: `linear-gradient(rgba(8,6,12,.4),rgba(8,6,12,.75)),url(${previewUrls.background||""})`,
                       backgroundSize: "cover",
                       backgroundPosition: "center",
                     }
@@ -728,7 +586,7 @@ export default function OurStoryEditor() {
                 : theme === "custom" &&
                   customBackground
                 ? {
-                    backgroundImage: `linear-gradient(rgba(8,6,12,.35),rgba(8,6,12,.65)),url(${customBackground})`,
+                    backgroundImage: `linear-gradient(rgba(8,6,12,.35),rgba(8,6,12,.65)),url(${previewUrls.background||""})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }
@@ -765,7 +623,7 @@ export default function OurStoryEditor() {
       <nav className="oseBottomNav">
         <button
           type="button"
-          disabled={step === 1}
+          disabled={step === 1||uploadBusy||busy}
           onClick={() =>
             setStep((current) =>
               Math.max(1, current - 1)
@@ -787,6 +645,7 @@ export default function OurStoryEditor() {
           <button
             type="button"
             className="oseContinue"
+            disabled={uploadBusy||busy||!ready}
             onClick={() =>
               setStep((current) =>
                 Math.min(5, current + 1)
@@ -799,12 +658,14 @@ export default function OurStoryEditor() {
           <button
             type="button"
             className="oseContinue"
-            onClick={saveStory}
+            disabled={busy||uploadBusy||!ready} onClick={saveStory}
           >
             CREATE OUR STORY ♡
           </button>
         )}
       </nav>
+      <style jsx>{`.storyUploads{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;}.storyUploads p{font:700 10px Arial,sans-serif;}@media(max-width:600px){.storyUploads{grid-template-columns:1fr;}}`}</style>
     </main>
   );
 }
+

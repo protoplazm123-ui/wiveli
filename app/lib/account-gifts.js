@@ -23,6 +23,10 @@ export async function accountRows(path) {
 
 export function giftDetails(row) {
   const data = row.gift_data || {};
+  if(row.gift_type === "our-story"){
+    const memories=data.memories||[],views=data.views||[];
+    return {id:row.id,giftType:row.gift_type,recipientName:data.recipient||data.recipientName||"Your recipient",senderName:data.sender||"",createdAt:validDate(data.createdAt),memoryCount:memories.length,viewedCount:views.length,memories:memories.map(m=>({id:m.id,title:m.title,date:m.date,place:m.place,viewedAt:views.find(v=>v.memoryId===String(m.id))?.viewedAt||null})),redemptions:[],unusedCoupons:[],couponCount:0,redeemedCount:0};
+  }
   if (row.gift_type === "wish-note") {
     const wishes = Array.isArray(data.wishes) ? data.wishes : [];
     return {id:row.id,giftType:row.gift_type,recipientName:data.recipientName||"Your recipient",senderName:data.senderName||"",createdAt:validDate(data.createdAt),wishCount:data.wishCount||24,createdCount:wishes.length,completedCount:wishes.filter(w=>w.completed).length,wishes,redemptions:[],unusedCoupons:[],couponCount:0,redeemedCount:0};
@@ -54,5 +58,6 @@ export function giftDetails(row) {
 function validDate(value) {
   return typeof value === "string" && Number.isFinite(Date.parse(value)) ? value : null;
 }
+
 
 

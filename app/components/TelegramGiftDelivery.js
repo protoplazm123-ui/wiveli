@@ -85,8 +85,8 @@ export default function TelegramGiftDelivery({ giftId, onBack, senderName = "", 
       </form>
       {message && <p role="status" aria-live="polite">{message}</p>}
       <p>To receive gift updates yourself, <a href="/account" target="_blank" rel="noopener noreferrer">connect your Telegram in your account</a>.
-        {giftType === "wish-note" ? "Wish Note openings, new wishes and completed wishes appear in your Inbox; your connected bot also sends notifications." : "Then enable Remind me on a coupon, or let the recipient use Tell the sender after redeeming it."}</p>
-      <button type="button" onClick={onBack} disabled={busy}>{giftType === "wish-note" ? "← OPEN YOUR ACCOUNT" : "← BACK TO GIFT LINK"}</button>
+        {giftType === "our-story" ? "When your recipient opens the story, an update appears in your Inbox and your connected Telegram bot." : giftType === "wish-note" ? "Wish Note openings, new wishes and completed wishes appear in your Inbox; your connected bot also sends notifications." : "Then enable Remind me on a coupon, or let the recipient use Tell the sender after redeeming it."}</p>
+      <button type="button" onClick={onBack} disabled={busy}>{["wish-note","our-story"].includes(giftType) ? "← OPEN YOUR ACCOUNT" : "← BACK TO GIFT LINK"}</button>
       <style jsx>{`
         textarea { display:block; box-sizing:border-box; width:100%; min-height:190px; resize:vertical; margin:12px 0; padding:16px; border:1px solid #a96b72; border-radius:12px; color:#741020; background:#fff4f0; font:16px/1.5 Georgia,serif; }
         .delivery { display: block; box-sizing: border-box; width: 100%; min-width: 0; height: auto; min-height: 0; padding: 0; position: relative; overflow-wrap: anywhere; }
@@ -110,5 +110,6 @@ export default function TelegramGiftDelivery({ giftId, onBack, senderName = "", 
     </section>
   );
 }
+
 
 
