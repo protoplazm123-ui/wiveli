@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useWishDraft } from "../../../lib/use-wish-draft";
+import WishOpeningCard from "../../../components/WishOpeningCard";
 import WishNoteMedia from "../../../components/WishNoteMedia";
 
 export default function WishNotePreview() {
@@ -124,51 +125,9 @@ export default function WishNotePreview() {
 
           <div className={`wnPreviewDevice ${device}`}>
 
-            <div className="wnPreviewScreen">
-
-              <div className="wnPreviewStars" />
-
-              <div className="wnPreviewScreenTop">
-                <span>365 DAYS OF HAPPINESS</span>
-                <span>MADE FOR {draft.recipientName} ♡</span>
-              </div>
-
-
-              <WishNoteMedia preview={draft.attachments}/>
-              <div className="wnPreviewScreenCenter">
-
-                <small>A LITTLE SOMETHING FOR YOU</small>
-
-                <h2>
-                  MAKE
-                  <br />
-                  A WISH<span>.</span>
-                </h2>
-
-                <p>
-                  {draft.message}
-                </p>
-
-              </div>
-
-
-              <div className="wnPreviewScreenBottom">
-
-                <div>
-                  <small>FROM</small>
-                  <strong>{draft.senderName} ♡</strong>
-                </div>
-
-                <a href="/gift/wish-note?preview=1" target="_blank" rel="noopener noreferrer">
-                  MAKE A WISH <span>♡</span>
-                </a>
-
-              </div>
-
-            </div>
-
+            <WishOpeningCard gift={draft} href="/gift/wish-note?preview=1"/>
           </div>
-
+          {Object.keys(draft.attachments||{}).some(kind=>kind!=="photo") && <details><summary>SOMETHING EXTRA ♡</summary><WishNoteMedia preview={Object.fromEntries(Object.entries(draft.attachments).filter(([kind])=>kind!=="photo"))}/></details>}
 
           <p className="wnPreviewHint">
             ♡ This opens a preview. Create your gift on the next step to save and send it.
@@ -201,6 +160,7 @@ export default function WishNotePreview() {
 
       </footer>
 
+      <style jsx>{`.wnPreviewDevice.wnPreviewDevice{height:auto;min-height:0;max-height:none;overflow:visible;padding:0;background:transparent;border:0;box-shadow:none;width:100%;max-width:620px;margin:24px auto;}.wnPreviewDevice.mobile{max-width:375px;}.wnPreviewStage{min-width:0;}details{margin:24px auto;max-width:620px;}summary{cursor:pointer;font:700 11px Arial,sans-serif;letter-spacing:.1em;}`}</style>
     </main>
   );
 }

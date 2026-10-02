@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useWishDraft } from "../../../lib/use-wish-draft";
 import CouponAttachmentUpload from "../../../components/CouponAttachmentUpload";
-import WishNoteMedia from "../../../components/WishNoteMedia";
+import WishOpeningCard from "../../../components/WishOpeningCard";
 
 const styles = [
   {
@@ -38,7 +38,6 @@ export default function WishNoteDesign() {
   const uploadBusy=Object.values(uploadStates).some(Boolean);
   const selectedStyle=draft.style,caption=draft.caption;
   const setSelectedStyle=v=>change('style',v),setCaption=v=>change('caption',v);
-  const activeStyle=styles.find(style=>style.id===selectedStyle)||styles[0];
 
   return (
     <main className={`designPage design-${selectedStyle}`}>
@@ -195,40 +194,7 @@ export default function WishNoteDesign() {
               <span>●</span>
             </div>
 
-            <div className={`designGiftCard ${selectedStyle}`}>
-              <p className="designGiftBrand">
-                WISH NOTE ♡
-              </p>
-
-              <div className="designGiftHeart">
-                {activeStyle.symbol}
-              </div>
-
-              <p className="designGiftSmall">
-                365 DAYS OF HAPPINESS
-              </p>
-
-              <h2>
-                A LITTLE
-                <br />
-                SOMETHING
-                <br />
-                FOR YOU.
-              </h2>
-
-              <div className="designGiftPhoto">
-                {draft.attachments.photo ? <WishNoteMedia preview={{photo:draft.attachments.photo}}/> : <span>YOUR MEMORY</span>}
-
-              </div>
-
-              <p className="designGiftCaption">
-                {caption || "your little caption ♡"}
-              </p>
-
-              <button type="button">
-                OPEN YOUR GIFT →
-              </button>
-            </div>
+            <WishOpeningCard gift={draft} href="/gift/wish-note?preview=1" buttonLabel="OPEN YOUR GIFT"/>
 
             <p className="previewHint">
               This is the card they'll see before entering

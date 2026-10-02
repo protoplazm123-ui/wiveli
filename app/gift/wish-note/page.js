@@ -1,5 +1,6 @@
 "use client";
 
+import WishOpeningCard from "../../components/WishOpeningCard";
 import { useEffect, useMemo, useRef, useState } from "react";
 import CouponAttachmentUpload from "../../components/CouponAttachmentUpload";
 import WishNoteMedia from "../../components/WishNoteMedia";
@@ -301,106 +302,10 @@ export default function WishNoteGift({giftId = null}) {
           MAIN CARD
           ===================================================== */}
 
-      <section
-        className={
-          step === "card"
-            ? "wishOpeningCard"
-            : "wishOpeningCard wishOpeningCardBlurred"
-        }
-      >
-
-        <div className="wishOpeningPhoto">
-
-          {gift?.attachments?.photo ? (giftId ? <WishNoteMedia giftId={giftId} claimToken={claimToken} photoOnly/> : <WishNoteMedia preview={{photo:gift.attachments.photo}}/>) : <div className="wishOpeningPhotoPlaceholder">
-            <span>YOUR MEMORY</span>
-          </div>}
-
-          <div className="wishOpeningPhotoShade" />
-
-        </div>
-
-        <div className="wishOpeningContent">
-
-          <div className="wishOpeningTop">
-
-            <span>
-              365 DAYS OF HAPPINESS
-            </span>
-
-            <span>
-              MADE FOR {gift?.recipientName || "YOU"} ♡
-            </span>
-
-          </div>
-
-          <div className="wishOpeningMain">
-
-            <p>
-              {wishes.length
-                ? "YOUR LITTLE WORLD TOGETHER"
-                : "A LITTLE SOMETHING FOR YOU"}
-            </p>
-
-            <h1>
-
-              {wishes.length ? (
-                <>
-                  OUR
-                  <br />
-                  WISHES<span>.</span>
-                </>
-              ) : (
-                <>
-                  MAKE
-                  <br />
-                  A WISH<span>.</span>
-                </>
-              )}
-
-            </h1>
-
-            <p className="wishOpeningMessage">
-
-              {wishes.length
-                ? `${completedCount} / ${TOTAL_WISHES} wishes completed.`
-                : gift?.message || "Your wishes, our plans, and memories waiting to happen."}
-
-            </p>
-
-          </div>
-
-          <div className="wishOpeningBottom">
-
-            <div>
-              <small>FROM</small>
-              <strong>{gift?.senderName || "Someone special"} ♡</strong>
-            </div>
-
-            <button
-              type="button"
-              disabled={
-                createdCount >= TOTAL_WISHES
-              }
-              onClick={() =>
-                createdCount >= TOTAL_WISHES
-                  ? setStep("limit")
-                  : setStep("category")
-              }
-            >
-
-              {createdCount >= TOTAL_WISHES
-                ? "ALL WISHES MADE"
-                : "MAKE A WISH"}
-
-              <span>♡</span>
-
-            </button>
-
-          </div>
-
-        </div>
-
-      </section>
+      <div className={`wishPolaroidStage ${step !== "card" ? "isBlurred" : ""}`}>
+        <WishOpeningCard gift={gift || {}} giftId={giftId} claimToken={claimToken} hasWishes={wishes.length>0} completedCount={completedCount} disabled={createdCount>=TOTAL_WISHES} buttonLabel={createdCount>=TOTAL_WISHES?"ALL WISHES MADE":"MAKE A WISH"} onOpen={()=>setStep(createdCount>=TOTAL_WISHES?"limit":"category")}/>
+      </div>
+      <style jsx>{`.wishExperienceHeader{position:relative;top:auto;left:auto;right:auto;gap:16px;padding:12px 4px;flex-wrap:wrap;}.wishPolaroidStage{position:relative;z-index:1;width:calc(100% - 32px);max-width:620px;margin:24px auto 40px;}.wishPolaroidStage.isBlurred{filter:blur(7px);pointer-events:none;}`}</style>
 
       {step === "card" && Object.keys(gift?.attachments||{}).some(kind=>kind!=="photo") && <details className="wishGiftExtras"><summary>SOMETHING EXTRA FOR YOU ♡</summary>{giftId?<WishNoteMedia giftId={giftId} claimToken={claimToken} excludePhoto/>:<WishNoteMedia preview={Object.fromEntries(Object.entries(gift.attachments).filter(([kind])=>kind!=="photo"))}/>}</details>}
 
