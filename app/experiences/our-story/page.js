@@ -1106,60 +1106,51 @@ const copyLink=async()=>{
           {step === 5 && "PREVIEW"}
         </span>
 
-        {step < 5 ? (
-
+              {step < 5 ? (
           <button
             type="button"
             className="oseContinue"
-            disabled={
-              uploadBusy ||
-              busy ||
-              !ready
-            }
+            disabled={uploadBusy || busy || !ready}
             onClick={() =>
-              setStep((current) =>
-                Math.min(5, current + 1)
-              )
+              setStep((current) => Math.min(5, current + 1))
             }
           >
             CONTINUE →
           </button>
-
         ) : (
-
           <button
             type="button"
             className="oseContinue"
-            disabled={busy||!ready}
+            disabled={busy || !ready}
             onClick={saveStory}
           >
-            {busy
-              ? "CREATING…"
-              : "CREATE OUR STORY ♡"
-            }
+            {busy ? "CREATING…" : "CREATE OUR STORY ♡"}
           </button>
-{error && (
-  <p
-    style={{
-      position: "fixed",
-      left: "50%",
-      bottom: "80px",
-      transform: "translateX(-50%)",
-      zIndex: 99999,
-      width: "min(560px, calc(100vw - 40px))",
-      padding: "16px 20px",
-      background: "#741020",
-      color: "#fff",
-      borderRadius: "14px",
-      font: "14px/1.5 Arial, sans-serif",
-      textAlign: "center",
-      boxShadow: "0 10px 40px rgba(0,0,0,.4)",
-    }}
-  >
-    {error}
-  </p>
-)}
         )}
+      </nav>
+
+      {error && (
+        <p
+          role="alert"
+          style={{
+            position: "fixed",
+            left: "50%",
+            bottom: "80px",
+            transform: "translateX(-50%)",
+            zIndex: 99999,
+            width: "min(560px, calc(100vw - 40px))",
+            padding: "16px 20px",
+            background: "#741020",
+            color: "#fff",
+            borderRadius: "14px",
+            font: "14px/1.5 Arial, sans-serif",
+            textAlign: "center",
+            boxShadow: "0 10px 40px rgba(0,0,0,.4)",
+          }}
+        >
+          {error}
+        </p>
+      )}
 
       </nav>
 
