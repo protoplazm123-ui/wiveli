@@ -1292,120 +1292,124 @@ footer {
           }
         }
 
-        @media (max-width: 760px) {
-          .hero {
-            min-height: 460px;
-          }
-
-          .hero h1 {
-            font-size: 67px;
-          }
-
-          .tickets {
-            grid-template-columns: 1fr;
-          }
-
-          .ticket {
-            min-height: 205px;
-          }
-
-          .modal {
-            padding:
-              52px 18px 30px;
-          }
-
-          .bigTicket {
-            --big-stub-width: 65px;
-
-            grid-template-columns:
-              1fr var(--big-stub-width);
-
-            min-height: 245px;
-          }
-
-          .bigTicketMain {
-            padding: 22px;
-          }
-
-          .bigTicket h2 {
-            margin-top: 53px;
-            font-size: 34px;
-          }
-
-          .bigTicketFor {
-            left: 22px;
-            right: 22px;
-          }
+        /* Let the ticket list grow instead of squeezing every coupon into
+           a fixed-height screen. This also supports 10- and 12-coupon gifts. */
+        .collection {
+          height: auto;
+          min-height: 100svh;
+          overflow: visible;
+          grid-template-rows: 48px auto auto;
+          align-content: start;
         }
 
-        @media (max-width: 450px) {
-          header {
-            padding: 0 18px;
+        .ticketsSection { height: auto; padding-bottom: 24px; }
+        .tickets {
+          flex: none;
+          grid-template-rows: none;
+          grid-auto-rows: minmax(190px, auto);
+          align-items: stretch;
+        }
+        .ticket { min-width: 0; height: auto; min-height: 190px; }
+        .ticketMain { display: flex; flex-direction: column; }
+        .ticket h2, .ticket p, .ticketBottom span,
+        .bigTicket h2, .bigTicket p, .bigTicketFor span,
+        .couponMessage p, .eyebrow { overflow-wrap: anywhere; }
+        .ticketBottom {
+          position: static;
+          margin-top: auto;
+          padding-top: 18px;
+          flex-wrap: wrap;
+        }
+        .ticket h2 { line-height: 1.05; }
+        .ticket p { line-height: 1.4; }
+        .ticket.special { background: #570c17; color: #f3cfcb; }
+        .ticket.special .ticketStub { border-color: currentColor; }
+        .ticket.special .barcode i { background: currentColor; }
+        .ticket.redeemed { opacity: .65; cursor: default; }
+        .redeemedStamp { position: absolute; pointer-events: none; }
+
+        .modalBackdrop {
+          overflow-y: auto;
+          overscroll-behavior: contain;
+          padding: 16px;
+        }
+        .modal {
+          min-width: 0;
+          max-height: calc(100dvh - 32px);
+          overflow-y: auto;
+          overscroll-behavior: contain;
+          -webkit-overflow-scrolling: touch;
+        }
+        .bigTicket { grid-template-columns: minmax(0, 1fr) var(--big-stub-width); }
+        .bigTicketMain { min-width: 0; display: flex; flex-direction: column; }
+        .bigTicket h2 { line-height: 1.05; }
+        .bigTicketFor {
+          position: static;
+          margin-top: auto;
+          padding-top: 24px;
+          gap: 8px;
+          flex-wrap: wrap;
+        }
+        .close { z-index: 10; width: 44px; height: 44px; background: #f0c7c4; }
+        .notYet { min-height: 44px; }
+
+        @media (max-width: 1000px) and (min-width: 761px) {
+          .tickets { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .ticket h2 { font-size: 26px; }
+          .ticket p { font-size: 12px; }
+        }
+
+        @media (max-width: 760px) {
+          .hero {
+            height: auto;
+            min-height: 0;
+            padding: 32px 16px 24px;
           }
+          .hero h1 { font-size: clamp(42px, 11vw, 67px); line-height: .9; }
+          .eyebrow { font-size: 9px; margin-bottom: 12px; }
+          .description { font-size: 14px; line-height: 1.4; margin-top: 14px; }
+          .availability { max-width: 100%; margin-top: 16px; padding: 10px 16px; }
+          .availability small { display: block; font-size: 8px; }
+          .availability strong { font-size: 14px; }
+          .ticketsSection { width: calc(100% - 24px); }
+          .sectionTop { font-size: 8px; gap: 12px; padding: 12px 2px; }
+          .tickets { grid-template-columns: minmax(0, 1fr); gap: 14px; grid-auto-rows: auto; }
+          .ticket { --stub-width: 60px; --notch-size: 9px; min-height: 210px; border-radius: 13px; }
+          .ticketMain { padding: 22px 18px; }
+          .ticketMeta, .ticketBottom { font-size: 8px; }
+          .ticketHeart { right: 18px; top: 45px; font-size: 25px; }
+          .ticket h2 { max-width: calc(100% - 28px); margin-top: 24px; font-size: clamp(25px, 7vw, 34px); }
+          .ticket p { margin-top: 8px; font-size: 13px; }
+          .ticketStub small { font-size: 8px; }
+          .ticketStub strong { font-size: 24px; }
+          .ticketStub > span { font-size: 22px; }
+          .barcode { height: 32px; }
+          .ticketInnerFrame { inset: 5px; }
+          .redeemedStamp { top: 60px; right: 10px; font-size: 10px; }
+          .modalBackdrop { padding: 10px; }
+          .modal { max-height: calc(100dvh - 20px); padding: 64px 14px 24px; border-radius: 18px; }
+          .bigTicket { --big-stub-width: 48px; --big-notch-size: 9px; min-height: 240px; transform: none; }
+          .bigTicketMain { padding: 20px 16px; }
+          .bigHeart { top: 38px; right: 16px; font-size: 26px; }
+          .bigTicket h2 { max-width: 100%; margin-top: 45px; font-size: clamp(25px, 7vw, 36px); }
+          .bigTicket p { font-size: 14px; line-height: 1.4; }
+          .bigTicketFor { font-size: 8px; }
+          .bigLogo, .modalEyebrow, .extrasLabel { font-size: 8px; }
+          .extraButton, .couponMessage small { font-size: 8px; }
+          .couponMessage p { font-size: 15px; }
+          .redeemButton, .locked { font-size: 11px; }
+          .notYet { font-size: 10px; }
+        }
 
-          .headerRight span {
-            display: none;
-          }
-
-          .hero h1 {
-            font-size: 58px;
-          }
-
-          .ticketsSection {
-            width:
-              calc(
-                100% - 24px
-              );
-          }
-
-          .ticket {
-            --stub-width: 70px;
-            --notch-size: 9px;
-
-            grid-template-columns:
-              1fr var(--stub-width);
-
-            border-radius: 13px;
-          }
-
-          .ticketMain {
-            padding:
-              23px 18px;
-          }
-
-          .ticket h2 {
-            max-width: 80%;
-            font-size: 28px;
-          }
-
-          .ticketBottom {
-            left: 18px;
-            right: 18px;
-          }
-
-          .ticketInnerFrame {
-            inset: 5px;
-          }
-
-          .redeemedStamp {
-            right: 14px;
-            top: 88px;
-            font-size: 9px;
-          }
-
-          .bigTicket {
-            --big-stub-width: 55px;
-            --big-notch-size: 10px;
-
-            grid-template-columns:
-              1fr var(--big-stub-width);
-          }
-
-          .bigTicketFor span:last-child {
-            display: none;
-          }
+        @media (max-width: 360px) {
+          .ticket { --stub-width: 48px; }
+          .ticketMain { padding: 20px 14px; }
+          .ticketMeta, .ticketBottom { font-size: 7px; }
+          .extrasButtons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .sectionTop { letter-spacing: .08em; }
         }
       `}</style>
     </main>
   );
 }
+
