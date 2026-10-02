@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { attachmentSpec } from "../lib/coupon-attachments";
 const accepts = {photo:"image/*", video:"video/mp4,video/webm,video/quicktime", voice:"audio/mpeg,audio/mp4,audio/wav,audio/ogg,audio/webm", gift:"application/pdf,image/jpeg,image/png,image/webp"};
 
-export default function CouponAttachmentUpload({kind, attachment, onChange, onBusy, endpoint = "/api/coupon-attachments", headers = {}, saveHint = "Attached to this coupon. Press Save coupon to keep it."}) {
+export default function CouponAttachmentUpload({kind, attachment, onChange, onBusy, endpoint = "/api/coupon-attachments", headers = {}, saveHint = "Attached to this coupon. Press Save coupon to keep it.", variant = "light", photoHint = "Choose a photo; we prepare it for the ticket."}) {
   const input = useRef(null), controller = useRef(null), mounted = useRef(true);
   const [busy,setBusy] = useState(false), [error,setError] = useState("");
   useEffect(() => { mounted.current = true; return () => {mounted.current=false; controller.current?.abort(); onBusy(false);}; }, []);
@@ -35,10 +35,10 @@ export default function CouponAttachmentUpload({kind, attachment, onChange, onBu
     } catch(e) {if(mounted.current && !abort.signal.aborted)setError(e.message);}
     finally {if(mounted.current){setBusy(false);onBusy(false);}}
   }
-  return <div className="fileUpload">
+  return <div className={`fileUpload ${variant==="dark"?"dark":""}`}>
     <input ref={input} type="file" accept={accepts[kind]} onChange={upload} hidden/>
     <button type="button" disabled={busy} onClick={()=>input.current?.click()}>{busy?"UPLOADING…":attachment?"REPLACE FILE":"CHOOSE FILE FROM DEVICE ↑"}</button>
-    <p className="hint">{kind==="video"?"MP4, WebM or MOV · up to 50 MB. MP4 works best across devices.":kind==="voice"?"MP3, M4A, WAV, OGG or WebM · up to 20 MB.":kind==="gift"?"PDF, JPG, PNG or WebP · up to 10 MB.":"Choose a photo; we prepare it for the ticket."}</p>
+    <p className="hint">{kind==="video"?"MP4, WebM or MOV · up to 50 MB. MP4 works best across devices.":kind==="voice"?"MP3, M4A, WAV, OGG or WebM · up to 20 MB.":kind==="gift"?"PDF, JPG, PNG or WebP · up to 10 MB.":photoHint}</p>
     {attachment && <div className="uploaded"><span>✓ {attachment.name}</span><button type="button" disabled={busy} onClick={()=>onChange(null)}>REMOVE</button><p>{saveHint}</p></div>}
     {error && <p role="alert">{error}</p>}
     <style jsx>{`
@@ -51,7 +51,16 @@ export default function CouponAttachmentUpload({kind, attachment, onChange, onBu
       .uploaded span { display: block; font: 14px/1.5 Georgia,serif; }
       .uploaded button { margin-top: 10px; background: transparent; color: #741020; padding: 8px 12px; }
       [role=alert] { font: 13px/1.5 Arial,sans-serif; }
+
+      /* ===== DARK VARIANT (Our Story) ===== */
+      .fileUpload.dark button { border: 1px solid rgba(184,152,242,.5); border-radius: 999px; background: rgba(184,152,242,.12); color: #fff; letter-spacing: .14em; transition: background .2s; }
+      .fileUpload.dark button:hover:not(:disabled) { background: rgba(184,152,242,.24); }
+      .fileUpload.dark .hint, .fileUpload.dark .uploaded p { color: rgba(243,238,252,.55); }
+      .fileUpload.dark .uploaded { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.14); border-radius: 14px; color: #f3eefc; }
+      .fileUpload.dark .uploaded span { font: 14px/1.5 Arial,sans-serif; color: #f3eefc; }
+      .fileUpload.dark .uploaded button { background: transparent; border: 1px solid rgba(255,255,255,.25); color: #b898f2; }
+      .fileUpload.dark .uploaded button:hover:not(:disabled) { background: rgba(255,255,255,.08); color: #fff; }
+      .fileUpload.dark [role=alert] { color: #ff9aa8; }
     `}</style>
   </div>;
 }
-
