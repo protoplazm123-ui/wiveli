@@ -11,13 +11,13 @@ export default function WiveliHero() {
           A GIFT THEY&apos;LL NEVER FORGET
         </p>
 
-       <h1 className="wiveliHeroTitle wiveliGlitchTitle">
-  <span className="wiveliGlitchLine">GIVE THEM</span>
-  <br />
-  <span className="wiveliGlitchLine wiveliSomethingPersonal">
-    SOMETHING PERSONAL.
-  </span>
-</h1>
+        <h1 className="wiveliHeroTitle wiveliGlitchTitle">
+          <span className="wiveliGlitchLine">GIVE THEM</span>
+          <br />
+          <span className="wiveliGlitchLine wiveliSomethingPersonal">
+            SOMETHING PERSONAL.
+          </span>
+        </h1>
 
         <p className="wiveliHeroText wiveliIntroDetails">
           Turn your memories, words and little moments into an
@@ -25,7 +25,10 @@ export default function WiveliHero() {
         </p>
 
         <div className="wiveliHeroActions wiveliIntroDetails">
-          <a className="wiveliHeroButton" href="#gifts">
+          <a
+            className="wiveliHeroButton"
+            href="/gift/our-story"
+          >
             <span>Create a Gift</span>
             <span className="wiveliHeroArrow">→</span>
           </a>
@@ -60,7 +63,10 @@ export default function WiveliHero() {
         />
       </div>
 
-      <div className="wiveliHeroScroll wiveliIntroDetails" aria-hidden="true">
+      <div
+        className="wiveliHeroScroll wiveliIntroDetails"
+        aria-hidden="true"
+      >
         <span>EXPLORE</span>
         <i />
       </div>
