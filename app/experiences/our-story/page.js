@@ -1106,7 +1106,7 @@ const copyLink=async()=>{
           {step === 5 && "PREVIEW"}
         </span>
 
-              {step < 5 ? (
+                      {step < 5 ? (
           <button
             type="button"
             className="oseContinue"
@@ -1127,6 +1127,30 @@ const copyLink=async()=>{
             {busy ? "CREATING…" : "CREATE OUR STORY ♡"}
           </button>
         )}
+      </nav>
+
+      {error && (
+        <p
+          role="alert"
+          style={{
+            position: "fixed",
+            left: "50%",
+            bottom: "80px",
+            transform: "translateX(-50%)",
+            zIndex: 99999,
+            width: "min(560px, calc(100vw - 40px))",
+            padding: "16px 20px",
+            background: "#741020",
+            color: "#fff",
+            borderRadius: "14px",
+            font: "14px/1.5 Arial, sans-serif",
+            textAlign: "center",
+            boxShadow: "0 10px 40px rgba(0,0,0,.4)",
+          }}
+        >
+          {error}
+        </p>
+      )}
       </nav>
 
       {error && (
