@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import StoryUpload from '../../components/StoryUpload';
 import TelegramGiftDelivery from '../../components/TelegramGiftDelivery';
+
 const themes = [
   {
     id: "stars",
@@ -114,28 +115,219 @@ export default function OurStoryEditor() {
 
   const [ready,setReady]=useState(false),[error,setError]=useState(''),[busy,setBusy]=useState(false),[created,setCreated]=useState(null);
   const [uploads,setUploads]=useState({}),[previewUrls,setPreviewUrls]=useState({});
+
   const uploadBusy=Object.values(uploads).some(Boolean);
-  const state={recipient,sender,openingLetter:letter,openingPhoto,memories,theme,customColor,customBackground,finalMessage};
-  useEffect(()=>{try{const d=JSON.parse(localStorage.getItem('wiveli-story-draft-v2')||'null');if(d){setCreated(d.created||null);setRecipient(d.recipient||'');setSender(d.sender||'');setLetter(d.openingLetter||'');setOpeningPhoto(d.openingPhoto||null);setMemories(d.memories||[]);setTheme(d.theme||'stars');setCustomColor(d.customColor||'#5d347f');setCustomBackground(d.customBackground||null);setFinalMessage(d.finalMessage||'');}}catch{setError('Could not restore the draft.');}setReady(true);},[]);
-  useEffect(()=>{if(ready)try{localStorage.setItem('wiveli-story-draft-v2',JSON.stringify({...state,created}));}catch{setError('Could not save the draft in this browser.');}},[ready,created,recipient,sender,letter,openingPhoto,memories,theme,customColor,customBackground,finalMessage]);
-  const uploader=(key,kind,value,change)=> <StoryUpload key={key} kind={kind} attachment={value} onChange={change} onBusy={v=>setUploads(old=>({...old,[key]:v}))} onPreview={url=>setPreviewUrls(old=>({...old,[key]:url}))}/>;
-  const saveStory=async()=>{
-   if(busy||uploadBusy||!ready)return;setBusy(true);setError('');
-   try{const res=await fetch('/api/gifts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({giftType:'our-story',giftData:state})});const d=await res.json();if(!res.ok)throw Error(d.error||'Could not create story.');setCreated(d);}
-   catch(e){setError(e.message);}finally{setBusy(false);}
+
+  const state={
+    recipient,
+    sender,
+    openingLetter:letter,
+    openingPhoto,
+    memories,
+    theme,
+    customColor,
+    customBackground,
+    finalMessage
   };
-  if(created)return <main className="osePage"><section style={{maxWidth:720,margin:'40px auto',padding:24}}><h1>Your story is ready ♡</h1><button type="button" onClick={()=>setCreated(null)}>EDIT A NEW COPY</button><p>Your recipient can open it without registering.</p><label>PRIVATE GIFT LINK<input style={{width:'100%',padding:12,fontSize:16}} readOnly value={created.giftUrl} onFocus={e=>e.target.select()}/></label><TelegramGiftDelivery giftType="our-story" giftId={created.id} recipientName={recipient} senderName={sender} onBack={()=>window.location.assign('/account')}/></section></main>;
+
+  useEffect(()=>{
+    try{
+      const d=JSON.parse(
+        localStorage.getItem('wiveli-story-draft-v2')||'null'
+      );
+
+      if(d){
+        setCreated(d.created||null);
+        setRecipient(d.recipient||'');
+        setSender(d.sender||'');
+        setLetter(d.openingLetter||'');
+        setOpeningPhoto(d.openingPhoto||null);
+        setMemories(d.memories||[]);
+        setTheme(d.theme||'stars');
+        setCustomColor(d.customColor||'#5d347f');
+        setCustomBackground(d.customBackground||null);
+        setFinalMessage(d.finalMessage||'');
+      }
+    }catch{
+      setError('Could not restore the draft.');
+    }
+
+    setReady(true);
+  },[]);
+
+  useEffect(()=>{
+    if(ready){
+      try{
+        localStorage.setItem(
+          'wiveli-story-draft-v2',
+          JSON.stringify({...state,created})
+        );
+      }catch{
+        setError('Could not save the draft in this browser.');
+      }
+    }
+  },[
+    ready,
+    created,
+    recipient,
+    sender,
+    letter,
+    openingPhoto,
+    memories,
+    theme,
+    customColor,
+    customBackground,
+    finalMessage
+  ]);
+
+  const uploader=(key,kind,value,change)=>
+    <StoryUpload
+      key={key}
+      kind={kind}
+      attachment={value}
+      onChange={change}
+      onBusy={v=>
+        setUploads(old=>({...old,[key]:v}))
+      }
+      onPreview={url=>
+        setPreviewUrls(old=>({...old,[key]:url}))
+      }
+    />;
+
+  const saveStory=async()=>{
+    if(busy||!ready)return;
+
+    if(uploadBusy){
+      setError('Please wait until all files finish uploading.');
+      return;
+    }
+
+    setBusy(true);
+    setError('');
+
+    try{
+      const res=await fetch('/api/gifts',{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify({
+          giftType:'our-story',
+          giftData:state
+        })
+      });
+
+      const d=await res.json();
+
+      if(!res.ok||!d?.success||!d?.id){
+        throw Error(
+          d?.error||'Could not create story.'
+        );
+      }
+
+      setCreated(d);
+
+      try{
+        localStorage.setItem(
+          'wiveli-story-draft-v2',
+          JSON.stringify({
+            ...state,
+            created:d
+          })
+        );
+      }catch{}
+
+      window.scrollTo({
+        top:0,
+        behavior:'smooth'
+      });
+
+    }catch(e){
+      setError(
+        e.message||'Could not create story.'
+      );
+    }finally{
+      setBusy(false);
+    }
+  };
+
+  if(created){
+    return (
+      <main className="osePage">
+        <section
+          style={{
+            maxWidth:720,
+            margin:'40px auto',
+            padding:24
+          }}
+        >
+          <h1>Your story is ready ♡</h1>
+
+          <button
+            type="button"
+            onClick={()=>setCreated(null)}
+          >
+            EDIT A NEW COPY
+          </button>
+
+          <p>
+            Your recipient can open it without registering.
+          </p>
+
+          <label>
+            PRIVATE GIFT LINK
+
+            <input
+              style={{
+                width:'100%',
+                padding:12,
+                fontSize:16
+              }}
+              readOnly
+              value={created.giftUrl}
+              onFocus={e=>e.target.select()}
+            />
+          </label>
+
+          <TelegramGiftDelivery
+            giftType="our-story"
+            giftId={created.id}
+            recipientName={recipient}
+            senderName={sender}
+            onBack={()=>
+              window.location.assign('/account')
+            }
+          />
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="osePage">
-      {(error||uploadBusy)&&<p role="status" style={{padding:20}}>{error||"Uploading your files… Please wait before continuing."}</p>}
+
+      {(error||uploadBusy)&&(
+        <p
+          role="status"
+          style={{padding:20}}
+        >
+          {error||
+            "Uploading your files… Please wait before continuing."
+          }
+        </p>
+      )}
+
       <header className="oseHeader">
+
         <a href="/" className="oseLogo">
           WI<span>♥</span>ELI
         </a>
 
         <div className="oseProgress">
-          <span>{String(step).padStart(2, "0")}</span>
+
+          <span>
+            {String(step).padStart(2, "0")}
+          </span>
 
           <div>
             <i
@@ -146,14 +338,19 @@ export default function OurStoryEditor() {
           </div>
 
           <span>05</span>
+
         </div>
 
         <a href="/">← EXIT</a>
+
       </header>
 
       {step === 1 && (
+
         <section className="oseStep">
+
           <div className="oseIntro">
+
             <p>OUR STORY · 01</p>
 
             <h1>
@@ -166,12 +363,16 @@ export default function OurStoryEditor() {
               Before the journey begins, give them something
               personal to open.
             </span>
+
           </div>
 
           <div className="oseEditorGrid">
+
             <div className="oseForm">
+
               <label>
                 FOR
+
                 <input
                   value={recipient}
                   onChange={(e) =>
@@ -183,6 +384,7 @@ export default function OurStoryEditor() {
 
               <label>
                 FROM
+
                 <input
                   value={sender}
                   onChange={(e) =>
@@ -194,6 +396,7 @@ export default function OurStoryEditor() {
 
               <label>
                 YOUR OPENING LETTER
+
                 <textarea
                   value={letter}
                   onChange={(e) =>
@@ -203,25 +406,37 @@ export default function OurStoryEditor() {
                 />
               </label>
 
-              {uploader('opening','photo',openingPhoto,setOpeningPhoto)}
+              {uploader(
+                'opening',
+                'photo',
+                openingPhoto,
+                setOpeningPhoto
+              )}
+
             </div>
 
             <div className="oseLetterPreview">
+
               <p>
                 FOR {recipient.toUpperCase()} ♡
               </p>
 
               {openingPhoto ? (
+
                 <div
                   className="osePreviewPhoto osePreviewPhotoReal"
                   style={{
-                    backgroundImage: `url(${previewUrls.opening||""})`,
+                    backgroundImage:
+                      `url(${previewUrls.opening||""})`,
                   }}
                 />
+
               ) : (
+
                 <div className="osePreviewPhoto">
                   YOUR PHOTO
                 </div>
+
               )}
 
               <h2>
@@ -230,7 +445,9 @@ export default function OurStoryEditor() {
                 <em>OUR STORY.</em>
               </h2>
 
-              <blockquote>“{letter}”</blockquote>
+              <blockquote>
+                “{letter}”
+              </blockquote>
 
               <span>
                 FROM {sender.toUpperCase()}
@@ -239,14 +456,21 @@ export default function OurStoryEditor() {
               <button type="button">
                 BEGIN OUR JOURNEY →
               </button>
+
             </div>
+
           </div>
+
         </section>
+
       )}
 
       {step === 2 && (
+
         <section className="oseStep">
+
           <div className="oseIntro">
+
             <p>OUR STORY · 02</p>
 
             <h1>
@@ -258,20 +482,26 @@ export default function OurStoryEditor() {
             <span>
               Every memory becomes a stop in your journey.
             </span>
+
           </div>
 
           <div className="oseMemoryList">
+
             {memories.map((memory, index) => (
+
               <article
                 className="oseMemoryEditor"
                 key={memory.id}
               >
+
                 <div className="oseMemoryNumber">
+
                   <span>
                     {String(index + 1).padStart(2, "0")}
                   </span>
 
                   <div className="oseMemoryMove">
+
                     <button
                       type="button"
                       disabled={index === 0}
@@ -293,9 +523,11 @@ export default function OurStoryEditor() {
                     >
                       ↓
                     </button>
+
                   </div>
 
                   {memories.length > 1 && (
+
                     <button
                       type="button"
                       onClick={() =>
@@ -304,10 +536,13 @@ export default function OurStoryEditor() {
                     >
                       REMOVE
                     </button>
+
                   )}
+
                 </div>
 
                 <div className="oseMemoryFields">
+
                   <input
                     value={memory.title}
                     onChange={(e) =>
@@ -321,8 +556,10 @@ export default function OurStoryEditor() {
                   />
 
                   <div className="oseMemoryMeta">
+
                     <label>
                       DATE
+
                       <input
                         type="date"
                         value={memory.date}
@@ -338,6 +575,7 @@ export default function OurStoryEditor() {
 
                     <label>
                       PLACE
+
                       <input
                         value={memory.place}
                         onChange={(e) =>
@@ -350,6 +588,7 @@ export default function OurStoryEditor() {
                         placeholder="Paris, France"
                       />
                     </label>
+
                   </div>
 
                   <textarea
@@ -365,9 +604,43 @@ export default function OurStoryEditor() {
                     rows={5}
                   />
 
-                  <div className="storyUploads">{['photo','video','voice','gift'].map(kind=><div key={kind}><p>{kind.toUpperCase()}</p>{uploader(`${memory.id}-${kind}`,kind,memory[kind],file=>updateMemory(memory.id,kind,file))}</div>)}</div>
+                  <div className="storyUploads">
+
+                    {[
+                      'photo',
+                      'video',
+                      'voice',
+                      'gift'
+                    ].map(kind=>(
+
+                      <div key={kind}>
+
+                        <p>
+                          {kind.toUpperCase()}
+                        </p>
+
+                        {uploader(
+                          `${memory.id}-${kind}`,
+                          kind,
+                          memory[kind],
+                          file=>
+                            updateMemory(
+                              memory.id,
+                              kind,
+                              file
+                            )
+                        )}
+
+                      </div>
+
+                    ))}
+
+                  </div>
+
                 </div>
+
               </article>
+
             ))}
 
             <button
@@ -378,13 +651,19 @@ export default function OurStoryEditor() {
               <span>＋</span>
               ADD ANOTHER MEMORY
             </button>
+
           </div>
+
         </section>
+
       )}
 
       {step === 3 && (
+
         <section className="oseStep">
+
           <div className="oseIntro">
+
             <p>OUR STORY · 03</p>
 
             <h1>
@@ -396,10 +675,13 @@ export default function OurStoryEditor() {
             <span>
               Same memories. A completely different journey.
             </span>
+
           </div>
 
           <div className="oseThemes">
+
             {themes.map((item) => (
+
               <button
                 type="button"
                 key={item.id}
@@ -408,8 +690,11 @@ export default function OurStoryEditor() {
                     ? "selected"
                     : ""
                 }`}
-                onClick={() => setTheme(item.id)}
+                onClick={() =>
+                  setTheme(item.id)
+                }
               >
+
                 <div
                   className={`oseThemeVisual ${item.id}`}
                 >
@@ -417,8 +702,13 @@ export default function OurStoryEditor() {
                 </div>
 
                 <div>
-                  <strong>{item.name}</strong>
-                  <p>{item.text}</p>
+                  <strong>
+                    {item.name}
+                  </strong>
+
+                  <p>
+                    {item.text}
+                  </p>
                 </div>
 
                 <i>
@@ -426,14 +716,20 @@ export default function OurStoryEditor() {
                     ? "SELECTED"
                     : "SELECT"}
                 </i>
+
               </button>
+
             ))}
+
           </div>
 
           {theme === "color" && (
+
             <div className="oseThemeOptions">
+
               <label>
                 YOUR COLOR
+
                 <input
                   type="color"
                   value={customColor}
@@ -442,20 +738,32 @@ export default function OurStoryEditor() {
                   }
                 />
               </label>
+
             </div>
+
           )}
 
           {theme === "custom" && (
+
             <div className="oseThemeOptions">
-              {uploader('background','photo',customBackground,setCustomBackground)}
+
+              {uploader(
+                'background',
+                'photo',
+                customBackground,
+                setCustomBackground
+              )}
 
               {customBackground && (
+
                 <div
                   className="oseCustomPreview"
                   style={{
-                    backgroundImage: `url(${previewUrls.background||""})`,
+                    backgroundImage:
+                      `url(${previewUrls.background||""})`,
                   }}
                 >
+
                   <span>01</span>
                   <span>02</span>
                   <span>03</span>
@@ -464,16 +772,25 @@ export default function OurStoryEditor() {
                     YOUR MEMORIES BECOME POINTS
                     ON THIS WORLD
                   </p>
+
                 </div>
+
               )}
+
             </div>
+
           )}
+
         </section>
+
       )}
 
       {step === 4 && (
+
         <section className="oseStep">
+
           <div className="oseIntro">
+
             <p>OUR STORY · 04</p>
 
             <h1>
@@ -485,11 +802,16 @@ export default function OurStoryEditor() {
             <span>
               The memories end. Your story doesn&apos;t.
             </span>
+
           </div>
 
           <div className="oseFinalEditor">
+
             <div>
-              <p>A NOTE FOR OUR FUTURE</p>
+
+              <p>
+                A NOTE FOR OUR FUTURE
+              </p>
 
               <h2>
                 THE REST IS
@@ -508,6 +830,7 @@ export default function OurStoryEditor() {
               <span>
                 They&apos;ll see this after the last memory.
               </span>
+
             </div>
 
             <div
@@ -515,31 +838,40 @@ export default function OurStoryEditor() {
               style={
                 theme === "color"
                   ? {
-                      background: `radial-gradient(circle at 50% 40%, ${customColor}88, transparent 58%), #09070d`,
+                      background:
+                        `radial-gradient(circle at 50% 40%, ${customColor}88, transparent 58%), #09070d`,
                     }
                   : theme === "custom" &&
                     customBackground
                   ? {
-                      backgroundImage: `linear-gradient(rgba(8,6,12,.4),rgba(8,6,12,.75)),url(${previewUrls.background||""})`,
+                      backgroundImage:
+                        `linear-gradient(rgba(8,6,12,.4),rgba(8,6,12,.75)),url(${previewUrls.background||""})`,
                       backgroundSize: "cover",
                       backgroundPosition: "center",
                     }
                   : undefined
               }
             >
+
               <div className="osePastPath">
+
                 {memories
                   .slice(-4)
                   .map((memory) => (
+
                     <i key={memory.id}>
                       {theme === "clouds"
                         ? "☁"
                         : "✦"}
                     </i>
+
                   ))}
+
               </div>
 
-              <p>AND HERE WE ARE ♡</p>
+              <p>
+                AND HERE WE ARE ♡
+              </p>
 
               <h3>
                 {memories.length} MEMORIES BEHIND US.
@@ -552,14 +884,22 @@ export default function OurStoryEditor() {
               </blockquote>
 
               <strong>∞</strong>
+
             </div>
+
           </div>
+
         </section>
+
       )}
 
       {step === 5 && (
+
         <section className="oseStep oseReady">
-          <p>OUR STORY · READY</p>
+
+          <p>
+            OUR STORY · READY
+          </p>
 
           <h1>
             YOUR STORY
@@ -571,7 +911,8 @@ export default function OurStoryEditor() {
             {memories.length} memories ·{" "}
             {
               themes.find(
-                (item) => item.id === theme
+                (item) =>
+                  item.id === theme
               )?.name
             }
           </span>
@@ -581,18 +922,21 @@ export default function OurStoryEditor() {
             style={
               theme === "color"
                 ? {
-                    background: `radial-gradient(circle, ${customColor}aa, #09070d 70%)`,
+                    background:
+                      `radial-gradient(circle, ${customColor}aa, #09070d 70%)`,
                   }
                 : theme === "custom" &&
                   customBackground
                 ? {
-                    backgroundImage: `linear-gradient(rgba(8,6,12,.35),rgba(8,6,12,.65)),url(${previewUrls.background||""})`,
+                    backgroundImage:
+                      `linear-gradient(rgba(8,6,12,.35),rgba(8,6,12,.65)),url(${previewUrls.background||""})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }
                 : undefined
             }
           >
+
             <p>
               FOR {recipient.toUpperCase()}
             </p>
@@ -604,26 +948,44 @@ export default function OurStoryEditor() {
             </h2>
 
             <div>
-              {memories.map((memory, index) => (
-                <i key={memory.id}>
-                  {theme === "clouds"
-                    ? "☁"
-                    : "✦"}
 
-                  <small>{index + 1}</small>
-                </i>
-              ))}
+              {memories.map(
+                (memory, index) => (
+
+                  <i key={memory.id}>
+
+                    {theme === "clouds"
+                      ? "☁"
+                      : "✦"}
+
+                    <small>
+                      {index + 1}
+                    </small>
+
+                  </i>
+
+                )
+              )}
+
             </div>
 
             <strong>∞</strong>
+
           </div>
+
         </section>
+
       )}
 
       <nav className="oseBottomNav">
+
         <button
           type="button"
-          disabled={step === 1||uploadBusy||busy}
+          disabled={
+            step === 1 ||
+            uploadBusy ||
+            busy
+          }
           onClick={() =>
             setStep((current) =>
               Math.max(1, current - 1)
@@ -642,10 +1004,15 @@ export default function OurStoryEditor() {
         </span>
 
         {step < 5 ? (
+
           <button
             type="button"
             className="oseContinue"
-            disabled={uploadBusy||busy||!ready}
+            disabled={
+              uploadBusy ||
+              busy ||
+              !ready
+            }
             onClick={() =>
               setStep((current) =>
                 Math.min(5, current + 1)
@@ -654,18 +1021,43 @@ export default function OurStoryEditor() {
           >
             CONTINUE →
           </button>
+
         ) : (
+
           <button
             type="button"
             className="oseContinue"
-            disabled={busy||uploadBusy||!ready} onClick={saveStory}
+            disabled={busy||!ready}
+            onClick={saveStory}
           >
-            CREATE OUR STORY ♡
+            {busy
+              ? "CREATING…"
+              : "CREATE OUR STORY ♡"
+            }
           </button>
+
         )}
+
       </nav>
-      <style jsx>{`.storyUploads{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;}.storyUploads p{font:700 10px Arial,sans-serif;}@media(max-width:600px){.storyUploads{grid-template-columns:1fr;}}`}</style>
+
+      <style jsx>{`
+        .storyUploads{
+          display:grid;
+          grid-template-columns:repeat(2,minmax(0,1fr));
+          gap:18px;
+        }
+
+        .storyUploads p{
+          font:700 10px Arial,sans-serif;
+        }
+
+        @media(max-width:600px){
+          .storyUploads{
+            grid-template-columns:1fr;
+          }
+        }
+      `}</style>
+
     </main>
   );
 }
-
