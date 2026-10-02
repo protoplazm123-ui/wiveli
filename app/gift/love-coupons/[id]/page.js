@@ -263,7 +263,7 @@ export default function PrivateLoveCouponsGift() {
   */
 
   async function handleRedeem(
-    coupon
+    coupon, recipientResponse = {}
   ) {
     if (
       !coupon?.id ||
@@ -301,6 +301,7 @@ export default function PrivateLoveCouponsGift() {
 
           body: JSON.stringify({
             couponId: coupon.id,
+            recipientResponse,
             timeZone,
           }),
         }
@@ -900,3 +901,4 @@ export default function PrivateLoveCouponsGift() {
     </main>
   );
 }
+

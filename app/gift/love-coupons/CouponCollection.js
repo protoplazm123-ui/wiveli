@@ -7,6 +7,8 @@ export default function CouponCollection({
   gift,
   onRedeem,
 }) {
+  const [recipientResponse, setRecipientResponse] = useState({});
+  const [submitting, setSubmitting] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState(null);
 
   const redemptions = gift?.redemptions || [];
@@ -118,6 +120,7 @@ export default function CouponCollection({
                 disabled={isRedeemed}
                 onClick={() => {
                   if (!isRedeemed) {
+                    setRecipientResponse({});
                     setSelectedCoupon(coupon);
                   }
                 }}
@@ -381,16 +384,22 @@ export default function CouponCollection({
                   Want to use this one today?
                 </p>
 
+                <div className="recipientFields">
+                  <p>Tell the sender your plans (optional).</p>
+                  {[["choice", "Your choice — movie or activity", "text", 200], ["date", "When — date", "date", 10], ["time", "Time", "time", 5], ["place", "Where", "text", 300]].map(([key, label, type, maxLength]) => <label key={key}>{label}<input type={type} maxLength={maxLength} value={recipientResponse[key] || ""} onChange={event => setRecipientResponse(previous => ({...previous, [key]: event.target.value}))} /></label>)}
+                  <label>Message<textarea maxLength={2000} value={recipientResponse.note || ""} onChange={event => setRecipientResponse(previous => ({...previous, note: event.target.value}))} /></label>
+                </div>
                 <button
                   type="button"
+                  disabled={submitting}
                   className="redeemButton"
-                  onClick={() => {
-                    if (onRedeem) {
-                      onRedeem(selectedCoupon);
-                    }
+                  onClick={async () => {
+                    if (!onRedeem || submitting) return;
+                    setSubmitting(true);
+                    try { await onRedeem(selectedCoupon, recipientResponse); } finally { setSubmitting(false); }
                   }}
                 >
-                  USE THIS COUPON
+                  {submitting ? "SAVING…" : "USE THIS COUPON"}
                   <span>♥</span>
                 </button>
 
@@ -408,6 +417,12 @@ export default function CouponCollection({
       )}
 
       <style jsx>{`
+        .recipientFields { text-align: left; margin: 20px 0; }
+        .recipientFields label { display: block; margin: 12px 0; font-size: 14px; }
+        .recipientFields input, .recipientFields textarea { display: block; box-sizing: border-box; width: 100%; min-width: 0; margin-top: 6px; padding: 12px; border: 1px solid #c48c93; border-radius: 8px; background: #fff8f6; color: #701322; font: inherit; font-size: 16px; }
+        .recipientFields textarea { min-height: 80px; resize: vertical; }
+        .redeemButton:disabled { opacity: .6; cursor: wait; }
+
         * {
           box-sizing: border-box;
         }
@@ -1412,4 +1427,5 @@ footer {
     </main>
   );
 }
+
 

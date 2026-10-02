@@ -1,3 +1,4 @@
+import { normalizeRecipientResponse } from "../../../../lib/recipient-response";
 import { NextResponse } from "next/server";
 import { requireGiftAccess, notifySender, GiftError } from "../../../../lib/gift-telegram";
 
@@ -110,6 +111,9 @@ export async function POST(request, { params }) {
 
     const body = await request.json();
 
+    let recipientResponse;
+    try { recipientResponse = normalizeRecipientResponse(body?.recipientResponse); }
+    catch (error) { return NextResponse.json({success: false, error: error.message}, {status: 400}); }
     const couponId = body?.couponId;
     const requestedTimeZone = body?.timeZone;
 
@@ -350,6 +354,7 @@ export async function POST(request, { params }) {
         new Date().toISOString(),
 
       dayKey: today,
+      recipientResponse: { ...recipientResponse, ...(recipientResponse.date || recipientResponse.time ? {timeZone: redemptionTimeZone} : {}) },
     };
 
     const updatedGift = {
@@ -470,4 +475,5 @@ export async function POST(request, { params }) {
     );
   }
 }
+
 

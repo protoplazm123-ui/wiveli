@@ -91,6 +91,7 @@ function setup(options = {}) {
     },
   });
   vm.runInContext(clean(read("app/lib/gift-telegram.js")), context);
+  vm.runInContext(clean(read("app/lib/recipient-response.js")), context);
   const helper = vm.runInContext("({ sendOnce, notifySender })", context);
   context.sendGiftOnce = helper.sendOnce;
   return {
@@ -233,4 +234,14 @@ test("direct bot gift Start button is bound to its destination chat", async () =
   assert.equal(result.status, 200);
   assert.equal(s.sends(), 2);
   assert.match(s.payloads[1].reply_markup.inline_keyboard[0][0].url, /claim=/);
+});
+
+test("guest answers persist with redemption and invalid answers do not write", async () => {
+ const s = setup({anonymous: true, guestToken: CLAIM_TOKEN, redeemed: false});
+ const run = s.route("redeem");
+ assert.equal((await run({couponId:"dinner",recipientResponse:{time:"99:00"}})).status,400);
+ assert.equal(s.patches(),0);
+ assert.equal((await run({couponId:"dinner",timeZone:"UTC",recipientResponse:{choice:"Film",date:"2026-10-05",time:"19:30",place:"Cinema",note:"See you"}})).status,200);
+ assert.equal(s.gift.redemptions[0].recipientResponse.place,"Cinema");
+ assert.equal(s.gift.redemptions[0].recipientResponse.timeZone,"UTC");
 });

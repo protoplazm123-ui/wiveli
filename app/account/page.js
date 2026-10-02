@@ -4,51 +4,56 @@ import { useEffect, useState } from "react";
 
 export default function AccountPage() {
   const [profile, setProfile] = useState({
-    name: "Your name",
+    name: "",
     email: "",
     avatar: "",
   });
 
   const [activeTab, setActiveTab] = useState("gifts");
 
+  const [gifts, setGifts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [unauthorized, setUnauthorized] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
+  const [detail, setDetail] = useState(null);
+  const [detailError, setDetailError] = useState("");
+  const [revision, setRevision] = useState(0);
   useEffect(() => {
-    async function loadAccount() {
+    let cancelled = false;
+    const controller = new AbortController();
+    async function load() {
+      setLoading(true); setError("");
       try {
-        const res = await fetch("/api/auth/me", {
-          cache: "no-store",
-        });
-
-        if (!res.ok) return;
-
+        const res = await fetch("/api/account/gifts", { cache: "no-store", signal: controller.signal });
         const data = await res.json();
-
-        setProfile({
-          name: data.name || "Your name",
-          email: data.email || "",
-          avatar: data.avatar || "",
-        });
-      } catch {}
+        if (cancelled) return;
+        setUnauthorized(res.status === 401);
+        if (!res.ok) { setGifts([]); throw new Error(data.error || "Could not load gifts."); }
+        setProfile(data.profile); setGifts(data.gifts);
+      } catch (e) { if (!cancelled) setError(e.message); }
+      finally { if (!cancelled) setLoading(false); }
     }
-
-    loadAccount();
+    load();
+    return () => { cancelled = true; controller.abort(); };
+  }, [revision]);
+  useEffect(() => {
+    const refresh = () => setRevision(value => value + 1);
+    window.addEventListener("focus", refresh);
+    return () => window.removeEventListener("focus", refresh);
   }, []);
-
-  const gifts = [
-    {
-      id: 1,
-      type: "LOVE COUPONS",
-      recipient: "Sophie",
-      date: "01 OCT 2026",
-      status: "OPENED",
-    },
-    {
-      id: 2,
-      type: "MEMORY BOX",
-      recipient: "Alex",
-      date: "24 SEP 2026",
-      status: "SENT",
-    },
-  ];
+  useEffect(() => {
+    setDetail(null); setDetailError("");
+    if (!selectedId) return;
+    let cancelled = false;
+    const controller = new AbortController();
+    fetch(`/api/account/gifts/${encodeURIComponent(selectedId)}`, {cache: "no-store", signal: controller.signal})
+      .then(async res => { const data = await res.json(); if (!res.ok) throw new Error(data.error || "Could not load history."); return data.gift; })
+      .then(gift => { if (!cancelled) setDetail(gift); })
+      .catch(e => { if (!cancelled) setDetailError(e.message); });
+    return () => { cancelled = true; controller.abort(); };
+  }, [selectedId, revision]);
+  const formatDate = value => value ? new Intl.DateTimeFormat(undefined, {dateStyle: "medium", timeStyle: "short"}).format(new Date(value)) : "Date unavailable";
 
   const messages = [
     {
@@ -161,29 +166,41 @@ async function connectTelegram() {
                 </a>
               </div>
 
-              <div className="giftList">
-                {gifts.map((gift) => (
-                  <div className="gift" key={gift.id}>
-                    <div className="giftIcon">♡</div>
+              <button className="view" onClick={() => setRevision(v => v + 1)}>REFRESH ↻</button>
+              {loading && <p role="status">Loading your gifts…</p>}
+              {error && <p role="alert">{error} {unauthorized && <a href="/login?next=%2Faccount">Sign in</a>}</p>}
+              {selectedId ? (
+                <section className="history">
+                  <button className="view" onClick={() => setSelectedId(null)}>← ALL GIFTS</button>
+                  {detailError && <p role="alert">{detailError}</p>}
+                  {!detail && !detailError && <p role="status">Loading history…</p>}
+                  {detail && <>
+                    <h2>For {detail.recipientName}</h2>
+                    <p>{detail.redeemedCount} of {detail.couponCount} coupons used</p>
+                    <p>Use times are shown in your local time zone.</p>
+                    <h3>Used coupons</h3>
+                    {!detail.redemptions.length && <p>No coupons used yet.</p>}
+                    {detail.redemptions.map((r, index) => <article className="historyCard" key={`${r.couponId}-${index}`}>
+                      <h3>{r.title}</h3>
+                      <p>Used: {formatDate(r.redeemedAt)}</p>
+                      {r.code && <p>Code: {r.code}</p>}
+                      {r.recipientResponse && Object.values(r.recipientResponse).some(Boolean) ? <dl>
+                        {[["choice", "Recipient’s choice"], ["date", "Planned date"], ["time", "Planned time"], ["place", "Where"], ["note", "Message"], ["timeZone", "Plan time zone"]].map(([key, label]) => r.recipientResponse[key] && <div key={key}><dt>{label}</dt><dd>{r.recipientResponse[key]}</dd></div>)}
+                      </dl> : <p>No additional details supplied.</p>}
+                    </article>)}
+                    {!!detail.unusedCoupons.length && <><h3>Not used yet</h3><ul>{detail.unusedCoupons.map(c => <li key={c.id}>{c.title}</li>)}</ul></>}
+                  </>}
+                </section>
+              ) : <div className="giftList">
+                {!loading && !error && !gifts.length && <p>Your gifts will appear here after you create one.</p>}
+                {gifts.map(gift => <div className="gift" key={gift.id}>
+                  <div className="giftIcon">♡</div>
+                  <div className="giftInfo"><p className="small">{gift.giftType?.replaceAll("-", " ").toUpperCase()}</p><h3>For {gift.recipientName}</h3><p>{gift.redeemedCount} / {gift.couponCount} used</p></div>
+                  <div className="giftDate"><span>CREATED</span>{formatDate(gift.createdAt)}</div>
+                  <button className="view" onClick={() => setSelectedId(gift.id)}>VIEW →</button>
+                </div>)}
+              </div>}
 
-                    <div className="giftInfo">
-                      <p className="small">{gift.type}</p>
-                      <h3>For {gift.recipient}</h3>
-                    </div>
-
-                    <div className="giftDate">
-                      <span>CREATED</span>
-                      {gift.date}
-                    </div>
-
-                    <div className={`status ${gift.status.toLowerCase()}`}>
-                      {gift.status}
-                    </div>
-
-                    <button className="view">VIEW →</button>
-                  </div>
-                ))}
-              </div>
             </>
           )}
 
@@ -696,8 +713,32 @@ async function connectTelegram() {
             display: none;
           }
         }
+      
+        :global(html), :global(body) { overflow: auto; }
+        .accountPage { height: auto; min-height: 100svh; }
+        .account { height: auto; min-height: calc(100svh - 74px); }
+        .content { overflow: visible; min-width: 0; }
+        .gift { grid-template-columns: 55px minmax(0, 1fr) 150px 70px; }
+        .giftInfo, .history { min-width: 0; overflow-wrap: anywhere; }
+        .history { margin-top: 28px; }
+        .historyCard { background: #fffaf5; border: 1px solid #e6ded8; border-radius: 22px; padding: 24px; margin: 18px 0; }
+        .historyCard dt { font-weight: 600; margin-top: 12px; }
+        .historyCard dd { margin: 5px 0; white-space: pre-wrap; }
+        @media (max-width: 800px) {
+          .account { display: block; }
+          .sidebar { padding: 20px; border-right: 0; }
+          .profile > div:last-child { font-size: 14px; }
+          .profile h2 { font-size: 26px; }
+          nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+          nav button { font-size: 11px; padding: 12px; width: auto; }
+          .content { padding: 24px 18px 60px; }
+          .gift { grid-template-columns: 40px minmax(0, 1fr) 60px; padding: 18px; gap: 12px; }
+          .contentHeader { flex-wrap: wrap; gap: 20px; }
+          .historyCard { padding: 18px; }
+        }
       `}</style>
     </main>
   );
 }
+
 
