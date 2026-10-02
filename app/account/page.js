@@ -205,11 +205,11 @@ export default function AccountPage() {
 
         <section className="content">
           {unauthorized && <p className="sessionNotice" role="alert">Your session ended. <a href="/login?next=%2Faccount">Sign in again</a> to manage your profile and gifts.</p>}
-          {!unauthorized && profileReady && activeTab !== "profile" && <TelegramConnect />}
+          {!unauthorized && profileReady && activeTab !== "profile" && !selectedId && <TelegramConnect />}
 
           {activeTab === "gifts" && (
             <>
-              <div className="contentHeader">
+              {!selectedId && <div className="contentHeader">
                 <div>
                   <p className="small">YOUR COLLECTION</p>
                   <h1>
@@ -222,30 +222,43 @@ export default function AccountPage() {
                 </a>
               </div>
 
-              <button className="view" onClick={() => setRevision(v => v + 1)}>REFRESH ↻</button>
+              }
+              {!selectedId && <button className="view" onClick={() => setRevision(v => v + 1)}>REFRESH ↻</button>}
               {loading && <p role="status">Loading your gifts…</p>}
               {error && <p role="alert">{error} {unauthorized && <a href="/login?next=%2Faccount">Sign in</a>}</p>}
               {selectedId ? (
                 <section className="history">
-                  <button className="view" onClick={() => setSelectedId(null)}>← ALL GIFTS</button>
+                  <div className="historyToolbar">
+                    <button type="button" onClick={() => setSelectedId(null)}>← ALL GIFTS</button>
+                    <button type="button" onClick={() => setRevision(v => v + 1)} aria-label="Refresh gift history">REFRESH ↻</button>
+                  </div>
                   {detailError && <p role="alert">{detailError}</p>}
                   {!detail && !detailError && <p role="status">Loading history…</p>}
                   {detail && <>
-                    <h2>For {detail.recipientName}</h2>
-                    <p>{detail.redeemedCount} of {detail.couponCount} coupons used</p>
-                    <p>Use times are shown in your local time zone.</p>
-                    <h3>Used coupons</h3>
-                    {!detail.redemptions.length && <p>No coupons used yet.</p>}
+                    <div className="historyHero">
+                      <div><p className="historyEyebrow">LOVE COUPONS · YOUR GIFT</p><h2>For <em>{detail.recipientName}.</em></h2><p className="historySubtitle">Little promises, brought to life.</p></div>
+                      <div className="historyCount"><span>{detail.redeemedCount}<i> / {detail.couponCount}</i></span><p>COUPONS USED</p></div>
+                    </div>
+                    <div className="historyProgress" role="progressbar" aria-label="Coupons used" aria-valuemin={0} aria-valuemax={Math.max(1, detail.couponCount)} aria-valuenow={Math.min(detail.redeemedCount, Math.max(1, detail.couponCount))}><span style={{width: `${Math.min(100, detail.couponCount ? detail.redeemedCount / detail.couponCount * 100 : 0)}%`}} /></div>
+                    <div className="historySectionTitle"><h3>Already <em>enjoyed.</em></h3><span>{String(detail.redeemedCount).padStart(2,"0")}</span></div>
+                    {!detail.redemptions.length && <p className="historyEmpty">The first little memory is still to come ♡</p>}
+                    <div className="historyCards">
                     {detail.redemptions.map((r, index) => <article className="historyCard" key={`${r.couponId}-${index}`}>
-                      <h3>{r.title}</h3>
-                      <p>Used: {formatDate(r.redeemedAt)}</p>
-                      {r.code && <p>Code: {r.code}</p>}
-                      {r.recipientResponse && Object.values(r.recipientResponse).some(Boolean) ? <dl>
-                        {[["choice", "Recipient’s choice"], ["date", "Planned date"], ["time", "Planned time"], ["place", "Where"], ["note", "Message"], ["timeZone", "Plan time zone"]].map(([key, label]) => r.recipientResponse[key] && <div key={key}><dt>{label}</dt><dd>{r.recipientResponse[key]}</dd></div>)}
-                      </dl> : <p>No additional details supplied.</p>}
+                      <div className="historyCardTop"><span className="historyEyebrow">LOVE COUPON</span><span className="historyBadge">USED ♡</span></div>
+                      <h3>{r.title.toLowerCase()}</h3>
+                      <div className="historyMeta"><time dateTime={r.redeemedAt || undefined}>{formatDate(r.redeemedAt)}</time>{r.code && <span className="historyCode">{r.code}</span>}</div>
+                      {r.recipientResponse && Object.values(r.recipientResponse).some(Boolean) ? <div className="historyAnswers"><p className="historyEyebrow">A NOTE FROM YOUR PERSON</p><dl>
+                        {[["choice", "Their choice"], ["date", "Planned date"], ["time", "Time"], ["place", "Place"], ["note", "Message"], ["timeZone", "Time zone"]].map(([key, label]) => r.recipientResponse[key] && <div key={key}><dt>{label}</dt><dd>{r.recipientResponse[key]}</dd></div>)}
+                      </dl></div> : <p className="historyNoNote">No note left with this coupon.</p>}
                     </article>)}
-                    {!!detail.unusedCoupons.length && <><h3>Not used yet</h3><ul>{detail.unusedCoupons.map(c => <li key={c.id}>{c.title}</li>)}</ul></>}
+                    </div>
+                    <p className="historyTimezone">Use times are shown in your local time zone.</p>
+                    {!!detail.unusedCoupons.length && <>
+                      <div className="historySectionTitle"><h3>Still to <em>come.</em></h3><span>{String(detail.unusedCoupons.length).padStart(2,"0")}</span></div>
+                      <ul className="historyUnused">{detail.unusedCoupons.map((c,index) => <li key={c.id}><span className="historyNumber">{String(index+1).padStart(2,"0")}</span><span className="historyUnusedTitle">{c.title.toLowerCase()}</span><span className="historyHeart" aria-label="Not used yet">♡</span></li>)}</ul>
+                    </>}
                   </>}
+
                 </section>
               ) : <div className="giftList">
                 {!loading && !error && !gifts.length && <p>Your gifts will appear here after you create one.</p>}
@@ -783,10 +796,67 @@ export default function AccountPage() {
         .inboxMessage p { white-space: pre-wrap; line-height: 1.6; }
         .bigAvatar img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
         @media(max-width: 600px) { .profileSettings h1 { font-size: clamp(32px, 9vw, 52px); } .photoUpload { padding: 20px; } .bigAvatar { width: 80px; height: 80px; flex-shrink: 0; } }
+      
+        .history { max-width: 940px; margin: 0 auto; color: var(--ink); }
+        .historyToolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 40px; }
+        .historyToolbar button { border: 0; background: none; padding: 10px 0; color: var(--wine); font: 700 10px Arial, sans-serif; letter-spacing: .12em; cursor: pointer; min-height: 44px; }
+        .historyToolbar button:focus-visible { outline: 2px solid var(--wine); outline-offset: 4px; }
+        .historyHero { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+        .history .historyEyebrow { margin: 0; font: 700 9px/1.5 Arial, sans-serif; letter-spacing: .16em; color: #8a7270; }
+        .historyHero h2 { font: 400 clamp(40px,5vw,66px)/1.06 Georgia, serif; letter-spacing: -.045em; margin: 16px 0 14px; overflow-wrap: anywhere; }
+        .historyHero h2 em { color: var(--wine); font-weight: 400; }
+        .historySubtitle { font: 16px/1.6 Georgia, serif; color: #857571; margin: 0; }
+        .historyCount { flex-shrink: 0; text-align: center; padding: 20px 26px; border-radius: 20px; background: #ecdedd; color: var(--wine); }
+        .historyCount > span { font: 40px/1 Georgia, serif; }
+        .historyCount i { font-size: 24px; font-style: normal; color: #a17c80; }
+        .historyCount p { font: 700 8px/1.5 Arial, sans-serif; letter-spacing: .14em; margin: 10px 0 0; }
+        .historyProgress { height: 3px; background: #e6d8d1; border-radius: 8px; margin: 30px 0 38px; overflow: hidden; }
+        .historyProgress > span { display: block; height: 100%; background: var(--wine); border-radius: inherit; }
+        .historySectionTitle { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 32px 0 18px; }
+        .historySectionTitle h3 { margin: 0; font: 400 29px/1.2 Georgia, serif; letter-spacing: -.025em; }
+        .historySectionTitle h3 em { color: var(--wine); font-weight: 400; }
+        .historySectionTitle > span { color: #917c76; font: 11px Arial,sans-serif; }
+        .historyCards { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; align-items: start; }
+        .history .historyCard { margin: 0; padding: 26px; background: var(--paper); border: 1px solid #e5dad2; border-radius: 20px; min-width: 0; }
+        .historyCardTop { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .historyBadge { background: #f0e3e1; border-radius: 20px; color: var(--wine); padding: 6px 10px; font: 700 8px/1 Arial,sans-serif; letter-spacing: .09em; white-space: nowrap; }
+        .historyCard h3 { font: 400 28px/1.15 Georgia,serif; letter-spacing: -.025em; margin: 22px 0 16px; text-transform: none; }
+        .historyCard h3::first-letter, .historyUnusedTitle::first-letter { text-transform: uppercase; }
+        .historyMeta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; align-items: center; font: 11px/1.6 Arial,sans-serif; color: #83746e; }
+        .historyCode { font-size: 9px; letter-spacing: .07em; color: var(--wine); }
+        .historyNoNote { border-top: 1px dashed #e2d4ce; padding-top: 16px; margin: 18px 0 0; color: #8b7a73; font: italic 13px/1.5 Georgia,serif; }
+        .historyAnswers { margin-top: 18px; padding-top: 18px; border-top: 1px dashed #dccbc6; }
+        .historyAnswers dl { margin: 14px 0 0; }
+        .historyAnswers dl > div { display: grid; grid-template-columns: 80px minmax(0,1fr); gap: 12px; margin: 10px 0; }
+        .history .historyAnswers dt { margin: 0; font: 11px/1.7 Arial,sans-serif; font-weight: 400; color: #8b7a73; }
+        .history .historyAnswers dd { margin: 0; font: 15px/1.4 Georgia,serif; color: var(--wine); white-space: pre-wrap; overflow-wrap: anywhere; }
+        .historyTimezone { margin: 16px 0 30px; font: 10px/1.5 Arial,sans-serif; color: #8b7a73; }
+        .historyEmpty { font: italic 16px/1.6 Georgia,serif; color: #8b7a73; padding: 20px 0; }
+        .historyUnused { padding: 0; margin: 0; list-style: none; border-top: 1px solid #e1d6cd; }
+        .historyUnused li { display: grid; grid-template-columns: 28px minmax(0,1fr) 24px; align-items: center; gap: 14px; padding: 20px 4px; border-bottom: 1px solid #e1d6cd; }
+        .historyNumber { font: 10px Arial,sans-serif; color: #a08b83; }
+        .historyUnusedTitle { font: 21px/1.25 Georgia,serif; overflow-wrap: anywhere; }
+        .historyHeart { color: var(--wine); font-size: 24px; }
+        @media(max-width: 600px) {
+          .historyToolbar { margin-bottom: 22px; }
+          .historyHero { gap: 14px; align-items: flex-start; }
+          .historyHero > div:first-child { min-width: 0; }
+          .historyHero h2 { font-size: clamp(34px,9vw,48px); }
+          .historyCount { padding: 16px 12px; border-radius: 16px; }
+          .historyCount > span { font-size: 30px; }
+          .historyCount i { font-size: 18px; }
+          .historyCount p { font-size: 7px; letter-spacing: .08em; }
+          .historySubtitle { font-size: 14px; }
+          .historyCards { grid-template-columns: minmax(0,1fr); gap: 14px; }
+          .history .historyCard { padding: 22px; }
+          .historySectionTitle h3 { font-size: 27px; }
+          .historyUnusedTitle { font-size: 20px; }
+        }
       `}</style>
     </main>
   );
 }
+
 
 
 
