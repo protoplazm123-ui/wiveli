@@ -326,7 +326,6 @@ export default function OpenWhenGiftPage({giftId=null}) {
   const [selectedId, setSelectedId] = useState(null);
   const [focused, setFocused] = useState(false);
   const [flipped, setFlipped] = useState(false);
-  const [showExtras, setShowExtras] = useState(false);
   const [responseSent, setResponseSent] = useState(false);
 
   const handleModelReady = useCallback(() => {
@@ -364,7 +363,7 @@ export default function OpenWhenGiftPage({giftId=null}) {
 
   const theme = gift.theme?.id || "cosmic";
   const accent = gift.theme?.accent || "#8c63c7";
-  const pageReady = loaded && (theme !== "cosmic" || modelReady || modelError);
+  const pageReady = loaded && (theme === "custom" || modelReady || modelError);
 
   const isOpened = (id) =>
     opened.some((item) => String(item) === String(id));
@@ -375,7 +374,6 @@ export default function OpenWhenGiftPage({giftId=null}) {
   const chooseMoment = (moment) => {
     if(savingRef.current)return;setReply({note:'',date:'',time:'',place:''});setNotice('');
     setSelectedId(moment.id);
-    setShowExtras(false);
     setFlipped(false);
     setResponseSent(hasResponded(moment.id));
     requestAnimationFrame(() => setFocused(true));
@@ -396,7 +394,6 @@ export default function OpenWhenGiftPage({giftId=null}) {
 
   const returnCard = () => {
     if(savingRef.current)return;
-    setShowExtras(false);
     setFlipped(false);
 
     setTimeout(() => {
@@ -438,6 +435,13 @@ export default function OpenWhenGiftPage({giftId=null}) {
             onReady={handleModelReady}
             onError={handleModelError}
           />
+        )}
+
+        {["romantic", "tech", "dreamy"].includes(theme) && !modelError && (
+          <div className={previewStyles.animatedWorld} aria-hidden="true">
+            <div className={previewStyles.animationOpen}>OPEN</div>
+            <NewBoyScene onReady={handleModelReady} onError={handleModelError} />
+          </div>
         )}
 
         {theme === "custom" && customBackground && (
@@ -602,15 +606,15 @@ export default function OpenWhenGiftPage({giftId=null}) {
             <div className="owrFocusGlow" />
 
             <div className={`owrFocusArea ${flipped && selected.interaction?.enabled ? previewStyles.withQuestion : ""}`}>
-              <button
-                type="button"
+              <div
                 className={`owrBigCard ${
                   flipped ? "isFlipped" : ""
                 }`}
-                onClick={flipCard}
               >
                 <div className="owrBigCardInner">
-                  <div className="owrBigFront">
+                  <button type="button" className="owrBigFront" onClick={flipCard}
+                    disabled={flipped || saving} tabIndex={flipped ? -1 : 0} aria-hidden={flipped}
+                    aria-label={`Turn over: ${selected.title}`}>
                     <span className="owrFrontNumber">
                       {String(
                         gift.moments.findIndex(
@@ -630,9 +634,9 @@ export default function OpenWhenGiftPage({giftId=null}) {
                     </div>
 
                     <span className="owrTap">TAP TO TURN OVER</span>
-                  </div>
+                  </button>
 
-                  <div className="owrBigBack">
+                  <div className="owrBigBack" aria-hidden={!flipped}>
                     <span className="owrBackLabel">JUST FOR YOU ♡</span>
 
                     <p>
@@ -665,23 +669,37 @@ export default function OpenWhenGiftPage({giftId=null}) {
                       </div>
                     )}
 
+            {flipped && (selected.photo || selected.voice || selected.video || selected.gift) && (
+              <div className={previewStyles.cardAttachments}>
+                {selected.photo && (
+                  <div className="owrPhoto">
+                    <img src={selected.photo} alt="" />
+                  </div>
+                )}
+
+                {selected.voice && (
+                  <div className="owrAudio">
+                    <span>◉ A LITTLE MESSAGE FROM ME</span>
+                    <audio src={selected.voice} controls />
+                  </div>
+                )}
+
+                {selected.gift && <div>{selected.giftMimeType?.startsWith('image/')?<img src={selected.gift} alt="Your gift" style={{width:'100%',objectFit:'contain'}}/>:<object data={selected.gift} type="application/pdf" style={{width:'100%',height:360}} aria-label="Gift certificate"><p>Open your certificate below.</p></object>}<a href={selected.gift} target="_blank" rel="noopener noreferrer">OPEN CERTIFICATE ↗</a></div>}
+                {selected.video && (
+                  <div className="owrVideo">
+                    <video src={selected.video} controls playsInline />
+                  </div>
+                )}
+              </div>
+            )}
                     <span className="owrBackHeart">♡</span>
                   </div>
                 </div>
-              </button>
+              </div>
 
               {flipped && (
                 <div className="owrAfterCard">
-                  {(selected.photo ||
-                    selected.voice ||
-                    selected.video || selected.gift) && (
-                    <button
-                      type="button"
-                      onClick={() => setShowExtras((value) => !value)}
-                    >
-                      {showExtras ? "CLOSE EXTRAS ↑" : "THERE'S MORE ♡"}
-                    </button>
-                  )}
+                  <button type="button" onClick={flipCard}>TURN OVER ↻</button>
 
                   <button
                     type="button"
@@ -724,34 +742,7 @@ export default function OpenWhenGiftPage({giftId=null}) {
 
             {notice && <p className={previewStyles.status} role="status">{notice}</p>}
 
-            {flipped && showExtras && (
-              <aside className="owrExtras">
-                <div className="owrExtrasTitle">
-                  <span>ONE MORE THING ♡</span>
-                  <p>A few little pieces left for you.</p>
-                </div>
 
-                {selected.photo && (
-                  <div className="owrPhoto">
-                    <img src={selected.photo} alt="" />
-                  </div>
-                )}
-
-                {selected.voice && (
-                  <div className="owrAudio">
-                    <span>◉ A LITTLE MESSAGE FROM ME</span>
-                    <audio src={selected.voice} controls />
-                  </div>
-                )}
-
-                {selected.gift && <div>{selected.giftMimeType?.startsWith('image/')?<img src={selected.gift} alt="Your gift" style={{width:'100%',objectFit:'contain'}}/>:<object data={selected.gift} type="application/pdf" style={{width:'100%',height:360}} aria-label="Gift certificate"><p>Open your certificate below.</p></object>}<a href={selected.gift} target="_blank" rel="noopener noreferrer">OPEN CERTIFICATE ↗</a></div>}
-                {selected.video && (
-                  <div className="owrVideo">
-                    <video src={selected.video} controls playsInline />
-                  </div>
-                )}
-              </aside>
-            )}
           </section>
         )}
       </main>

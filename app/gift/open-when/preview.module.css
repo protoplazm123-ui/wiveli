@@ -88,3 +88,29 @@
   .replyGrid { grid-template-columns: minmax(0,1fr); }
   .preview :global(.owrBigBack) { padding: 28px 24px; }
 }
+
+/* The letter and its attachments share the same reverse side. */
+.preview :global(.owrBigCard) { cursor: default; }
+.preview :global(.owrBigFront) { width: 100%; height: 100%; border: 0; color: inherit; font-family: inherit; cursor: pointer; text-align: center; }
+.preview :global(.owrBigFront):disabled { opacity: 1; cursor: default; }
+.cardAttachments { display: flex; flex-direction: column; gap: 22px; width: 100%; min-width: 0; flex-shrink: 0; margin-top: 26px; padding-top: 24px; border-top: 1px solid #d9cddd; }
+.cardAttachments>div { min-width: 0; margin: 0; }
+.preview .cardAttachments :global(.owrPhoto) { transform: none; width: 100%; padding: 8px; margin: 0; background: white; box-shadow: 0 5px 18px #39274418; }
+.preview .cardAttachments img { display: block; width: 100%; height: auto; max-height: none; object-fit: contain; }
+.preview .cardAttachments video { display: block; width: 100%; max-height: 320px; background: #20182a; border-radius: 10px; }
+.preview .cardAttachments audio { display: block; width: 100%; max-width: 100%; margin-top: 12px; }
+.preview .cardAttachments :global(.owrAudio) { padding: 0; background: transparent; border: 0; }
+.preview .cardAttachments :global(.owrAudio) span { color: #735386; font: 700 9px/1.6 Arial,sans-serif; letter-spacing: .09em; }
+.preview .cardAttachments object { max-width: 100%; border-radius: 10px; }
+.preview .cardAttachments a { display: inline-block; margin-top: 12px; color: #68427e; font: 700 10px/1.6 Arial,sans-serif; letter-spacing: .08em; }
+
+/* Share the existing animated GLB, retaining each world's own background. */
+.animatedWorld { position: absolute; inset: 0; z-index: 4; pointer-events: none; overflow: hidden; }
+.animationOpen { position: absolute; left: 5%; top: 16%; color: var(--owr-accent,#c5a0e7); opacity: .65; font: 400 clamp(100px,16vw,280px)/.85 Georgia,serif; letter-spacing: -.075em; z-index: 1; }
+.animatedWorld :global(.owNewBoyCanvas) { position: absolute; left: 24%; top: 10%; width: 44%; height: 74%; min-width: 0; min-height: 0; transform: scale(3); transform-origin: center; z-index: 2; pointer-events: none; }
+.animatedWorld :global(.owNewBoyCanvas) canvas { display: block; width: 100%; height: 100%; background: transparent; filter: saturate(1.2) contrast(1.12) drop-shadow(0 3px 5px #64375a2e); }
+:global(.owrHasFocus) .animatedWorld { opacity: .15; }
+@media(max-width:600px) {
+  .animationOpen { top: 18%; font-size: 23vw; }
+  .animatedWorld :global(.owNewBoyCanvas) { left: 18%; top: 23%; width: 65%; height: 46%; transform: scale(2.5); }
+}
