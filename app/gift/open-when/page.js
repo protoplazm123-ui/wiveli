@@ -1,5 +1,7 @@
 "use client";
 
+import previewStyles from "./preview.module.css";
+
 import {
   Component,
   Suspense,
@@ -585,7 +587,7 @@ export default function OpenWhenGiftPage({giftId=null}) {
 
         {selected && (
           <section
-            className={`owrFocusLayer ${
+            className={`${previewStyles.preview} owrFocusLayer ${
               focused ? "isVisible" : ""
             }`}
           >
@@ -599,7 +601,7 @@ export default function OpenWhenGiftPage({giftId=null}) {
 
             <div className="owrFocusGlow" />
 
-            <div className="owrFocusArea">
+            <div className={`owrFocusArea ${flipped && selected.interaction?.enabled ? previewStyles.withQuestion : ""}`}>
               <button
                 type="button"
                 className={`owrBigCard ${
@@ -704,7 +706,7 @@ export default function OpenWhenGiftPage({giftId=null}) {
                   </p>
 
                   {!responseSent ? (
-                    <div>{['note','date','time','place'].map(key=><label className="owReplyFields" key={key}>{key.toUpperCase()} (OPTIONAL){key==='note'?<textarea value={reply.note} maxLength={2000} onChange={e=>setReply(old=>({...old,note:e.target.value}))}/>:<input type={key==='date'?'date':key==='time'?'time':'text'} maxLength={300} value={reply[key]} onChange={e=>setReply(old=>({...old,[key]:e.target.value}))}/>}</label>)}<button type="button" disabled={saving} onClick={sendResponse}>
+                    <div className={previewStyles.replyGrid}>{['note','date','time','place'].map(key=><label className="owReplyFields" key={key}>{key.toUpperCase()} (OPTIONAL){key==='note'?<textarea value={reply.note} maxLength={2000} onChange={e=>setReply(old=>({...old,note:e.target.value}))}/>:<input type={key==='date'?'date':key==='time'?'time':'text'} maxLength={300} value={reply[key]} onChange={e=>setReply(old=>({...old,[key]:e.target.value}))}/>}</label>)}<button type="button" disabled={saving} onClick={sendResponse}>
                       {selected.interaction.button ||
                         `TELL ${gift.sender?.toUpperCase()} ♡`}
                     </button></div>
@@ -719,6 +721,8 @@ export default function OpenWhenGiftPage({giftId=null}) {
                 </div>
               )}
             </div>
+
+            {notice && <p className={previewStyles.status} role="status">{notice}</p>}
 
             {flipped && showExtras && (
               <aside className="owrExtras">
