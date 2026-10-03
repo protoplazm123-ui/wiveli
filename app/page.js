@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import HomeAccount from "./components/HomeAccount";
+import "./components/WiveliNewHome.css";
 
 const occasions = [
   { title: "For Someone Special", icon: "♡" },
@@ -15,69 +16,81 @@ const experiences = [
   {
     id: "love-coupons",
     title: "Love Coupons",
-    subtitle: "Promises & Special Vouchers",
+    subtitle: "Ticket Machine with Printed Wishes",
     symbol: "✦",
-    tag: "LITTLE PROMISES · BIG MEMORIES",
-    image: "/assets/coupon-card.png",
-    text: "Cute interactive tickets (breakfast in bed, movie night, hugs) they can tear & redeem.",
+    tag: "LOVE IS... · WISH VOUCHERS",
+    image: "/assets/loveis-coupons.jpg",
+    loveIsQuote: "Любовь это... напечатать купон на внезапный поцелуй и утренний кофе ♡",
+    text: "A charming mini ticket machine prints out cute perforated coupons with your personal promises and wishes.",
+    mechanicBadge: "🖨️ Interactive Ticket Printer",
     href: "/experiences/love-coupons",
-    cta: "Create Coupons"
+    cta: "Print Coupons"
   },
   {
     id: "open-when",
     title: "Open When...",
-    subtitle: "Handcrafted Digital Journal",
+    subtitle: "Letters for Special Moments",
     symbol: "✉",
-    tag: "A LITTLE BOOK OF CARE",
-    image: "/assets/open-when/diary-kit/journal-open.png",
-    text: "Surprise letters for every mood: when they're sad, can't sleep, or miss you.",
+    tag: "LOVE IS... · SECRET LETTERS",
+    image: "/assets/loveis-open-when.jpg",
+    loveIsQuote: "Любовь это... оставить письмо с теплом на тот день, когда вы не рядом ♡",
+    text: "Heartfelt cards that open on cue: 'Open when you miss me', 'Open when you need courage', 'Open when you need a hug'.",
+    mechanicBadge: "💌 'Open When You Miss Me' Cards",
     href: "/experiences/open-when",
     cta: "Write Letters"
   },
   {
     id: "wish-note",
     title: "Wish Note",
-    subtitle: "365 Days of Daily Love",
+    subtitle: "Wishes, Categories & Calendar",
     symbol: "♡",
-    tag: "365 DAYS · 365 WISHES",
-    image: "/assets/Изображение Codex 25 сент. 2026 г., 16_58_11.png",
-    text: "A year of sealed little wishes, delivering a warm message one day at a time.",
+    tag: "LOVE IS... · DATES CALENDAR",
+    image: "/assets/loveis-wish-note.jpg",
+    loveIsQuote: "Любовь это... забронировать в календаре день только для вас двоих ♡",
+    text: "Give them a set of wishes and categories where they can book each wish on a personal interactive calendar.",
+    mechanicBadge: "📅 Calendar & Category Booking",
     href: "/experiences/wish-note",
-    cta: "Start Wishes"
+    cta: "Set Up Calendar"
   },
   {
     id: "our-story",
     title: "Our Story",
-    subtitle: "Interactive Memory Timeline",
+    subtitle: "Cards of Your Best Moments",
     symbol: "♥",
-    tag: "YOUR STORY · YOUR MOMENTS",
-    image: "/assets/home/21EA03BA-6EFC-40E2-8F98-708E97670EE2.png",
-    text: "Turn your photos, road trips, and inside jokes into a beautiful interactive book.",
+    tag: "LOVE IS... · SHARED MEMORIES",
+    image: "/assets/loveis-our-story.jpg",
+    loveIsQuote: "Любовь это... бережно хранить каждый полароид и билет из вашей первой поездки ♡",
+    text: "Interactive cards featuring the sender's and recipient's best shared moments, road trips, and inside jokes.",
+    mechanicBadge: "📸 Moment Cards Connecting You Two",
     href: "/experiences/our-story",
-    cta: "Build Story"
+    cta: "Build Moments"
   },
   {
     id: "the-gift",
     title: "The Gift",
     subtitle: "Unlock Surprises with Trivia",
     symbol: "✦",
-    tag: "ANSWER · UNLOCK · REVEAL",
-    image: "/assets/home/547AE97E-FC4B-40ED-9C1C-183411186401.png",
-    text: "Answer sweet personal questions to unlock hidden photos, audio notes, and gifts.",
+    tag: "LOVE IS... · SECRET QUEST",
+    image: "/assets/loveis-the-gift.jpg",
+    loveIsQuote: "Любовь это... разгадать все тайны друг друга с улыбкой ♡",
+    text: "Answer sweet personal questions to unlock hidden photos, audio notes, and real surprise gifts.",
+    mechanicBadge: "🧩 Secret Question Unlock Quest",
     href: "/experiences/the-gift/personalize",
     cta: "Create Quest"
   },
   {
     id: "unique-gift",
-    title: "Unique Gift",
-    subtitle: "Custom Made Just for Them",
+    title: "Wiveli Bespoke",
+    subtitle: "Custom App Built by Developers",
     symbol: "✦",
-    tag: "WIVELI BESPOKE · MADE JUST FOR THEM",
-    image: "/assets/Изображение Codex 25 сент. 2026 г., 16_58_11.png",
-    text: "Work directly with our team to craft a 100% bespoke emotional experience.",
+    tag: "LOVE IS... · BESPOKE STUDIO",
+    image: "/assets/loveis-bespoke.jpg",
+    loveIsQuote: "Любовь это... создать приложение, которого больше нет ни у кого в мире ♡",
+    text: "Order a completely custom, tailor-made digital application developed from scratch by our dev team just for you.",
+    mechanicBadge: "💻 Custom Dev Studio Order",
     href: "/experiences/unique-gift",
     premium: true,
-    cta: "Request Bespoke"
+    cta: "Order Custom App"
   },
 ];
 
@@ -90,7 +103,7 @@ export default function Home() {
 
   return (
     <main className="wiveli-page">
-      {/* ================= 1. HEADER (C ЛИЧНЫМ КАБИНЕТОМ) ================= */}
+      {/* 1. ШАПКА: Ссылка на Личный кабинет <HomeAccount /> сохранена! */}
       <header className="wiveli-nav">
         <Link href="/" className="wiveli-logo">
           WI<span>♥</span>ELI
@@ -103,7 +116,7 @@ export default function Home() {
           <a href="#about">📖 About</a>
         </nav>
 
-        {/* ПРАВЫЙ ВЕРХНИЙ УГОЛ: HomeAccount (Личный кабинет) + Кнопка */}
+        {/* Правый угол: HomeAccount (проверяет сессию) + Кнопка */}
         <div className="wiveli-actions">
           <HomeAccount />
           <a className="btn-create" href="#experiences">
@@ -112,7 +125,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* ================= 2. HERO: ЛЮБИМЫЕ КАРТИНКИ РУК И КОРОБКИ ================= */}
+      {/* 2. ГЕРОЙ: Руки и коробка подарка с интерактивом */}
       <section className="wiveli-hero" id="hero">
         <div className="occasion-bar">
           {occasions.map((occ) => (
@@ -135,7 +148,7 @@ export default function Home() {
           Turn memories, sweet words, and little promises into an interactive gift made just for one person.
         </p>
 
-        {/* Сцена с руками и коробкой подарка */}
+        {/* Руки и коробка */}
         <div className="hero-visual-stage">
           <img
             src="/assets/Изображение Codex 25 сент. 2026 г., 16_56_33.png"
@@ -171,10 +184,10 @@ export default function Home() {
         )}
       </section>
 
-      {/* ================= 3. КОМПАКТНЫЙ ПОДИУМ ВПЕЧАТЛЕНИЙ (БЕЗ ДЛИННОГО СКРОЛЛА) ================= */}
+      {/* 3. ВКЛАДЫШИ LOVE IS... (КОМПАКТНЫЙ ВЫБОР БЕЗ СКРОЛЛА) */}
       <section className="wiveli-experiences" id="experiences">
         <div className="section-head">
-          <p className="eyebrow">PICK A FEELING · MAKE IT YOURS</p>
+          <p className="eyebrow">LOVE IS... · PICK A FEELING</p>
           <h2>6 Interactive Gift Formats</h2>
         </div>
 
@@ -193,15 +206,28 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Карточка активного формата с картинкой */}
+        {/* Вкладыш Love Is... */}
         <div className="stage-card">
           <div className="stage-media">
-            <img src={current.image} alt={current.title} />
+            <div className="loveis-wrapper">
+              <div className="loveis-head">
+                <span className="loveis-logo">Love is... ♥♥</span>
+                <span className="loveis-tag">{current.title}</span>
+              </div>
+              <div className="loveis-artwork">
+                <img src={current.image} alt={current.title} />
+              </div>
+              <div className="loveis-quote">
+                "{current.loveIsQuote}"
+              </div>
+            </div>
           </div>
+
           <div className="stage-info">
             <span className="info-tag">{current.tag}</span>
             <h3>{current.title}</h3>
             <p className="info-sub">{current.subtitle}</p>
+            <div className="mechanic-pill">{current.mechanicBadge}</div>
             <p className="info-desc">{current.text}</p>
 
             <div className="stage-footer">
@@ -213,29 +239,29 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= 4. КАК ЭТО РАБОТАЕТ ================= */}
+      {/* 4. КАК ЭТО РАБОТАЕТ */}
       <section className="wiveli-how" id="how">
         <h3>How Wiveli Works</h3>
         <div className="how-steps">
           <div className="step-item">
             <span>1</span>
             <strong>Pick your format</strong>
-            <p>Love coupons, letters, or daily wishes.</p>
+            <p>Tickets, letters, wishes calendar, or custom app.</p>
           </div>
           <div className="step-item">
             <span>2</span>
             <strong>Add your memories</strong>
-            <p>Upload photos, voice notes, and sweet words.</p>
+            <p>Upload photos, select dates, and write promises.</p>
           </div>
           <div className="step-item">
             <span>3</span>
-            <strong>Send with love</strong>
-            <p>Share a private link or deliver via Telegram.</p>
+            <strong>Deliver with love</strong>
+            <p>Send a private interactive link to their phone.</p>
           </div>
         </div>
       </section>
 
-      {/* ================= 5. FOOTER ================= */}
+      {/* 5. FOOTER */}
       <footer className="wiveli-footer" id="about">
         <div className="foot-brand">
           <strong>WI<span>♥</span>ELI</strong> · Wish + loVE + LIfe
