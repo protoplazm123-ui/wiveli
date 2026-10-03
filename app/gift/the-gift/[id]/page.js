@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
+import { giftTheme } from "../../../lib/the-gift-theme";
 
 const DEMO = {
   senderName: "Alex",
@@ -56,6 +57,25 @@ export default function TheGift() {
   const { id } = useParams();
 
   const [gift, setGift] = useState(null);
+  const [error,setError]=useState("");
+  const [checking,setChecking]=useState(false);
+  const checkingRef=useRef(false);
+  const [reward,setReward]=useState(null);
+  const [refresh,setRefresh]=useState(0);
+  const tokenRef=useRef("");
+  const palette=giftTheme(gift?.theme);
+  const center={...baseCenter,background:palette.background,color:palette.ink};
+  const mainButton={...baseMainButton,background:palette.accent,color:palette.background};
+  const questionPage={...baseQuestionPage,background:palette.background,color:palette.ink};
+  const giftPage={...baseGiftPage,background:palette.background,color:palette.ink};
+  const questionBox={...baseQuestionBox,background:palette.paper};
+  const front={...baseFront,background:palette.soft,color:palette.ink,borderColor:palette.accent};
+  const back={...baseBack,background:palette.paper,color:palette.ink,borderColor:palette.accent};
+  const giftLink={...baseGiftLink,background:palette.accent,color:palette.background};
+  const answerInput={...baseAnswerInput,color:palette.ink,borderColor:palette.accent};
+  const hintBox={...baseHintBox,background:palette.soft};
+  const hintButton={...baseHintButton,color:palette.ink};
+  const wrongText={...baseWrongText,color:palette.accent};
   const [loading, setLoading] = useState(true);
 
   const [started, setStarted] = useState(false);
@@ -72,7 +92,10 @@ export default function TheGift() {
   const [finished, setFinished] = useState(false);
 
   useEffect(() => {
+    let live=true;const controller=new AbortController();
     async function load() {
+      setLoading(true);setError("");
+      tokenRef.current=new URLSearchParams(window.location.search).get('claim')||'';
       if (id === "demo") {
         setGift(DEMO);
         setLoading(false);
@@ -81,39 +104,37 @@ export default function TheGift() {
 
       try {
         const response = await fetch(
-          `/api/gifts/${id}`,
-          { cache: "no-store" }
+          `/api/gifts/${encodeURIComponent(id)}/the-gift`,
+          { cache: "no-store",signal:controller.signal,headers:tokenRef.current?{"x-wiveli-gift-token":tokenRef.current}:{} }
         );
 
         const data = await response.json();
 
-        if (
-          response.ok &&
-          data.giftType === "the-gift"
-        ) {
-          setGift(data.giftData);
-        }
+        if(!response.ok)throw Error(data.error||"Could not load gift.");
+        if(live)setGift(data.gift);
+      } catch(e) {if(live&&e.name!=="AbortError")setError(e.message);
       } finally {
-        setLoading(false);
+        if(live)setLoading(false);
       }
     }
 
-    load();
-  }, [id]);
+    load();return()=>{live=false;controller.abort();};
+  }, [id,refresh]);
 
-  function checkAnswer() {
-    const correct =
-      answer.trim().toLowerCase() ===
-      gift.steps[current].answer
-        .trim()
-        .toLowerCase();
-
-    if (correct) {
-      setWrong(false);
-      setUnlocked(true);
-    } else {
-      setWrong(true);
-    }
+  async function checkAnswer() {
+    if(checkingRef.current||!answer.trim())return;
+    checkingRef.current=true;setChecking(true);setError("");
+    try {
+      let result;
+      if(id==="demo") {
+        const step=gift.steps[current];result={correct:answer.trim().toLowerCase()===step.answer.trim().toLowerCase(),reward:step};
+      } else {
+        const response=await fetch(`/api/gifts/${encodeURIComponent(id)}/the-gift`,{method:"POST",headers:{"Content-Type":"application/json",...(tokenRef.current?{"x-wiveli-gift-token":tokenRef.current}:{})},body:JSON.stringify({stepId:gift.steps[current].id,answer})});
+        result=await response.json();if(!response.ok)throw Error(result.error||"Could not unlock gift. Please try again.");
+      }
+      setWrong(!result.correct);
+      if(result.correct){setReward(result.reward);setUnlocked(true);}
+    }catch(e){setError(e.message);}finally{checkingRef.current=false;setChecking(false);}
   }
 
   function nextGift() {
@@ -122,7 +143,7 @@ export default function TheGift() {
       return;
     }
 
-    setCurrent(current + 1);
+    setCurrent(current + 1);setReward(null);setError("");
 
     setAnswer("");
     setWrong(false);
@@ -141,7 +162,7 @@ export default function TheGift() {
   }
 
   if (!gift) {
-    return <main style={center}>Gift not found.</main>;
+    return <main style={center}><p role="alert">{error||"Gift not found."}</p><button style={mainButton} onClick={()=>setRefresh(v=>v+1)}>TRY AGAIN</button></main>;
   }
 
   if (!started) {
@@ -191,7 +212,7 @@ export default function TheGift() {
     );
   }
 
-  const step = gift.steps[current];
+  const step = unlocked && reward ? reward : gift.steps[current];
 
   if (unlocked) {
     return (
@@ -220,9 +241,9 @@ export default function TheGift() {
                 ? "rotateY(180deg)"
                 : "rotateY(0deg)",
             }}
-            onClick={() => setFlipped(!flipped)}
+
           >
-            <div style={front}>
+            <button type="button" style={{...front,width:"100%",textAlign:"center",cursor:"pointer"}} onClick={()=>setFlipped(true)} disabled={flipped} tabIndex={flipped?-1:0} aria-hidden={flipped}>
               <span>FOR {gift.recipientName.toUpperCase()}</span>
 
               <strong>♡</strong>
@@ -232,9 +253,10 @@ export default function TheGift() {
                 <br />
                 THE CARD
               </p>
-            </div>
+            </button>
 
-            <div style={back}>
+            <div style={back} aria-hidden={!flipped}>
+              {flipped && <>
               <small>{step.rewardType}</small>
 
               <h2>{step.rewardTitle}</h2>
@@ -270,6 +292,7 @@ export default function TheGift() {
                 {step.rewardText}
               </p>
 
+              {step.rewardType === "SURPRISE" && step.rewardUrl && (step.mimeType?.startsWith('image/') ? <img src={step.rewardUrl} alt="Your surprise" style={media} /> : <a href={step.rewardUrl} target="_blank" rel="noopener noreferrer" style={giftLink}>OPEN YOUR SURPRISE ↗</a>)}
               {(step.rewardType === "LINK" ||
                 step.rewardType ===
                   "TICKET / RESERVATION") &&
@@ -283,6 +306,7 @@ export default function TheGift() {
                     OPEN YOUR GIFT →
                   </a>
                 )}
+              </>}
             </div>
           </div>
 
@@ -333,6 +357,7 @@ export default function TheGift() {
           }}
         />
 
+        {error && <p role="alert">{error}</p>}
         {wrong && (
           <p style={wrongText}>
             Not quite... try again ♡
@@ -341,9 +366,9 @@ export default function TheGift() {
 
         <button
           style={mainButton}
-          onClick={checkAnswer}
+          onClick={checkAnswer} disabled={checking||!answer.trim()}
         >
-          UNLOCK MY GIFT →
+          {checking?"OPENING…":"UNLOCK MY GIFT →"}
         </button>
 
         {!hint ? (
@@ -365,7 +390,7 @@ export default function TheGift() {
   );
 }
 
-const center = {
+const baseCenter = {
   minHeight: "100svh",
   padding: 30,
   display: "grid",
@@ -391,7 +416,7 @@ const message = {
   lineHeight: 1.6,
 };
 
-const mainButton = {
+const baseMainButton = {
   padding: "18px 30px",
   marginTop: 15,
   border: 0,
@@ -402,13 +427,13 @@ const mainButton = {
   cursor: "pointer",
 };
 
-const questionPage = {
+const baseQuestionPage = {
   minHeight: "100svh",
   background: "#d9b4b7",
   color: "#25221f",
 };
 
-const giftPage = {
+const baseGiftPage = {
   minHeight: "100svh",
   background: "#9daa8d",
   color: "#25221f",
@@ -423,7 +448,7 @@ const header = {
   borderBottom: "1px solid #25221f33",
 };
 
-const questionBox = {
+const baseQuestionBox = {
   width: "min(700px, calc(100% - 30px))",
   margin: "10vh auto",
   padding: "clamp(25px, 6vw, 60px)",
@@ -438,7 +463,7 @@ const questionTitle = {
   lineHeight: ".95",
 };
 
-const answerInput = {
+const baseAnswerInput = {
   width: "100%",
   padding: 18,
   border: "1px solid #25221f",
@@ -447,12 +472,12 @@ const answerInput = {
   fontSize: 17,
 };
 
-const wrongText = {
+const baseWrongText = {
   color: "#7c2635",
   fontFamily: "Georgia, serif",
 };
 
-const hintButton = {
+const baseHintButton = {
   display: "block",
   marginTop: 25,
   border: 0,
@@ -461,7 +486,7 @@ const hintButton = {
   cursor: "pointer",
 };
 
-const hintBox = {
+const baseHintBox = {
   marginTop: 25,
   padding: 20,
   background: "#ddd0b8",
@@ -491,7 +516,7 @@ const flipScene = {
   cursor: "pointer",
 };
 
-const front = {
+const baseFront = {
   position: "absolute",
   inset: 0,
   padding: 45,
@@ -501,20 +526,22 @@ const front = {
   background: "#d9b4b7",
   border: "1px solid #25221f",
   backfaceVisibility: "hidden",
+  WebkitBackfaceVisibility: "hidden",
 };
 
-const back = {
+const baseBack = {
   position: "absolute",
   inset: 0,
   padding: 40,
   overflowY: "auto",
   display: "flex",
   flexDirection: "column",
-  justifyContent: "center",
+  justifyContent: "flex-start",
   background: "#f5f0e6",
   border: "1px solid #25221f",
   transform: "rotateY(180deg)",
   backfaceVisibility: "hidden",
+  WebkitBackfaceVisibility: "hidden",
 };
 
 const media = {
@@ -530,7 +557,7 @@ const giftText = {
   lineHeight: 1.6,
 };
 
-const giftLink = {
+const baseGiftLink = {
   display: "inline-block",
   marginTop: 20,
   padding: 15,
@@ -539,3 +566,4 @@ const giftLink = {
   textDecoration: "none",
   borderRadius: 100,
 };
+

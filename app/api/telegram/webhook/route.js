@@ -82,7 +82,7 @@ export async function POST(request) {
           `/rest/v1/wiveli_gift_invitations?gift_id=eq.${encodeURIComponent(giftId)}&select=origin&limit=1`
         );
         const [gift] = await supabaseRequest(
-          `/rest/v1/gifts?id=eq.${encodeURIComponent(giftId)}&gift_type=in.(love-coupons,wish-note,our-story,open-when)&select=gift_type,gift_data&limit=1`
+          `/rest/v1/gifts?id=eq.${encodeURIComponent(giftId)}&gift_type=in.(love-coupons,wish-note,our-story,open-when,the-gift)&select=gift_type,gift_data&limit=1`
         );
         if (!gift || !invitation?.origin) {
           await sendMessage(chatId, "Please ask the sender for a new invitation link.");
@@ -288,7 +288,7 @@ async function handleCallback(callback) {
       `/rest/v1/gift_participants?gift_id=eq.${encodeURIComponent(giftId)}&role=eq.recipient&select=claim_token&limit=1`
     );
     if (!recipient?.claim_token || !delivery.delivery_origin) return;
-    const [gift] = await supabaseRequest(`/rest/v1/gifts?id=eq.${encodeURIComponent(giftId)}&gift_type=in.(love-coupons,wish-note,our-story,open-when)&select=gift_type&limit=1`);
+    const [gift] = await supabaseRequest(`/rest/v1/gifts?id=eq.${encodeURIComponent(giftId)}&gift_type=in.(love-coupons,wish-note,our-story,open-when,the-gift)&select=gift_type&limit=1`);
     if (!gift) return;
     const giftUrl = `${delivery.delivery_origin}${giftPath(gift.gift_type, giftId)}?claim=${encodeURIComponent(recipient.claim_token)}`;
     await sendGiftOnce({
@@ -1031,6 +1031,7 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
 }
+
 
 
 

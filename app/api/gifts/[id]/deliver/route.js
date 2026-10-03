@@ -9,7 +9,7 @@ export async function GET(request, { params }) {
     if (!recipient?.claim_token || !/^[0-9a-f-]{36}$/i.test(recipient.claim_token)) {
       throw new GiftError("The private gift invitation is unavailable.", 409);
     }
-    const [gift] = await database(`gifts?id=eq.${encodeURIComponent(id)}&gift_type=in.(love-coupons,wish-note,our-story,open-when)&select=gift_type,gift_data&limit=1`);
+    const [gift] = await database(`gifts?id=eq.${encodeURIComponent(id)}&gift_type=in.(love-coupons,wish-note,our-story,open-when,the-gift)&select=gift_type,gift_data&limit=1`);
     if (!gift) throw new GiftError("Gift not found.", 404);
     const bot = await telegram("getMe");
     if (!bot?.username) throw new GiftError("WIVELI bot username is unavailable.");
@@ -46,7 +46,7 @@ export async function POST(request, { params }) {
     if (!recipient?.claim_token) {
       throw new GiftError("The private gift link is unavailable.", 409);
     }
-    const [row] = await database(`gifts?id=eq.${encodeURIComponent(id)}&gift_type=in.(love-coupons,wish-note,our-story,open-when)&select=gift_type,gift_data&limit=1`);
+    const [row] = await database(`gifts?id=eq.${encodeURIComponent(id)}&gift_type=in.(love-coupons,wish-note,our-story,open-when,the-gift)&select=gift_type,gift_data&limit=1`);
     if (!row) throw new GiftError("Gift not found.", 404);
     const gift = row.gift_data || {};
     const delivered = await sendOnce({
@@ -62,6 +62,7 @@ export async function POST(request, { params }) {
     return NextResponse.json({ error: error instanceof GiftError ? error.message : "Could not deliver the gift." }, { status: error.status || 500 });
   }
 }
+
 
 
 

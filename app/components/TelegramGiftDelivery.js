@@ -85,8 +85,8 @@ export default function TelegramGiftDelivery({ giftId, onBack, senderName = "", 
       </form>
       {message && <p role="status" aria-live="polite">{message}</p>}
       <p>To receive gift updates yourself, <a href="/account" target="_blank" rel="noopener noreferrer">connect your Telegram in your account</a>.
-        {giftType === "open-when" ? "Letter openings and replies appear in your Inbox and your connected Telegram bot." : giftType === "our-story" ? "When your recipient opens the story, an update appears in your Inbox and your connected Telegram bot." : giftType === "wish-note" ? "Wish Note openings, new wishes and completed wishes appear in your Inbox; your connected bot also sends notifications." : "Then enable Remind me on a coupon, or let the recipient use Tell the sender after redeeming it."}</p>
-      <button type="button" onClick={onBack} disabled={busy}>{["wish-note","our-story","open-when"].includes(giftType) ? "← OPEN YOUR ACCOUNT" : "← BACK TO GIFT LINK"}</button>
+        {giftType === "the-gift" ? "Share the invitation above so your person can unlock their surprises." : giftType === "open-when" ? "Letter openings and replies appear in your Inbox and your connected Telegram bot." : giftType === "our-story" ? "When your recipient opens the story, an update appears in your Inbox and your connected Telegram bot." : giftType === "wish-note" ? "Wish Note openings, new wishes and completed wishes appear in your Inbox; your connected bot also sends notifications." : "Then enable Remind me on a coupon, or let the recipient use Tell the sender after redeeming it."}</p>
+      <button type="button" onClick={onBack} disabled={busy}>{["wish-note","our-story","open-when","the-gift"].includes(giftType) ? "← OPEN YOUR ACCOUNT" : "← BACK TO GIFT LINK"}</button>
       <style jsx>{`
         .delivery.cosmic { max-width:none; color:#e9ddf2; font:14px/1.7 Arial,Helvetica,sans-serif; }
         .cosmic .eyebrow, .cosmic label { color:#cda7e7; font-size:10px; line-height:1.6; }
@@ -123,6 +123,7 @@ export default function TelegramGiftDelivery({ giftId, onBack, senderName = "", 
     </section>
   );
 }
+
 
 
 

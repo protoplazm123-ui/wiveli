@@ -1,8 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
+import CouponAttachmentUpload from "../../../components/CouponAttachmentUpload";
+import TelegramGiftDelivery from "../../../components/TelegramGiftDelivery";
+import { GIFT_THEMES } from "../../../lib/the-gift-theme";
+const FILE_KINDS = {PHOTO:"photo",VIDEO:"video",VOICE:"voice",SURPRISE:"gift"};
 const EMPTY_STEP = {
+  attachment: null,
   question: "",
   answer: "",
   hint: "",
@@ -15,7 +20,11 @@ const EMPTY_STEP = {
 export default function TheGiftBuilder() {
   const [senderName, setSenderName] = useState("");
   const [recipientName, setRecipientName] = useState("");
-  const [recipientContact, setRecipientContact] = useState("");
+  const [theme,setTheme]=useState("romantic");
+  const [uploadBusy,setUploadBusy]=useState(false);
+  const [error,setError]=useState("");
+  const [giftId,setGiftId]=useState("");
+  const creatingRef=useRef(false);
 
   const [introMessage, setIntroMessage] = useState(
     "I made something for you. But you'll have to earn it first ♡"
@@ -25,8 +34,6 @@ export default function TheGiftBuilder() {
 
   const [draft, setDraft] = useState({ ...EMPTY_STEP });
   const [modal, setModal] = useState(null);
-  const [previewIndex, setPreviewIndex] = useState(0);
-  const [previewUnlocked, setPreviewUnlocked] = useState(false);
 
   const [finalMessage, setFinalMessage] = useState(
     "That's everything... for now ♡"
@@ -48,6 +55,16 @@ export default function TheGiftBuilder() {
   }
 
   function saveGift() {
+    if(uploadBusy)return;
+    if(steps.length>=50){setError("You can add up to 50 gifts.");return;}
+    if(["PHOTO","VIDEO","VOICE"].includes(draft.rewardType)&&!draft.attachment){setError("Upload the file first.");return;}
+    if(draft.rewardType==="LINK") {
+      try {const url=new URL(draft.rewardUrl);if(!["http:","https:"].includes(url.protocol))throw Error();}
+      catch {setError("Add a valid https:// link.");return;}
+    }
+    if(draft.rewardType==="LETTER"&&!draft.rewardText.trim()){setError("Write your letter first.");return;}
+    if(draft.rewardType==="SURPRISE"&&!draft.attachment&&!draft.rewardText.trim()){setError("Add a file or message for the surprise.");return;}
+    setError("");
     if (
       !draft.question.trim() ||
       !draft.answer.trim() ||
@@ -75,23 +92,19 @@ export default function TheGiftBuilder() {
     );
   }
 
-  function openPreview() {
-    if (!steps.length) {
-      alert("Add at least one gift first ♡");
-      return;
-    }
-
-    setPreviewIndex(0);
-    setPreviewUnlocked(false);
-    setModal("preview");
+  function openStyle() {
+    if(!senderName.trim()||!recipientName.trim()||!steps.length){setError("Add both names and at least one gift.");return;}
+    setError("");setModal("style");
   }
 
   async function createGift() {
+    if(creatingRef.current||uploadBusy)return;
     if (!senderName.trim() || !recipientName.trim() || !steps.length) {
       alert("Add names and at least one gift ♡");
       return;
     }
 
+    creatingRef.current=true;setError("");
     setCreating(true);
 
     try {
@@ -105,7 +118,7 @@ export default function TheGiftBuilder() {
           giftData: {
             senderName: senderName.trim(),
             recipientName: recipientName.trim(),
-            recipientContact: recipientContact.trim(),
+            theme,
             introMessage: introMessage.trim(),
             steps,
             finalMessage: finalMessage.trim(),
@@ -117,25 +130,24 @@ export default function TheGiftBuilder() {
       const data = await response.json();
 
       if (!response.ok || !data.id) {
-        throw new Error();
+        throw new Error(data.error || "Could not create gift.");
       }
 
-      setGiftLink(
-        `${window.location.origin}/gift/the-gift/${data.id}`
-      );
+      setGiftId(data.id);
+      setGiftLink(data.giftUrl || `${window.location.origin}/gift/the-gift/${data.id}?claim=${encodeURIComponent(data.claimToken)}`);
 
       setModal("ready");
-    } catch {
-      alert("We couldn't create your gift ♡");
+    } catch (error) {
+      setError(error.message || "We couldn't create your gift ♡");
     } finally {
-      setCreating(false);
+      creatingRef.current=false;setCreating(false);
     }
   }
 
-  const previewStep = steps[previewIndex];
 
   return (
     <main className="giftBuilder">
+      {error && <p className="flowError" role="alert">{error}</p>}
       <header className="giftHeader">
         <a href="/" className="giftLogo">
           WI<span>♥</span>ELI
@@ -185,18 +197,6 @@ export default function TheGiftBuilder() {
             </label>
           </div>
 
-          <label className="contactField">
-            <span>THEIR CONTACT</span>
-
-            <input
-              placeholder="@telegram or email"
-              value={recipientContact}
-              onChange={(e) =>
-                setRecipientContact(e.target.value)
-              }
-            />
-          </label>
-
           {!steps.length ? (
             <button
               className="mainButton"
@@ -215,9 +215,9 @@ export default function TheGiftBuilder() {
 
               <button
                 className="mainButton"
-                onClick={openPreview}
+                onClick={openStyle}
               >
-                PREVIEW →
+                CHOOSE STYLE →
               </button>
             </div>
           )}
@@ -277,7 +277,7 @@ export default function TheGiftBuilder() {
           <div className="builderModal">
             <button
               className="modalClose"
-              onClick={() => setModal(null)}
+              disabled={uploadBusy || creating} onClick={() => {setError("");setModal(null);}}
             >
               ×
             </button>
@@ -347,13 +347,14 @@ export default function TheGiftBuilder() {
                   ].map((type) => (
                     <button
                       key={type}
+                      disabled={uploadBusy}
                       className={
                         draft.rewardType === type
                           ? "rewardType active"
                           : "rewardType"
                       }
                       onClick={() =>
-                        updateDraft("rewardType", type)
+                        setDraft(current=>({...current,rewardType:type,attachment:null,rewardUrl:""}))
                       }
                     >
                       {type}
@@ -391,38 +392,26 @@ export default function TheGiftBuilder() {
                   />
                 </label>
 
-                {draft.rewardType !== "LETTER" && (
-                  <label>
-                    <span>
-                      PHOTO / VIDEO / AUDIO / LINK
-                    </span>
+                {FILE_KINDS[draft.rewardType] && <CouponAttachmentUpload key={draft.rewardType}
+                  kind={FILE_KINDS[draft.rewardType]} attachment={draft.attachment}
+                  onChange={file=>updateDraft("attachment",file)} onBusy={setUploadBusy}
+                  saveHint="File uploaded. Press Add this gift to keep it." photoHint="Choose a photo from your device." />}
+                {draft.rewardType === "LINK" && <label><span>GIFT LINK</span><input type="url" placeholder="https://…" value={draft.rewardUrl} onChange={e=>updateDraft("rewardUrl",e.target.value)} /></label>}
 
-                    <input
-                      placeholder="Paste link for now..."
-                      value={draft.rewardUrl}
-                      onChange={(e) =>
-                        updateDraft(
-                          "rewardUrl",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </label>
-                )}
               </div>
             </div>
 
             <div className="modalActions">
               <button
                 className="modalCancel"
-                onClick={() => setModal(null)}
+                disabled={uploadBusy || creating} onClick={() => {setError("");setModal(null);}}
               >
                 CANCEL
               </button>
 
               <button
                 className="mainButton"
-                onClick={saveGift}
+                disabled={uploadBusy} onClick={saveGift}
               >
                 ADD THIS GIFT ♡
               </button>
@@ -431,95 +420,19 @@ export default function TheGiftBuilder() {
         </div>
       )}
 
-      {modal === "preview" && previewStep && (
-        <div className="modalOverlay">
-          <div className="previewModal">
-            <button
-              className="modalClose"
-              onClick={() => setModal(null)}
-            >
-              ×
-            </button>
-
-            <p className="modalEyebrow">
-              PREVIEW · {recipientName || "YOUR PERSON"}
-            </p>
-
-            {!previewUnlocked ? (
-              <>
-                <div className="previewProgress">
-                  {String(previewIndex + 1).padStart(2, "0")}
-                  <span>/</span>
-                  {String(steps.length).padStart(2, "0")}
-                </div>
-
-                <h2>{previewStep.question}</h2>
-
-                {previewStep.hint && (
-                  <p className="previewHint">
-                    HINT · {previewStep.hint}
-                  </p>
-                )}
-
-                <div className="fakeAnswer">
-                  TYPE YOUR ANSWER...
-                </div>
-
-                <button
-                  className="mainButton"
-                  onClick={() => setPreviewUnlocked(true)}
-                >
-                  UNLOCK →
-                </button>
-              </>
-            ) : (
-              <>
-                <div className="unlockedHeart">♡</div>
-
-                <p className="modalEyebrow">
-                  {previewStep.rewardType} UNLOCKED
-                </p>
-
-                <h2>{previewStep.rewardTitle}</h2>
-
-                <p className="rewardMessage">
-                  {previewStep.rewardText}
-                </p>
-
-                {previewIndex < steps.length - 1 ? (
-                  <button
-                    className="mainButton"
-                    onClick={() => {
-                      setPreviewIndex((i) => i + 1);
-                      setPreviewUnlocked(false);
-                    }}
-                  >
-                    NEXT GIFT →
-                  </button>
-                ) : (
-                  <div className="previewFinish">
-                    <textarea
-                      value={finalMessage}
-                      onChange={(e) =>
-                        setFinalMessage(e.target.value)
-                      }
-                    />
-
-                    <button
-                      className="mainButton"
-                      disabled={creating}
-                      onClick={createGift}
-                    >
-                      {creating
-                        ? "CREATING..."
-                        : "SEND GIFT →"}
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        </div>
+      {modal === "style" && (
+        <div className="modalOverlay"><div className="builderModal">
+          <button className="modalClose" disabled={creating} onClick={()=>setModal(null)} aria-label="Close">×</button>
+          <p className="modalEyebrow">02 · MAKE IT YOURS</p><h2>CHOOSE THEIR<br /><em>LITTLE WORLD.</em></h2>
+          <div className="styleGrid">{Object.entries(GIFT_THEMES).map(([id,palette])=>(
+            <button type="button" key={id} className={`styleChoice ${theme===id?'chosen':''}`} aria-pressed={theme===id} disabled={creating} onClick={()=>setTheme(id)} style={{background:palette.background,color:palette.ink,borderColor:theme===id?palette.accent:undefined}}>
+              <span style={{background:palette.paper,color:palette.accent}}>♡</span><strong>{palette.name}</strong>{theme===id&&<small>SELECTED ✓</small>}
+            </button>))}</div>
+          <p>{steps.length} {steps.length===1?'gift':'gifts'} for {recipientName}. Your recipient will answer the questions when they open it.</p>
+          <label className="contactField"><span>INTRO MESSAGE</span><textarea value={introMessage} maxLength={2000} disabled={creating} onChange={e=>setIntroMessage(e.target.value)} /></label>
+          <label className="contactField"><span>FINAL MESSAGE</span><textarea value={finalMessage} maxLength={2000} disabled={creating} onChange={e=>setFinalMessage(e.target.value)} /></label>
+          <div className="modalActions"><button className="modalCancel" disabled={creating} onClick={()=>setModal(null)}>← EDIT GIFTS</button><button className="mainButton" disabled={creating} onClick={createGift}>{creating?'CREATING…':'CREATE GIFT →'}</button></div>
+        </div></div>
       )}
 
       {modal === "ready" && (
@@ -527,7 +440,7 @@ export default function TheGiftBuilder() {
           <div className="readyModal">
             <button
               className="modalClose"
-              onClick={() => setModal(null)}
+              disabled={uploadBusy || creating} onClick={() => {setError("");setModal(null);}}
             >
               ×
             </button>
@@ -544,31 +457,41 @@ export default function TheGiftBuilder() {
               FOR {recipientName.toUpperCase()}.
             </h2>
 
-            <div className="giftLink">
-              {giftLink}
-            </div>
+            <label className="contactField"><span>PRIVATE GIFT LINK</span><input value={giftLink} readOnly onFocus={e=>e.target.select()} /></label>
 
             <button
               className="mainButton"
               onClick={() =>
-                navigator.clipboard.writeText(giftLink)
+                navigator.clipboard.writeText(giftLink).catch(()=>setError("Select and copy the private link manually."))
               }
             >
               COPY PRIVATE LINK
             </button>
 
-            <a className="openGift" href={giftLink}>
-              OPEN GIFT →
+            <a className="openGift" href={giftLink} target="_blank" rel="noopener noreferrer">
+              VIEW AS RECIPIENT ↗
             </a>
+            <div className="deliveryWrap"><TelegramGiftDelivery giftId={giftId} giftType="the-gift" senderName={senderName} recipientName={recipientName} onBack={()=>window.location.assign('/account')} /></div>
           </div>
         </div>
       )}
 
       <style jsx>{`
+        .flowError { position:fixed; z-index:500; bottom:12px; left:5%; width:90%; padding:14px; background:#fff4ef; color:#742e40; border:1px solid #bd8c97; border-radius:12px; font:14px/1.5 Arial,sans-serif; }
+        .styleGrid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+        .styleChoice { border:2px solid #cabac8; border-radius:16px; padding:20px 12px; cursor:pointer; min-height:150px; }
+        .styleChoice span { display:grid;place-items:center; height:64px;border-radius:10px;margin-bottom:14px;font-size:32px; }
+        .styleChoice strong,.styleChoice small { display:block; margin-top:8px; }
+        .styleChoice small { font-size:9px; }
+        .deliveryWrap { margin-top:36px;text-align:left;border-top:1px solid #ddc6ce;padding-top:28px; }
+        button:disabled { opacity:.5;cursor:wait; }
+        button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible { outline:2px solid #9667b1;outline-offset:3px; }
+        @media(max-width:600px){.styleGrid{grid-template-columns:repeat(2,minmax(0,1fr));}.builderActions{flex-wrap:wrap;}.readyModal{padding:28px 22px;}}
+
         :global(html),
         :global(body) {
           margin: 0;
-          overflow: hidden;
+          overflow: auto;
         }
 
         :global(*) {
@@ -585,7 +508,7 @@ export default function TheGiftBuilder() {
 
           width: 100%;
           height: 100svh;
-          overflow: hidden;
+          overflow: auto;
           background:
             radial-gradient(
               circle at 80% 25%,
@@ -628,7 +551,7 @@ export default function TheGiftBuilder() {
         }
 
         .builderStage {
-          height: calc(100svh - 82px);
+          min-height: calc(100svh - 82px);
           padding: 5vh 6vw;
           display: grid;
           grid-template-columns: 0.95fr 1.05fr;
@@ -899,7 +822,7 @@ export default function TheGiftBuilder() {
           position: relative;
           width: min(900px, 94vw);
           max-height: 90svh;
-          overflow: hidden;
+          overflow: auto;
           background: var(--paper);
           border-radius: 22px;
           padding: 42px;
@@ -1063,7 +986,7 @@ export default function TheGiftBuilder() {
           }
 
           .builderStage {
-            height: calc(100svh - 65px);
+            min-height: calc(100svh - 65px);
             padding: 25px;
             grid-template-columns: 1fr;
           }
@@ -1101,3 +1024,4 @@ export default function TheGiftBuilder() {
     </main>
   );
 }
+

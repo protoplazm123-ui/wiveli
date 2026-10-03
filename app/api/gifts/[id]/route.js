@@ -1,3 +1,4 @@
+import { publicTheGift } from "../../../lib/the-gift";
 import { NextResponse } from "next/server";
 import { requireGiftAccess, GiftError } from "../../../lib/gift-telegram";
 
@@ -60,14 +61,8 @@ export async function GET(request, { params }) {
         createdAt: stored.createdAt || null,
       };
     } else if (row.gift_type === "the-gift") {
-      publicGift = {
-        senderName: stored.senderName || "",
-        recipientName: stored.recipientName || "",
-        introMessage: stored.introMessage || "",
-        steps: stored.steps || [],
-        finalMessage: stored.finalMessage || "",
-        createdAt: stored.createdAt || null,
-      };
+      await requireGiftAccess(request,id,true);
+      publicGift = publicTheGift(stored);
     } else {
       return NextResponse.json(
         { error: "Unsupported gift." },
@@ -90,6 +85,7 @@ export async function GET(request, { params }) {
     );
   }
 }
+
 
 
 
