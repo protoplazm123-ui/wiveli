@@ -1,0 +1,31 @@
+.about { position: relative; isolation: isolate; padding: 100px clamp(22px,5vw,88px); background: radial-gradient(ellipse at 50% 50%,#2d183f 0%,#170e23 42%,#100b18 78%); color: #f8f2fc; font-family: Arial,Helvetica,sans-serif; overflow: hidden; }
+.about *, .about *::before, .about *::after { box-sizing: border-box; }
+.layout { display: grid; grid-template-columns: minmax(0,1.1fr) minmax(260px,1fr) minmax(0,.8fr); align-items: center; gap: clamp(24px,4vw,64px); max-width: 1320px; margin: auto; }
+.copy { position: relative; z-index: 2; min-width: 0; }
+.eyebrow { margin: 0 0 26px; color: #c99ee8; font-size: 10px; font-weight: 700; letter-spacing: .22em; line-height: 1.7; }
+.copy h2 { margin: 0 0 28px; color: #faf6ff; font: 500 clamp(46px,5.3vw,82px)/1.02 Arial,Helvetica,sans-serif; letter-spacing: -.065em; }
+.copy h2 span { color: #caa0ef; }
+.description { max-width: 340px; margin: 0; color: #c6b8d2; font-size: 15px; line-height: 1.85; }
+.cta { display: inline-flex; align-items: center; justify-content: space-between; gap: 36px; margin-top: 32px; min-height: 50px; padding: 16px 25px; border-radius: 30px; background: #e3c9f5; color: #271334; text-decoration: none; font-size: 12px; font-weight: 700; }
+.cta:hover { background: #efddfb; }
+.visual { position: relative; display: grid; place-items: center; min-width: 0; padding: 20px 0; }
+.halo { position: absolute; width: 120%; aspect-ratio: 1; border-radius: 50%; background: #a568d528; filter: blur(48px); pointer-events: none; }
+.phone { position: relative; display: flex; flex-direction: column; align-items: center; width: 280px; max-width: 100%; min-height: 535px; padding: 68px 24px 26px; border: 7px solid #241c2e; border-radius: 42px; background: linear-gradient(150deg,#f2e5fa,#dfc7f1 58%,#ceb0e5); color: #392443; box-shadow: 0 32px 65px #08030e80,0 0 0 1px #6d507e; transform: rotate(-5deg); text-align: center; }
+.notch { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 85px; height: 20px; border-radius: 20px; background: #241c2e; }
+.phoneLabel { margin: 0; font-size: 8px; line-height: 1.6; letter-spacing: .18em; font-weight: 700; color: #6c4d7a; }
+.heart { display: grid; place-items: center; width: 88px; height: 88px; margin: 32px 0 25px; border: 1px solid #a880bf; border-radius: 50%; color: #8052a3; font: 60px/1 Georgia,serif; }
+.phone h3 { margin: 0; color: #392443; font: 400 30px/1.15 Georgia,serif; letter-spacing: -.035em; }
+.phone h3 em { color: #76528b; font-weight: 400; }
+.phoneNote { margin: 18px 0 25px; color: #725b7e; font-size: 10px; line-height: 1.8; }
+.phoneButton { display: flex; justify-content: center; gap: 16px; align-items: center; width: 100%; min-height: 44px; margin-top: auto; padding: 14px; border-radius: 24px; background: #392443; color: #f8ecff; text-decoration: none; font-size: 9px; font-weight: 700; letter-spacing: .08em; }
+.signature { display: block; margin-top: 18px; color: #725b7e; font-size: 7px; letter-spacing: .16em; }
+.features { min-width: 0; }
+.feature { padding: 26px 0; border-bottom: 1px solid #493452; }
+.feature:first-child { padding-top: 0; }
+.feature:last-child { border-bottom: 0; padding-bottom: 0; }
+.number { color: #c69bea; font-size: 10px; font-weight: 700; letter-spacing: .13em; }
+.feature h3 { margin: 12px 0 10px; color: #f5ebfc; font: 500 19px/1.35 Arial,Helvetica,sans-serif; letter-spacing: -.02em; }
+.feature p { margin: 0; color: #c6b8d2; font-size: 13px; line-height: 1.8; }
+.about a:focus-visible { outline: 2px solid #be83e8; outline-offset: 5px; }
+@media(max-width:1000px) { .layout { grid-template-columns: minmax(0,1fr) minmax(260px,1fr); gap: 44px; } .features { grid-column: 1/-1; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 26px; } .feature,.feature:first-child,.feature:last-child { padding: 22px 0 0; border: 0; border-top: 1px solid #493452; } }
+@media(max-width:600px) { .about { padding: 64px 24px; } .layout { grid-template-columns: minmax(0,1fr); gap: 42px; } .copy { text-align: center; } .copy h2 { font-size: clamp(48px,12vw,68px); } .description { margin: auto; } .features { grid-template-columns: minmax(0,1fr); gap: 24px; } .visual { padding: 8px 0; } .phone { transform: rotate(-3deg); } }

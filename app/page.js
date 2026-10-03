@@ -1,5 +1,7 @@
 "use client";
 
+import WiveliAbout from "./components/WiveliAbout";
+
 import HomeAccount from "./components/HomeAccount";
 
 import WiveliUnifiedHero from "./components/WiveliUnifiedHero";
@@ -179,114 +181,7 @@ export default function Home() {
 
       {/* ================= ABOUT ================= */}
 
-      <section className="meaning" id="about">
-
-        <div className="meaningCopy">
-
-          <p className="eyebrow">
-            A MORE MEANINGFUL WAY
-          </p>
-
-          <h2>
-            MORE THAN
-            <br />
-            A GIFT.
-            <br />
-            <span>A FEELING.</span>
-          </h2>
-
-          <p>
-            WIVELI helps you turn your thoughts,
-            memories and emotions into interactive
-            digital experiences — made for the people
-            who matter most.
-          </p>
-
-          <a
-            className="primary"
-            href="#ideas"
-          >
-            Create Your Gift →
-          </a>
-
-        </div>
-
-
-        {/* PHONE */}
-
-        <div className="phone">
-
-          <div className="phoneTop" />
-
-          <p className="phoneMini">
-            FOR SOMEONE SPECIAL
-          </p>
-
-          <div className="phoneHeart">
-            ♥
-          </div>
-
-          <h3>
-            A little world
-            <br />
-            made for you.
-          </h3>
-
-          <button>
-            OPEN YOUR GIFT
-          </button>
-
-        </div>
-
-
-        {/* FEATURES */}
-
-        <div className="features">
-
-          <div>
-            <span>01</span>
-
-            <h3>
-              Personal & Unique
-            </h3>
-
-            <p>
-              Every gift is made around your story.
-            </p>
-          </div>
-
-
-          <div>
-            <span>02</span>
-
-            <h3>
-              Quick & Easy
-            </h3>
-
-            <p>
-              Create something meaningful without
-              designing from scratch.
-            </p>
-          </div>
-
-
-          <div>
-            <span>03</span>
-
-            <h3>
-              Perfect for Any Occasion
-            </h3>
-
-            <p>
-              Birthdays, anniversaries, friendship
-              or no reason at all.
-            </p>
-          </div>
-
-        </div>
-
-      </section>
-
+      <WiveliAbout />
 
       {/* ================= FOOTER ================= */}
 
