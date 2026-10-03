@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import HomeAccount from "./components/HomeAccount";
-import "./components/WiveliNewHome.css";
 
 const occasions = [
   { title: "For Someone Special", icon: "♡" },
@@ -98,11 +97,49 @@ export default function Home() {
   const [activeExp, setActiveExp] = useState(0);
   const [isGiftOpen, setIsGiftOpen] = useState(false);
   const [activeOccasion, setActiveOccasion] = useState("For Someone Special");
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [soundOn, setSoundOn] = useState(true);
+
+  // 3D Parallax Mouse Tracking (Ciao Energy style)
+  const handleMouseMove = (e) => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 2;
+    const y = (e.clientY / window.innerHeight - 0.5) * 2;
+    setMousePos({ x, y });
+  };
+
+  // Organic Web Audio Synth (Ciao Energy haptic clicks)
+  const playSfx = (type) => {
+    if (!soundOn || typeof window === 'undefined') return;
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      const now = ctx.currentTime;
+      if (type === 'pop') {
+        osc.frequency.setValueAtTime(200, now);
+        osc.frequency.exponentialRampToValueAtTime(600, now + 0.1);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+        osc.start(now);
+        osc.stop(now + 0.1);
+      } else {
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.exponentialRampToValueAtTime(150, now + 0.05);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        osc.start(now);
+        osc.stop(now + 0.05);
+      }
+    } catch (e) {}
+  };
 
   const current = experiences[activeExp];
 
   return (
-    <main className="wiveli-page">
+    <main className="wiveli-page" onMouseMove={handleMouseMove}>
       {/* 1. ШАПКА: Ссылка на Личный кабинет <HomeAccount /> сохранена! */}
       <header className="wiveli-nav">
         <Link href="/" className="wiveli-logo">
@@ -116,8 +153,15 @@ export default function Home() {
           <a href="#about">📖 About</a>
         </nav>
 
-        {/* Правый угол: HomeAccount (проверяет сессию) + Кнопка */}
+        {/* Правый угол: Звук + HomeAccount + Кнопка */}
         <div className="wiveli-actions">
+          <button 
+            onClick={() => setSoundOn(!soundOn)} 
+            className="sfx-btn"
+            title="Ciao Haptic Sound"
+          >
+            {soundOn ? "🔊 SFX: ON" : "🔇 SFX: OFF"}
+          </button>
           <HomeAccount />
           <a className="btn-create" href="#experiences">
             Create a Gift →
@@ -125,13 +169,16 @@ export default function Home() {
         </div>
       </header>
 
-      {/* 2. ГЕРОЙ: Руки и коробка подарка с интерактивом */}
+      {/* 2. ГЕРОЙ: РУКИ ОТ КРАЕВ + 3D ВРАЩЕНИЕ ПОДАРКА ЗА МЫШКОЙ */}
       <section className="wiveli-hero" id="hero">
         <div className="occasion-bar">
           {occasions.map((occ) => (
             <button
               key={occ.title}
-              onClick={() => setActiveOccasion(occ.title)}
+              onClick={() => {
+                setActiveOccasion(occ.title);
+                playSfx('click');
+              }}
               className={activeOccasion === occ.title ? "occ-btn active" : "occ-btn"}
             >
               {occ.icon} {occ.title}
@@ -148,22 +195,63 @@ export default function Home() {
           Turn memories, sweet words, and little promises into an interactive gift made just for one person.
         </p>
 
-        {/* Руки и коробка */}
+        {/* 3D Сцена: руки выходят за пределы экрана, а коробка поворачивается в 3D */}
         <div className="hero-visual-stage">
           <img
             src="/assets/Изображение Codex 25 сент. 2026 г., 16_56_33.png"
             alt="Left Hand"
             className="hand-img hand-left"
+            style={{
+              transform: `translateY(-50%) translate(${mousePos.x * -30}px, ${mousePos.y * -15}px)`
+            }}
           />
 
-          <div className="gift-container" onClick={() => setIsGiftOpen(!isGiftOpen)}>
+          <div 
+            className="gift-container" 
+            onClick={() => {
+              setIsGiftOpen(!isGiftOpen);
+              playSfx('pop');
+            }}
+            style={{
+              transform: `rotateY(${mousePos.x * 24}deg) rotateX(${mousePos.y * -20}deg)`
+            }}
+          >
+            {/* ВЫЕЗЖАЮЩИЙ ИЗ КОРОБКИ СМАРТФОН С ПРЕВЬЮ */}
+            {isGiftOpen && (
+              <div className="emerging-phone">
+                <div className="phone-screen">
+                  <div className="phone-island">
+                    <span>09:41</span>
+                    <div className="island-pill" />
+                    <span>5G 🔋</span>
+                  </div>
+
+                  <div style={{ textAlign: 'center', margin: '4px 0' }}>
+                    <small style={{ color: '#E11D48', fontWeight: 'bold', fontSize: '9px', textTransform: 'uppercase' }}>
+                      {current.title}
+                    </small>
+                    <div className="phone-preview-card">
+                      <img src={current.image} alt={current.title} />
+                    </div>
+                    <p style={{ fontStyle: 'italic', fontSize: '11px', margin: '4px 0', lineHeight: 1.3 }}>
+                      "{current.loveIsQuote}"
+                    </p>
+                  </div>
+
+                  <a href="#experiences" className="phone-btn">
+                    Open Full Experience →
+                  </a>
+                </div>
+              </div>
+            )}
+
             <img
               src="/assets/Изображение Codex 25 сент. 2026 г., 16_58_11.png"
               alt="Gift Box"
               className="gift-img"
             />
             <span className="tap-badge">
-              {isGiftOpen ? "✕ Close note" : "✨ Tap to open gift"}
+              {isGiftOpen ? "✕ Close phone" : "📱 Tap to unwrap phone & preview"}
             </span>
           </div>
 
@@ -171,6 +259,9 @@ export default function Home() {
             src="/assets/Изображение Codex 25 сент. 2026 г., 16_57_18.png"
             alt="Right Hand"
             className="hand-img hand-right"
+            style={{
+              transform: `translateY(-50%) translate(${mousePos.x * 30}px, ${mousePos.y * 15}px)`
+            }}
           />
         </div>
 
@@ -179,15 +270,17 @@ export default function Home() {
             <p>
               "The best gifts aren't bought in a shopping mall. They are made from inside jokes, late night talks, and memories only we share."
             </p>
-            <small>With love, Wiveli ♡</small>
+            <small style={{ display: 'block', marginTop: '10px', fontSize: '13px', color: '#E11D48', fontStyle: 'normal', fontWeight: 'bold' }}>
+              With love, Wiveli ♡
+            </small>
           </div>
         )}
       </section>
 
-      {/* 3. ВКЛАДЫШИ LOVE IS... (КОМПАКТНЫЙ ВЫБОР БЕЗ СКРОЛЛА) */}
+      {/* 3. ВКЛАДЫШИ LOVE IS... С КНОПКАМИ НАВИГАЦИИ ПО БОКАМ ПРЕВЬЮ */}
       <section className="wiveli-experiences" id="experiences">
         <div className="section-head">
-          <p className="eyebrow">LOVE IS... · PICK A FEELING</p>
+          <p className="eyebrow">CIAO MOTION SHOWCASE · PICK A FEELING</p>
           <h2>6 Interactive Gift Formats</h2>
         </div>
 
@@ -196,7 +289,10 @@ export default function Home() {
           {experiences.map((exp, idx) => (
             <button
               key={exp.id}
-              onClick={() => setActiveExp(idx)}
+              onClick={() => {
+                setActiveExp(idx);
+                playSfx('click');
+              }}
               className={activeExp === idx ? "tab-btn active" : "tab-btn"}
             >
               <span>{exp.symbol}</span>
@@ -206,40 +302,67 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Вкладыш Love Is... */}
-        <div className="stage-card">
-          <div className="stage-media">
-            <div className="loveis-wrapper">
-              <div className="loveis-head">
-                <span className="loveis-logo">Love is... ♥♥</span>
-                <span className="loveis-tag">{current.title}</span>
+        {/* Сцена с кнопками по бокам от самого превью */}
+        <div className="slider-flank-wrapper">
+          {/* Кнопка Влево (по левому боку превью) */}
+          <button 
+            onClick={() => {
+              setActiveExp((activeExp - 1 + experiences.length) % experiences.length);
+              playSfx('click');
+            }}
+            className="flank-nav-btn flank-prev"
+            aria-label="Previous Category"
+          >
+            ←
+          </button>
+
+          {/* Вкладыш Love Is... */}
+          <div className="stage-card">
+            <div className="stage-media">
+              <div className="loveis-wrapper">
+                <div className="loveis-head">
+                  <span className="loveis-logo">Love is... ♥♥</span>
+                  <span className="loveis-tag">{current.title}</span>
+                </div>
+                <div className="loveis-artwork">
+                  <img src={current.image} alt={current.title} />
+                </div>
+                <div className="loveis-quote">
+                  "{current.loveIsQuote}"
+                </div>
               </div>
-              <div className="loveis-artwork">
-                <img src={current.image} alt={current.title} />
-              </div>
-              <div className="loveis-quote">
-                "{current.loveIsQuote}"
+            </div>
+
+            <div className="stage-info">
+              <span className="info-tag">{current.tag}</span>
+              <h3>{current.title}</h3>
+              <p className="info-sub">{current.subtitle}</p>
+              <div className="mechanic-pill">{current.mechanicBadge}</div>
+              <p className="info-desc">{current.text}</p>
+
+              <div className="stage-footer">
+                <Link href={current.href} className="btn-action">
+                  {current.cta} →
+                </Link>
               </div>
             </div>
           </div>
 
-          <div className="stage-info">
-            <span className="info-tag">{current.tag}</span>
-            <h3>{current.title}</h3>
-            <p className="info-sub">{current.subtitle}</p>
-            <div className="mechanic-pill">{current.mechanicBadge}</div>
-            <p className="info-desc">{current.text}</p>
-
-            <div className="stage-footer">
-              <Link href={current.href} className="btn-action">
-                {current.cta} →
-              </Link>
-            </div>
-          </div>
+          {/* Кнопка Вправо (по правому боку превью) */}
+          <button 
+            onClick={() => {
+              setActiveExp((activeExp + 1) % experiences.length);
+              playSfx('click');
+            }}
+            className="flank-nav-btn flank-next"
+            aria-label="Next Category"
+          >
+            →
+          </button>
         </div>
       </section>
 
-      {/* 4. КАК ЭТО РАБОТАЕТ */}
+      {/* 5. КАК ЭТО РАБОТАЕТ */}
       <section className="wiveli-how" id="how">
         <h3>How Wiveli Works</h3>
         <div className="how-steps">
@@ -261,12 +384,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. FOOTER */}
+      {/* 6. FOOTER */}
       <footer className="wiveli-footer" id="about">
         <div className="foot-brand">
           <strong>WI<span>♥</span>ELI</strong> · Wish + loVE + LIfe
         </div>
-        <p>© 2026 WIVELI. Made for someone who matters.</p>
+        <p>© 2026 WIVELI. Built with Ciao Motion Design.</p>
       </footer>
     </main>
   );
