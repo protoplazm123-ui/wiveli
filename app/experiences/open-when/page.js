@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import CouponAttachmentUpload from '../../components/CouponAttachmentUpload';
-import TelegramGiftDelivery from '../../components/TelegramGiftDelivery';
+import OpenWhenReady from '../../components/OpenWhenReady';
 const IDEAS = [
   { id:"miss", category:"LOVE", title:"YOU MISS ME", symbol:"♡", text:"A little piece of you for when the distance feels bigger." },
   { id:"sleep", category:"COMFORT", title:"YOU CAN'T SLEEP", symbol:"☾", text:"Something soft for the late nights." },
@@ -248,7 +248,7 @@ export default function OpenWhenPage() {
     if(busy||uploadBusy||!ready)return;setBusy(true);setError('');
     try{const r=await fetch('/api/gifts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({giftType:'open-when',giftData:draft})});const d=await r.json();if(!r.ok)throw Error(d.error||'Could not create gift.');setCreated(d);}catch(e){setError(e.message);}finally{setBusy(false);}
   };
-  if(created)return <main className="owcPage"><section style={{maxWidth:720,margin:'40px auto',padding:24}}><h1>Your letters are ready ♡</h1><a href={created.giftUrl} target="_blank" rel="noopener noreferrer">VIEW YOUR GIFT →</a><label style={{display:'block',margin:'24px 0'}}>PRIVATE GIFT LINK<input style={{display:'block',width:'100%',padding:12,fontSize:16}} value={created.giftUrl} readOnly onFocus={e=>e.target.select()}/></label><TelegramGiftDelivery giftType="open-when" giftId={created.id} recipientName={recipient} senderName={sender} onBack={()=>window.location.assign('/account')}/><button onClick={()=>setCreated(null)}>EDIT A NEW COPY</button></section></main>;
+  if(created)return <OpenWhenReady created={created} recipient={recipient} sender={sender} onEdit={()=>setCreated(null)} />;
 
   return(
     <main className="owcPage">

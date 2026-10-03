@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export default function TelegramGiftDelivery({ giftId, onBack, senderName = "", recipientName = "", giftType = "love-coupons", variant = "light" }) {
+export default function TelegramGiftDelivery({ giftId, onBack, senderName = "", recipientName = "", giftType = "love-coupons", appearance = "classic" }) {
   const [invitationText, setInvitationText] = useState("");
   const [inviteUrl, setInviteUrl] = useState("");
   const [inviteBusy, setInviteBusy] = useState(false);
@@ -53,12 +53,12 @@ export default function TelegramGiftDelivery({ giftId, onBack, senderName = "", 
   }
 
   return (
-    <section className={`delivery ${variant === "dark" ? "dark" : ""}`}>
+    <section className={`delivery ${appearance === "cosmic" ? "cosmic" : ""}`}>
       <p className="eyebrow">SEND FROM WIVELI</p>
       <h2>A LITTLE SURPRISE<br /><em>IN TELEGRAM.</em></h2>
       <p>Send a personal invitation. They open the bot, press Start, and receive your gift — no WIVELI account needed.</p>
       {!inviteUrl ? (
-        <button type="button" className="primaryBtn" onClick={createInvitation} disabled={inviteBusy}>
+        <button type="button" onClick={createInvitation} disabled={inviteBusy}>
           {inviteBusy ? "PREPARING…" : "CREATE BOT INVITATION ♡"}
         </button>
       ) : (
@@ -68,26 +68,39 @@ export default function TelegramGiftDelivery({ giftId, onBack, senderName = "", 
           <p>Copy this message and send it privately to your person. Nothing is sent automatically.</p>
           <label htmlFor="bot-invitation">PRIVATE BOT INVITATION</label>
           <input id="bot-invitation" value={inviteUrl} readOnly onFocus={e => e.target.select()} />
-          <button type="button" className="primaryBtn" onClick={copyInvitation}>COPY INVITATION ♡</button>
+          <button type="button" onClick={copyInvitation}>COPY INVITATION ♡</button>
         </div>
       )}
-      {inviteMessage && <p className="status" role="status">{inviteMessage}</p>}
+      {inviteMessage && <p role="status">{inviteMessage}</p>}
       <hr />
       <p>Already using the WIVELI bot? You can also send the gift directly to their Telegram username.</p>
       <form onSubmit={deliver}>
         <label htmlFor="recipient-telegram">RECIPIENT&apos;S TELEGRAM USERNAME</label>
         <input id="recipient-telegram" value={username} onChange={e => setUsername(e.target.value)}
           placeholder="@username" required disabled={busy || sent} autoComplete="off" maxLength={33} />
-        <p className="deliveryNote">Check the username carefully — this person will receive your private gift link.</p>
-        <button type="submit" className="primaryBtn" disabled={busy || sent || !username.trim()}>
+        <p className="note">Check the username carefully — this person will receive your private gift link.</p>
+        <button type="submit" disabled={busy || sent || !username.trim()}>
           {busy ? "SENDING…" : sent ? "SENT ♡" : "SEND GIFT VIA WIVELI ♡"}
         </button>
       </form>
-      {message && <p className="status" role="status" aria-live="polite">{message}</p>}
+      {message && <p role="status" aria-live="polite">{message}</p>}
       <p>To receive gift updates yourself, <a href="/account" target="_blank" rel="noopener noreferrer">connect your Telegram in your account</a>.
         {giftType === "open-when" ? "Letter openings and replies appear in your Inbox and your connected Telegram bot." : giftType === "our-story" ? "When your recipient opens the story, an update appears in your Inbox and your connected Telegram bot." : giftType === "wish-note" ? "Wish Note openings, new wishes and completed wishes appear in your Inbox; your connected bot also sends notifications." : "Then enable Remind me on a coupon, or let the recipient use Tell the sender after redeeming it."}</p>
-      <button type="button" className="linkBtn" onClick={onBack} disabled={busy}>{["wish-note","our-story","open-when"].includes(giftType) ? "← OPEN YOUR ACCOUNT" : "← BACK TO GIFT LINK"}</button>
+      <button type="button" onClick={onBack} disabled={busy}>{["wish-note","our-story","open-when"].includes(giftType) ? "← OPEN YOUR ACCOUNT" : "← BACK TO GIFT LINK"}</button>
       <style jsx>{`
+        .delivery.cosmic { max-width:none; color:#e9ddf2; font:14px/1.7 Arial,Helvetica,sans-serif; }
+        .cosmic .eyebrow, .cosmic label { color:#cda7e7; font-size:10px; line-height:1.6; }
+        .cosmic h2 { color:#faf5ff; font:400 clamp(30px,5vw,44px)/1.08 Georgia,serif; letter-spacing:-.035em; margin:18px 0; }
+        .cosmic h2 em { color:#d2acef; font-weight:400; }
+        .cosmic p { color:#c3b6ce; }
+        .cosmic input, .cosmic textarea { background:#171020; border:1px solid #665175; color:#f6eefa; border-radius:14px; padding:16px; font:16px/1.65 Arial,sans-serif; }
+        .cosmic textarea { background:#f5eef9; color:#34213f; font-family:Georgia,serif; min-height:260px; }
+        .cosmic button { background:#d4b1ed; color:#24132f; font:700 11px/1.5 Arial,sans-serif; letter-spacing:.07em; min-height:46px; }
+        .cosmic button:hover:not(:disabled) { background:#e5c9f7; }
+        .cosmic button:focus-visible, .cosmic input:focus-visible, .cosmic textarea:focus-visible, .cosmic a:focus-visible { outline:2px solid #e0b9fa; outline-offset:4px; }
+        .cosmic hr { border:0; border-top:1px solid #47344f; margin:32px 0; }
+        .cosmic p[role="status"] { color:#f2ddff; padding:12px 16px; background:#33213e; border-radius:12px; }
+
         textarea { display:block; box-sizing:border-box; width:100%; min-height:190px; resize:vertical; margin:12px 0; padding:16px; border:1px solid #a96b72; border-radius:12px; color:#741020; background:#fff4f0; font:16px/1.5 Georgia,serif; }
         .delivery { display: block; box-sizing: border-box; width: 100%; min-width: 0; height: auto; min-height: 0; padding: 0; position: relative; overflow-wrap: anywhere; }
         .delivery form, .delivery > div { display: block; width: 100%; min-width: 0; margin: 0; padding: 0; position: static; }
@@ -104,65 +117,13 @@ export default function TelegramGiftDelivery({ giftId, onBack, senderName = "", 
         button { padding: 16px 22px; border: 0; border-radius: 30px; background: #741020; color: #fff0eb; cursor: pointer; margin: 12px 0; }
         button:disabled { opacity: .5; cursor: default; }
         a { color: inherit; text-decoration: underline; }
-        .deliveryNote { font-size: 13px; }
+        .note { font-size: 13px; }
         @media (max-width: 600px) { h2 { font-size: 34px; } }
-
-        /* ===== DARK VARIANT (Our Story) ===== */
-        .delivery.dark { color: #f3eefc; }
-        .delivery.dark .eyebrow,
-        .delivery.dark label { color: #b898f2; letter-spacing: .2em; }
-        .delivery.dark h2 {
-          font-family: inherit;
-          font-weight: 500;
-          font-size: clamp(34px, 6vw, 52px);
-          line-height: .95;
-          letter-spacing: -.04em;
-          text-transform: uppercase;
-          color: #fff;
-          margin: 20px 0;
-        }
-        .delivery.dark h2 em {
-          font-family: Georgia, serif;
-          font-style: italic;
-          font-weight: 400;
-          color: #b898f2;
-        }
-        .delivery.dark p { color: rgba(243, 238, 252, .72); }
-        .delivery.dark .deliveryNote { color: rgba(243, 238, 252, .5); }
-        .delivery.dark .status { color: #d9c6ff; }
-        .delivery.dark textarea,
-        .delivery.dark input {
-          border: 1px solid rgba(255, 255, 255, .14);
-          border-radius: 14px;
-          background: rgba(255, 255, 255, .04);
-          color: #fff;
-        }
-        .delivery.dark textarea { font: 15px/1.6 Arial, sans-serif; }
-        .delivery.dark input::placeholder { color: rgba(255, 255, 255, .4); }
-        .delivery.dark textarea:focus,
-        .delivery.dark input:focus { outline: none; border-color: #b898f2; }
-        .delivery.dark .primaryBtn {
-          padding: 16px 26px;
-          border: 1px solid rgba(184, 152, 242, .5);
-          border-radius: 999px;
-          background: rgba(184, 152, 242, .12);
-          color: #fff;
-          font: 700 11px Arial, sans-serif;
-          letter-spacing: .14em;
-        }
-        .delivery.dark .primaryBtn:hover:not(:disabled) { background: rgba(184, 152, 242, .24); }
-        .delivery.dark .linkBtn {
-          padding: 0;
-          border: 0;
-          background: none;
-          color: #b898f2;
-          font: 700 11px Arial, sans-serif;
-          letter-spacing: .14em;
-        }
-        .delivery.dark .linkBtn:hover:not(:disabled) { color: #fff; }
-        .delivery.dark hr { border: 0; border-top: 1px solid rgba(255, 255, 255, .12); margin: 32px 0; }
-        .delivery.dark a { color: #b898f2; }
       `}</style>
     </section>
   );
 }
+
+
+
+
